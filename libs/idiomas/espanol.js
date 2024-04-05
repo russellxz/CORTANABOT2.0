@@ -118,8 +118,8 @@ const bot = () => { return `*⚠️ Este comando solo (YO) lo puedo usar*` }
 const error = () => { return `⪨╼╼≪⚠️ ERROR ⚠️≫╾╼⪩\n\nOCURRIÓ UN ERROR INESPERADO, (API CAIDA 😢)` }
 const AvisoMG = () => { return `⪨╼╼≪⚠️ ACCION MAL USADA ⚠️≫╾╼⪩\n\n` }
 const advertencia = () => { return `[ ⚠️ ＡＤＶＥＲＴＥＮＣＩＡ ]` }
-const registra = () => { return `*[ 🔴 HEY ALTO NO ESTAS REGISTRADO 🔴 ]*\n\nNO APARECES EN MI BASE DE DATOS ✋\n\nPara poder usar el bot necesita estar registrado:\n\n#reg nombre.edad` }
-const limit = () => { return `*ᴅɪᴀᴍᴀɴᴛᴇ 💎 ᴜsᴀᴅᴏ*` }
+const registra = () => { return `❌ No estas registrado para registrarte utiliza\n#reg nombre.edad\n\n*Ejemplo:*\n\n#reg Cortana|12` }
+const limit = () => { return `*𝙳𝙸𝙰𝙼𝙰𝙽𝚃𝙴 💎 𝙼𝙴𝙽𝙾𝚂*` }
 const AntiNsfw = () => { return `*Los comando +18 esta desactivado*\nSi eres admin y quiere activarlos usar:\n• modocaliente on` }
 const endLimit = () => { return `*😢 NOO TIENE MAS DIAMANTE 💎*\n\nPuede comprar mas usando el comando: #buy` }
 const exito = () => { return `*EXITOS ✅*` }
@@ -191,7 +191,7 @@ text20: (fb, md) => `╭─────────────┈⊷
 ╰┬────────────┈⊷
 ┌┤\`📌 REQUISITOS PARA LAS INSTALACION \`
 ┌┤❇️ _Dudas: ${fb}_
-┌┤❇️ _Tutoríal: https://youtu.be/OhbJjp0L2QA?si=ZqRgG3SGTRFSW6CH_
+┌┤❇️ _Tutoríal: https://youtu.be/Ky29KDT1QRQ?si=6S1yq3P72BNtHf3D
 ┌┤❇️ _1 GB de almacenamiento_
 ┌┤❇️ _Termux: https://www.mediafire.com/file/3hsvi3xkpq3a64o/termux_118.apk/file_
 ┌┤❇️ _GitHub: ${md}_
@@ -206,7 +206,11 @@ text20: (fb, md) => `╭─────────────┈⊷
 
 * apt update && apt upgrade && pkg update && pkg upgrade && pkg install bash && pkg install libwebp && pkg install git -y && pkg install nodejs -y && pkg install ffmpeg -y && pkg install wget && pkg install imagemagick -y && pkg install yarn
 
-* git clone https://github.com/elrebelde21/NovaBot-MD && cd NovaBot-MD && yarn && npm install
+* git clone https://github.com/russellxz/CORTANABOT2.0.git
+
+* cd CORTANABOT2.0
+
+* yarn install && npm install && npm update
 
 * npm start
 
@@ -215,40 +219,39 @@ text20: (fb, md) => `╭─────────────┈⊷
 🚀 --------[ Vortexuscloud host ]--------- 🚀
 > 💞 Agraciemiento a: mauro 
 
-https://youtube.com/@vortexuscloud
+* https://youtube.com/@vortexuscloud
 
 > Pagina oficial :
 https://vortexuscloud.com
 
 > dashboard:
-https://dash.vortexuscloud.com
+* https://dash.vortexuscloud.com
 
 > panel:
-https://panel.vortexuscloud.com
+" https://panel.vortexuscloud.com
 
 > Canal de WhatsApp sobre informacion del host 
-https://whatsapp.com/channel/0029Va8ZD6O3mFXxTPl1m13A
+* https://whatsapp.com/channel/0029Va8ZD6O3mFXxTPl1m13A
 
 🚀 --------[ Cafirexos host ]--------- 🚀
 
 *Página oficial:*
-https://www.cafirexos.com/
+* https://www.cafirexos.com/
 
 *Panel:*
-https://panel.cafirexos.com/
+* https://panel.cafirexos.com/
 
 *dashboard:*
-https://dash.cafirexos.com/home
+* https://dash.cafirexos.com/home
 
 *Dudas UNICAMENTE SOBRE EL HOST:*
-https://chat.whatsapp.com/FBtyc8Q5w2iJXVl5zGJdFJ 
-(Pregunta por Diego: cafirexos) 
+* https://chat.whatsapp.com/FBtyc8Q5w2iJXVl5zGJdFJ  (Pregunta por Diego: cafirexos) 
 
 *Canal de WhatsApp:*
-https://whatsapp.com/channel/0029VaFVSkRCMY0KFmCMDX2q`, 
+* https://whatsapp.com/channel/0029VaFVSkRCMY0KFmCMDX2q`, 
 text21: `*𝙸𝙽𝙶𝚁𝙴𝚂𝙴 𝙴𝙻 𝙲𝙾𝙼𝙰𝙽𝙳𝙾 𝙲𝙾𝙽 𝙵𝙰𝙻𝙻𝙾𝚂*\n\n*𝙴𝙹𝙴𝙼𝙿𝙻𝙾:`, 
 text22: `𝙴𝙻 𝚁𝙴𝙿𝙾𝚁𝚃𝙴 𝙵𝚄𝙴 𝙴𝙽𝚅𝙸𝙰𝙳𝙾 𝙰 𝙼𝙸 𝙲𝚁𝙴𝙰𝙳𝙾𝚁, 𝙽𝙾𝚂 𝙲𝙾𝙽𝚃𝙰𝚁𝙴𝙼𝙾𝚂 𝙲𝙾𝙽 𝚄𝚂𝚃𝙴𝙳 𝚂𝙸 𝙴𝚂 𝙽𝙴𝙲𝙴𝚂𝙰𝚁𝙸𝙾, 𝙳𝙴 𝚂𝙴𝚁 𝙵𝙰𝙻𝚂𝙾 𝚂𝙴𝚁𝙰 𝙸𝙶𝙽𝙾𝚁𝙰𝙳𝙾 𝚈 𝙱𝙻𝙾𝚀𝚄𝙴𝙰𝙳𝙾 𝙳𝙴𝙻 𝙱𝙾𝚃*`, 
-text23: `*╼╼╼╼╼╼╼[ 💖 DONACION 💖 ]╾╾╾╾╾╾╾╾*\n\n*Hola 👋, si quieres apoyar este proyecto, puedes hacerlo a través de donaciones voluntarias por Mercado Pago Arg.*\n\n╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n\n*❇️Mercado pago:*\n*• Alias :* OficialGB\n*• CVU :* 0000003100059201491917`, 
+text23: `*╼╼╼╼╼╼╼[ 💖 DONACION 💖 ]╾╾╾╾╾╾╾╾*\n\n*Hola 👋, si quieres apoyar este proyecto, puedes hacerlo a través de donaciones voluntarias por PayPal, Mercado Pago o Naranja X.*\n\n╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n\n*❇️PayPal:*\nhttps://paypal.me/OfcGB\n\n╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n\n*❇️Mercado pago:*\n*• Alias :* OficialGB\n*• CVU :* 0000003100059201491917\n\n╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n\n*❇️ Naranja X:*\n*• Alias :* OficialGL\n*• CVU :* 4530000800017922067114`, 
 text24: `*💖 ᵀᵃᵐᵇᶦᵉⁿ ᵖᵘᵉᵈᵉˢ ᶜᵒᵐᵖᵃʳᵗᶦʳ ˡᵒ ˢᶦᵍᵘᶦᵉⁿᵗᵉ ᶜᵒᵐᵒ ᴹᵘᵉˢᵗʳᵃ ᵈᵉ ᴬᵖᵒʸᵒ 💕*\n\n*❤ ᴬᵖᵒʸᵃʳ ᵉˡ ʳᵉᵖᵒˢᶦᵗᵒʳᶦᵒ ᶜᵒⁿ ᵘⁿᵃ ᵉˢᵗʳᵉˡˡᶦᵗᵃˢ ᴳʳᵃᶜᶦᵃˢ 🙏💕*`, 
 text25: `┗❴ ⚠ 𝐀𝐃𝐕𝐄𝐑𝐓𝐄𝐍𝐂𝐈𝐀 ⚠ ❵┛\n\nᴇsᴛᴀ ᴘʀᴏʜɪʙɪᴅᴏ ᴇᴛɪǫᴜᴇᴛᴀʀ ᴀʟ ᴄʀᴇᴀᴅᴏʀ/ᴅᴇsᴀʀʀᴏʟʟᴏ sɪ ᴛɪᴇɴᴇs ᴜɴᴀ sᴜɢᴇʀᴇɴᴄɪᴀs ʀᴇғᴇʀᴇɴᴛᴇ ᴀʟ ʙᴏᴛ ᴇsᴄʀɪʙɪʀʟᴇ ᴀ sᴜs ᴘʀɪᴠ`, 
 text26: `*⚡ ¿Esta buscando un hots de calidad y al ajuste de su bolsillo?*
@@ -315,7 +318,7 @@ text15: (vs) => `*\`🤔 Que hay de nuevo? 🤗\`*\n\n*🌐 Nueva Version:* [ ${
 \`💢Comando ramdow :\`
 #china
 
-\`🪄 Ahora con NovaBot puede crear logos personalizado :\`
+\`🪄 Ahora puede crear logos personalizado :\`
 #logos
 
 \`🔱 Ahora puede agregar la reglas del tu grupo con :\`
@@ -336,14 +339,12 @@ text15: (vs) => `*\`🤔 Que hay de nuevo? 🤗\`*\n\n*🌐 Nueva Version:* [ ${
 #transferir
 #transfer
 
-\`🔰Mejorar tu grupo con NovaBot protegiéndolos de todos tipo de spam:\`
+\`🔰Mejorar tu grupo protegiéndolos de todos tipo de spam:\`
 > (mira todos los ajuste de la configuración de tu grupo) 
 #enable 
 #configurar 
 
-> *⚡ Se esta mejoraron la estabilidad del bot.* 
-
-ᴹᵃˢ ᶜᵒᵐᵃⁿᵈᵒ ᵉˡ ᶠᵘᵗᵘʳᵃ ᵛᵉʳˢᶦᵒⁿᵉˢ ᵠᵘᶦᵉʳᵉ ᵠᵘᵉ ᵃᵍʳᵉᵍᵘᵉ ᵃˡᵍᵘⁿ ᶜᵒᵐᵃⁿᵈᵒ ᵉˡ ᵉˢᵖᵉᶜᶦᵃˡ ᵉˢᶜʳᶦᵇᶦʳˡᵉ ᵃ ᵐᶦ ᶜʳᵉᵃᵈᵒʳ`, 
+> Modificado por : Russell`, 
 text16: `\`🌐 REGLAS DEL BOT 🌐\`
 
 *• No hacer spam de comandos*
@@ -457,21 +458,28 @@ text6: `*🔮 ＥＮＬＡＣＥ*`,
 text7: `*✅ 𝘚𝘶 𝘦𝘯𝘭𝘢𝘤𝘦 𝘴𝘦 𝘦𝘯𝘷𝘪𝘰𝘯 𝘢 𝘮𝘪 𝘗𝘳𝘰𝘱𝘪𝘦𝘵𝘢𝘳𝘪𝘰(𝘢)*\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n⚠️ *𝘚𝘶 𝘨𝘳𝘶𝘱𝘰 𝘴𝘦𝘳𝘢 𝘦𝘷𝘢𝘭𝘶𝘢𝘥𝘰 𝘺 𝘲𝘶𝘦𝘥𝘢𝘳𝘢 𝘢 𝘥𝘦𝘤𝘪𝘴𝘪𝘰𝘯 𝘥𝘦 𝘮𝘪 𝘗𝘳𝘰𝘱𝘪𝘦𝘵𝘢𝘳𝘪𝘰(𝘢) 𝘴𝘪 𝘦𝘭 𝘣𝘰𝘵 𝘴𝘦 𝘶𝘯𝘦 𝘰 𝘯𝘰 𝘢𝘭 𝘨𝘳𝘶𝘱𝘰.*\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n❕ *𝘌𝘴 𝘱𝘰𝘴𝘪𝘣𝘭𝘦 𝘲𝘶𝘦 𝘴𝘶 𝘚𝘰𝘭𝘪𝘤𝘪𝘵𝘶𝘥 𝘴𝘦𝘢 𝘙𝘦𝘤𝘩𝘢𝘻𝘢𝘥𝘢 𝘱𝘰𝘳 𝘭𝘢𝘴 𝘴𝘪𝘨𝘶𝘪𝘦𝘯𝘵𝘦𝘴 𝘊𝘢𝘶𝘴𝘢𝘴:*\n*1️⃣ 𝘌𝘭 𝘉𝘰𝘵 𝘦𝘴𝘵𝘢́ 𝘚𝘢𝘵𝘶𝘳𝘢𝘥𝘰.*\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n2️⃣ *𝘌𝘭 𝘉𝘰𝘵 𝘧𝘶𝘦 𝘦𝘭𝘪𝘮𝘪𝘯𝘢𝘥𝘰 𝘥𝘦𝘭 𝘎𝘳𝘶𝘱𝘰.*\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n3️⃣ *𝘌𝘭 𝘎𝘳𝘶𝘱𝘰 𝘯𝘰 𝘤𝘶𝘮𝘱𝘭𝘦 𝘤𝘰𝘯 𝘭𝘢𝘴 𝘕𝘰𝘳𝘮𝘢𝘵𝘪𝘷𝘢𝘴 𝘥𝘦 𝘣𝘰𝘵*\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n4️⃣ *𝘌𝘭 𝘦𝘯𝘭𝘢𝘤𝘦 𝘥𝘦𝘭 𝘨𝘳𝘶𝘱𝘰 𝘴𝘦 𝘳𝘦𝘴𝘵𝘢𝘣𝘭𝘦𝘤𝘪𝘰.*\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n5️⃣ *𝘕𝘰 𝘴𝘦 𝘢𝘨𝘳𝘦𝘨𝘢 𝘢 𝘎𝘳𝘶𝘱𝘰𝘴 𝘴𝘦𝘨𝘶́𝘯 𝘔𝘪 𝘗𝘳𝘰𝘱𝘪𝘦𝘵𝘢𝘳𝘪𝘰(𝘢)*\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n📧 *𝘓𝘢 𝘴𝘰𝘭𝘪𝘤𝘪𝘵𝘶𝘥 𝘱𝘶𝘦𝘥𝘦 𝘵𝘢𝘳𝘥𝘢𝘳 𝘏𝘰𝘳𝘢𝘴 𝘦𝘯 𝘴𝘦𝘳 𝘙𝘦𝘴𝘱𝘰𝘯𝘥𝘪𝘥𝘢. 𝘗𝘰𝘳 𝘧𝘢𝘷𝘰𝘳 𝘛𝘦𝘯𝘦𝘳 𝘗𝘢𝘤𝘪𝘦𝘯𝘤𝘪𝘢, 𝘎𝘳𝘢𝘤𝘪𝘢𝘴*\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n*ᴾᵘᵉᵈᵉ ᵃᵖᵒʸᵃʳ ᵉˡ ᵇᵒᵗ ᶜᵒⁿ ᵘⁿᵃ ᴱˢᵗʳᵉˡˡᶦᵗᵃ ᵉˡ ⁿᵘᵉˢᵗʳᵒ ʳᵉᵖᵒˢᶦᵗᵒʳᶦᵒ ᵒᶠᶦᶜᶦᵃˡ ʸ ˢᵘˢᶜʳᶦʳᵗᵉ ᵃ ⁿᵘᵉˢᵗʳᵒ ᶜᵃⁿᵃˡ ᵈᵉˡ ʸᵒᵘᵀᵘᵇᵉ ᵐᵃⁿᵈᵃ ᶜᵃʳᵗᵘʳᵃ ᵃ ᵐᶦ ᶜʳᵉᵃᵈᵒʳ ᵖᵃʳᵃ ᵠᵘᵉ ᵖᵘᵉᵈᵃ ᵃᵍʳᵉᵍᵃ ᵉˡ ᵇᵒᵗ ᵃ ᵗᵘ ᵍʳᵘᵖᵒ 💫*`, 
 text8: (md, yt, nn7, fb) => `*[ ＵＮＥ ＵＮ ＢＯＴ Ａ ＴＵ ＧＲＵＰＯ ]*
 
-Puedes solicitarlo haciendo una donación voluntaria a través de Mercado Pago arg.
+Puedes solicitarlo haciendo una donación voluntaria a través de PayPal o Mercado Pago arg. 
 
 🚀 El bot estará activo 24/7 para tu grupo.
 
 *⚡ ¿Por dónde puedo donar?*
-A través de nuestro Mercado Pago.
+A través de nuestro Paypal, Mercado Pago o Naranja X.
 
-❇️Mercado pago:
-• Alias: OficialGB
-• CVU: 0000003100059201491917
+*❇️PayPal:* 
+https://paypal.me/OfcGB
+
+*❇️Mercado pago:*
+*• Alias :* OficialGB
+*• CVU :* 0000003100059201491917
+
+*❇️ Naranja X:*
+*• Alias :* OficialGL
+*• CVU :* 4530000800017922067114
 
 *⚡ ¿No puedo donar hay otra opción para obtener un bot el mi Grupo?*
 puede apoyar nuestro repositorio oficial con una estrellita 🌟
 • ${md}
-• https://github.com/elrebelde21/LoliBot-MD
+• https://github.com/elrebelde21
 
 🔔 Subscrirte a nuestro canal de YouTube oficial
 • ${yt}
@@ -664,15 +672,25 @@ text5: `_*Calma crack estoy haciendo tu texto a sticker 👏*_\n\n_*Esto puede d
 const idioma = (prefix) => { return `*✳️ Usar:*\n${prefix}idioma 1 (español)\n${prefix}idioma 2 (inglés)\n${prefix}idioma 3 (arabe)\n${prefix}idioma 4 (Indonesia)\n${prefix}idioma 5 (portugues)\n${prefix}idioma 6 (ruso)\n\n*❗Ejemplo:*\n• ${prefix}idioma 1` }
 const idioma2 = () => { return `✅ Idioma cambiado con éxito a ` }
 
-const smsReg = () => { return `*Ya estas registrado 🧐*` }
-const smsReg1 = (prefix) => { return `*❌ Forma incorrecta*\n\nuse de esta forma\nEjemplo: ${prefix}reg nombre.edad` }
+const smsReg = () => { return `*Tu Ya Estas Registrado, o No Lo Recuerdas?*` }
+const smsReg1 = (prefix) => { return `*❌ 𝙵𝙾𝚁𝙼𝙰𝚃𝙾𝚂 𝙸𝙽𝙲𝙾𝚁𝚁𝙴𝙲𝚃𝙾*\n\n*PORFAVOR ESCRIBE BIEN EL FORMATO DE REGISTRO:*\n${prefix}reg *Nombre|Edad* 
+_Con el *|* que los divide._` }
 const smsReg2 = () => { return `El nombre no puede estar vacio` }
 const smsReg3 = () => { return `La edad no puede estar vacia (Numeros)` }
 const smsReg4 = () => { return 'Esta Viejo (。-`ω´-)' }
 const smsReg5 = () => { return `🚼  Basado, los bebes saben escribir.✍️😳` }
 const smsReg6 = () => { return `🐈 Fua que basado, el nombre es muy largo que quiere un puente como nombre😹` }
-const smsReg7 = (name, user, age, time, date, sender, sn, prefix, rtotalreg) => { return `[ ✅ REGISTRO COMPLETADO ]\n\n ◉ *Nombre:* ${name} ${user.registered === true ? 'ͧͧͧͦꙶͣͤ✓' : ''}\n ◉ *Edad:* ${age} años\n ◉ *Hora:* ${time}\n ◉ *Fecha:* ${date}\n ◉ *Número:* wa.me/${sender.split("@")[0]}\n ◉ *Numero del serie*\n ⤷ ${sn}\n\n 🎁 *Recompensa:*\n ⤷ 5 diamante 💎\n ⤷ 600 exp\n\n *◉ Para ver los comandos del bot usar:*
- ${prefix}menu\n\n ◉ *Total de usuários registrados:* ${rtotalreg}` }
+const smsReg7 = (name, user, age, time, date, sender, sn, prefix, rtotalreg) => { return `┌────「 *REGISTRADO* 」─
+[💈] *USER*: @${sender.split("@")[0]}
+[💈] *NOMBRE:* _${name}_
+[💈] *NUMERO:* _wa.me/${sender.split("@")[0]}_
+[💈] *EDAD:* _${age} años_
+[💈] *HORA:* _${time}_
+[💈] *FECHA:* _${date}_
+[💈] *SERIAL:* _${sn}_
+[💈] *RECOMPENSA:* _5 Diamante + 600 exp_
+└────「 ${botname} 」\n
+Verificación completa usa *${prefix}menu* para ver el Menu` }
 const smsReg8 = () => { return `*💬 Elegir tu idioma con:* #idioma` }
  
 const cuenta = (nna, md, yt, tiktok, fb) => { return `*Bienvenido a las cuentas oficiales ✨*
