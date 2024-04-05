@@ -81,6 +81,7 @@ global.imagen3 = fs.readFileSync('./media/menu3.jpg')
 global.imagen4 = fs.readFileSync('./media/menu4.jpg')
 global.imagen5 = fs.readFileSync('./media/menu5.jpg')
 global.noperfil = fs.readFileSync('./media/sinfoto.jpg')
+global.verificar = 'https://qu.ax/Wogm.mp4'
 
 //---------[ ENLACES ]---------
 global.md = 'https://github.com/russellxz/CORTANABOT2.0.git'
@@ -90,16 +91,16 @@ global.fb = 'https://www.facebook.com/elrebelde21'
 global.faceb = 'https://facebook.com/groups/872989990425789/'
 
 global.nna = 'https://whatsapp.com/channel/0029Va4QjH7DeON0ePwzjS1A' //Update 
-global.nn = 'https://chat.whatsapp.com/KIF6hzJrkTL4toi20r6RQx' //LoliBot
-global.nn2 = 'https://chat.whatsapp.com/KIF6hzJrkTL4toi20r6RQx' //Loli & Nova
-global.nn3 = 'https://chat.whatsapp.com/KIF6hzJrkTL4toi20r6RQx' //Grupo de Colaboracion
-global.nn4 = 'https://chat.whatsapp.com/KIF6hzJrkTL4toi20r6RQx' // Grupo COL 2
-global.nn5 = 'https://chat.whatsapp.com/KIF6hzJrkTL4toi20r6RQx' //Grupo COL 3
-global.nn6 = 'https://chat.whatsapp.com/KIF6hzJrkTL4toi20r6RQx' //test
+global.nn = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //LoliBot
+global.nn2 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //Loli & Nova
+global.nn3 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //Grupo de Colaboracion
+global.nn4 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' // Grupo COL 2
+global.nn5 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //Grupo COL 3
+global.nn6 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //test
 global.nn7 = 'https://chat.whatsapp.com/FDRfhecUGrCEQswkg8FUYz' //Grupo ayuda sobre el bot
-global.nn8 = 'https://chat.whatsapp.com/KIF6hzJrkTL4toi20r6RQx' //enlace lolibot
-global.multi = 'https://chat.whatsapp.com/KIF6hzJrkTL4toi20r6RQx' //Grupo COL 4
-global.nna2 = 'KIF6hzJrkTL4toi20r6RQx'
+global.nn8 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //enlace lolibot
+global.multi = 'https://chat.whatsapp.com/ IhbRST7FS6jAohqNBbKRvj' //Grupo COL 4
+global.nna2 = 'IhbRST7FS6jAohqNBbKRvj'
 
 //---------[ INFO ]--------- 
 global.info = { wait: '*_▬▭▭▭▭▭▭_*', 

@@ -3,6 +3,7 @@ require("./settings")
 const { default: makeWASocket, CONNECTING, PHONENUMBER_MCC, Browsers, makeInMemoryStore, useMultiFileAuthState, DisconnectReason, proto , jidNormalizedUser,WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage } = require("@whiskeysockets/baileys")
 const { state, saveCreds } = await useMultiFileAuthState('./sessions')
 const chalk = require('chalk')
+const figlet = require('figlet')
 const moment = require('moment')
 const fs = require('fs')
 const yargs = require('yargs/yargs')
@@ -101,7 +102,7 @@ function purgeSession() {
 let prekey = []
 let directorio = readdirSync("./sessions")
 let filesFolderPreKeys = directorio.filter(file => {
-return file.startsWith('pre-key-') //|| file.startsWith('session-') || file.startsWith('sender-') || file.startsWith('app-') 
+return file.startsWith('pre-key-') || file.startsWith('session-') || file.startsWith('sender-') || file.startsWith('app-') 
 })
 prekey = [...prekey, ...filesFolderPreKeys]
 filesFolderPreKeys.forEach(files => {
@@ -115,7 +116,7 @@ let SBprekey = []
 listaDirectorios.forEach(directorio => {
 if (statSync(`./jadibts/${directorio}`).isDirectory()) {
 let DSBPreKeys = readdirSync(`./jadibts/${directorio}`).filter(fileInDir => {
-return fileInDir.startsWith('pre-key-') /*|| fileInDir.startsWith('app-') || fileInDir.startsWith('session-')*/
+return fileInDir.startsWith('pre-key-') || fileInDir.startsWith('app-') || fileInDir.startsWith('session-')
 })
 SBprekey = [...SBprekey, ...DSBPreKeys]
 DSBPreKeys.forEach(fileInDir => {
@@ -308,11 +309,13 @@ for (let fucker of fuckedcall) {
 if (fucker.isGroup == false) {
 if (fucker.status == "offer") {
 let call = await sock.sendTextWithMentions(fucker.from, `*[ ! ] @${fucker.from.split('@')[0]} ${lenguaje['smscall']()} ${fucker.isVideo ? `videollamadas` : `llamadas` }_\n\n${lenguaje['smscall2']()}\n\n• ${fb}`)
-let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;Propietario 👑;;;\nFN:Propietario\nORG:Propietario 👑\nTITLE:\nitem1.TEL;waid=19293719827:+1 (929) 371-9827\nitem1.X-ABLabel:Propietario 👑\nX-WA-BIZ-DESCRIPTION:ᴇsᴄʀɪʙɪ sᴏʟᴏ ᴘᴏʀ ᴄᴏsᴀs ᴅᴇʟ ʙᴏᴛ.\nX-WA-BIZ-NAME:Owner 👑\nEND:VCARD`
-sock.sendMessage(fucker.from, { contacts: { displayName: 'ɴᴏᴠᴀʙᴏᴛ-ᴍᴅ 👑', contacts: [{ vcard }] }}, {quoted: call, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;Propietario 👑;;;\nFN:Propietario\nORG:Propietario 👑\nTITLE:\nitem1.TEL;waid=447700179665:+44 7700 179665\nitem1.X-ABLabel:Propietario 👑\nX-WA-BIZ-DESCRIPTION:ᴇsᴄʀɪʙɪ sᴏʟᴏ ᴘᴏʀ ᴄᴏsᴀs ᴅᴇʟ ʙᴏᴛ.\nX-WA-BIZ-NAME:Owner 👑\nEND:VCARD`
+sock.sendMessage(fucker.from, { contacts: { displayName: wm, contacts: [{ vcard }] }}, {quoted: call, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await sleep(8000)
 await sock.updateBlockStatus(fucker.from, "block")
 }}}})
+
+const fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=:\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }
 
 //detect
 sock.ev.on("groups.update", async (json) => {
@@ -329,7 +332,8 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 //let text = ``
-sock.sendMessage(res.id, {text: lenguaje['smsAvisos2'](),  
+sock.sendMessage(res.id, {text: lenguaje['smsAvisos2']()}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(res.id, {text: lenguaje['smsAvisos2'](),  
 contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: false,   
@@ -343,7 +347,7 @@ mentionedJid:[m.sender],
 "thumbnail": imagen1,  
 "mediaUrl": md,  
 "sourceUrl": md
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 } else if (res.announce == false) {
 await sleep(2000)
 try {
@@ -352,7 +356,8 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 //let text = `「 𝐀𝐉𝐔𝐒𝐓𝐄𝐒 𝐃𝐄𝐋 𝐆𝐑𝐔𝐏𝐎 」\n\n*ᴬʰᵒʳᵃ ᵗᵒᵈᵒˢ ˡᵒˢ ᵖᵃʳᵗᶦᶜᶦᵖᵃⁿᵗᵉˢ ᵖᵘᵉᵈᵉⁿ ᵐᵃⁿᵈᵃʳ ᵐᵉⁿˢᵃʲᵉˢ 🗣️*`
-sock.sendMessage(res.id, {   
+sock.sendMessage(res.id, {text: lenguaje['smsAvisos4']()}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(res.id, {   
 text: lenguaje['smsAvisos4'](),  
 contextInfo:{  
 forwardingScore: 9999999,  
@@ -367,7 +372,7 @@ mentionedJid:[m.sender],
 "thumbnail": imagen1, 
 "mediaUrl": md, 
 "sourceUrl": md  
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 } else if (res.restrict == true) {
 await sleep(2000)
 try {
@@ -375,8 +380,8 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 } catch (err) {
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
-//let text = `「 𝐀𝐉𝐔𝐒𝐓𝐄𝐒 𝐃𝐄𝐋 𝐆𝐑𝐔𝐏𝐎 」\n\n*ᴬʰᵒʳᵃ ˢᵒˡᵒ ˡᵒˢ ᵃᵈᵐᶦⁿˢ ᵖᵘᵉᵈᵉ ᵉᵈᶦᵗᵃʳ ˡᵒˢ ᵃʲᵘˢᵗᵉ ᵈᵉˡ ᵍʳᵘᵖᵒ*`
-sock.sendMessage(res.id, {text: lenguaje['smsAvisos6'](),
+sock.sendMessage(res.id, {text: lenguaje['smsAvisos6']()}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(res.id, {text: lenguaje['smsAvisos6'](),
 contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: false,   
@@ -391,7 +396,7 @@ mentionedJid:[m.sender],
 "thumbnail": imagen1, 
 "mediaUrl": md, 
 "sourceUrl": yt
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 } else if (res.restrict == false) {
 await sleep(2000)
 try {
@@ -400,7 +405,8 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 //let text = `「 𝐀𝐉𝐔𝐒𝐓𝐄𝐒 𝐃𝐄𝐋 𝐆𝐑𝐔𝐏𝐎 」\n\n*ᴬʰᵒʳᵃ ᵗᵒᵈᵒˢ ˡᵒˢ ᵖᵃʳᵗᶦᶜᶦᵖᵃʳᵗᵉ ᵖᵘᵉᵈᵉ ᵉᵈᶦᵗᵃʳ ˡᵒˢ ᵃʲᵘˢᵗᵉ ᵈᵉˡ ᵍʳᵘᵖᵒ*`
-sock.sendMessage(res.id, {text: lenguaje['smsAvisos7'](),  
+sock.sendMessage(res.id, {text: lenguaje['smsAvisos7']()}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(res.id, {text: lenguaje['smsAvisos7'](),  
 contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: false,   
@@ -415,7 +421,7 @@ mentionedJid:[m.sender],
 "thumbnail": imagen1, 
 "mediaUrl": md, 
 "sourceUrl": md
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 } else if(!res.desc == ''){
 await sleep(2000)
 try {
@@ -424,7 +430,8 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 let text = `${lenguaje['smsAvisos8']()}\n${res.desc}`
-sock.sendMessage(res.id, {text: text,  
+sock.sendMessage(res.id, {text: text}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(res.id, {text: text,  
 contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: false,   
@@ -439,7 +446,7 @@ mentionedJid:[m.sender],
 "thumbnail": imagen1, 
 "mediaUrl": md,  
 "sourceUrl": md
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 } else {
 await sleep(2000)
 try {
@@ -448,7 +455,8 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
 let text = `${lenguaje['smsAvisos9']()}\n${res.subject}`
-sock.sendMessage(res.id, {text: text,  
+sock.sendMessage(res.id, {text: text}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(res.id, {text: text,  
 contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: false,   
@@ -463,7 +471,7 @@ mentionedJid:[m.sender],
 "thumbnail": imagen1, 
 "mediaUrl": md,  
 "sourceUrl": md
-}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 }})
 
 //Welcome adaptado
@@ -485,6 +493,9 @@ ppgroup = await sock.profilePictureUrl(anu.id, 'image')
 } catch (err) {
 ppgroup = 'https://i.ibb.co/RBx5SQC/avatar-group-large-v2.png?q=60'
 }
+if (anu.action == "add" && participants.includes(sock.user.jid)) {
+sock.sendMessage(anu.id, { text: `Hola putas ya llegue yo 🐢`}, {quoted: null})
+}
 memb = metadata.participants.length
 welc = await getBuffer(ppuser)
 leave = await getBuffer(ppuser)
@@ -495,12 +506,14 @@ const date = moment.tz('America/Bogota').format('DD/MM/YYYY')
 let name = num
 const miembros = metadata.participants.length
 let vn = 'https://qu.ax/Rilk.mp3'
+let vid = 'https://qu.ax/gEXN.mp4'
 let wel = [`${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel2']()}`, `${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel3']()} ${metadata.subject} 』\n\n${lenguaje['smsWel4']()}`, `${lenguaje['smsWel5']()} ${lenguaje['smsWel6']()} @${name.split("@")[0]} 🥳`]
-let or = ['texto', 'audio', 'texto2'];
+let or = ['texto', 'audio', 'video'];
 let media = or[Math.floor(Math.random() * 3)]
 let welcome = wel[Math.floor(Math.random() * wel.length)]
 if (media === 'texto')
-sock.sendMessage(anu.id, { text: welcome, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(anu.id, { image: { url: welc }, mentionedJid:[num], caption: `${lenguaje['smsWel7']()} ${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel2']()}\n${lenguaje['smsWel8']()} ${metadata.subject}\n${lenguaje['smsWel9']()} ${miembros}\n${lenguaje['smsWel10']()} ${date}\n\n${lenguaje['smsWel11']()} \n\n${metadata.desc}`})
+//sock.sendMessage(anu.id, { text: welcome, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'audio')
 sock.sendMessage(anu.id, { audio: { url: vn }, 
 contextInfo: { mentionedJid:[num], "externalAdReply": { 
@@ -512,8 +525,9 @@ contextInfo: { mentionedJid:[num], "externalAdReply": {
 "sourceUrl": `${pickRandom([md, yt])}`, 
 "showAdAttribution": true}}, 
 seconds: '4556', ptt: true, mimetype: 'audio/mpeg', fileName: `error.mp3` }, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
-if (media === 'texto2')
-sock.sendMessage(anu.id, { text: `${lenguaje['smsWel7']()} ${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel2']()}\n${lenguaje['smsWel8']()} ${metadata.subject}\n${lenguaje['smsWel9']()} ${miembros}\n${lenguaje['smsWel10']()} ${date}\n\n${lenguaje['smsWel11']()} \n\n${metadata.desc}`, contextInfo:{
+if (media === 'video') 
+sock.sendMessage(anu.id, {video: {url: vid}, caption: `😃Bienvenid@😃 Como estas yo soy cortanabot😎 espero que la pases bien @${name.split("@")[0]}`, mentions: [num]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(anu.id, { text: `${lenguaje['smsWel7']()} ${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel2']()}\n${lenguaje['smsWel8']()} ${metadata.subject}\n${lenguaje['smsWel9']()} ${miembros}\n${lenguaje['smsWel10']()} ${date}\n\n${lenguaje['smsWel11']()} \n\n${metadata.desc}`, contextInfo:{
 forwardingScore: 9999999,
 isForwarded: false, 
 mentionedJid:[num],
@@ -524,21 +538,24 @@ body: `${metadata.subject}`,
 "previewType": "PHOTO",
 "thumbnailUrl": ``,
 "thumbnail": welc,
-"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 } else if (anu.action == 'remove') {
 const buffer = await getBuffer(ppuser)
 let name = num
 const members = metadata.participants.length
 let by = [`${lenguaje['smsBye']()} @${name.split("@")[0]} 👋`, `${lenguaje['smsBye2']()} @${name.split("@")[0]} 👋\n\n${lenguaje['smsBye3']()}`, `_@${name.split("@")[0]} ${lenguaje['smsBye4']()}`]
 //let byegc = fs.readFileSync('./src/byegc.webp')
+let vid = 'https://qu.ax/wQDn.mp4'
 let byegc = 'https://qu.ax/WUEu.webp'
-let or = ['texto', 'texto2', 'stickers'];
+let or = ['texto', 'video', 'stickers'];
 let media = or[Math.floor(Math.random() * 3)]
 let bye = by[Math.floor(Math.random() * by.length)]
 if (media === 'texto')
-sock.sendMessage(anu.id, { text: bye, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
-if (media === 'texto2')
-sock.sendMessage(anu.id, { text: `\`\`\`[!] C fue alv : @${name.split("@")[0]} 😹\`\`\``,
+sock.sendMessage(anu.id, { image: { url: leave }, mentions: [num], caption: bye})
+//sock.sendMessage(anu.id, { text: bye, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+if (media === 'video')
+sock.sendMessage(anu.id, {video: {url: vid}, caption: `\`\`\`[!] C fue alv : @${name.split("@")[0]} 😹\`\`\``, mentions: [num]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(anu.id, { text: `\`\`\`[!] C fue alv : @${name.split("@")[0]} 😹\`\`\``,
 contextInfo:{
 forwardingScore: 9999999,
 isForwarded: false, 
@@ -550,7 +567,7 @@ body: `Esperemos que no vuelva -_-`,
 "previewType": "PHOTO",
 "thumbnailUrl": ``,
 "thumbnail": leave,
-"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 if (media === 'stickers')
 sock.sendFile(anu.id, byegc, 'sticker.webp', '', null, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: '乂 ＡＤＩＯ́Ｓ 乂', body: `${name.split("@")[0]}`, mediaType: 2, sourceUrl: `${pickRandom([md, yt])}`, thumbnail: leave}}})
 } else if (anu.action == 'promote') {
@@ -560,7 +577,8 @@ const listAdmin = groupAdmins.map((v, i) => `*» ${i + 1}. @${v.id.split('@')[0]
 const buffer = await getBuffer(ppuser)
 let name = num
 let usuario = anu.author
-sock.sendMessage(anu.id, { text: `${pickRandom(['[ NUEVO ADMINS ]\n\n', 'Hey'])} @${name.split("@")[0]} ${pickRandom(['Ahora eres admin del grupo 🥳', 'Felicidades ahora eres parte staff 🎉'])}\n\n🫵 Acción echa por : @${usuario.split("@")[0]}`, mentions: [...groupAdmins.map(v => v.id)], 
+sock.sendMessage(anu.id, {text: `\`*Felicidades*\` @${name.split("@")[0]} *ahora eres admin del grupo*\n\n🫵 \`ACCIÓN REALIZARÁ POR :\` @${usuario.split("@")[0]}`, mentions:[num, usuario]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(anu.id, { text: `${pickRandom(['[ NUEVO ADMINS ]\n\n', 'Hey'])} @${name.split("@")[0]} ${pickRandom(['Ahora eres admin del grupo 🥳', 'Felicidades ahora eres parte staff 🎉'])}\n\n🫵 Acción echa por : @${usuario.split("@")[0]}`, mentions: [...groupAdmins.map(v => v.id)], 
  contextInfo:{
  mentionedJid: [num, usuario],
  "externalAdReply": {"showAdAttribution": true,
@@ -570,12 +588,13 @@ sock.sendMessage(anu.id, { text: `${pickRandom(['[ NUEVO ADMINS ]\n\n', 'Hey'])}
  "previewType": "PHOTO",
 "thumbnailUrl": ``,
 "thumbnail": welc,
-"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 } else if (anu.action == 'demote') {
 const buffer = await getBuffer(ppuser)
 let name = num
 let usuario = anu.author
-sock.sendMessage(anu.id, { text: `@${name.split("@")[0]} ${pickRandom(['Joderte ya no eres admin 🥲', 'jjjjj ya no eres admin culiado 🤣'])}\n\n🫵 Acción echa por : @${usuario.split("@")[0]}`,
+sock.sendMessage(anu.id, {text: `@${name.split("@")[0]} *ya no es administrador del grupo*\n\n\`🫵 ACCIÓN REALIZARÁN POR :\` @${usuario.split("@")[0]}`, mentions:[num, usuario]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*sock.sendMessage(anu.id, { text: `@${name.split("@")[0]} ${pickRandom(['Joderte ya no eres admin 🥲', 'jjjjj ya no eres admin culiado 🤣'])}\n\n🫵 Acción echa por : @${usuario.split("@")[0]}`,
  contextInfo:{
  mentionedJid:[num, usuario],
  "externalAdReply": {"showAdAttribution": true,
@@ -585,7 +604,7 @@ sock.sendMessage(anu.id, { text: `@${name.split("@")[0]} ${pickRandom(['Joderte 
  "previewType": "PHOTO",
 "thumbnailUrl": ``,
 "thumbnail": leave,
-"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+"sourceUrl": `${pickRandom([nna, md, yt])}`}}}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 }}} catch (err) {
 console.log(err)
 }})
@@ -605,14 +624,27 @@ console.log(chalk.gray('iniciando | starting...'));
 console.log(chalk.gray('iniciando | starting...'));
 console.log(chalk.gray('iniciando | starting...'));
 console.log(chalk.gray('iniciando | starting...'));
-say('CORTANABOT-2.0', {
-  font: 'chrome',
-  align: 'center',
-  gradient: ['red', 'magenta']});
-say(`Bot Personalizado`, {
-  font: 'console',
-  align: 'center',
-  gradient: ['red', 'magenta']})
+
+console.log(color(figlet.textSync('CortanaBot-V2.', {
+font: 'Standard',
+horizontalLayout: 'default',
+vertivalLayout: 'default',
+width: 80,
+whitespaceBreak: false
+}), 'cyan'))
+console.log(color(`[ • Creador: Russell • ]` ,'cyan'))
+console.log(color(`< ================================================== >`, 'cyan'))
+console.log(color(`[•]`, 'aqua'), color(`❥ Version : Personalizado`, 'white'))
+console.log(color(`[•]`, 'aqua'), color(`❥ Estado      : Online!`, 'white'))
+console.log(color(`[•]`, 'aqua'), color(`❥ Modificado por     : Russell`, 'white'))
+console.log(color(`< ================================================== >`, 'cyan'))
+console.log(color(figlet.textSync('Simple Bot', {
+font: 'Standard',
+horizontalLayout: 'default',
+vertivalLayout: 'default',
+width: 80,
+whitespaceBreak: false
+}), 'cyan'))
  
 } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
 console.log(color('[SYS]', '#009FFF'),
@@ -642,7 +674,7 @@ return !1;
 
 const rainbowColors = ['red', 'yellow', 'green', 'blue', 'purple'];
 let index = 0;
-
+  
 function printRainbowMessage() {
 const color = rainbowColors[index];
 console.log(chalk.keyword(color)('\n[UPTIME]'));

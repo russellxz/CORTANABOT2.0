@@ -1,12 +1,12 @@
 //Código desde cero y comentarios hecho por: 
-// @gata_dios   
+// @gata_dios    
 // @Skidy89  
 // @elrebelde21 
                       
 //--------------------[ IMPORTACIONES ]-----------------------          
 const baileys = require('@whiskeysockets/baileys'); // trabajar a través de descargas por Whatsapp 
-const { WaMessageStubType, WA_DEFAULT_EPHEMERAL, BufferJSON, areJidsSameUser, downloadContentFromMessage, generateWAMessageContent, generateWAMessageFromContent, generateWAMessage, prepareWAMessageMedia, getContentType,  relayMessage} = require('@whiskeysockets/baileys'); // Importa los objetos 'makeWASocket' y 'proto' desde el módulo '@whiskeysockets/baileys'   
-const { default: makeWASocket, proto } = require("@whiskeysockets/baileys") 
+const { WaMessageStubType, WA_DEFAULT_EPHEMERAL, BufferJSON, areJidsSameUser, downloadContentFromMessage, generateWAMessageContent, generateWAMessageFromContent, generateWAMessage, prepareWAMessageMedia, getContentType,  relayMessage} = require('@whiskeysockets/baileys'); // Importa los objetos 'makeWASocket' y 'proto' desde el módulo '@whiskeysockets/baileys'      
+const { default: makeWASocket, proto } = require("@whiskeysockets/baileys")   
 const moment = require('moment-timezone') // Trabajar con fechas y horas en diferentes zonas horarias
 const gradient = require('gradient-string') // Aplicar gradientes de color al texto     
 const { exec, spawn, execSync } =  require("child_process")// Función 'execSync' del módulo 'child_process' para ejecutar comandos en el sistema operativo 
@@ -71,7 +71,7 @@ var budy = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == '
 //----------------------[ ATRIBUTOS ]-------------------------
 if (m.key.id.startsWith("BAE5")) return  
 var body = (typeof m.text == 'string' ? m.text : '')
-var prefix = /^[./*#]/gi.test(body) ? body.match(/^[/.*#]/gi)[0] : ""
+  var prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : ""
 //var prefix = body.match(/^[/.*#]/)   
 const isCmd = body.startsWith(prefix) 
 const command = isCmd ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null
@@ -156,13 +156,13 @@ conn.ev.emit('messages.upsert', msg)}
    
 //--------------------[ INFO CONSOLE ]-----------------------
 if (m.message) {
-console.log(chalk.bold.cyanBright(`▣────────────···\n│+${conn.user.jid.split`@`[0]} ➢ ${botname} ${conn.user.id == global.numBot2 ? '' : '(SubBot)'} ${vs}`), 
-chalk.bold.magenta(`\n│────────────\n│⏰${lenguaje.consola.text} `) + chalk.magentaBright(new Date().toLocaleString('es-ES', { timeZone: 'America/Argentina/Buenos_Aires' }),
-chalk.bold.red(`\n️│🏷️ ${lenguaje.consola.text1} `) + chalk.bold.white(`[${conn.public ? 'Publico' : 'Privado'}]`), 
-chalk.bold.yellow(`\n│📑${lenguaje.consola.text2} `) + chalk.yellowBright(`${type}`),  
-m.isGroup ? chalk.bold.greenBright(`\n│📤${lenguaje.consola.text4} `) + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(from) : chalk.bold.greenBright(`\n│📥${lenguaje.consola.text5}`, userSender), 
-chalk.bold.cyan(`\n│📊${lenguaje.consola.text3} `) + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(userSender), 
-chalk.bold.white(`\n│💬${lenguaje.consola.text6}`) + chalk.whiteBright(`\n▣────────────···\n${msgs(m.text)}\n`))
+console.log(chalk.bold.cyanBright(`╔═════════════════════∌\n║+${conn.user.jid.split`@`[0]} ➢ ${botname} ${conn.user.id == global.numBot2 ? '' : '(SubBot)'} ${vs}`), 
+chalk.bold.magenta(`\n╠═════════════════════\n║⏰${lenguaje.consola.text} `) + chalk.magentaBright(moment(t * 1000).tz(place).format('DD/MM/YY HH:mm:ss'),
+chalk.bold.red(`\n️║🏷️ ${lenguaje.consola.text1} `) + chalk.bold.white(`[${conn.public ? 'Publico' : 'Privado'}]`), 
+chalk.bold.yellow(`\n║📑${lenguaje.consola.text2} `) + chalk.yellowBright(`${type}`),  
+m.isGroup ? chalk.bold.greenBright(`\n║📤${lenguaje.consola.text4} `) + chalk.greenBright(groupName) + ' ➜ ' + gradient.rainbow(from) : chalk.bold.greenBright(`\n║📥${lenguaje.consola.text5}`, userSender), 
+chalk.bold.cyan(`\n║📊${lenguaje.consola.text3} `) + chalk.cyanBright(pushname) + ' ➜', gradient.rainbow(userSender), 
+chalk.bold.white(`\n║💬${lenguaje.consola.text6}`) + chalk.whiteBright(`\n╚═════════════════════⋊\n${msgs(m.text)}\n`))
 )}          
 
 //--------------------[ AUTOBIO ]----------------------- 
@@ -185,10 +185,13 @@ console.log(`[𝚄𝙿𝙳𝙰𝚃𝙴]\n𝙿𝚒𝚗𝚐: ${latensi.toFixed(4)}
 }}} 
   
 //--------------------[ AUTOREAD ]-----------------------
-if (!conn.autoread && m.message && prefix) {
-//await delay(1 * 1000) 
+if (m.message) {
+conn.readMessages([m.key])}	
+
+//Marcar como (Escribiendo...) 
+if (command) {
 await conn.sendPresenceUpdate('composing', m.chat)
-conn.readMessages([m.key])}
+}
           
 //--------------------[ ANTIFAKES ]-----------------------
 if (global.db.data.chats[m.chat].antifake && !isGroupAdmins) {	
@@ -336,7 +339,7 @@ return }
 if (global.db.data.chats[m.chat].autosticker) {  
 await conn.sendPresenceUpdate('composing', m.chat)
 if (/image/.test(mime) && !/webp/.test(mime)) {
-//m.reply(`_Calma crack estoy haciendo tu sticker 👏_\n\n_*Autosticker esta activado*_`)   
+m.reply(`_Calma crack estoy haciendo tu sticker 👏_\n\n_*Autosticker esta activado*_`)   
 let media = await quoted.download()
 await conn.sendImageAsSticker(m.chat, media, m, { packname: global.packname, author: global.author, contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: botname, body: `h`, mediaType: 2, sourceUrl: nn6, thumbnail: imagen1}}}, { quoted: m }) 
 console.log(`Auto sticker detected`)
@@ -545,7 +548,7 @@ user.afkReason = ''
 }
 
 //ARRANCA LA DIVERSIÓN 
-switch (prefix && command) { 
+switch (command) { 
 case 'yts': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break  
        
@@ -561,14 +564,14 @@ const user = [...new Set([...global.listJadibot.filter((conn) => conn.user && co
 const message = user.map((v, index) => `[${index + 1}] ${v.user.name || '•'}\nwa.me/${v.user.jid.replace(/[^0-9]/g, '')}?text=${prefix}estado`).join('\n\n');
 const replyMessage = message.length === 0 ? '' : message;
 const totalUsers = user.length;
-const responseMessage = `${lenguaje.jadibot.text18} ${totalUsers || '0'}\n\n${replyMessage.trim()}`.trim();
+const responseMessage = `*🚩 𝐀𝐪𝐮𝐢 𝐭𝐢𝐞𝐧𝐞𝐬 𝐥𝐚 𝐥𝐢𝐬𝐭𝐚𝐬 𝐝𝐞 𝐒𝐮𝐛𝐁𝐨𝐭𝐬 𝐀𝐜𝐭𝐢𝐯𝐨𝐬 🤖️*\n\n*• 𝐏𝐮𝐞𝐝𝐞𝐬 𝐜𝐨𝐧𝐭𝐚𝐜𝐭𝐚𝐫𝐥𝐨𝐬 𝐩𝐚𝐫𝐚 𝐩𝐞𝐝𝐢𝐫 𝐪𝐮𝐞 𝐬𝐞 𝐮𝐧𝐚𝐧 𝐚 𝐭𝐮 𝐠𝐫𝐮𝐩𝐨, 𝐬𝐞𝐫 𝐫𝐞𝐬𝐩𝐞𝐭𝐮𝐨𝐬𝐨!!*\n\n*⚠️ ${wm} 𝐒𝐞 𝐝𝐞𝐬𝐥𝐢𝐧𝐝𝐚 𝐝𝐞 𝐭𝐨𝐝𝐚𝐬 𝐫𝐞𝐬𝐩𝐨𝐧𝐬𝐚𝐛𝐢𝐥𝐢𝐝𝐚𝐝 𝐨 𝐬𝐮𝐜𝐞𝐬𝐨 𝐨𝐜𝐮𝐫𝐫𝐢𝐝𝐨 𝐜𝐨𝐧 𝐫𝐞𝐬𝐩𝐞𝐜𝐭𝐨 𝐚𝐥 𝐛𝐨𝐭 𝐨 𝐒𝐮𝐛𝐁𝐨𝐭𝐬*\n\n🟢 ${lenguaje.jadibot.text18} ${totalUsers || '0'}\n\n${replyMessage.trim()}`.trim();
 await conn.sendMessage(m.chat, {text: responseMessage, mentions: conn.parseMention(responseMessage)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 break
               
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
-case 'estado': case 'infobot': case 'owner': case 'creador': case 'contacto': case 'grupos': case 'grupoficiales': case 'instalarbot': case 'crearbot': case 'ping': case '5492266613038': case '593980586516': case '595975740803': case 'report': case 'sc': case 'donar': case 'solicitud': case 'cuenta': case 'cuentas': case 'cuentaoficiales': case 'cuentaofc': case 'cafirexos': case 'Cafirexos': case 'velocidad': case 'status': case 'speedtest': case 'speed': info(command, conn, m, speed, sender, fkontak, pickRandom, pushname, from, msg, text) 
+case 'estado': case 'infobot': case 'owner': case 'creador': case 'contacto': case 'grupos': case 'grupoficiales': case 'instalarbot': case 'crearbot': case 'ping': case '5492266613038': case '447700179665': case '595975740803': case 'report': case 'sc': case 'donar': case 'solicitud': case 'cuenta': case 'cuentas': case 'cuentaoficiales': case 'cuentaofc': case 'cafirexos': case 'Cafirexos': case 'velocidad': case 'status': case 'speedtest': case 'speed': case 'host': case 'infohost': info(command, conn, m, speed, sender, fkontak, pickRandom, pushname, from, msg, text) 
 break      
      
 //activar/desactivar  
@@ -698,7 +701,7 @@ case 'facebook': case 'fb': case 'instagram': case 'ig': case 'igstalk': case 't
 break 
 
 //rpg  
-case 'reg': case 'verificar': case 'unreg': case 'myns': await reg(command, conn, m, sender, text, budy, fkontak, delay, args) 
+case 'reg': case 'verificar': case 'Registrar': case 'unreg': case 'myns': await reg(command, conn, m, sender, text, budy, fkontak, delay, args) 
 break     
 case 'lb': case 'leaderboard': case 'afk': case 'rob': case 'robar': case 'buy': case 'buyall': case 'bal': case 'balance': case 'diamond': case 'minar': case 'mine': case 'trabajar': case 'work': case 'w': case 'claim': case 'daily': case 'perfil': case 'levelup': case 'nivel': case 'cofre': case 'minar2': case 'mine2': case 'crime': case 'Crime': case 'dep': case 'depositar': case 'retirar': case 'toremove': rpg(m, command, participants, args, sender, pushname, text, conn, fkontak, who)    
 break             
@@ -765,6 +768,11 @@ case 'prueba': {
 await conn.sendPoll(m.chat, `Hola ${pushname}\n\n> 𝐒𝐮𝐩𝐞𝐫 𝐁𝐨𝐭 𝐃𝐞 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩 `, ['play3 billie eilish', 'estado', 'menu', 'fb'])}
 break   
 
+case 'clancortana': {
+let vid = 'https://qu.ax/cxQw.mp4'
+conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
+break
+
 //propietario/owner
 case 'bcgc': case 'bcgroup': case 'bc': case 'broadcast': case 'bcall': case 'block': case 'bloquear': case 'unblock': case 'desbloquear': case 'setcmd':  case 'addcmd': case 'delcmd': case 'listcmd': case 'añadirdiamantes': case 'dardiamantes': case 'addlimit': case 'añadirxp': case 'addexp': case 'addxp': case 'fetch': case 'get': case 'fotobot': case 'nuevafoto': case 'seppbot': case 'botname': case 'nuevonombre': case 'namebot': case 'banuser': case 'unbanuser': case 'backup': case 'respaldo': case 'copia': owner(isCreator, m, command, conn, text, delay, fkontak, store, quoted, sender, mime, args) 
 break    
@@ -808,12 +816,12 @@ try {
 let stdout = execSync('git pull' + (m.fromMe && q ? ' ' + q : ''))
 await m.reply(stdout.toString())
 } catch { 
-let updatee = execSync('git remote set-url origin https://github.com/elrebelde21/NovaBot-MD.git && git pull')
+let updatee = execSync('git remote set-url origin https://github.com/russellxz/CORTANABOT2.0.git && git pull')
 await m.reply(updatee.toString())}  
 break
-case 'apagar': 
+case 'apagar': case 'off':
 if (!isCreator) return reply(info.owner) 
-m.reply(`_*Bye me apaguen, hasta luego*_`)
+m.reply(`_*Bye me apaguen, hasta luego :v*_`)
 await sleep(3000)
 process.exit()
 break 
@@ -822,7 +830,7 @@ if (!isCreator) return reply(info.owner)
 m.reply(lenguaje.owner.text28)
 await sleep(3000)
 conn.ws.close()}   
-break   
+break     
 /////////////////////////////////    
    
 //--------------------[ FUNCIONES ]-----------------------  
@@ -870,13 +878,15 @@ let vn = './media/a.mp3'
 await conn.sendPresenceUpdate('recording', m.chat)
 conn.sendMessage(m.chat, { audio: { url: vn }, contextInfo: { "externalAdReply": { "title": botname, "body": ``, "previewType": "PHOTO", "thumbnailUrl": null,"thumbnail": imagen4, "sourceUrl": md, "showAdAttribution": true}}, seconds: '4556', ptt: true, mimetype: 'audio/mpeg', fileName: `error.mp3` }, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 if (/^Hola|hello|Hello|hola|ola$/i.test(budy)) {
+let vid = 'https://qu.ax/bfbU.mp4'
 let vn = 'https://qu.ax/hJA.mp3'
 let stic = 'https://qu.ax/LTVf.webp' 
 let stic2 = 'https://qu.ax/QftU.webp'      
-let or = ['sticker', 'audio'];  
-let media = or[Math.floor(Math.random() * 2)]
+let or = ['sticker', 'audio', 'video'];  
+let media = or[Math.floor(Math.random() * 3)]
 if (media === 'sticker') conn.sendFile(m.chat, pickRandom([stic, stic2]), 'sticker.webp', '',m, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: `Hola ${pushname}`, mediaType: 2, sourceUrl: tiktok, thumbnail: imagen4}}}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})   
-if (media === 'audio') conn.sendAudio(m.chat, vn, m)}
+if (media === 'audio') conn.sendAudio(m.chat, vn, m)
+if (media === 'video') conn.sendMessage(m.chat, {video: {url: vid}, caption: `Hola ${pushname} 👋`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 if (/^Fino señores|fino señores|Fino senores|fino senores|Fino🧐|🧐🍷|🧐🍷$/i.test(budy)) {
 let s = 'https://qu.ax/DbMX.webp'
 let s2 = 'https://qu.ax/zXa.webp'
@@ -900,6 +910,15 @@ m.react(`${pickRandom(['🥳', '💫', '🎊'])}`)}
 if (budy.startsWith(`Feliz navidad`) || budy.startsWith(`Merry Christmas`) || budy.startsWith(`feliz navidad`)) {
 const vn = 'https://qu.ax/XYyY.m4a'
 conn.sendAudio(m.chat, vn, m)} 
+if (/^riko|rico|sabraso|tetas|nepe|pene$/i.test(budy)) {
+const vn = 'https://qu.ax/Mwjf.mp4'
+conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
+if (/^novio|novia|chiste$/i.test(budy)) {
+const vn = 'https://qu.ax/OBYM.mp4'
+conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
+if (/^cojer|follar|guapa|luuk|hermosa$/i.test(budy)) {
+const vn = 'https://qu.ax/GLuo.mp4'
+conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
 if (budy.startsWith(`+58 416-3393168`) || budy.startsWith(`@584163393168`)) {
 const vn = 'https://qu.ax/tkLb.mp3';
 conn.sendAudio(m.chat, vn, m)}
@@ -936,6 +955,9 @@ conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Que`) || budy.startsWith(`que`)) {
 const vn = 'https://qu.ax/osam.mp3';
 conn.sendAudio(m.chat, vn, m)}
+if (budy.startsWith(`cojer`) || budy.startsWith(`folla`)) {
+const vid = 'https://qu.ax/BcgR.mp4'
+conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 if (/^Maldito|Mal pario|Mmgb|Mmwb|Hijo de puta|Hdp|Cara de verga|Marico|Marica|te Gusta el pito|Hijo de perra|Mamate un wuebo$/i.test(budy)) {
 const vn = 'https://qu.ax/ftaR.mp3';
 conn.sendAudio(m.chat, vn, m)}
@@ -1030,8 +1052,20 @@ conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Enano`)) {
 const vn = 'https://qu.ax/XRgo.mp3'
 conn.sendAudio(m.chat, vn, m)}
+if (budy.startsWith(`feliz`)) {
+const vn = 'https://qu.ax/NcPR.mp3'
+conn.sendAudio(m.chat, vn, m)}
+if (budy.startsWith(`triste`)) {
+const vn = 'https://qu.ax/BGbf.mp3'
+conn.sendAudio(m.chat, vn, m)}
+if (budy.startsWith(`Buenas Tardes`) || budy.startsWith(`buenas tardes`) || budy.startsWith(`Buena tarde`)) {
+const vn = 'https://qu.ax/AMjs.mp3'
+conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Buenas noches`) || budy.startsWith(`buenas noches`) || budy.startsWith(`Buena noche`)) {
 const vn = 'https://qu.ax/PDBb.mp3'
+conn.sendAudio(m.chat, vn, m)}
+if (budy.startsWith(`nepe`) || budy.startsWith(`pene`)) {
+const vn = 'https://qu.ax/WdGF.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Peruano`)) {
 const vn = 'https://qu.ax/avLe.mp3'
