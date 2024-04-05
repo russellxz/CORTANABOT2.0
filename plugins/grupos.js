@@ -14,7 +14,7 @@ const os = require('os')
 require('../main')
 
 async function grupo(m, command, isGroupAdmins, text, conn, participants, isBotAdmins, args, isCreator, delay, sender, quoted, mime, from, isCreator, groupMetadata, fkontak, delay, store) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 if (command == 'hidetag' || command == 'notificar' || command == 'tag') {  
 if (!m.isGroup) return m.reply(info.group) 

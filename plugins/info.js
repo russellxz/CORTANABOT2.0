@@ -15,7 +15,7 @@ let cafi = "https://whatsapp.com/channel/0029VaFVSkRCMY0KFmCMDX2q"
 let cafi2 = "https://chat.whatsapp.com/FBtyc8Q5w2iJXVl5zGJdFJ"
 
 async function info(command, conn, m, speed, sender, fkontak, pickRandom, pushname, from, msg, text) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 if (command == 'estado' || command == 'infobot') {
 const totalMemory = Math.round(os.totalmem() / (1024 * 1024 * 1024))
@@ -52,11 +52,63 @@ conn.sendMessage(m.chat, {image: imagen1, caption: stateRun, contextInfo:{ menti
 }
 
 if (command == 'owner' || command == 'creador' || command == 'contacto') {
-let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;OWNER 👑;;;\nFN:OWNER\nORG:OWNER 👑\nTITLE:\nitem1.TEL;waid=19293719827:+1 (929) 371-9827\nitem1.X-ABLabel:OWNER👑\nX-WA-BIZ-DESCRIPTION:Russell\nX-WA-BIZ-NAME:OWNER 👑\nEND:VCARD`
+let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;OWNER 👑;;;\nFN:OWNER\nORG:OWNER 👑\nTITLE:\nitem1.TEL;waid=447700179665:+44 7700 179665\nitem1.X-ABLabel:OWNER👑\nX-WA-BIZ-DESCRIPTION:Russell\nX-WA-BIZ-NAME:OWNER 👑\nEND:VCARD`
 let a = await conn.sendMessage(m.chat, { contacts: { displayName: wm, contacts: [{ vcard }] }}, {quoted: m})
-await conn.sendTextWithMentions(m.chat, `${lenguaje['smsWel']()} @${sender.split("@")[0]}, este Bot Fue Modificado por russell. Aqui tienes el numero solo por la dudas y problema del bot.\n\n‼️ 𝙽𝚘 𝚑𝚊𝚐𝚊𝚗 𝚜𝚙𝚊𝚖 𝚊 𝚖𝚒 𝚌𝚛𝚎𝚊𝚍𝚘𝚛 𝚘 𝚚𝚞𝚎𝚍𝚊 𝚋𝚕𝚘𝚚𝚞𝚎𝚊𝚍𝚘\n\n${yt}`, a)
+await conn.sendTextWithMentions(m.chat, `${lenguaje['smsWel']()} @${sender.split("@")[0]},\nEse es mi dueño, ¡NO SPAM!\n👉 Si deseas añadir el bot a uno de tus grupos comunicate con el\n\n◎ *Importante:* El no es un bot porfavor ten modales y saluda\n\n${yt}`, a)
 //conn.sendMessage(m.chat, { text : `${lenguaje['smsWel']()} @${sender.split("@")[0]}, este Bot Fue Modificado por russell. Aqui tienes el numero solo por la dudas y problema del bot.\n\n‼️ 𝙽𝚘 𝚑𝚊𝚐𝚊𝚗 𝚜𝚙𝚊𝚖 𝚊 𝚖𝚒 𝚌𝚛𝚎𝚊𝚍𝚘𝚛 𝚘 𝚚𝚞𝚎𝚍𝚊 𝚋𝚕𝚘𝚚𝚞𝚎𝚊𝚍𝚘\n\n${yt}`, mentions: [sender]}, { quoted: a, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 }
+
+if (command == 'infohost' || command == 'host') {
+conn.sendMessage(m.chat, { text: `*\`💫 Te presentamos un nuevo hosting: "Infinity-Wa Host"\`*
+
+*¿Muy lento tu nokia y necesitas tener activo tu bot 24/7?*
+
+> *Te tenemos la mejor opción para mantener activo tu bot 24/7, a precios muy accesibles. Es muy barato y todos pueden comprar.*
+
+*🚩Precios :*
+* 1GB, 100 CPU = 1Dolar
+* 2GB, 120 CPU = 2Dolar
+* 3GB, 140 CPU = 3Dolar
+* 4GB, 175 CPU = 4Dolar
+* 5GB, 200 CPU = 5 Dólar. 
+
+🟢 \`\`\`Información del Host\`\`\`
+
+💻 *Página:*
+https://host.panel-infinitywa.store
+
+🧡 *Canal de WhatsApp:*
+${nna}
+
+💚 *Grupo:*
+https://chat.whatsapp.com/GQ82mPnSYnm0XL2hLPk7FV
+
+🛍️ *Método de pago:*
+*• PayPal :* https://paypal.me/OfcGB
+*• Mercado pago, alías:* OficialGB
+*• Naranja x, alías:* OficialGL
+*• Yape (Perú) :* +51948705559
+
+*\`💙 Contactanos para más información o alquidir los servicios:\`*
+• ${fb}
+• wa.me/527294888993
+• wa.me/5492964650915`,
+contextInfo:{
+forwardedNewsletterMessageInfo: { 
+newsletterJid: '120363160031023229@newsletter', 
+serverMessageId: '', 
+newsletterName: 'INFINITY-WA 💫' },
+forwardingScore: 9999999,
+isForwarded: true, 
+"externalAdReply": {
+"showAdAttribution": true,
+"containsAutoReply": true,
+title: `🤖 𝐈𝐍𝐅𝐈𝐍𝐈𝐓𝐘𝐖𝐀-𝐇𝐎𝐒𝐓 🤖`,
+body: `✅ Hosting de Calidad`,
+"previewType": "PHOTO",
+thumbnailUrl: 'https://qu.ax/EQTd.jpg', 
+"sourceUrl": nna}}},
+{ quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 
 if (command == 'grupos' || command == 'grupoficiales') {
 //const grupp = Math.floor(Math.random() * 70);

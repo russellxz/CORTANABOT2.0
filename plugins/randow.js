@@ -5,7 +5,7 @@ const axios = require('axios')
 const { smsg, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom} = require('../libs/fuctions.js'); 
 
 async function randow(m, sender, command, sendImageAsUrl, pickRandom, conn) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (global.db.data.users[m.sender].banned) return
 if (command == 'memes') {
@@ -64,7 +64,7 @@ sendImageAsUrl(prue)
 }}
 
 async function randow2(conn, m, command, text, sender, pushname) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (global.db.data.users[m.sender].banned) return
 if (command == 'horny') {

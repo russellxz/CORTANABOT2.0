@@ -15,7 +15,7 @@ let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
 
 async function game(m, budy, command, text, pickRandom, pushname, conn, participants, sender, who, body, ra) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 if (budy.includes(`Bot`) || budy.includes(`simi`)) {   
 if (!text) return m.reply(`*Hola ${pushname} 👋 Quieres hablar un rato conmigo? usar de esta forma*\n\n• *Ejemplo:* ${prefix}Bot hello ${wm}`) 
@@ -308,7 +308,7 @@ Sof02s32inf14.1e100.net
 conn.sendMessage(m.chat, {text: doxeo, edit: key})}}
 
 async function game2(m, command, sendImageAsUrl, pickRandom) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 if (command == 'verdad') { 
 sendImageAsUrl('https://telegra.ph/file/2a2a3b03697dd33bfbb95.jpg', `𝘏𝘢𝘴 𝘦𝘴𝘤𝘰𝘨𝘪𝘥𝘰 *𝘝𝘌𝘙𝘋𝘈𝘋*\n\n╱╲❀╱╲╱╲❀╱╲╱╲❀╱╲\n◆ ${pickRandom(global.verdad)}\n╲╱❀╲╱╲╱❀╲╱╲╱❀╲╱`)}
@@ -320,7 +320,7 @@ if (command == 'piropo') {
 m.reply(`╱╲❀╱╲╱╲❀╱╲╱╲❀╱╲\n◆ ${pickRandom(global.piropo)}\n╲╱❀╲╱╲╱❀╲╱╲╱❀╲╱`)}}
 
 async function game3(m, command, conn, args, prefix, msToTime, text, body, from, sender, quoted, target, bot, participant, pushname, astro) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 if (command == 'slot' || command == 'apuesta') { 
 if (!args[0]) return m.reply(`${lenguaje.juegos.text20}\n*${prefix + command} 100*`)

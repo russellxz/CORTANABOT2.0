@@ -8,7 +8,7 @@ const { toAudio, toPTT, toVideo } = require('../libs/converter.js')
 
 async function efec(conn, command, mime, quoted, exec, prefix, m, from) {
 try {  
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 await conn.sendPresenceUpdate('recording', m.chat)
 let set  
@@ -39,7 +39,7 @@ m.reply(`${info.error} ${e}`)
 console.log(e)}}
 
 async function efect2(m, text, prefix, command, conn) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 if (!text) return m.reply(`\`🪄 𝐋𝐈𝐒𝐓𝐀𝐒 𝐃𝐄 𝐋𝐎𝐆𝐎𝐒\`
 
@@ -113,7 +113,7 @@ m.reply(`${info.error} ${e}`)
 console.log(e)}}
 
 async function convertidores(conn, command, mime, quoted, util, m, exec, lolkeysapi, text) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 if (command == 'tourl') {
 if (!mime) return m.reply(`${lenguaje.sms.text2}`)  

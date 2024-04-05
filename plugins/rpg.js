@@ -1,8 +1,8 @@
 require('../main.js') 
 const fs = require("fs")
-const { smsg, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom } = require('../libs/fuctions.js'); 
 const path = require("path")
 const chalk = require("chalk");
+const { smsg, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom } = require('../libs/fuctions.js'); 
 const moment = require('moment-timezone') 
 const gradient = require('gradient-string') 
 const fetch = require('node-fetch') 
@@ -16,23 +16,24 @@ let minar = `${pickRandom(['Que pro 😎 has minado',
 '🌟✨ Genial!! Obtienes', 'WOW!! eres un(a) gran Minero(a) ⛏️ Obtienes', 'Has Minado!!', '😲 Lograste Minar la cantidad de', 'Tus Ingresos subiran gracias a que minaste', '⛏️⛏️⛏️⛏️⛏️ Minando', '🤩 SII!!! AHORA TIENES', 'La minaria esta de tu lado, por ello obtienes', '😻 La suerte de Minar', '♻️ Tu Mision se ha cumplido, lograste minar', '⛏️ La Mineria te ha beneficiado con', '🛣️ Has encontrado un Lugar y por minar dicho lugar Obtienes', '👾 Gracias a que has minado tus ingresos suman', 'Felicidades!! Ahora tienes','⛏️⛏️⛏️ Obtienes', '⛏️ has obtenido'])}` 
 let robar = `${pickRandom(['Robaste un Banco 🏦 y Obtuviste', 'Negociarte con el jefe de la mafia y Obtuviste :', 'Casi te atrapa la policía pero lograste robar una cantidad valiosa de 💰. !Te cuidado la próxima vez! Obtuviste:', 'Los mafiosos te han pagado :', 'Le has robado al Administrador del Grupo', 'Le robarte a tu presidente una sumar de :', 'le robarte a un famoso un valor de :', 'Entraste sigilosamente en el museo y robaste una obra de arte valiosa:', 'Infiltraste una joyería y obtuviste un botín impresionante:', 'Te convertiste en el ladrón más buscado del país, obtuviste:', 'Robaste un camión lleno de productos valiosos y obtuviste', 'Asaltaste un tren y conseguiste', 'Robaste un avión cargado de mercancía y obtuviste', 'Te hiciste pasar por un millonario para robar una joya única, obtuviste', 'Entraste a la casa de un coleccionista de arte y robaste una pieza invaluable, obtuviste', 'Secuestraste a un empresario y conseguiste un rescate importante:', 'Amenazaste a un político y obtuviste una gran suma de dinero:', 'Sobornaste a un oficial de policía para obtener información valiosa, conseguiste'])}` 
 let robmal = `${pickRandom(['LA POLICIA TE VIO 🙀👮‍♂️ PERDISTE', 'Fuiste a robar un banco 🏦 y tu ayudarte que vendio a la policía, perdiste', 'No pudiste escapar de la Policía 🚔🤡, perdiste :', 'Intentaste robar un casino pero te descubrieron, perdiste', 'Te atraparon tratando de robar una tienda, perdiste :', 'La alarma sonó cuando intentabas robar un almacén, perdiste', 'El dueño del lugar te atrapó in fraganti, perdiste', 'Intentaste hackear una cuenta bancaria pero te rastrearon, perdiste', 'Fuiste descubierto tratando de sobornar a un oficial, perdiste', 'Tu plan para chantajear a un empresario salió mal, perdiste'])}` 
+let verificados2 = 'https://qu.ax/siRk.mp4'
 
 async function reg(command, conn, m, sender, text, budy, fkontak, delay, args) {
 if (global.db.data.users[m.sender].banned) return
-if (command == 'reg' || command == 'verificar') {
+if (command == 'reg' || command == 'verificar' || command == 'Registrar') {
 let Reg = /\|?(.*)([.|] *?)([0-9]*)$/i
 let user = global.db.data.users[m.sender]
 let codigosIdiomas = ['es', 'en']
 let nombresIdiomas = {'es': 'Español', 'en': 'English' }
 if (user.registered === true) return m.reply(lenguaje.smsReg()) 
-if (!Reg.test(text)) return m.reply(lenguaje.smsReg1(prefix)) 
+if (!Reg.test(text)) return conn.sendMessage(m.chat, {video: {url: verificar}, caption: lenguaje.smsReg1(prefix)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 let [_, name, splitter, age] = text.match(Reg)
 if (!name) return m.reply(lenguaje.smsReg2()) 
 if (!age) return m.reply(lenguaje.smsReg3()) 
 age = parseInt(age)
 if (age > 100) return m.reply(lenguaje.smsReg4()) 
-if (age < 6) return m.reply(lenguaje.smsReg5()) 
-if (name.length >= 45) return m.reply(lenguaje.smsReg6()) 
+if (age < 3) return m.reply(lenguaje.smsReg5()) 
+if (name.length >= 99) return m.reply(lenguaje.smsReg6()) 
 user.name = name + 'ͧͧͧͦꙶͣͤ✓'.trim()
 user.age = age
 user.regTime = + new Date
@@ -44,7 +45,8 @@ const time = moment.tz('America/Argentina/Buenos_Aires').format('LT')
 let rtotalreg = Object.values(global.db.data.users).filter(user => user.registered == true).length
 global.db.data.users[m.sender].limit += 5
 global.db.data.users[m.sender].exp += 600
-conn.sendMessage(m.chat, { text: lenguaje.smsReg7(name, user, age, time, date, sender, sn, prefix, rtotalreg),
+conn.sendMessage(m.chat, {video: {url: verificados2}, caption: lenguaje.smsReg7(name, user, age, time, date, sender, sn, prefix, rtotalreg)}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+/*conn.sendMessage(m.chat, { text: lenguaje.smsReg7(name, user, age, time, date, sender, sn, prefix, rtotalreg),
 contextInfo:{
 mentionedJid:[name],
 forwardingScore: 9999999,
@@ -58,7 +60,7 @@ isForwarded: false,
 "thumbnailUrl": ``,
 "thumbnail": imagen5, 
 "sourceUrl": md}}},
-{ quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+{ quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 await delay(2 * 2000)
 conn.sendMessage(m.chat, { text: sn, contextInfo:{forwardingScore: 9999999, isForwarded: false, }}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await delay(2 * 2000)
@@ -82,7 +84,7 @@ let sn = createHash('md5').update(m.sender).digest('hex')
 conn.fakeReply(m.chat, sn, '0@s.whatsapp.net', `${lenguaje.rpg.myns2}`, 'status@broadcast')}}
 
 async function rpg(m, command, participants, args, sender, pushname, text, conn, fkontak, replace, who) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 if (command == 'lb' || command == 'leaderboard') {
 if (!m.isGroup) return m.reply(info.group) 
@@ -103,28 +105,28 @@ const usersBanc = sortedBanc.map(enumGetKey)
 const len = args[0] && args[0].length > 0 ? Math.min(100, Math.max(parseInt(args[0]), 10)) : Math.min(10, sortedExp.length);
 const texto = `${lenguaje.rpg.text3}
 
-╔═❖ *𝚃𝙾𝙿 ${len} 𝚇𝙿* 🧬 
+╔═❖ _𝚃𝙾𝙿 ${len} 𝚇𝙿 🧬_ 
 ║𝚃𝚞 : ${usersExp.indexOf(m.sender) + 1} 𝚍𝚎 ${usersExp.length}
 ${sortedExp.slice(0, len).map(({jid, exp}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *${exp} exp*`).join`\n`}
 ╚═══════════════  
 
-╔═❖ *𝚃𝙾𝙿 ${len} 𝙳𝙸𝙰𝙼𝙰𝙽𝚃𝙴𝚂 💎*
+╔═❖ _𝚃𝙾𝙿 ${len} 𝙳𝙸𝙰𝙼𝙰𝙽𝚃𝙴𝚂 💎_
 ║𝚃𝚞 : ${usersLim.indexOf(m.sender) + 1} 𝚍𝚎 ${usersLim.length}
 ${sortedLim.slice(0, len).map(({jid, limit}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *${limit} diamantes*`).join`\n`}
 ╚═══════════════  
 
-╔═❖ *𝚃𝙾𝙿 ${len} 𝚄𝚂𝚄𝙰𝚁𝙸𝙾𝚂 𝙲𝙾𝙽 + 𝙳𝙸𝙽𝙴𝚁𝙾 𝙴𝙻 𝙱𝙰𝙽𝙲𝙾* 🏦💰
+╔═❖ _𝚃𝙾𝙿 ${len} 𝚄𝚂𝚄𝙰𝚁𝙸𝙾𝚂 𝙲𝙾𝙽 𝙼𝙰𝚂 𝙳𝙸𝙽𝙴𝚁𝙾 𝙴𝙻 𝙱𝙰𝙽𝙲𝙾 🏦💰_
 ║𝚃𝚞 : ${usersBanc.indexOf(m.sender) + 1} 𝚍𝚎 ${usersBanc.length}
 ${sortedBanc.slice(0, len).map(({jid, banco}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *${banco} 💰*`).join`\n`}
-╚═══════════════ 
+╚═══════════════  
 
-╔═❖ *𝚃𝙾𝙿 ${len} 𝙽𝙸𝚅𝙴𝙻* ⬆️
+╔═❖ _𝚃𝙾𝙿 ${len} 𝙽𝙸𝚅𝙴𝙻 ⬆️_
 ║𝚃𝚞 : ${usersLevel.indexOf(m.sender) + 1} 𝚍𝚎 ${usersLevel.length}
 ${sortedLevel.slice(0, len).map(({jid, level}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *nivel ${level}*`).join`\n`}
 ╚═══════════════ 
 
-╔═❖ *𝚃𝙾𝙿 ${len} 𝚁𝙾𝙻 | 𝚁𝙰𝙽𝙶𝙾  💪* 
-║𝚃𝚞 : ${usersBan.indexOf(m.sender) + 1} 𝚍𝚎 ${usersBan.length} 𝚄𝚜𝚞𝚊𝚛𝚒𝚘𝚜
+╔═❖ _𝚃𝙾𝙿 ${len} 𝚁𝙾𝙻 | 𝚁𝙰𝙽𝙶𝙾  💪_
+║𝚃𝚞 : ${usersLevel.indexOf(m.sender) + 1} 𝚍𝚎 ${usersLevel.length} 𝚄𝚜𝚞𝚊𝚛𝚒𝚘𝚜
  
 ${sortedLevel.slice(0, len).map(({jid, role, level}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *${role}*`).join`\n`}
 ╚═══════════════`.trim();
@@ -150,10 +152,11 @@ if (!who) return m.reply(lenguaje.rpg.rob)
 try { 
 if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
 const users = global.db.data.users[who];
-let exp = Math.floor(Math.random() * 250) + 10;
-let limit = Math.floor(Math.random() * 60) + 3;
-const rob = Math.floor(Math.random() * 999);
-if (users.limit < 15) return conn.sendMessage(m.chat, {text: `${lenguaje.rpg.rob2} @${who.split`@`[0]} ${lenguaje.rpg.rob3}`, mentions: [who]}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});  
+let exp = Math.floor(Math.random() * 850) + 95;
+let limit = Math.floor(Math.random() * 90) + 6;
+const rob = Math.floor(Math.random() * 9999);
+if (users.limit < 12) return conn.sendMessage(m.chat, {text: `${lenguaje.rpg.rob5} @${who.split`@`[0]}\n◦ ᴇxᴘ ${exp}\n\n${lenguaje.rpg.rob6} @${m.sender.split("@")[0]}`, mentions: [who, m.sender]}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}).catch(global.db.data.users[m.sender].exp += exp * 1).catch(global.db.data.users[who].exp -= exp * 1) 
+//conn.sendMessage(m.chat, {text: `${lenguaje.rpg.rob2} @${who.split`@`[0]} ${lenguaje.rpg.rob3}`, mentions: [who]}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});  
 if (users.exp < 10) return conn.sendMessage(m.chat, {text: `${lenguaje.rpg.rob2} @${who.split`@`[0]} ${lenguaje.rpg.rob4}`, mentions: [who]}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});   
 global.db.data.users[m.sender].exp += exp * 1;
 global.db.data.users[m.sender].limit += limit * 1;
@@ -165,8 +168,8 @@ global.db.data.users[m.sender].robs = new Date * 1;
 m.reply(lenguaje.rpg.rob7)}}
 
 if (command == 'crime' || command == 'Crime') {
-const date = global.db.data.users[m.sender].crime + 3600000; //3600000 = 1 hs
-if (new Date - global.db.data.users[m.sender].crime < 3600000) return m.reply(`*《🚓︎》LA POLICIA ESTA VIGILANDO EN ESTE MOMENTO, VUELVE EN:* ${msToTime(date - new Date())}`)
+const date = global.db.data.users[m.sender].crime + 600000; //3600000 = 1 hs
+if (new Date - global.db.data.users[m.sender].crime < 600000) return m.reply(`*《🚓︎》LA POLICIA ESTA VIGILANDO EN ESTE MOMENTO, VUELVE EN:* ${msToTime(date - new Date())}`)
 const exp = Math.floor(Math.random() * 15000)
 const diamond = Math.floor(Math.random() * 150)
 const money = Math.floor(Math.random() * 15000)
@@ -262,7 +265,7 @@ await m.reply(`*[ 🏦 ] Has Retirado (${count}) dinero del Banco.*`)}
 if (command == 'minar' || command == 'mine') {
 const date = global.db.data.users[m.sender].lastmiming + 600000;
 if (new Date - global.db.data.users[m.sender].lastmiming < 600000) return m.reply(`*${lenguaje.rpg.text9} ${msToTime(date - new Date())} ${lenguaje.rpg.text10}*`) 
-const exp = Math.floor(Math.random() * 6500)
+const exp = Math.floor(Math.random() * 9999)
 global.db.data.users[m.sender].exp += exp;
 m.reply(`*${minar} ${exp} XP*`)
 global.db.data.users[m.sender].lastmiming = new Date * 1;
@@ -273,7 +276,7 @@ const date = global.db.data.users[m.sender].lastmiming2 + 3600000;
 if (new Date - global.db.data.users[m.sender].lastmiming2 < 3600000) return m.reply(`*${lenguaje.rpg.text9} ${msToTime(date - new Date())} ${lenguaje.rpg.text10}*`)
 //const exp = Math.floor(Math.random() * 2500)
 const diamond = Math.floor(Math.random() * 75)
-const money = Math.floor(Math.random() * 4500)
+const money = Math.floor(Math.random() * 6500)
 //global.db.data.users[m.sender].exp += exp
 global.db.data.users[m.sender].limit += diamond
 global.db.data.users[m.sender].money += money
@@ -283,7 +286,7 @@ global.db.data.users[m.sender].lastmiming2 = new Date * 1;
 }
 
 if (command == 'trabajar' || command == 'work' || command == 'w') {
-let hasil = Math.floor(Math.random() * 6500)
+let hasil = Math.floor(Math.random() * 99999)
 //let dono = Math.floor(Math.random() * 40)
 let time = global.db.data.users[m.sender].lastwork + 650000 //3600000
 if (new Date - global.db.data.users[m.sender].lastwork < 650000) return m.reply(`${lenguaje.rpg.text12}\n\n*${lenguaje.rpg.text9}* ${msToTime(time - new Date())} ${lenguaje.rpg.text13}`) 
@@ -298,9 +301,9 @@ global.db.data.users[m.sender].lastwork = new Date * 1
 if (command == 'claim' || command == 'daily') {
 let time = global.db.data.users[m.sender].lastclaim + 7200000
 if (new Date - global.db.data.users[m.sender].lastclaim < 7200000) return m.reply(`${lenguaje.rpg.text14} ${msToTime(time - new Date())}`) 
-const exp = Math.floor(Math.random() * 1500)
-const limit = Math.floor(Math.random() * 60)
-const money = Math.floor(Math.random() * 1500)
+const exp = Math.floor(Math.random() * 9999)
+const limit = Math.floor(Math.random() * 75)
+const money = Math.floor(Math.random() * 9999)
 global.db.data.users[m.sender].limit += limit;
 global.db.data.users[m.sender].money += money
 global.db.data.users[m.sender].exp += exp
@@ -358,10 +361,10 @@ if (global.db.data.users[m.sender].level < 9) return m.reply(`${lenguaje['nivel'
 const date = global.db.data.users[m.sender].lastcofre + 86400000; //10 hs
 if (new Date - global.db.data.users[m.sender].lastcofre < 86400000) return m.reply(`${lenguaje.rpg.text16} ${msToTime(date - new Date())}`) 
 exp = Math.floor(Math.random() * 99999)
-limit = Math.floor(Math.random() * 90)
+limit = Math.floor(Math.random() * 95)
 trash = Math.floor(Math.random() * 900)
 potion = Math.floor(Math.random() * 399)
-money = Math.floor(Math.random() * 950)
+money = Math.floor(Math.random() * 99999)
 global.db.data.users[m.sender].exp += exp
 global.db.data.users[m.sender].limit += limit
 global.db.data.users[m.sender].trash += trash

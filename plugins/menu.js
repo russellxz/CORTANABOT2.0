@@ -11,7 +11,7 @@ const Jimp = require('jimp')
 const os = require('os')
 
 const menu = (m, command, conn, prefix, pushname, sender, pickRandom, fkontak) => {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return 
 let user = global.db.data.users[m.sender]
 let totalreg = Object.keys(global.db.data.users).length
@@ -19,6 +19,9 @@ let rtotalreg = Object.values(global.db.data.users).filter(user => user.register
 const date = moment.tz('America/Bogota').format('DD/MM/YYYY')
 const time = moment.tz('America/Argentina/Buenos_Aires').format('LT')
 let wa = m.key.id.length > 21 ? 'Android' : m.key.id.substring(0, 2) == '3A' ? 'IOS' : 'whatsapp web'
+
+conn.fakeReply(m.chat, `*🚩 Cargando menu, porfavor espera.*\n\n> No hagas spam de comandos`, '0@s.whatsapp.net', 'Enviando menu aguarden...')
+
 let submenu = `╔══〘 \`👥 INFO DEL USUARIO\` 〗══╗
 ║ ᴜsᴜᴀʀɪᴏs: @${sender.split("@")[0]} 
 ║ ${lenguaje.menu.text8} ${user.limit}

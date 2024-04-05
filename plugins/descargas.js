@@ -18,7 +18,7 @@ let user = global.db.data.users[m.sender]
 let limit = 320
 
 async function descarga(m, command, conn, text, command, args, fkontak, from, buffer, getFile, q, includes, lolkeysapi) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (global.db.data.users[m.sender].banned) return
 if (command == 'play') {
@@ -401,7 +401,7 @@ conn.sendMessage(m.chat, { document : { url : baby1[0].link}, fileName : baby1[0
 m.reply('2 ' + info.limit)}}
 
 async function descarga2(m, command, text, args, conn, lolkeysapi, isCreator) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (global.db.data.users[m.sender].banned) return
 if (command == 'facebook' || command == 'fb') { 

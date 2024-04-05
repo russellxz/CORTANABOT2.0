@@ -7,7 +7,8 @@ const cheerio = require('cheerio')
 const { smsg, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom } = require('../libs/fuctions.js'); 
 
 async function stickers(m, command, conn, mime, quoted, args, text, lolkeysapi, fkontak) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+//m.reply(info.registra)
 if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (global.db.data.users[m.sender].banned) return m.reply(`_🚫ESTA BANEADO POR MI PROPIETARIO_`) 
 if (command == 's' || command == 'sticker') {
