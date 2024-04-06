@@ -45,7 +45,7 @@ const time = moment.tz('America/Argentina/Buenos_Aires').format('LT')
 let rtotalreg = Object.values(global.db.data.users).filter(user => user.registered == true).length
 global.db.data.users[m.sender].limit += 5
 global.db.data.users[m.sender].exp += 600
-conn.sendMessage(m.chat, {video: {url: verificados2}, caption: lenguaje.smsReg7(name, user, age, time, date, sender, sn, prefix, rtotalreg)}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendMessage(m.chat, {video: {url: verificados2}, caption: lenguaje.smsReg7(name, user, age, time, date, sender, sn, prefix, rtotalreg), mentionedJid:[name]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 /*conn.sendMessage(m.chat, { text: lenguaje.smsReg7(name, user, age, time, date, sender, sn, prefix, rtotalreg),
 contextInfo:{
 mentionedJid:[name],
