@@ -973,9 +973,6 @@ conn.sendAudio(m.chat, vn, m)}
 if (/^quien para jugar|br mj jugar|Kien pa jugar|Quien pa jugar|quien pa jugar|Juegar|jugar|Jugar|🎮$/i.test(budy)) {
 const vn = 'https://qu.ax/nRfU.mp3';
 conn.sendAudio(m.chat, vn, m)}
-if (budy.startsWith(`Que`) || budy.startsWith(`que`)) {
-const vn = 'https://qu.ax/osam.mp3';
-conn.sendAudio(m.chat, vn, m)}
 if (/^Maldito|Mal pario|Mmgb|Mmwb|Hijo de puta|Hdp|Cara de verga|Marico|Marica|te Gusta el pito|Hijo de perra|Mamate un wuebo$/i.test(budy)) {
 const vn = 'https://qu.ax/ftaR.mp3';
 conn.sendAudio(m.chat, vn, m)}
@@ -1212,5 +1209,4 @@ console.log(chalk.redBright(`Update ${__filename}`))
 delete require.cache[file]
 require(file)
 })
-
 
