@@ -768,6 +768,21 @@ case 'prueba': {
 await conn.sendPoll(m.chat, `Hola ${pushname}\n\n> 𝐒𝐮𝐩𝐞𝐫 𝐁𝐨𝐭 𝐃𝐞 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩 `, ['play3 billie eilish', 'estado', 'menu', 'fb'])}
 break   
 
+case 'cortanahistoria1': {
+let vid = 'https://qu.ax/MSAO.mp4'
+conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
+break
+
+case 'cortanahistoria2': {
+let vid = 'https://qu.ax/eZDz.mp4'
+conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
+break
+
+case 'cortanafinal': case 'cortanahistoria3': case 'cortanamurio': {
+let vid = 'https://qu.ax/zhet.mp4'
+conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
+break
+
 case 'clancortana': {
 let vid = 'https://qu.ax/cxQw.mp4'
 conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
@@ -910,15 +925,21 @@ m.react(`${pickRandom(['🥳', '💫', '🎊'])}`)}
 if (budy.startsWith(`Feliz navidad`) || budy.startsWith(`Merry Christmas`) || budy.startsWith(`feliz navidad`)) {
 const vn = 'https://qu.ax/XYyY.m4a'
 conn.sendAudio(m.chat, vn, m)} 
-if (/^riko|rico|sabraso|tetas|nepe|pene$/i.test(budy)) {
-const vn = 'https://qu.ax/Mwjf.mp4'
-conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
-if (/^novio|novia|chiste$/i.test(budy)) {
-const vn = 'https://qu.ax/OBYM.mp4'
-conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
-if (/^cojer|follar|guapa|luuk|hermosa$/i.test(budy)) {
+if (/^Hermosa|hermosa|guada|luuk$/i.test(budy)) {
 const vn = 'https://qu.ax/GLuo.mp4'
 conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
+if (/^riko|rico|sabraso|tetas|nepe|pene|Pene|Teta|Tetas|Rico|RiKo$/i.test(budy)) {
+const vn = 'https://qu.ax/Mwjf.mp4'
+conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
+if (/^novio|Novio$/i.test(budy)) {
+const vn = 'https://qu.ax/xzDx.mp4'
+conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
+if (/^novia|Novia$/i.test(budy)) {
+const vn = 'https://qu.ax/OBYM.mp4'
+conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
+if (/^cojer|follar|Cojer|cojemos|Follar|folla$/i.test(budy)) {
+const vid = 'https://qu.ax/BcgR.mp4'
+conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 if (budy.startsWith(`+58 416-3393168`) || budy.startsWith(`@584163393168`)) {
 const vn = 'https://qu.ax/tkLb.mp3';
 conn.sendAudio(m.chat, vn, m)}
@@ -955,9 +976,6 @@ conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Que`) || budy.startsWith(`que`)) {
 const vn = 'https://qu.ax/osam.mp3';
 conn.sendAudio(m.chat, vn, m)}
-if (budy.startsWith(`cojer`) || budy.startsWith(`folla`)) {
-const vid = 'https://qu.ax/BcgR.mp4'
-conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 if (/^Maldito|Mal pario|Mmgb|Mmwb|Hijo de puta|Hdp|Cara de verga|Marico|Marica|te Gusta el pito|Hijo de perra|Mamate un wuebo$/i.test(budy)) {
 const vn = 'https://qu.ax/ftaR.mp3';
 conn.sendAudio(m.chat, vn, m)}
@@ -1058,13 +1076,13 @@ conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`triste`)) {
 const vn = 'https://qu.ax/BGbf.mp3'
 conn.sendAudio(m.chat, vn, m)}
-if (budy.startsWith(`Buenas Tardes`) || budy.startsWith(`buenas tardes`) || budy.startsWith(`Buena tarde`)) {
+if (/^Buenas Tardes|buenas tardes|buena tarde|Buenas tarde$/i.test(budy)) {
 const vn = 'https://qu.ax/AMjs.mp3'
 conn.sendAudio(m.chat, vn, m)}
-if (budy.startsWith(`Buenas noches`) || budy.startsWith(`buenas noches`) || budy.startsWith(`Buena noche`)) {
+if (/^Buenas noches|Buenas Noches|buenas noches|buena noche|Buena noches$/i.test(budy)) {
 const vn = 'https://qu.ax/PDBb.mp3'
 conn.sendAudio(m.chat, vn, m)}
-if (budy.startsWith(`nepe`) || budy.startsWith(`pene`)) {
+if (/^nepe|Nepe|Pene|pene$/i.test(budy)) {
 const vn = 'https://qu.ax/WdGF.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Peruano`)) {
