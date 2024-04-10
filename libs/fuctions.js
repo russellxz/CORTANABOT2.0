@@ -525,6 +525,7 @@ if (!('autosticker' in chats)) chats.autosticker = false
 if (!('detect' in chats)) chats.detect = true
 if (!('autoread' in chats)) chats.autoread = true
 if (!('autolevelup' in chats)) chats.autolevelup = true
+if (!('viewonce' in chats)) chats.viewonce = true 
 if (!('rules' in chats)) chats.rules = ''
 } else global.db.data.chats[m.chat] = {  
 antilink: false,  
@@ -548,6 +549,7 @@ autosticker: false,
 detect: true, 
 autoread: false, 
 autolevelup: true, 
+viewonce: true, 
 rules: ''
 }
   
