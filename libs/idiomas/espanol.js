@@ -363,16 +363,16 @@ Si lo haces, seras baneado del bot y bloqueado` }
 const jadibot = {
 text: `Escanea este QR para convertirte en un bot temporal
 
-1) Haz clic en los tres puntos en la esquina superior derecha
-2) Toca WhatsApp Web
-3) Escanea este QR
-*El QR expira a los 45 segundos*\n\n`, 
-text2: `NUEVO FORMA DE HACERTE UN SUB BOT
+- 1. Haz clic en los tres puntos en la esquina superior derecha
+- 2. Toca WhatsApp Web
+- 3. Escanea este QR 
+QR Expirado en 45 segundos\n\n`, 
+text2: `𝐒𝐄𝐑 𝐔𝐍 𝐒𝐔𝐁 𝐁𝐎𝐓 𝐓𝐄𝐌𝐏𝐎𝐑𝐀𝐋
 
-1) Haz clic en los tres puntos en la esquina superior derecha
-2) Toca WhatsApp Web
-3) Da click en vincular con codigo de teléfono
-4) Pega el codigo a continuación\n\n`, 
+- 1) Haz clic en los tres puntos en la esquina superior derecha
+- 2) Toca WhatsApp Web
+- 3) Da click en vincular con codigo de teléfono
+- 4) Pega el codigo a continuación\n\n`, 
 text3: `*⚠️ Este comando fue desabilitado por el creador*`, 
 text4: `*✅ Ya estas conectado, sea paciente, los mensajes se estan cargando...*`, 
 text5: `*Conectado con exito*`, 
