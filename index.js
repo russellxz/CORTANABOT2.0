@@ -508,12 +508,9 @@ const miembros = metadata.participants.length
 let vn = 'https://qu.ax/Rilk.mp3'
 let vid = 'https://qu.ax/gEXN.mp4'
 let wel = [`${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel2']()}`, `${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel3']()} ${metadata.subject} 』\n\n${lenguaje['smsWel4']()}`, `${lenguaje['smsWel5']()} ${lenguaje['smsWel6']()} @${name.split("@")[0]} 🥳`]
-let or = ['texto', 'audio', 'video'];
+let or = ['image', 'audio', 'video'];
 let media = or[Math.floor(Math.random() * 3)]
 let welcome = wel[Math.floor(Math.random() * wel.length)]
-if (media === 'texto')
-sock.sendMessage(anu.id, { image: { url: welc }, mentionedJid:[num], caption: `${lenguaje['smsWel7']()} ${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel2']()}\n${lenguaje['smsWel8']()} ${metadata.subject}\n${lenguaje['smsWel9']()} ${miembros}\n${lenguaje['smsWel10']()} ${date}\n\n${lenguaje['smsWel11']()} \n\n${metadata.desc}`})
-//sock.sendMessage(anu.id, { text: welcome, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'audio')
 sock.sendMessage(anu.id, { audio: { url: vn }, 
 contextInfo: { mentionedJid:[num], "externalAdReply": { 
@@ -525,6 +522,8 @@ contextInfo: { mentionedJid:[num], "externalAdReply": {
 "sourceUrl": `${pickRandom([md, yt])}`, 
 "showAdAttribution": true}}, 
 seconds: '4556', ptt: true, mimetype: 'audio/mpeg', fileName: `error.mp3` }, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+if (media === 'image')
+sock.sendMessage(anu.id, { text: welcome, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'video') 
 sock.sendMessage(anu.id, {video: {url: vid}, caption: `😃Bienvenid@😃 Como estas yo soy cortanabot😎 espero que la pases bien @${name.split("@")[0]}`, mentions: [num]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 /*sock.sendMessage(anu.id, { text: `${lenguaje['smsWel7']()} ${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel2']()}\n${lenguaje['smsWel8']()} ${metadata.subject}\n${lenguaje['smsWel9']()} ${miembros}\n${lenguaje['smsWel10']()} ${date}\n\n${lenguaje['smsWel11']()} \n\n${metadata.desc}`, contextInfo:{
@@ -547,11 +546,11 @@ let by = [`${lenguaje['smsBye']()} @${name.split("@")[0]} 👋`, `${lenguaje['sm
 //let byegc = fs.readFileSync('./src/byegc.webp')
 let vid = 'https://qu.ax/wQDn.mp4'
 let byegc = 'https://qu.ax/WUEu.webp'
-let or = ['texto', 'video', 'stickers'];
+let or = ['image', 'video', 'stickers'];
 let media = or[Math.floor(Math.random() * 3)]
 let bye = by[Math.floor(Math.random() * by.length)]
-if (media === 'texto')
-sock.sendMessage(anu.id, { image: { url: leave }, mentions: [num], caption: bye})
+if (media === 'image')
+sock.sendMessage(anu.id, { image: { url: leave }, mentions: [num], text: bye})
 //sock.sendMessage(anu.id, { text: bye, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'video')
 sock.sendMessage(anu.id, {video: {url: vid}, caption: `\`\`\`[!] C fue alv : @${name.split("@")[0]} 😹\`\`\``, mentions: [num]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})

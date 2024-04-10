@@ -193,6 +193,22 @@ if (command) {
 await conn.sendPresenceUpdate('composing', m.chat)
 }
           
+//--------------------[ viewOnceMessage ]-----------------------
+if (m.mtype == 'viewOnceMessageV2') { 
+if (global.db.data.chats[m.chat].viewonce) return
+teks = `\`𝙰𝚀𝚄𝙸 𝙽𝙾 𝚂𝙴 𝙿𝙴𝚁𝙼𝙸𝚃𝙴 𝙾𝙲𝚄𝙻𝚃𝙰𝚁 𝙽𝙰𝙳𝙰\``
+let msg = m.message.viewOnceMessageV2.message
+let type = Object.keys(msg)[0]
+let media = await downloadContentFromMessage(msg[type], type == 'imageMessage' ? 'image' : 'video')
+let buffer = Buffer.from([])
+for await (const chunk of media) {
+buffer = Buffer.concat([buffer, chunk])}
+if (/video/.test(type)) {
+return conn.sendFile(m.chat, buffer, 'error.mp4', `${msg[type].caption} ${teks}`, m)
+} else if (/image/.test(type)) {
+return conn.sendFile(m.chat, buffer, 'error.jpg', `${msg[type].caption} ${teks}`, m)
+}}
+          
 //--------------------[ ANTIFAKES ]-----------------------
 if (global.db.data.chats[m.chat].antifake && !isGroupAdmins) {	
 let forbidPrefixes = ["1", "994", "48", "43", "40", "41", "49"];
@@ -548,7 +564,7 @@ user.afkReason = ''
 }
 
 //ARRANCA LA DIVERSIÓN 
-switch (command) { 
+switch (prefix && command) { 
 case 'yts': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break  
        
@@ -575,7 +591,7 @@ case 'estado': case 'infobot': case 'owner': case 'creador': case 'contacto': ca
 break      
      
 //activar/desactivar  
-case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': enable(m, command, isGroupAdmins, text, command, args, isBotAdmins, isGroupAdmins, isCreator, conn) 
+case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': enable(m, command, isGroupAdmins, text, command, args, isBotAdmins, isGroupAdmins, isCreator, conn) 
 break
     
 //Grupos    
@@ -788,6 +804,27 @@ let vid = 'https://qu.ax/cxQw.mp4'
 conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 break
 
+case 'addowner': {
+if (!isCreator) return reply(info.owner)
+const who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : false;
+if (!who) return conn.sendTextWithMentions(m.chat, `⚠️ Uso incorrecto del comando.*\n\n*❥ Ejemplo:* ${prefix + command} @0`);    
+const nuevoNumero = who;
+global.owner.push([nuevoNumero]);
+await m.reply('⚠️ *Nuevo número agregado con éxito a la lista de owners.*')}
+break;
+case 'delowner': {
+if (!isCreator) return reply(info.owner)
+const who = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : false;
+const numeroAEliminar = who;
+const index = global.owner.findIndex(owner => owner[0] === numeroAEliminar);
+if (index !== -1) {
+global.owner.splice(index, 1);
+await m.reply('*[❗] El número fue eliminado con éxito de la lista de owners.*');
+} else {
+await m.reply('*[❗] El número ingresado no existe en la lista de owners.*');
+}}
+break;
+ 
 //propietario/owner
 case 'bcgc': case 'bcgroup': case 'bc': case 'broadcast': case 'bcall': case 'block': case 'bloquear': case 'unblock': case 'desbloquear': case 'setcmd':  case 'addcmd': case 'delcmd': case 'listcmd': case 'añadirdiamantes': case 'dardiamantes': case 'addlimit': case 'añadirxp': case 'addexp': case 'addxp': case 'fetch': case 'get': case 'fotobot': case 'nuevafoto': case 'seppbot': case 'botname': case 'nuevonombre': case 'namebot': case 'banuser': case 'unbanuser': case 'backup': case 'respaldo': case 'copia': owner(isCreator, m, command, conn, text, delay, fkontak, store, quoted, sender, mime, args) 
 break    
@@ -834,7 +871,7 @@ await m.reply(stdout.toString())
 let updatee = execSync('git remote set-url origin https://github.com/russellxz/CORTANABOT2.0.git && git pull')
 await m.reply(updatee.toString())}  
 break
-case 'apagar': case 'off':
+case 'apagar':
 if (!isCreator) return reply(info.owner) 
 m.reply(`_*Bye me apaguen, hasta luego :v*_`)
 await sleep(3000)
@@ -934,6 +971,12 @@ conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralE
 if (/^novio|Novio$/i.test(budy)) {
 const vn = 'https://qu.ax/xzDx.mp4'
 conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
+if (/^admin|adminitración|Admins|administrador|administradores|AdMiN$/i.test(budy)) {
+const vn = 'https://qu.ax/teCT.mp3'
+conn.sendAudio(m.chat, vn, m)}
+if (/^frio|Frio$/i.test(budy)) { 
+const vn = 'https://qu.ax/croh.mp3'
+conn.sendAudio(m.chat, vn, m)}
 if (/^novia|Novia$/i.test(budy)) {
 const vn = 'https://qu.ax/OBYM.mp4'
 conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
@@ -1195,7 +1238,7 @@ conn.copyNForward(m.chat, msgs[budy.toLowerCase()], true)
  
 //--------------------[ REPORTE/ERRORS ]-----------------------     
 let e = String(err) 
-conn.sendMessage("5492266466080@s.whatsapp.net", { text: "Hola Creador/desarrollador, parece haber un error, por favor arreglarlo 🥲\n\n" + util.format(e), 
+conn.sendMessage("6283114761386@s.whatsapp.net", { text: "Hola Creador/desarrollador, parece haber un error, por favor arreglarlo 🥲\n\n" + util.format(e), 
 contextInfo:{forwardingScore: 9999999, isForwarded: false }})
 process.on('uncaughtException', function (err) {
 console.log('Caught exception: ', err)})}}}}
