@@ -120,7 +120,17 @@ if (!isBotAdmins) return m.reply(info.botAdmin)
 if (!isGroupAdmins) return m.reply(info.admin)
 let res = conn.groupRevokeInvite(m.chat)}
 
-if (command == 'add' || command == 'agregar' || command == 'invitar') {
+if (command == 'add' || command == 'agregar') {
+if (!m.isGroup) return m.reply(info.group);  
+if (!isBotAdmins) return m.reply(info.botAdmin)
+if (!isGroupAdmins) return m.reply(info.admin)
+if (!text) return m.reply(`${lenguaje.grupos.text13}\n${prefix}add +5244446577`)
+let users = m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+await conn.groupParticipantsUpdate(m.chat, [users], 'add')
+m.reply(lenguaje.exito())
+}
+
+if (command == 'invitar') {
 if (!m.isGroup) return m.reply(info.group);  
 if (!isBotAdmins) return m.reply(info.botAdmin)
 if (!isGroupAdmins) return m.reply(info.admin)

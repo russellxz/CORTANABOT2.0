@@ -7,7 +7,7 @@ const { smsg, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, slee
 async function enable(m, command, isGroupAdmins, text, command, args, isBotAdmins, isGroupAdmins, isCreator) {
 if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (command == 'enable' || command == 'configuracion' || command == 'configurar') {
-const {welcome, antilink, antiFake, antiArabe, detect, autosticker, antiNsfw, modeadmin, chatbot, audios, autolevelup, antitoxic, antiprivado, anticall, antilink2, AntiTiktok, AntiTelegram, AntiFacebook, AntInstagram, AntiYoutube, AntiTwitter, autoread} = global.db.data.chats[m.chat];
+const {welcome, antilink, antiFake, antiArabe, detect, autosticker, antiNsfw, modeadmin, chatbot, audios, autolevelup, antitoxic, antiprivado, anticall, antilink2, AntiTiktok, AntiTelegram, AntiFacebook, AntInstagram, AntiYoutube, AntiTwitter, viewonce, autoread} = global.db.data.chats[m.chat];
 m.reply(`\`⧼⧼⧼ ＣＯＮＦＩＧＵＲＡＣＩＯ́Ｎ ⧽⧽⧽\`
 
 > ✅ Funcion activar 
@@ -68,6 +68,9 @@ m.reply(`\`⧼⧼⧼ ＣＯＮＦＩＧＵＲＡＣＩＯ́Ｎ ⧽⧽⧽\`
 
 * ${prefix}chatbot on ${chatbot ? '✅' : '❌'}
 > ᵈᵉˢᶜ : ᴱˡ ᵇᵒᵗ ᵉᵐᵖᵉᶻᵃʳ ᵃ ʰᵃᵇˡᵃʳ ᶜᵒⁿ ᵗᵒᵈᵒˢ ᵉˡ ᵍʳᵘᵖᵒ. 
+
+* ${prefix}antiviewonce on ${viewonce ? '✅' : '❌'}
+> ᵈᵉˢᶜ: ᵖᵉʳᵐᶦᵗᵉ ᵠᵘᵉ ˡᵒˢ ᵘˢᵘᵃʳᶦᵒ ⁿᵒ ᵒᶜᵘˡᵗᵉʳ ᶠᵒᵗᵒ/ᵛᶦᵈᵉᵒ ᵉⁿ ᵛᶦᵉʷᵒⁿᶜᵉ 
 
 * ${prefix}modoadmins on ${modeadmin ? '✅' : '❌'}
 > ᵈᵉˢᶜ : ᵉˡ ᵇᵒᵗ ˢᵒˡᵒ ᶠᵘⁿᶜᶦᵒⁿᵃ ᵖᵃʳᵃ ˡᵒˢ ᵃᵈᵐᶦⁿˢ ᵈᵉˡ ᴳʳᵘᵖᵒ.
@@ -213,6 +216,18 @@ m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 //m.reply(`*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero arabe (+212, +91, +92, etc), seran explusado automáticamente del Grupo...*`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].antiArabe = false
+m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
+
+if (command == 'antiviewonce') {
+if (!m.isGroup) return m.reply(info.group)
+if (!isBotAdmins) return m.reply(info.botAdmin)
+if (!isGroupAdmins) return m.reply(info.admin)
+if (!text) return m.reply(`${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*`)
+if (args[0] === "on") {
+global.db.data.chats[m.chat].viewonce = true
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].viewonce = false
 m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
 
 if (command == 'antitoxic') {
