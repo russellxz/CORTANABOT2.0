@@ -242,6 +242,17 @@ m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 global.db.data.chats[m.chat].antitoxic = false
 m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
 
+if (command == 'game2') {
+if (!m.isGroup) return m.reply(info.group)
+if (!isGroupAdmins) return m.reply(info.admin)
+if (!text) return m.reply(`${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*`)
+if (args[0] === "on") {
+global.db.data.chats[m.chat].game2 = true
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].game2 = false
+m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}} 
+       
 if (command == 'autodetect' || command == 'detect') {
 if (!m.isGroup) return m.reply(info.group)
 if (!isGroupAdmins) return m.reply(info.admin)
