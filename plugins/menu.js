@@ -185,6 +185,8 @@ let juegos = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┃ ❏ ${prefix}ship
 ┊┃ ❏ ${prefix}formartrio
 ┊┃ ❏ ${prefix}formapareja5
+┊┃ ❏ ${prefix}ruletas
+┊┃ ❏ ${prefix}suerte
 ┊┃ ❏ ${prefix}txt _(texto)_
 ┊┃ ❏ ${prefix}fake _(texto + tag)_
 ┊┗━━━━━━━━━━━━━━•
@@ -875,7 +877,9 @@ ${lenguaje.menu.text12}
 ├❥ᰰຼ ❏ ${prefix}ship
 ├❥ᰰຼ ❏ ${prefix}formartrio
 ├❥ᰰຼ ❏ ${prefix}formapareja5
-┊┃ ❏ ${prefix}txt _(texto)_
+├❥ᰰຼ ❏ ${prefix}ruletas
+├❥ᰰຼ ❏ ${prefix}suerte
+├❥ᰰຼ ❏ ${prefix}txt _(texto)_
 ├❥ᰰຼ ❏ ${prefix}fake _(texto + tag)_
 *╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
 
