@@ -90,6 +90,7 @@ global.tiktok = 'https://www.tiktok.com/@russellpaypal?_t=8kkT6zjzePf&_r=1'
 global.fb = 'https://www.facebook.com/elrebelde21'
 global.faceb = 'https://facebook.com/groups/872989990425789/'
 
+global.n2 = "https://whatsapp.com/channel/0029VaWABAMG8l5K8K9PAB3v" //canal cortaba 
 global.nna = 'https://whatsapp.com/channel/0029Va4QjH7DeON0ePwzjS1A' //Update 
 global.nn = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //LoliBot
 global.nn2 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //Loli & Nova
