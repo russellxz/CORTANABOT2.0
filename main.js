@@ -804,6 +804,23 @@ case 'prueba': {
 await conn.sendPoll(m.chat, `Hola ${pushname}\n\n> 𝐒𝐮𝐩𝐞𝐫 𝐁𝐨𝐭 𝐃𝐞 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩 `, ['play3 billie eilish', 'estado', 'menu', 'fb'])}
 break   
 
+case 'banlist': {
+const chats = Object.entries(global.db.data.chats).filter((chat) => chat[1].isBanned);
+  const users = Object.entries(global.db.data.users).filter((user) => user[1].banned);
+  const caption = `
+┌〔 𝐔𝐒𝐔𝐀𝐑𝐈𝐎𝐒 𝐁𝐀𝐍𝐄𝐀𝐃𝐎𝐒 〕
+├ Total : ${users.length} ${users ? '\n' + users.map(([jid], i) => `
+├ ${isOwner ? '@' + jid.split`@`[0] : jid}`.trim()).join('\n') : '├'}
+└────
+
+┌〔 𝐂𝐇𝐀𝐓𝐒 𝐁𝐀𝐍𝐄𝐀𝐃𝐎𝐒 〕
+├ Total : ${chats.length} ${chats ? '\n' + chats.map(([jid], i) => `
+├ ${isOwner ? '@' + jid.split`@`[0] : jid}`.trim()).join('\n') : '├'}
+└────
+`.trim();
+conn.sendMessage(m.chat, {text: caption, contextInfo:{ mentionedJid: [...caption.matchAll(/@(\d{0,16})/g)].map(v => v[1] + '@s.whatsapp.net')}}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
+break
+
 case 'cortanahistoria1': {
 let vid = 'https://qu.ax/MSAO.mp4'
 conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
