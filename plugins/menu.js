@@ -20,7 +20,7 @@ const date = moment.tz('America/Bogota').format('DD/MM/YYYY')
 const time = moment.tz('America/Argentina/Buenos_Aires').format('LT')
 let wa = m.key.id.length > 21 ? 'Android' : m.key.id.substring(0, 2) == '3A' ? 'IOS' : 'whatsapp web'
 
-conn.fakeReply(m.chat, `*🚩 Cargando menu, porfavor espera.*\n\n> No hagas spam de comandos`, '0@s.whatsapp.net', 'Enviando menu aguarden...')
+conn.fakeReply(m.chat, `*🚩 Aguarde el menu, porfavor espera.*\n\n> No hagas spam de comandos`, '0@s.whatsapp.net', 'Enviando menu aguarden...')
 
 let submenu = `╔══〘 \`👥 INFO DEL USUARIO\` 〗══╗
 ║ ᴜsᴜᴀʀɪᴏs: @${sender.split("@")[0]} 
