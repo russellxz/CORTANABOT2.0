@@ -20,22 +20,30 @@ const date = moment.tz('America/Bogota').format('DD/MM/YYYY')
 const time = moment.tz('America/Argentina/Buenos_Aires').format('LT')
 let wa = m.key.id.length > 21 ? 'Android' : m.key.id.substring(0, 2) == '3A' ? 'IOS' : 'whatsapp web'
 
-conn.fakeReply(m.chat, `*🚩 Aguarde el menu, porfavor espera.*\n\n> No hagas spam de comandos`, '0@s.whatsapp.net', 'Enviando menu aguarden...')
+conn.fakeReply(m.chat, `*🚩 Cargando menu, porfavor espera.*\n\n> No hagas spam de comandos`, '0@s.whatsapp.net', 'Enviando menu aguarden...')
 
-let submenu = `╔══〘 \`👥 INFO DEL USUARIO\` 〗══╗
-║ ᴜsᴜᴀʀɪᴏs: @${sender.split("@")[0]} 
+let submenu = `       (҂"_")
+         <,︻╦̵̵̿╤─ ҉     ~  •
+█۞███████]▄▄▄▄▄▄▄▄▄▄▃ ●●●
+▂▄▅█████████▅▄▃▂…
+[███████████████████]
+◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙
+╔─━━━━━░★░━━━━━─╗
+║ ☬υѕυαяισѕ: @${sender.split("@")[0]} 
 ║ ${lenguaje.menu.text8} ${user.limit}
 ║ ${lenguaje.menu.text9} ${user.level}
 ║ ${lenguaje.menu.text10} ${user.role}
-║❐ ᴇxᴘ : ${user.exp}
-║❐ ᴄᴏɪɴs : ${user.money}
-║════════════
-║
-║${lenguaje.menu.text11} ${rtotalreg} de ${totalreg}
-╚════════════════╝
+║ ☬Eˣᵖ : ${user.exp}
+║ ☬Cᵒᶤᶰˢ : ${user.money}
+║★━━━━━━✩━━━━━━★
+║${lenguaje.menu.text11} ${rtotalreg} ∂є ${totalreg}
+║★━━━━━━✩━━━━━━★
+╚─━━━━━░★░━━━━━─╝
 
+◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆
 \`ᰔᩚ 𝐐𝐔𝐈𝐄𝐑𝐄 𝐎𝐁𝐓𝐄𝐍𝐄𝐑 𝐓𝐔 𝐁𝐎𝐓 𝐏𝐄𝐑𝐒𝐎𝐍𝐀𝐋𝐈𝐙𝐀𝐃𝐎? :\`
-◈ https://www.facebook.com/elrebelde21\n\n`
+◈ https://www.facebook.com/elrebelde21
+◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆\n\n`
 let descargar = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┏━━━━━━━━━━━━━━•
 ┊┃ *🚀 ＭＥＮＵ ＤＥＳＣＡＲＧＡ 🚀*
@@ -341,9 +349,9 @@ let menuRPG = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┃ ❏ ${prefix}crime
 ┊┃ ❏ ${prefix}trabajar
 ┊┃ ❏ ${prefix}work _(Trabaja y ganas exp)_
-┊┃ ❏ ${prefix}buy _(Comprar mas diamantes (limit)_
+┊┃ ❏ ${prefix}buy _(Comprar mas crédito (limit)_
 ┊┃ ❏ ${prefix}bal
-┊┃ ❏ ${prefix}balace _(diamante/exp tenés)_
+┊┃ ❏ ${prefix}balace _(crédito/exp cuantos tener)_
 ┊┃ ❏ ${prefix}claim _(Recoger tu recompensa)_
 ┊┃ ❏ ${prefix}lb
 ┊┃ ❏ ${prefix}leaderboard
@@ -364,7 +372,7 @@ let menuSticker= `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┏━━━━━━━━━━━━━━•
 ┊┃ *👽 ＭＥＮＵ ＳＴＩＣＫＥＲ 👽*
 ┊┃━━━━━━━━━━━━━━•
-┊┃ *(Crear sticker desde whatsapp con ${wm}*
+┊┃ *(¢яєαя ѕтι¢кєя ∂єѕ∂є ωнαтѕαρρ ¢ση: ${wm}*
 ┊┃━━━━━━━━━━━━━━•
 ┊┃ ❏ ${prefix}s
 ┊┃ ❏ ${prefix}sticker 
@@ -378,7 +386,7 @@ let menuOwner = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┏━━━━━━━━━━━━━━•
 ┊┃ *👑 ＭＥＮＵ ＯＷＮＥＲ 👑*
 ┊┃━━━━━━━━━━━━━━•
-┊┃ _(Comando exclusivo para propietario/owner del bot)_
+┊┃ _(¢σмαη∂σ єχ¢ℓυѕινσ ραяα ρяσριєтαяισ/σωηєя ∂єℓ вσт)_
 ┊┃━━━━━━━━━━━━━━•
 ┊┃ ❏ ${prefix}anticall _(on/off)_
 ┊┃ ❏ ${prefix}antillamada _(on/off)_
@@ -431,14 +439,14 @@ let menu = `       (҂"_")
 ║${lenguaje.menu.text4} ${vs}
 ║${lenguaje.menu.text5} ${Object.keys(global.db.data.users).length}
 ║${lenguaje.menu.text6} ${runtime(process.uptime())}
-║${lenguaje.menu.text7} ${conn.public ? 'publico' : 'privado'}
+║${lenguaje.menu.text7} ${conn.public ? 'ρυвℓι¢σ' : 'ρяινα∂σ'}
 ║${conn.user.id == global.numBot2 ? `${lenguaje.menu.textt} ` : `${lenguaje.menu.texttt} @${global.numBot.split`@`[0]}`}
 ║ ${lenguaje.menu.text8} ${user.limit}
 ║ ${lenguaje.menu.text9} ${user.level}
 ║ ${lenguaje.menu.text10} ${user.role}
 ║ ☬Eˣᵖ : ${user.exp}
 ║ ☬Cᵒᶤᶰˢ : ${user.money}
-║${lenguaje.menu.text11} ${rtotalreg} ᴰᴱ ${totalreg}
+║${lenguaje.menu.text11} ${rtotalreg} ∂є ${totalreg}
 ║★━━━━━━✩━━━━━━★
 ╚─━━━━━░★░━━━━━─╝
 
@@ -478,12 +486,13 @@ let menu = `       (҂"_")
 ┊┃ ➫ ${prefix}instalarbot (Tutorial del instalacion)_
 ┊┃ ➫ ${prefix}solicitud
 ┊┃ ➫ ${prefix}cuenta 
-┊┃ ➫${prefix}cuentaoficiales
+┊┃ ➫ ${prefix}cuentaoficiales
 ┊┃ ➫ ${prefix}status 
 ┊┃ ➫ ${prefix}enable 
 ┊┃ ➫ ${prefix}configurar
+┊┃ ➫ ${prefix}infohost
 ┊┃ ➫ ${prefix}cafirexos
-┊┃ ➫${prefix}report _(reporta errores)_
+┊┃ ➫ ${prefix}report _(reporta errores)_
 ┊┗━━━━━━━━━━━━━━•
 ╰┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩`
 conn.sendMessage(m.chat, { text: menu,  
@@ -782,7 +791,7 @@ ${lenguaje.menu.text12}
 *╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
 
 *╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*🔰⃐𝙂𝙍𝙐𝙋𝙊𝙎*️⃟ᬽ፝֟━*
-├• Gᵉˢᵗᶤᵒᶰᵃʳ ᵗᵘ ᵍʳᵘᵖᵒ ᶜᵒᶰ 𝙲𝙾𝚁𝚃𝙰𝙽𝙰𝙱𝙾𝚃-𝟸.𝟶
+├• Gᵉˢᵗᶤᵒᶰᵃʳ тυ gяυρσ ¢ση ¢σятαηαвσт-2.0
 ├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
 ├➫ .welcome _(on/off)_
 ├➫ .antilink _(on/off)_
@@ -912,7 +921,7 @@ ${lenguaje.menu.text12}
 *╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫* 	
 
 *╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐🥵𝘾𝙊𝙈𝘼𝙉𝘿𝙊 +18*️⃟ᬽ፝֟━*
-├❥ᰰຼ  *Activa con (antiNsfw on)*
+├❥ᰰຼ  *α¢тινα ¢ση: (antiNsfw on)*
 ├ *✧･ﾟ: *✧･ﾟ:*✧･ﾟ: *✧･ﾟ:*✧･ﾟ: *✧･ﾟ:
 ├➫ .pussy
 ├➫ .nsfwloli
@@ -1026,7 +1035,7 @@ ${lenguaje.menu.text12}
 *╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
 
 *╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐👽𝙎𝙏𝙄𝘾𝙆𝙀𝙍*️⃟ᬽ፝֟━*
-├❥ *(Crear sticker desde whatsapp con 𝙲𝙾𝚁𝚃𝙰𝙽𝙰𝙱𝙾𝚃-𝟸.𝟶)*
+├❥ *(¢яєαя ѕтι¢кєя ∂єѕ∂є ωнαтѕαρρ ¢ση ¢σятαηαвσт-𝟸.𝟶)*
 ├ *✧･ﾟ: *✧･ﾟ:*✧･ﾟ: *✧･ﾟ:*✧･ﾟ: *✧･ﾟ:
 ├➫ .s
 ├➫ .sticker 
@@ -1037,7 +1046,7 @@ ${lenguaje.menu.text12}
 *╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
 
 *╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐👑Ø₩₦ɆⱤ*️⃟ᬽ፝֟━*
-├❥ _(Comando exclusivo para propietario/owner del bot)_
+├❥ _(¢σмαη∂σ єχ¢ℓυѕινσ ραяα ρяσριєтαяισ/σωηєя ∂єℓ вσт)_
 ├ ◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆
 ├➫ .anticall _(on/off)_
 ├➫ .antillamada _(on/off)_
@@ -1083,7 +1092,7 @@ mentionedJid:[sender, numBot],
 "title": wm,   
 "containsAutoReply": true,  
 "mediaType": 1,   
-"thumbnail": imagen2,  
+"thumbnail": imagen2, 
 sourceUrl: tiktok
 }}}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) 
 }
