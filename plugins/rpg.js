@@ -105,31 +105,31 @@ const usersBanc = sortedBanc.map(enumGetKey)
 const len = args[0] && args[0].length > 0 ? Math.min(100, Math.max(parseInt(args[0]), 10)) : Math.min(10, sortedExp.length);
 const texto = `${lenguaje.rpg.text3}
 
-╔═❖ _𝚃𝙾𝙿 ${len} 𝚇𝙿 🧬_ 
+╔═❖ _𝐓𝐎𝐏 ${len} 𝐗𝐏 🧬_
 ║𝚃𝚞 : ${usersExp.indexOf(m.sender) + 1} 𝚍𝚎 ${usersExp.length}
 ${sortedExp.slice(0, len).map(({jid, exp}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *${exp} exp*`).join`\n`}
-╚═══════════════  
+╚─━━━━━━░★░━━━━━━─╝
 
-╔═❖ _𝚃𝙾𝙿 ${len} 𝙳𝙸𝙰𝙼𝙰𝙽𝚃𝙴𝚂 💎_
+╔═❖ _𝐓𝐎𝐏 ${len} 𝐌𝐀𝐒 𝐂𝐑𝐄𝐃𝐈𝐓𝐎𝐒 💳_
 ║𝚃𝚞 : ${usersLim.indexOf(m.sender) + 1} 𝚍𝚎 ${usersLim.length}
-${sortedLim.slice(0, len).map(({jid, limit}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *${limit} diamantes*`).join`\n`}
-╚═══════════════  
+${sortedLim.slice(0, len).map(({jid, limit}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *${limit} ᴄʀᴇᴅɪᴛᴏs*`).join`\n`}
+╚─━━━━━━░★░━━━━━━─╝
 
-╔═❖ _𝚃𝙾𝙿 ${len} 𝚄𝚂𝚄𝙰𝚁𝙸𝙾𝚂 𝙲𝙾𝙽 𝙼𝙰𝚂 𝙳𝙸𝙽𝙴𝚁𝙾 𝙴𝙻 𝙱𝙰𝙽𝙲𝙾 🏦💰_
+╔═❖ _𝐓𝐎𝐏 ${len} 𝐔𝐒𝐔𝐀𝐑𝐈𝐎𝐒 𝐂𝐎𝐍 𝐌𝐀𝐒 𝐃𝐈𝐍𝐄𝐑𝐎 𝐄𝐍 𝐄𝐋 𝐁𝐀𝐍𝐂𝐎💰🏢_
 ║𝚃𝚞 : ${usersBanc.indexOf(m.sender) + 1} 𝚍𝚎 ${usersBanc.length}
 ${sortedBanc.slice(0, len).map(({jid, banco}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *${banco} 💰*`).join`\n`}
-╚═══════════════  
+╚─━━━━━━░★░━━━━━━─╝
 
-╔═❖ _𝚃𝙾𝙿 ${len} 𝙽𝙸𝚅𝙴𝙻 ⬆️_
+╔═❖ _𝐓𝐎𝐏 ${len} 𝐌𝐀𝐒 𝐍𝐈𝐕𝐄𝐋 ⬆️_
 ║𝚃𝚞 : ${usersLevel.indexOf(m.sender) + 1} 𝚍𝚎 ${usersLevel.length}
 ${sortedLevel.slice(0, len).map(({jid, level}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *nivel ${level}*`).join`\n`}
-╚═══════════════ 
+╚─━━━━━━░★░━━━━━━─╝
 
-╔═❖ _𝚃𝙾𝙿 ${len} 𝚁𝙾𝙻 | 𝚁𝙰𝙽𝙶𝙾  💪_
+╔═❖ _𝐓𝐎𝐏 ${len} 𝐑𝐎𝐋 | 𝐑𝐀𝐍𝐆𝐎  💪_
 ║𝚃𝚞 : ${usersLevel.indexOf(m.sender) + 1} 𝚍𝚎 ${usersLevel.length} 𝚄𝚜𝚞𝚊𝚛𝚒𝚘𝚜
  
 ${sortedLevel.slice(0, len).map(({jid, role, level}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➭ *${role}*`).join`\n`}
-╚═══════════════`.trim();
+╚─━━━━━━░★░━━━━━━─╝`.trim();
 conn.sendMessage(m.chat, { text: texto, contextInfo:{
 mentionedJid: [...texto.matchAll(/@(\d{0,16})/g)].map(v => v[1] + '@s.whatsapp.net')}}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 
@@ -201,26 +201,31 @@ if (command == 'bal' || command == 'balance' || command == 'diamond') {
 let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
 let user = global.db.data.users[who]
 if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
-conn.sendMessage(m.chat, {text: `•───⧼⧼⧼ 𝙱𝙰𝙻𝙰𝙽𝙲𝙴 ⧽⧽⧽───•
+conn.sendMessage(m.chat, {text: `_____▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄_____
+───█▒▒░░░░░░░░░▒▒█───
+────█░░█░░░░░█░░█────
+─▄▄──█░░░▀█▀░░░█──▄▄─
+█░░█─▀▄░░░░░░░▄▀─█░░█
+•─⧼𝘽𝘼𝙇𝘼𝙉𝘾𝙀 𝘿𝙀 𝙏𝙐 𝘾𝙐𝙀𝙉𝙏𝘼⧽─•
 
-@${who.split('@')[0]} ${user.registered === true ? '✓' : ''} Tiene : 
+@${who.split('@')[0]} ${user.registered === true ? '✓' : ''}【✔】 ᴛɪᴇɴᴇ: 
 
-*💎 𝙳𝙸𝙰𝙼𝙰𝙽𝚃𝙴 :* ${user.limit}
-*⬆️ 𝙴𝚇𝙿 :* ${user.exp}
-*🪙 𝙲𝙾𝙸𝙽𝚂 :* ${user.money}
-> Afuera del Banco 
+*💳 𝐂𝐫𝐞𝐝𝐢𝐭𝐨 𝐃𝐢𝐬𝐩𝐨𝐧𝐢𝐛𝐥𝐞 :*  ${user.limit}
+*⬆️ 𝐄𝐗𝐏 :* ${user.exp}
+*🪙 𝗖𝗢𝗜𝗡𝗦 :* ${user.money}
+> ➥ *ᴀғᴜᴇʀᴀ ᴅᴇʟ ʙᴀɴᴄᴏ💳*
 
-•───⧼⧼⧼ 𝙱𝙰𝙽𝙲𝙾 ⧽⧽⧽───•
+•─⧼𝘽𝘼𝙉𝘾𝙊 𝙂𝙀𝙉𝙀𝙍𝘼𝙇 𝘾𝙊𝙍𝙏𝘼𝙉𝘼⧽─•
 
-*🏦 𝙳𝙸𝙽𝙴𝚁𝙾 :* ${user.banco}
-> Adentro del Banco 🏦 
+*🏢 ᴅɪɴᴇʀᴏ💳:* ${user.banco}
+> ➥ ᴀᴅᴇɴᴛʀᴏ ᴅᴇʟ ʙᴀɴᴄᴏ🏢 
 
-•───────────────•
+•──────────✧──────────•
 
-> 📒 𝐍𝐎𝐓𝐀 : 𝐏𝐮𝐞𝐝𝐞 𝐜𝐨𝐦𝐩𝐫𝐚𝐫 𝐦𝐚𝐬 💎 𝐝𝐢𝐚𝐦𝐚𝐧𝐭𝐞
-> 𝐮𝐬𝐚𝐧𝐝𝐨 𝐥𝐨𝐬 𝐜𝐨𝐦𝐚𝐧𝐝𝐨 𝐝𝐞 𝐚𝐛𝐚𝐣𝐨: 
-> • ${prefix}buy <cantidad>
-> • ${prefix}buyall`, mentions: [who]}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+> ➥ 📒 *𝐍𝐎𝐓𝐀 : ᴘᴜᴇᴅᴇs ᴄᴏᴍᴘʀᴀʀ ᴍᴀs 💳 ᴄʀᴇᴅɪᴛᴏs*
+➥ *ᴜsᴀɴᴅᴏ ʟᴏs ᴄᴏᴍᴀɴᴅᴏ ᴅᴇ ᴀʙᴀᴊᴏ:*
+➥ • ${prefix}buy <cantidad>
+➥ • ${prefix}buyall`, mentions: [who]}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 }
 
 if (command == 'dep' || command == 'depositar') {    
@@ -233,16 +238,16 @@ if (args[0] == '--all') {
 let count = parseInt(users.limit);
 users.limit -= count * 1
 users.banco += count * 1
-await m.reply(`*[ 🏦 ] Has agregados (${count}) diamante 💎 al Banco.*`);
+await m.reply(`*[ 🏦 ] ʜᴀs ɪɴɢʀᴇsᴀɴᴅᴏ (${count}) ᴄʀᴇᴅɪᴛᴏ ᴀʟ ʙᴀɴᴄᴏ*`);
 return !0;
 };
-if (!Number(args[0])) return m.reply('*[ ⚠️ ] Falto en número de cantidad de diamante 💎*');
+if (!Number(args[0])) return m.reply('*[ ⚠️ ] Falto en número de cantidad de crédito💳*');
 let count = parseInt(args[0]);
-if (!users.limit) return m.reply('*Esta pobre no tener suficiente diamante*');
+if (!users.limit) return m.reply('*Esta pobre no tener suficiente crédito*');
 if (users.limit < count) return m.reply(`*Che no sabes cuanto dinero tiene el tu cartera? usar el comando:* #bal`);
 users.limit -= count * 1;
 users.banco += count * 1;
-await m.reply(`*[ 🏦 ] Has ingresando ${count} diamante al Banco*`)}
+await m.reply(`*[ 🏦 ] ʜᴀs ɪɴɢʀᴇsᴀɴᴅᴏ ${count} ᴄʀᴇᴅɪᴛᴏ ᴀʟ ʙᴀɴᴄᴏ*`)}
   
 if (command == 'retirar' || command == 'toremove') {     
 let user =  global.db.data.users[m.sender]
@@ -251,7 +256,7 @@ if (args[0] == '--all') {
 let count = parseInt(user.banco);
 user.banco -= count * 1
 user.limit += count * 1
-await m.reply(`*[ 🏦 ] Retiraste (${count}) diamante 💎 del Banco.*`);
+await m.reply(`*[ 🏦 ] ʜᴀs ʀᴇᴛɪʀᴀᴅᴏ (${count}) ᴄʀᴇᴅɪᴛᴏ ᴅᴇʟ ʙᴀɴᴄᴏ.*`);
 return !0 
 }
 if (!Number(args[0])) return m.reply('La cantidad debe ser un mumero.'); 
@@ -260,7 +265,7 @@ if (!user.banco) return m.reply('Hey fantasma 👻, no tener esa cantidad de din
 if (user.banco < count) return m.reply(`*Che no sabes cuanto dinero tiene el tu cartera? usar el comando:* #bal`);
 user.banco -= count * 1
 user.limit += count * 1
-await m.reply(`*[ 🏦 ] Has Retirado (${count}) dinero del Banco.*`)}
+await m.reply(`*[ 🏦 ] ʜᴀs ʀᴇᴛɪʀᴀᴅᴏ (${count}) ᴄʀᴇᴅɪᴛᴏ ᴅᴇʟ ʙᴀɴᴄᴏ.*`)}
 
 if (command == 'minar' || command == 'mine') {
 const date = global.db.data.users[m.sender].lastmiming + 600000;
@@ -280,7 +285,7 @@ const money = Math.floor(Math.random() * 6500)
 //global.db.data.users[m.sender].exp += exp
 global.db.data.users[m.sender].limit += diamond
 global.db.data.users[m.sender].money += money
-m.reply(`${minar}\n${diamond} 𝐃𝐈𝐀𝐌𝐀𝐍𝐓𝐄 💎\n${money} 𝐂𝐎𝐈𝐍𝐒 🪙`)
+m.reply(`${minar}\n${diamond} 💳 *ᴄʀᴇᴅɪᴛᴏ:*\n${money} 𝐂𝐎𝐈𝐍𝐒 🪙`)
 m.react('💎') 
 global.db.data.users[m.sender].lastmiming2 = new Date * 1;
 }
@@ -307,7 +312,7 @@ const money = Math.floor(Math.random() * 9999)
 global.db.data.users[m.sender].limit += limit;
 global.db.data.users[m.sender].money += money
 global.db.data.users[m.sender].exp += exp
-m.reply(`${lenguaje.rpg.text15}\n🆙 *xᴘ* : ${exp}\n💎 *ᴅɪᴀᴍᴀɴᴛᴇ :* ${limit}\n🪙 *ᴄᴏɪɴs :* ${money}`)
+m.reply(`${lenguaje.rpg.text15}\n🆙 *xᴘ* : ${exp}\n💳 *ᴄʀᴇᴅɪᴛᴏ:* ${limit}\n🪙 *ᴄᴏɪɴs :* ${money}`)
 global.db.data.users[m.sender].lastclaim = new Date * 1
 }
 
@@ -370,7 +375,7 @@ global.db.data.users[m.sender].limit += limit
 global.db.data.users[m.sender].trash += trash
 global.db.data.users[m.sender].potion += potion
 global.db.data.users[m.sender].money += money
-m.reply(`╔══🎉═🎉═🎉══⬣\n║${lenguaje.rpg.text17}\n║┈┈┈┈┈┈┈┈┈┈┈┈┈\n║⚡${exp} 𝙴𝚇𝙿\n║💎 ${limit} 𝙳𝙸𝙰𝙼𝙰𝙽𝚃𝙴\n║🗑️ ${trash} 𝙱𝙰𝚂𝚄𝚁𝙰\n║🥤 ${potion} 𝙿𝙾𝙲𝙸𝙾𝙽𝙴𝚂\n║🪙 ${money} 𝙲𝙾𝙸𝙽𝚂\n╚═════════════════⬣`)
+m.reply(`╔══🎉═🎉═🎉══⬣\n║${lenguaje.rpg.text17}\n║┈┈┈┈┈┈┈┈┈┈┈┈┈\n║⚡${exp} 𝙴𝚇𝙿\n║💳 ${limit} ᴄʀᴇᴅɪᴛᴏ\n║🗑️ ${trash} 𝙱𝙰𝚂𝚄𝚁𝙰\n║🥤 ${potion} 𝙿𝙾𝙲𝙸𝙾𝙽𝙴𝚂\n║🪙 ${money} 𝙲𝙾𝙸𝙽𝚂\n╚═════════════════⬣`)
 global.db.data.users[m.sender].lastcofre = new Date * 1;
 }}
 

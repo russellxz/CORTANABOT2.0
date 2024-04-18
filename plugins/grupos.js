@@ -189,9 +189,9 @@ m.reply(lenguaje.grupos.text20)}}
 if (command == 'tagall' || command == 'invocar' || command == 'todos') {
 if (!m.isGroup) return m.reply(info.group) 
 if (!isGroupAdmins) return m.reply(info.admin)
-const pesan = args.join` `;
+const pesan = args.join ``;
 const oi = `${lenguaje.grupos.text21} ${pesan}`;
-let teks = `❑ ━〔 *📢 ＩＮＶＯＣＡＣＩＯＮ 📢* 〕━ ❑\n\n`
+let teks = `━〔 *📢 𝙄𝙉𝙑𝙊𝘾𝘼𝘾𝙄𝙊𝙉 📢* 〕━➫\n ٩(͡๏̯͡๏)۶𝘿𝙚 𝙇𝙤𝙨 𝙀𝙨𝙥𝙖𝙧𝙩𝙖 𝙋𝙚𝙧𝙙𝙞𝙙𝙤𝙨٩(͡๏̯͡๏)۶\n\n`
 teks += `${oi}\n\n`
 for (let mem of participants) {
 teks += `➥ @${mem.id.split('@')[0]}\n`
