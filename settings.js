@@ -92,16 +92,16 @@ global.faceb = 'https://facebook.com/groups/872989990425789/'
 
 global.n2 = "https://whatsapp.com/channel/0029VaWABAMG8l5K8K9PAB3v" //canal cortaba 
 global.nna = 'https://whatsapp.com/channel/0029Va4QjH7DeON0ePwzjS1A' //Update 
-global.nn = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //LoliBot
-global.nn2 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //Loli & Nova
-global.nn3 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //Grupo de Colaboracion
-global.nn4 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' // Grupo COL 2
-global.nn5 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //Grupo COL 3
+global.nn = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //LoliBot
+global.nn2 = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //Loli & Nova
+global.nn3 = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //Grupo de Colaboracion
+global.nn4 = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' // Grupo COL 2
+global.nn5 = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //Grupo COL 3
 global.nn6 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //test
 global.nn7 = 'https://chat.whatsapp.com/FDRfhecUGrCEQswkg8FUYz' //Grupo ayuda sobre el bot
 global.nn8 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //enlace lolibot
-global.multi = 'https://chat.whatsapp.com/ IhbRST7FS6jAohqNBbKRvj' //Grupo COL 4
-global.nna2 = 'IhbRST7FS6jAohqNBbKRvj'
+global.multi = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //Grupo COL 4
+global.nna2 = 'CR02azpyENb4XZ1RvRhQbd'
 
 //---------[ INFO ]--------- 
 global.info = { wait: '*_▬▭▭▭▭▭▭_*', 
