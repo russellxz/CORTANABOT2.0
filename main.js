@@ -384,11 +384,10 @@ if (global.db.data.chats[m.chat].simi) {
 let textodem = budy
 try {
 await conn.sendPresenceUpdate('composing', m.chat)
-const ressimi = await fetch(`https://api.simsimi.net/v2/?text=${encodeURIComponent(textodem)}&lc=es`)
-const data = await ressimi.json()
-if (data.success == 'No s\u00e9 lo qu\u00e9 est\u00e1s diciendo. Por favor ense\u00f1ame.') return m.reply(`${lol}`); /* EL TEXTO "lol" NO ESTA DEFINIDO PARA DAR ERROR Y USAR LA OTRA API */
+let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/simi?text=${encodeURIComponent(textodem)}`)
+let res = await gpt.json()
 await delay(1 * 1000) 
-await m.reply(data.success)
+await m.reply(res.data.message)
 } catch {
 //🟢 [ES] SI DA ERROR USARA ESTA OTRA OPCION DE API DE IA QUE RECUERDA EL NOMBRE DE LA PERSONA
 //🟢 [EN] IF IT ERROR, IT WILL USE THIS OTHER AI API OPTION THAT REMEMBER THE NAME OF THE PERSON 
