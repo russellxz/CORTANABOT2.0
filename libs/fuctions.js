@@ -1,5 +1,5 @@
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid, toAudio } = require('./fuctions2.js')
-const { default: makeWASocket, WAMessageStubType, relayMessage, areJidsSameUser, generateWAMessage, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, getAggregateVotesInPollMessage, proto } = require("@whiskeysockets/baileys")
+const { default: makeWASocket, WAMessageStubType, relayMessage, areJidsSameUser, generateWAMessage, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, getContentType, makeInMemoryStore, jidDecode, getAggregateVotesInPollMessage, proto } = require("@whiskeysockets/baileys")
 const chalk = require('chalk')
 const fs = require('fs')
 const child_process = require('child_process')
@@ -97,7 +97,33 @@ irq: 0
 exports.getBuffer = async (url, options) => {
 try {
 options ? options : {}
-const res = await axios({method: "get", url, headers: {'DNT': 1, 'Upgrade-Insecure-Request': 1 }, ...options, responseType: 'arraybuffer' }) 
+const res = await axios({
+method: "get",
+url,
+headers: {
+'DNT': 1,
+'Upgrade-Insecure-Request': 1
+},
+...options,
+responseType: 'arraybuffer'
+})
+return res.data
+} catch (err) {
+return err
+}
+}
+
+exports.fetchJson = async (url, options) => {
+try {
+options ? options : {}
+const res = await axios({
+method: 'GET',
+url: url,
+headers: {
+'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
+},
+...options
+})
 return res.data
 } catch (err) {
 return err
@@ -167,16 +193,6 @@ return moment.duration(now - moment(timestamp * 1000)).asSeconds()
 
 exports.getRandom = (ext) => {
 return `${Math.floor(Math.random() * 10000)}${ext}`
-}
-
-exports.fetchBuffer = async (url, options) => {
-try {
-options ? options : {}
-const res = await axios({method: "GET", url, headers: {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36", 'DNT': 1, 'Upgrade-Insecure-Request': 1}, ...options, responseType: 'arraybuffer' })
-return res.data
-} catch (err) {
-return err
-}
 }
 
 exports.fetchJson = async (url, options) => {
@@ -370,6 +386,16 @@ return admins
  */
 
 exports.smsg = (conn, m, hasParent) => {
+const pushname = m.pushName || "Sin nombre" 
+conn.downloadMediaMessage = async (message) => {
+let mime = (message.msg || message).mimetype || ''
+let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
+const stream = await downloadContentFromMessage(message, messageType)
+let buffer = Buffer.from([])
+for await(const chunk of stream) {
+buffer = Buffer.concat([buffer, chunk])}
+return buffer} 
+
 if (!m) return m
 let M = proto.WebMessageInfo
 let protocolMessageKey
@@ -404,7 +430,30 @@ if (!isNumber(user.joincount)) user.joincount = 1;
 if (!('afkReason' in user)) user.afkReason = ''  
 if (!('banned' in user)) user.banned = false
 if (!isNumber(user.limit)) user.limit = 20  
+if (!isNumber(user.gato)) user.gato = 0
+if (!isNumber(user.perro)) user.perro = 0
+if (!isNumber(user.monos)) user.monos = 0
+if (!isNumber(user.lobos)) user.lobos = 0
 if (!isNumber(user.banco)) user.banco = 0
+if (!isNumber(user.tridente)) user.tridente = 0
+if (!isNumber(user.telefeno)) user.telefeno = 0
+if (!isNumber(user.camara)) user.camara = 0
+if (!isNumber(user.reloj)) user.reloj = 0
+if (!isNumber(user.daga)) user.daga = 0
+if (!isNumber(user.television)) user.television = 0
+if (!isNumber(user.impresora)) user.impresora = 0
+if (!isNumber(user.auto)) user.auto = 0
+if (!isNumber(user.moto)) user.moto = 0
+if (!isNumber(user.vehiculo)) user.vehiculo = 0
+if (!isNumber(user.ambulancia)) user.ambulancia = 0
+if (!isNumber(user.avion)) user.avion = 0
+if (!isNumber(user.banco)) user.banco = 0
+if (!isNumber(user.cohete)) user.cohete = 0
+if (!isNumber(user.ovni)) user.ovni = 0
+if (!isNumber(user.helicoptero)) user.helicoptero = 0
+if (!isNumber(user.autobus)) user.autobus = 0
+if (!isNumber(user.fuente)) user.fuente = 0
+if (!isNumber(user.castillo)) user.castillo = 0
 if (!user.premiumTime)  user.premiumTime = 0
 if (!isNumber(user.warn)) user.warn = 0
 if(!isNumber(user.money)) user.money = 0  
@@ -423,6 +472,7 @@ if (!isNumber(user.gajah)) user.gajah = 0
 if (!isNumber(user.kambing)) user.kambing = 0
 if (!isNumber(user.panda)) user.panda = 0
 if (!isNumber(user.buaya)) user.buaya = 0
+if (!isNumber(user.timebatalla)) user.timebatalla = 0
 if (!isNumber(user.kerbau)) user.kerbau = 0
 if (!isNumber(user.sapi)) user.sapi = 0
 if (!isNumber(user.monyet)) user.monyet = 0
@@ -463,6 +513,24 @@ money: 0,
 banco: 0,
 registered: false,
 premium: false, 
+tridente: 0,
+telefeno: 0,
+camara: 0,
+reloj: 0,
+daga: 0,
+television: 0,
+impresora: 0,
+auto: 0,
+moto: 0,
+vehiculo: 0,
+ambulancia: 0,
+avion: 0,
+cohete: 0,
+ovni: 0, 
+helicoptero: 0,
+autobus: 0,
+fuente: 0,
+castillo: 0,
 joincount: 1,
 lastclaim: 0,
 name: m.name,
@@ -470,11 +538,16 @@ Language: 0,
 mensaje: 0,
 lastmiming: 0,
 lastmiming2: 0,
+timebatalla: 0,
 age: -1,
 regTime: -1,
 afk: -1,
 afkReason: '',
 money: 0,  
+lobos: 0,
+monos: 0,
+perro: 0,
+gato: 0,
 health: 100,  
 prem: false,
 premiumTime: 0,
@@ -694,8 +767,10 @@ console.error(m.error)
 
 if (m.message) {
 m.mtype = Object.keys(m.message)[0]
-m.body = m.message.conversation || m.message[m.mtype].caption || m.message[m.mtype].text || (m.mtype == 'listResponseMessage') && m.message[m.mtype].singleSelectReply.selectedRowId || (m.mtype == 'buttonsResponseMessage') && m.message[m.mtype].selectedButtonId || m.mtype
-m.msg = m.message[m.mtype]
+//m.mtype = getContentType(m.message)
+m.msg = (m.mtype == 'viewOnceMessage' ? m.message[m.mtype].message[getContentType(m.message[m.mtype].message)] : m.message[m.mtype])
+m.body = m.message.conversation || m.msg.caption || m.msg.text || (m.mtype == 'listResponseMessage') && m.msg.singleSelectReply.selectedRowId || (m.mtype == 'buttonsResponseMessage') && m.msg.selectedButtonId || (m.mtype == 'viewOnceMessage') && m.msg.caption || m.text
+//m.msg = m.message[m.mtype]
 if (m.mtype == 'protocolMessage' && m.msg.key) { 
 protocolMessageKey = m.msg.key; 
 if (protocolMessageKey == 'status@broadcast') protocolMessageKey.remoteJid = m.chat; 
@@ -1003,6 +1078,128 @@ m.copy = () => exports.smsg(conn, M.fromObject(M.toObject(m)))
      * @returns 
      */
 					
+conn.sendButton = async (jid, text = '', footer = '', buffer, buttons, copy, urls, quoted, options) => {
+  let img, video;
+
+  try {
+    if (/^https?:\/\//i.test(buffer)) {
+      const response = await fetch(buffer);
+      const contentType = response.headers.get('content-type');
+
+      if (/^image\//i.test(contentType)) {
+        img = await prepareWAMessageMedia({ image: { url: buffer } }, { upload: conn.waUploadToServer });
+      } else if (/^video\//i.test(contentType)) {
+        video = await prepareWAMessageMedia({ video: { url: buffer } }, { upload: conn.waUploadToServer });
+      } else {
+        console.error("Tipo MIME no compatible:", contentType);
+      }
+    } else {
+      const type = await conn.getFile(buffer);
+      if (/^image\//i.test(type.mime)) {
+        img = await prepareWAMessageMedia({ image: { url: buffer } }, { upload: conn.waUploadToServer });
+      } else if (/^video\//i.test(type.mime)) {
+        video = await prepareWAMessageMedia({ video: { url: buffer } }, { upload: conn.waUploadToServer });
+      }
+    }
+
+    const dynamicButtons = buttons.map(btn => ({
+      name: 'quick_reply',
+      buttonParamsJson: JSON.stringify({
+        display_text: btn[0],
+        id: btn[1]
+      }),
+    }));
+
+    if (copy && (typeof copy === 'string' || typeof copy === 'number')) {
+      dynamicButtons.push({
+        name: 'cta_copy',
+        buttonParamsJson: JSON.stringify({
+          display_text: 'Copy', copy_code: copy
+        })
+      });
+    }
+
+    if (urls && Array.isArray(urls)) {
+      urls.forEach(url => {
+        dynamicButtons.push({
+          name: 'cta_url',
+          buttonParamsJson: JSON.stringify({
+            display_text: url[0],
+            url: url[1],
+            merchant_url: url[1]
+          })
+        });
+      });
+    }
+
+    const interactiveMessage = {
+      body: { text: text },
+      footer: { text: footer },
+      header: {
+        hasMediaAttachment: false,
+        imageMessage: img ? img.imageMessage : null,
+        videoMessage: video ? video.videoMessage : null
+      },
+      nativeFlowMessage: {
+        buttons: dynamicButtons,
+        messageParamsJson: ''
+      }
+    };
+
+    if (!quoted) {
+      quoted = {};
+    }
+    if (typeof quoted.fromMe === 'undefined') {
+      quoted.fromMe = false; // o el valor por defecto adecuado
+    }
+
+    let msgL = generateWAMessageFromContent(jid, { viewOnceMessage: { message: { interactiveMessage } } }, { userJid: conn.user.jid, quoted });
+    await conn.relayMessage(jid, msgL.message, { messageId: msgL.key.id, ...options });
+  } catch (error) {
+    console.error("Error al enviar el botón:", error);
+  }
+};
+
+
+conn.sendList = async(jid, title, text, buttonText, listSections, quoted, options = {}) => {
+  const sections = [...listSections];
+  const message = {
+    message: {
+      "messageContextInfo": {
+        "deviceListMetadata": {},
+        "deviceListMetadataVersion": 2
+      },
+      interactiveMessage: proto.Message.InteractiveMessage.create({
+        body: proto.Message.InteractiveMessage.Body.create({ text: text }),
+        footer: proto.Message.InteractiveMessage.Footer.create({ text: "" }),
+        header: proto.Message.InteractiveMessage.Header.create({ title: title, subtitle: "", hasMediaAttachment: false }),
+        nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.create({
+          buttons: [
+            {
+              name: 'single_select',
+              buttonParamsJson: JSON.stringify({
+                title: buttonText,
+                sections
+              })
+            }
+          ]
+        }),
+        contextInfo: {
+          mentionedJid: [m.sender],
+          forwardingScore: 1,
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: '120363160031023229@newsletter',
+            newsletterName: `${ucapan()} ${pushname}`, 
+            serverMessageId: ''
+          }
+        }
+      })
+    }
+  };
+  await conn.relayMessage(jid, { viewOnceMessage: message }, {});
+}
+					
 conn.getFile = async (PATH, saveToFile = false) => { 
 let res; let filename; 
 const data = Buffer.isBuffer(PATH) ? PATH : PATH instanceof ArrayBuffer ? PATH.toBuffer() : /^data:.*?\/.*?;base64,/i.test(PATH) ? Buffer.from(PATH.split`,`[1], 'base64') : /^https?:\/\//.test(PATH) ? await (res = await fetch(PATH)).buffer() : fs.existsSync(PATH) ? (filename = PATH, fs.readFileSync(PATH)) : typeof PATH === 'string' ? PATH : Buffer.alloc(0); 
@@ -1095,6 +1292,30 @@ let msg = {...chatUpdate, messages: [proto.WebMessageInfo.fromObject(messages)],
 conn.ev.emit('messages.upsert', msg)
 }
 return m
+}
+
+function ucapan() {
+  const time = moment.tz("America/Los_Angeles").format("HH"); //America/Los_Angeles  Asia/Jakarta   America/Toronto
+
+  let res = "🌉Buenas madrugadas";
+
+  if (time >= 4) {
+    res = "🌇Buenos Días";
+  }
+
+  if (time >= 11) {
+    res = "🏙️Buenas Tardes";
+  }
+
+  if (time >= 15) {
+    res = "🌆Buenas tardes";
+  }
+
+  if (time >= 17) {
+    res = "🌃Buenas noches";
+  }
+
+  return res;
 }
 
 let file = require.resolve(__filename)
