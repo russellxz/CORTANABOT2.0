@@ -74,7 +74,11 @@ global.APIKeys = {
 global.packname = "𝙲𝙾𝚁𝚃𝙰𝙽𝙰𝙱𝙾𝚃-𝟸.𝟶"
 global.author = `${vs}`
  
-//---------[ IMAGEN ]---------
+//---------[ IMAGEN ]--------- 
+global.img = "https://qu.ax/hQrA.jpg"
+global.img1 = 'https://qu.ax/VqDa.jpg'
+global.img2 = 'https://qu.ax/lwJi.jpg' 
+
 global.imagen1 = fs.readFileSync('./media/menu.jpg')
 global.imagen2 = fs.readFileSync('./media/menu2.jpg')
 global.imagen3 = fs.readFileSync('./media/menu3.jpg')
