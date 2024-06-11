@@ -1,12 +1,12 @@
 //Código desde cero y comentarios hecho por: 
 // @gata_dios    
 // @Skidy89  
-// @elrebelde21 
-                      
+// @elrebelde21      
+                        
 //--------------------[ IMPORTACIONES ]-----------------------          
 const baileys = require('@whiskeysockets/baileys'); // trabajar a través de descargas por Whatsapp 
-const { WaMessageStubType, WA_DEFAULT_EPHEMERAL, BufferJSON, areJidsSameUser, downloadContentFromMessage, generateWAMessageContent, generateWAMessageFromContent, generateWAMessage, prepareWAMessageMedia, getContentType,  relayMessage} = require('@whiskeysockets/baileys'); // Importa los objetos 'makeWASocket' y 'proto' desde el módulo '@whiskeysockets/baileys'      
-const { default: makeWASocket, proto } = require("@whiskeysockets/baileys")   
+const { WaMessageStubType, WA_DEFAULT_EPHEMERAL, BufferJSON, areJidsSameUser, downloadContentFromMessage, generateWAMessageContent, generateWAMessageFromContent, generateWAMessage, prepareWAMessageMedia, getContentType,  relayMessage} = require('@whiskeysockets/baileys'); // Importa los objetos 'makeWASocket' y 'proto' desde el módulo '@whiskeysockets/baileys'        
+const { default: makeWASocket, proto } = require("@whiskeysockets/baileys")  
 const moment = require('moment-timezone') // Trabajar con fechas y horas en diferentes zonas horarias
 const gradient = require('gradient-string') // Aplicar gradientes de color al texto     
 const { exec, spawn, execSync } =  require("child_process")// Función 'execSync' del módulo 'child_process' para ejecutar comandos en el sistema operativo 
@@ -63,14 +63,14 @@ let buffer = Buffer.from([])
 for await(const chunk of stream) {  
 buffer = Buffer.concat([buffer, chunk]) }  
 return buffer 
-}   
+}        
   
 module.exports = conn = async (conn, m, chatUpdate, mek, store) => {  
-var budy = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : ''
-  
-//----------------------[ ATRIBUTOS ]-------------------------
-if (m.key.id.startsWith("BAE5")) return  
-var body = (typeof m.text == 'string' ? m.text : '')
+var body =  (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : '' 
+ 
+//----------------------[ ATRIBUTOS ]-------------------------  
+if (m.key.id.startsWith("BAE5")) return    
+var budy = (typeof m.text == 'string' ? m.text : '')   
   var prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : ""
 //var prefix = body.match(/^[/.*#]/)   
 const isCmd = body.startsWith(prefix) 
@@ -562,6 +562,20 @@ user.afkTime = -1
 user.afkReason = ''  
 }
 
+if (m.mtype === 'interactiveResponseMessage') {   
+let msg = m.message[m.mtype]  || m.msg
+if (msg.nativeFlowResponseMessage && !m.isBot ) { 
+let { id } = JSON.parse(msg.nativeFlowResponseMessage.paramsJson) || {}  
+if (id) {
+let emit = { 
+key : { ...m.key } , 
+message:{ extendedTextMessage : { text : id } } ,
+pushName : m.pushName,
+messageTimestamp  : m.messageTimestamp || 754785898978
+}
+return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'})
+}}}
+
 //ARRANCA LA DIVERSIÓN 
 switch (prefix && command) { 
 case 'yts': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
@@ -590,9 +604,9 @@ case 'estado': case 'infobot': case 'owner': case 'creador': case 'contacto': ca
 break      
      
 //activar/desactivar  
-case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'game2': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': enable(m, command, isGroupAdmins, text, command, args, isBotAdmins, isGroupAdmins, isCreator, conn) 
+case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'game2': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': enable(m, command, isGroupAdmins, text, command, args, conn, isBotAdmins, isGroupAdmins, isCreator, conn) 
 break
-    
+     
 //Grupos    
 case 'grupo': case 'delete': case 'del': case 'join': case 'unete': case 'hidetag': case 'notificar': case 'tag': case 'setppgroup': case 'setpp': case 'setppname': case 'nuevonombre': case 'newnombre': case 'setdesc': case 'descripción': case 'anularlink': case 'resetlink': case 'revoke': case 'add': case 'agregar': case 'invitar': case 'kick': case 'echar': case 'sacar': case 'promote': case 'darpoder': case 'demote': case 'quitarpoder': case 'link': case 'linkgc': case 'banchat': case 'tagall': case 'invocar': case 'todos': case 'admins': case 'administradores': case 'infogrupo': case 'groupinfo': case 'warn': case 'advertencia': case 'unwarn': case 'quitardvertencia': case 'listwarn': case 'enline': case 'online': case 'listonine': case 'listaenlinea': case 'enlinea': case 'listonline': case 'setrules': case 'addrules': case 'addrule': case 'rules': grupo(m, command, isGroupAdmins, text, conn, participants, isBotAdmins, args, isCreator, delay, sender, quoted, mime, from, isCreator, groupMetadata, fkontak, delay) 
 break    
@@ -727,8 +741,8 @@ break
 case 'memes': case 'loli': case 'lolivid': case 'neko': case 'akira': case 'akiyama': case 'anna': case 'asuna': case 'ayuzawa': case 'boruto': case 'chiho': case 'chitoge': case 'deidara': case 'erza': case 'elaina': case 'eba': case 'emilia': case 'hestia': case 'hinata': case 'inori': case 'isuzu': case 'itachi': case 'itori': case 'kaga': case 'kagura': case 'kaori': case 'keneki': case 'kotori': case 'kurumi': case 'madara': case 'mikasa': case 'miku': case 'minato': case 'naruto': case 'nezuko': case 'sagiri': case 'sasuke': case 'sakura': case 'cosplay': case 'blackpink': case 'navidad': case 'china': case 'cod': randow(m, sender, command, sendImageAsUrl, pickRandom, conn) 
 break     
 case 'horny': case 'simp': case 'lolice': case 'comentar': case 'comment': randow2(conn, m, command, text, sender, pushname)  
-break 
-
+break   
+ 
 //descargas
 case 'play': case 'musica': case 'play2': case 'video': case 'play3': case 'playdoc': case 'playaudiodoc': case 'ytmp3doc': case 'play4': case 'playdoc2': case 'playvideodoc': case 'ytmp4doc': case "ytmp3": case "ytaudio": case 'ytmp4': case 'ytvideo': case 'music': case 'spotify': case 'gitclone': case 'tiktok': case 'tt': case 'lyrics': case 'letra': case 'mediafire': case 'tiktokimg': case 'ttimg': case 'play.1': case 'play.2': descarga(m, command, conn, text, command, args, fkontak, from, lolkeysapi)   
 break
@@ -738,8 +752,9 @@ break
 //rpg  
 case 'reg': case 'verificar': case 'Registrar': case 'unreg': case 'myns': await reg(command, conn, m, sender, text, budy, fkontak, delay, args) 
 break     
-case 'lb': case 'leaderboard': case 'afk': case 'rob': case 'robar': case 'buy': case 'buyall': case 'bal': case 'balance': case 'diamond': case 'minar': case 'mine': case 'trabajar': case 'work': case 'w': case 'claim': case 'daily': case 'perfil': case 'levelup': case 'nivel': case 'cofre': case 'minar2': case 'mine2': case 'crime': case 'Crime': case 'dep': case 'depositar': case 'retirar': case 'toremove': rpg(m, command, participants, args, sender, pushname, text, conn, fkontak, who)    
-break             
+case 'lb': case 'leaderboard': case 'millonarios': case 'topmillonarios': case 'afk': case 'rob': case 'robar': case 'buy': case 'buyall': case 'bal': case 'balance': case 'diamond': case 'perro': case 'minar': case 'mine': case 'trabajar': case 'work': case 'w': case 'claim': case 'daily': case 'batalla2':  case 'batalla': case 'perfil': case 'levelup': case 'nivel': case 'cofre': case 'minar2': case 'mine2': case 'crime': case 'Crime': case 'dep': case 'depositar': case 'retirar': case 'toremove': case 'castillo': case 'fuente': case 'autobus': case 'helicóptero': case 'helicoptero': case 'ovni': case 'cohete': case 'avión': case 'avion': case 'ambulancia': case 'vehículo': case 'vehiculo': case 'moto': case 'motor': case 'auto': case 'autor': case 'impresora': case 'television': case 'daga': case 'reloj': case 'camara': case 'tridente': case 'lobos': case 'perro': case 'monos': case 'gato': rpg(m, command, participants, args, sender, pushname, text, conn, fkontak, who)     
+break                  
+  
 case 'transferir': case 'transfer': case 'regalar': {
 let items = ['money', 'exp', 'limit']
 this.confirm = this.confirm ? this.confirm : {}
@@ -760,10 +775,178 @@ await conn.sendTextWithMentions(m.chat, confirm, m)
 this.confirm[m.sender.split('@')[0]] = { sender: m.sender, to: who, message: m, type, count, timeout: setTimeout(() => (m.reply(`*⚠️ Se acabó el tiempo, no se obtuvo respuesta. Transferencia cancelada.*`), delete this.confirm[m.sender.split('@')[0]]), 60 * 1000)}}
 break
       
+case 'tienda': case 'tiendas': 
+ conn.sendButton(m.chat, `꧁🪼𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝐒𝐓𝐎𝐑𝐄🪼꧂
+█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+█-----╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗-----█
+█-----║║║╠─║─║─║║║║║╠─-----█
+█-----╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝-----█
+█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
+💳Todas las compras
+serán en créditos💳
+
+❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
+🤑ℂ𝕠𝕞𝕡𝕣𝕒𝕣 𝕒𝕕𝕞𝕚𝕟𝕚𝕤𝕥𝕣𝕒𝕔𝕚𝕠𝕟🤑
+
+║▌│█║▌│ █║▌│█│║▌║
+➫ ${prefix}buyAdmins 1 = 15 ᴍɪɴᴜᴛᴏs (PRECIO:1000)
+➫ ${prefix}buyAdmins 4 = 1 ʜᴏʀᴀ(PRECIO:4000)
+➫ ${prefix}buyAdmins 12 = 3 ʜᴏʀᴀs(PRECIO:12.000)
+➫ ${prefix}buyAdmins 16 = 4 ʜᴏʀᴀs(PRECIO:18,000)
+➫ ${prefix}buyAdmins 576 = 1 sᴇᴍᴀɴᴀ(PRECIO:576.000)
+║▌│█║▌│ █║▌│█│║▌║
+
+🚫 *(𝑆𝑒 𝑟𝑒𝑣𝑜𝑐𝑎𝑟𝑎 𝑙𝑎 𝑎𝑑𝑚𝑖𝑛𝑖𝑠𝑡𝑟𝑎𝑐𝑖𝑜𝑛 𝑎𝑛𝑡𝑒𝑠 𝑑𝑒𝑙 𝑡𝑖𝑒𝑚𝑝𝑜 𝑐𝑜𝑚𝑝𝑟𝑎𝑑𝑜 𝑠𝑖 𝑑𝑖𝑐ℎ𝑜 𝑐𝑜𝑚𝑝𝑟𝑎𝑑𝑜𝑟 𝑖𝑛𝑐𝑢𝑚𝑝𝑙𝑒 𝑎𝑙𝑔𝑢𝑛𝑎 𝑟𝑒𝑔𝑙𝑎 𝑜 𝑎𝑏𝑢𝑠𝑎 𝑑𝑒 𝑠𝑢 𝑐𝑎𝑟𝑔𝑜)*🚫
+
+❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
+☺️ℂ𝕠𝕞𝕡𝕣𝕒𝕣 𝕞𝕒𝕤𝕔𝕠𝕥𝕒𝕤☺️
+❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
+➫ .ᴘᴇʀʀᴏ(PRECIO:100)🐕 
+➫ .ɢᴀᴛᴏ(PRECIO:100)🐈‍⬛
+➫ .ʟᴏʙᴏ(PRECIO:100)🐺
+➫ .ᴍᴏɴᴏ(PRECIO:100)🙉 
+
+❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
+*COMANDO PARA SUBIRLOS DE NIVEL SON:*
+➫.BATALLA
+➫.BATALLA2
+❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
+⚠️ _*𝑃𝑟𝑒𝑐𝑎𝑢𝑐𝑖𝑜𝑛, 𝑠𝑜𝑙𝑜 𝑠𝑒 𝑝𝑒𝑟𝑚𝑖𝑡𝑒 𝑙𝑎 𝑐𝑜𝑚𝑝𝑟𝑎 𝑑𝑒 𝑢𝑛𝑎 𝑚𝑎𝑠𝑐𝑜𝑡𝑎, 𝑒𝑙𝑖𝑔𝑒 𝑐𝑜𝑛 𝑐𝑢𝑖𝑑𝑎𝑑𝑜 𝑦𝑎 𝑞𝑢𝑒 𝑛𝑜 𝑝𝑜𝑑𝑟𝑎𝑠 𝑐𝑎𝑚𝑏𝑖𝑎𝑟 𝑑𝑒𝑠𝑝𝑢𝑒𝑠*_⚠️
+
+❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
+🤑ℂ𝕠𝕞𝕡𝕣𝕒𝕣 𝕠𝕓𝕛𝕖𝕥𝕠𝕤 𝕔𝕠𝕝𝕖𝕔𝕔𝕚𝕠𝕟𝕒𝕓𝕝𝕖𝕤🤑
+ᴘᴀʀᴀ ᴍɪʟʟᴏɴᴀʀɪᴏs:
+ 
+◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆
+🔱➫.ᴛʀɪᴅᴇɴᴛᴇ (ʀᴇʟɪǫᴜɪᴀ ᴍɪsᴛᴇʀɪᴏsᴀ)
+PRECIO:3000
+☎️➫.ᴛᴇʟᴇғᴏɴᴏ ᴀɴᴛɪɢᴜᴏ 
+PRECIO:1000
+📱 ➫.ᴛᴇʟᴇғᴏɴᴏ (ᴜʟᴛɪᴍᴀ ɢᴇɴᴇʀᴀᴄɪᴏɴ)
+PRECIO:2000
+📸 ➫.ᴄᴀᴍᴀʀᴀ (ғᴏᴛᴏɢʀᴀғɪᴄᴀ)
+PRECIO:500
+🕰️ ➫.ʀᴇʟᴏᴊ (ᴀɴᴛɪɢᴜᴏ ᴍᴀʟᴅɪᴄɪᴏɴ ᴅᴇ ʟᴀ ᴍᴇᴅɪᴀ ɴᴏᴄʜᴇ)
+PRECIO:7000
+🗡️ ➫.ᴅᴀɢᴀ (ᴍᴀɴɢᴏ ᴅᴇ sᴀɴɢʀᴇ)
+PRECIO:9000
+📺 ➫.ᴛᴇʟᴇᴠɪsᴏʀ (ᴀɴᴛɪɢᴜᴏ)
+PRECIO: 5000
+📠 ➫.ɪᴍᴘʀᴇsᴏʀᴀ (ᴘʀɪᴍᴇʀᴀ ᴅᴇʟ ᴍᴜɴᴅᴏ)
+PRECIO: 3000
+🚗 ➫.ᴀᴜᴛᴏ (ᴅᴇ ᴄᴏʟᴇᴄᴄɪᴏɴ) 
+PRECIO: 25,000
+🏍️ ➫.ᴍᴏᴛᴏ (ᴅᴇ ᴄᴀᴍᴜғʟᴀᴊᴇ ᴍᴀɢɪᴄᴏ) 
+ PRECIO: 50,000
+🚓➫.ᴠᴇʜɪᴄᴜʟᴏ (ᴘᴏʟɪᴄɪᴀʟ) 
+PRECIO:70,000
+🚑➫.ᴀᴍʙᴜʟᴀɴᴄɪᴀ (ʀᴇsᴄᴀᴛɪsᴛᴀ ᴅᴇ ᴍᴀsᴄᴏᴛᴀs)
+PRECIO:40,000
+🛩️➫.ᴀᴠɪᴏɴ (ᴠɪᴀᴊᴇs ɪʟɪᴍɪᴛᴀᴅᴏs)
+ PRECIO:100,000
+🚀➫.ᴄᴏʜᴇᴛᴇ (ᴅᴇ ʟᴀ ɴᴀsᴀ)
+PRECIO:1000,000
+ 🛸➫.ᴏᴠɴɪ (ᴍɪsᴛᴇʀɪᴏsᴏ)
+PRECIO:2000,000
+ 🚁➫.ʜᴇʟɪᴄᴏᴘᴛᴇʀᴏ 
+PRECIO:50,000
+ 🚍➫.ᴀᴜᴛᴏʙᴜs 
+PRECIO:20,000
+⛲➫.ғᴜᴇɴᴛᴇ (ᴅᴇ ʟᴏs ᴅᴇsᴇᴏs)
+ PRECIO:10,000
+🏰➫.ᴄᴀsᴛɪʟʟᴏ (ᴀɴᴛɪɢᴜᴏ)
+PRECIO:5000,000
+◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆
+
+😃𝐆𝐫𝐚𝐜𝐢𝐚𝐬 𝐩𝐨𝐫 𝐯𝐢𝐬𝐢𝐭𝐚𝐫 𝐥𝐚😃
+🪼𝐂𝐨𝐫𝐭𝐚𝐧𝐚 𝐒𝐭𝐨𝐫𝐞 𝟐.𝟎🪼
+💳𝑽𝑼𝑬𝑳𝑽𝑨 𝑷𝑹𝑶𝑵𝑻𝑶.💳`, botname, null, [['IR A MI ARTICULO', '.misarticulos'], ['VER TOP MILLONARIO', '.millonarios'], ['COMPRAR ADMINS', '.buyAdmins 1']], null, null, m)
+break
+
+case 'cartera': {
+let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+let user = global.db.data.users[who]
+if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
+m.reply(`El usuarios ${pushname} en sus cartera tiene:
+
+${user.limit} Crédito 💳
+${user.exp} Exp ⚒️
+${user.coins} Coins 🪙`)}
+break
+
+case 'misarticulos': case 'articulo': case 'inventario': case 'inventory': {
+let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+let user = global.db.data.users[who]
+if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
+//m.reply() 
+conn.sendButton(m.chat, `⊰᯽⊱┈─────╌❊╌────┈⊰᯽⊱
+😎𝑇𝑈 𝐶𝑂𝐿𝐸𝐶𝐶𝐼𝑂𝑁😎
+😎𝐷𝐸 𝐴𝑅𝑇𝐼𝐶𝑈𝐿𝑂😎
+
+👇𝑇𝐼𝐸𝑁𝐸𝑆:👇
+
+《🔱》➫ ${user.tridente}
+《☎️》➫ ${user.telefeno}
+《 📸》➫ ${user.camara}
+《 🕰️ 》➫ ${user.reloj}
+《🗡️》➫ ${user.daga}
+《📺 》➫ ${user.television}
+《📠》 ➫ ${user.impresora}
+《🚗 》➫ ${user.auto}
+《🏍️》➫ ${user.moto}
+《 🚓》➫ ${user.vehiculo}
+《🚑》➫ ${user.ambulancia}
+《🛩️》➫ ${user.avion}
+《🚀》➫ ${user.cohete}
+《🛸》➫ ${user.ovni}
+《🚁》➫ ${user.helicoptero}
+《 🚍》➫ ${user.autobus}
+《⛲》➫ ${user.fuente}
+《🏰》➫ ${user.castillo}
+⊰᯽⊱┈─────╌❊╌─────┈⊰᯽⊱`, `🤑ᴘᴀʀᴀ ᴠᴇʀ ᴇɴ ǫᴜᴇ ᴛᴏᴘ ᴇsᴛᴀs ᴘᴏɴ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ ᴛᴏᴘ:#ᴍɪʟʟᴏɴᴀʀɪᴏs`, null, [['IR AL MENU', '.menu']], null, null, m)
+}
+break
+
+case 'buyAdmins': case 'comprarAdmins': {      
+var tiempoPremium = 5 * text // tiempo total en minutos multiplicado por el factor
+var tiempoDecretado = 5 * 1 // tiempo decretado en minutos
+const costo = 1000 // costo en créditos
+let user = global.db.data.users[m.sender]
+    
+if (!text) return m.reply(`🚫 Usar como este ejemplo: ${prefix + command} 1`)
+if (isNaN(text)) return 
+if (user.limit < costo * text) return m.reply(`No tiene suficiente 💳 Créditos para comprar administración`)
+user.limit -= costo * text
+
+var tiempo = 900000 * text // 900000 ms = 15 min
+var now = new Date().getTime()
+if (now < user.premiumTime) user.premiumTime += tiempo
+else user.premiumTime = now + tiempo
+
+conn.groupParticipantsUpdate(m.chat, [m.sender], 'promote')
+
+ await m.reply(`😎 FELICIDADES 🎊 
+
+Haz comprado administración por *${tiempo / 60000} MINUTOS*
+
+*💳 Has gastado:* ${costo * text} Créditos 
+
+🚫 *(𝑆𝑒 𝑟𝑒𝑣𝑜𝑐𝑎𝑟𝑎 𝑙𝑎 𝑎𝑑𝑚𝑖𝑛𝑖𝑠𝑡𝑟𝑎𝑐𝑖𝑜𝑛 𝑎𝑛𝑡𝑒𝑠 𝑑𝑒𝑙 𝑡𝑖𝑒𝑚𝑝𝑜 𝑐𝑜𝑚𝑝𝑟𝑎𝑑𝑜 𝑠𝑖 𝑑𝑖𝑐ℎ𝑜 𝑐𝑜𝑚𝑝𝑟𝑎𝑑𝑜𝑟 𝑖𝑛𝑐𝑢𝑚𝑝𝑙𝑒 𝑎𝑙𝑔𝑢𝑛𝑎 𝑟𝑒𝑔𝑙𝑎 𝑜 𝑎𝑏𝑢𝑠𝑎 𝑑𝑒 𝑠𝑢 𝑐𝑎𝑟𝑔𝑜)* 🚫`)
+//Configura el temporizador para revocar la administración
+setTimeout(() => {
+conn.groupParticipantsUpdate(m.chat, [m.sender], 'demote')
+.then(() => {
+m.reply(`Tu tiempo como administrador ha terminado. 🥺`)
+}).catch((err) => {
+console.error('Error al degradar al usuario:', err)
+})}, tiempo)
+}
+break
+      
 //stickers  
 case 's': case 'sticker': case 'wm': case 'take': case 'attp': case 'dado': case 'qc': stickers(m, command, conn, mime, quoted, args, text, lolkeysapi, fkontak)   
 break
-  
+
 //idiomas 
 case 'idioma': case 'Language': case 'idiomas': { 
 let user = global.db.data.users[m.sender]
