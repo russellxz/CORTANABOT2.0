@@ -100,7 +100,7 @@ npm i -g pm2 && pm2 start index.js && pm2 save && pm2 logs
 
 ### 🟢 INFINITY HOST
 ### □ ACTIVAR EN INFINITY-HOST
-[![blog](https://img.shields.io/badge/infinity-Mystic-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
+[![blog](https://img.shields.io/badge/Tutorial-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
 ](https://youtu.be/c9RCnOV418E?si=kNWog_fSi8wCWX3A)
 
 <a href="https://dashboard.infinitywa.xyz"><img src="https://qu.ax/TPhh.jpg" height="125px"></a>
