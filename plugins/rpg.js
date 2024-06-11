@@ -16,6 +16,11 @@ let minar = `${pickRandom(['Que pro 😎 has minado',
 '🌟✨ Genial!! Obtienes', 'WOW!! eres un(a) gran Minero(a) ⛏️ Obtienes', 'Has Minado!!', '😲 Lograste Minar la cantidad de', 'Tus Ingresos subiran gracias a que minaste', '⛏️⛏️⛏️⛏️⛏️ Minando', '🤩 SII!!! AHORA TIENES', 'La minaria esta de tu lado, por ello obtienes', '😻 La suerte de Minar', '♻️ Tu Mision se ha cumplido, lograste minar', '⛏️ La Mineria te ha beneficiado con', '🛣️ Has encontrado un Lugar y por minar dicho lugar Obtienes', '👾 Gracias a que has minado tus ingresos suman', 'Felicidades!! Ahora tienes','⛏️⛏️⛏️ Obtienes', '⛏️ has obtenido'])}` 
 let robar = `${pickRandom(['Robaste un Banco 🏦 y Obtuviste', 'Negociarte con el jefe de la mafia y Obtuviste :', 'Casi te atrapa la policía pero lograste robar una cantidad valiosa de 💰. !Te cuidado la próxima vez! Obtuviste:', 'Los mafiosos te han pagado :', 'Le has robado al Administrador del Grupo', 'Le robarte a tu presidente una sumar de :', 'le robarte a un famoso un valor de :', 'Entraste sigilosamente en el museo y robaste una obra de arte valiosa:', 'Infiltraste una joyería y obtuviste un botín impresionante:', 'Te convertiste en el ladrón más buscado del país, obtuviste:', 'Robaste un camión lleno de productos valiosos y obtuviste', 'Asaltaste un tren y conseguiste', 'Robaste un avión cargado de mercancía y obtuviste', 'Te hiciste pasar por un millonario para robar una joya única, obtuviste', 'Entraste a la casa de un coleccionista de arte y robaste una pieza invaluable, obtuviste', 'Secuestraste a un empresario y conseguiste un rescate importante:', 'Amenazaste a un político y obtuviste una gran suma de dinero:', 'Sobornaste a un oficial de policía para obtener información valiosa, conseguiste'])}` 
 let robmal = `${pickRandom(['LA POLICIA TE VIO 🙀👮‍♂️ PERDISTE', 'Fuiste a robar un banco 🏦 y tu ayudarte que vendio a la policía, perdiste', 'No pudiste escapar de la Policía 🚔🤡, perdiste :', 'Intentaste robar un casino pero te descubrieron, perdiste', 'Te atraparon tratando de robar una tienda, perdiste :', 'La alarma sonó cuando intentabas robar un almacén, perdiste', 'El dueño del lugar te atrapó in fraganti, perdiste', 'Intentaste hackear una cuenta bancaria pero te rastrearon, perdiste', 'Fuiste descubierto tratando de sobornar a un oficial, perdiste', 'Tu plan para chantajear a un empresario salió mal, perdiste'])}` 
+
+let batall = `${pickRandom(['🐾 ᴀᴛʀᴀᴘᴀʀᴏɴ ᴀ ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ᴏʀɪɴᴀɴᴅᴏ ᴇʟ ᴊᴀʀᴅɪɴ ᴅᴇʟ ᴠᴇᴄɪɴᴏ, ᴘᴇʀᴅɪsᴛᴇ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ɪɴᴛᴇɴᴛᴏ ᴠᴏʟᴀʀ ʏ ɴᴏ ғᴜᴇ ᴘᴏsɪʙʟᴇ, ᴘᴇʀᴅɪᴏ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ᴅᴇsᴄᴜʙʀɪᴏ ǫᴜᴇ ʟᴀs ᴀʙᴇᴊᴀs ᴘɪᴄᴀɴ, ʜᴀ ᴘᴇʀᴅɪᴅᴏ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ᴄᴀsɪ ᴍᴜᴇʀᴇ ᴘᴏʀ ᴍᴏʀᴅᴇʀ ʟᴀ ʟʟᴀɴᴛᴀ ᴅᴇ ᴜɴ ᴄᴀʀʀᴏ ʏ ᴘᴇʀᴅɪᴏ: 7282xᴘ', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ sᴇ ʜᴀ ᴘᴇʀᴅɪᴅᴏ ᴅᴏs ᴅɪᴀs ᴇɴ ᴇʟ ʙᴏsǫᴜᴇ, ʜᴀ ᴘᴇʀᴅɪᴅᴏ:'])}` 
+
+let batall2 = `${pickRandom(['🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ʀᴏʙᴏ ᴇʟ ᴘᴇʀɪᴏᴅɪᴄᴏ ᴅᴇʟ ᴠᴇᴄɪɴᴏ, ʜᴀ ɢᴀɴᴀᴅᴏ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ᴀʜᴜʏᴇɴᴛᴏ ᴀ ᴜɴᴀ ᴀʀᴅɪʟʟᴀ, ʜᴀ ɢᴀɴᴀᴅᴏ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ʜᴀ ɢᴀɴᴀᴅᴏ ᴜɴ ᴘᴀᴛᴇᴛɪᴄᴏ ᴅᴇ ᴘᴏᴋᴇʀ... ɴᴏ sᴀʙᴇᴍᴏs ᴄᴏᴍᴏ ʟᴏ ʜɪᴢᴏ ᴘᴇʀᴏ ʜᴀ ɢᴀɴᴀᴅᴏ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ sᴇ ʜᴀ ᴄᴏᴍɪᴅᴏ ᴛᴏᴅᴀ sᴜ ᴄᴏᴍɪᴅᴀ, ʜᴀs ɢᴀɴᴀᴅᴏ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ʜᴀ ᴠᴇɴᴄɪᴅᴏ ᴀ ᴜɴ ᴊᴀʙᴀʟɪ ᴜsᴀɴᴅᴏ ᴛᴇᴄɴɪᴄᴀs ᴘʀᴏʜɪʙɪᴅᴀs ᴘᴏʀ ᴇsᴏ ʀᴇᴄɪʙᴇ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ʜᴀ ᴘᴇʟᴇᴀᴅᴏ ᴄᴏɴ ᴜɴ ɢᴀᴛᴏ ᴄᴀʟʟᴇᴊᴇʀᴏ, ʜᴀ ɢᴀɴᴀᴅᴏ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ʟᴏɢʀᴏ ᴄʀᴜᴢᴀʀ ᴄᴏɴ ᴇxɪᴛᴏ ᴜɴ ʀɪᴏ, ʜᴀ ɢᴀɴᴀᴅᴏ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ʜᴀ ᴘᴇʟᴇᴀᴅᴏ ᴄᴏɴᴛʀᴀ ᴜɴ ᴏsᴏ, ʏ ɢᴀɴᴏ:', '🐾ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ʜᴀ ᴄᴀᴢᴀᴅᴏ ᴜɴ ʀᴀᴛᴏɴ ᴘᴀʀᴀ ᴛɪ, ᴏʙᴛᴜᴠᴏ:', '🐾 ᴛᴜ ᴍᴀsᴄᴏᴛᴀ ʜᴀ ʀᴇsᴄᴀᴛᴀᴅᴏ ᴀ ᴜɴ ɴɪñᴏ ᴅᴇ ᴀʜᴏɢᴀʀsᴇ ᴇɴ ᴜɴᴀ ᴘɪsᴄɪɴᴀ, ʜᴀ ɢᴀɴᴀᴅᴏ:'])}`
+
 let verificados2 = 'https://qu.ax/siRk.mp4'
 
 async function reg(command, conn, m, sender, text, budy, fkontak, delay, args) {
@@ -133,6 +138,37 @@ ${sortedLevel.slice(0, len).map(({jid, role, level}, i) => `║${i + 1}. ${parti
 conn.sendMessage(m.chat, { text: texto, contextInfo:{
 mentionedJid: [...texto.matchAll(/@(\d{0,16})/g)].map(v => v[1] + '@s.whatsapp.net')}}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 
+if (command == 'millonarios' || command == 'topmillonarios') {
+const { 
+        tridente, telefono, camara, reloj, daga, television, impresora, 
+        auto, moto, vehiculo, ambulancia, avion, cohete, ovni, helicoptero, 
+        autobus, fuente, castillo 
+    } = global.db.data.users[who];
+
+    if (!m.isGroup) return m.reply(info.group);
+
+    let member = participants.map(u => u.id);
+    let me = m.split;
+    const users = Object.entries(global.db.data.users).map(([key, value]) => {
+        const totalArticulos = value.tridente + value.telefono + value.camara + value.reloj + value.daga + value.television +
+            value.impresora + value.auto + value.moto + value.vehiculo + value.ambulancia + value.avion + value.cohete + 
+            value.ovni + value.helicoptero + value.autobus + value.fuente + value.castillo;
+        return { ...value, jid: key, totalArticulos };
+    });
+
+    const sortedUsers = users.sort((a, b) => b.totalArticulos - a.totalArticulos);
+    const len = args[0] && args[0].length > 0 ? Math.min(100, Math.max(parseInt(args[0]), 10)) : Math.min(10, sortedUsers.length);
+
+ const texto = `🤑𝐓𝐎𝐏 ${len} 𝐌𝐈𝐋𝐋𝐎𝐍𝐀𝐑𝐈𝐎𝐒🤑
+ᴄᴏɴ ᴀʀᴛɪᴄᴜʟᴏ ᴅᴇ ᴄᴏʟᴇᴄᴄɪᴏɴ:
+▂ ▃ ▄ ▅ ▆ ▇ █ █ ▇ ▆ ▅ ▄ ▃ ▂ 
+
+𝚃𝚞 : ${sortedUsers.findIndex(u => u.jid === m.sender) + 1} 𝚍𝚎 ${sortedUsers.length} 
+${sortedUsers.slice(0, len).map(({jid, totalArticulos}, i) => `║${i + 1}. ${participants.some((p) => jid === p.jid) ? `(${conn.getName(jid)}) wa.me/` : '@'}${jid.split`@`[0]} ➢ TIENE: (${totalArticulos}) ARTICULOS 😎`).join('\n')}
+█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█`.trim();
+conn.sendMessage(m.chat, { text: texto, contextInfo: { mentionedJid: [...texto.matchAll(/@(\d{0,16})/g)].map(v => v[1] + '@s.whatsapp.net') }}, { quoted: m, ephemeralExpiration: 24 * 60 * 1000, disappearingMessagesInChat: 24 * 60 * 1000 });
+}
+
 if (command == 'afk') {
 if (!m.isGroup) return m.reply(info.group) 
 let user = global.db.data.users[m.sender]
@@ -195,6 +231,427 @@ global.db.data.users[m.sender].exp -= 350 * count;
 global.db.data.users[m.sender].limit += count;
 m.reply(`╔═❖ ${lenguaje.rpg.buy}\n║‣ ${lenguaje.rpg.buy2} ${count}💎\n║‣ ${lenguaje.rpg.buy3} ${350 * count} XP\n╚═══════════════`);
 } else m.reply(`${lenguaje.rpg.buy4} *${count}* ${lenguaje.rpg.buy5}`)
+}
+
+if (command == 'tridente') {
+let count = command.replace(/^tridente/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 3000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 3000 * count) {
+global.db.data.users[m.sender].limit -= 3000 * count;
+global.db.data.users[m.sender].tridente += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *CASTILLO 🏰*
+‣ ${lenguaje.rpg.buy3}: ${3000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un tridente`)
+}
+
+if (command == 'telefenos') {
+let count = command.replace(/^telefeno/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 1000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 1000 * count) {
+global.db.data.users[m.sender].limit -= 1000 * count;
+global.db.data.users[m.sender].telefeno += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *TELÉFONO📞*
+‣ ${lenguaje.rpg.buy3}: ${1000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un teléfono`)
+}
+ 
+if (command == 'camara') {
+let count = command.replace(/^camara/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 500) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 500 * count) {
+global.db.data.users[m.sender].limit -= 500 * count;
+global.db.data.users[m.sender].camara += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *CÁMARA📷*
+‣ ${lenguaje.rpg.buy3}: ${500 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un camara`)
+}
+
+if (command == 'reloj') {
+let count = command.replace(/^reloj/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 7000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 7000 * count) {
+global.db.data.users[m.sender].limit -= 7000 * count;
+global.db.data.users[m.sender].reloj += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *RELOJ⏰*
+‣ ${lenguaje.rpg.buy3}: ${7000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un reloj`)
+}
+
+if (command == 'daga') {
+let count = command.replace(/^daga/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 9000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 9000 * count) {
+global.db.data.users[m.sender].limit -= 9000 * count;
+global.db.data.users[m.sender].daga += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *DAGA🗡️*
+‣ ${lenguaje.rpg.buy3}: ${9000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un daga`)
+}
+
+if (command == 'television') {
+let count = command.replace(/^television/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 5000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 5000 * count) {
+global.db.data.users[m.sender].limit -= 5000 * count;
+global.db.data.users[m.sender].television += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *TELEVISIÓN📺*
+‣ ${lenguaje.rpg.buy3}: ${5000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un televisor`)
+}
+
+if (command == 'impresora') {
+let count = command.replace(/^impresora/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 3000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 3000 * count) {
+global.db.data.users[m.sender].limit -= 3000 * count;
+global.db.data.users[m.sender].impresora += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *IMPRESORA🖨️*
+‣ ${lenguaje.rpg.buy3}: ${3000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un impresora`)
+}
+
+if (command == 'auto') {
+let count = command.replace(/^auto/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 25000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 25000 * count) {
+global.db.data.users[m.sender].limit -= 25000 * count;
+global.db.data.users[m.sender].auto += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *AUTOR🚗*
+‣ ${lenguaje.rpg.buy3}: ${25000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un autor`)
+}
+
+if (command == 'moto') {
+let count = command.replace(/^moto/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 50000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 50000 * count) {
+global.db.data.users[m.sender].limit -= 50000 * count;
+global.db.data.users[m.sender].moto += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *MOTOR🏍*
+‣ ${lenguaje.rpg.buy3}: ${50000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un motor`)
+}
+
+if (command == 'vehiculo' || command == 'vehículo') {
+let count = command.replace(/^vehiculo/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 70000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 70000 * count) {
+global.db.data.users[m.sender].limit -= 70000 * count;
+global.db.data.users[m.sender].vehiculo += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *VEHÍCULO🚓*
+‣ ${lenguaje.rpg.buy3}: ${70000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un Vehículo`)
+}
+
+if (command == 'ambulancia') {
+let count = command.replace(/^ambulancia/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 40000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 40000 * count) {
+global.db.data.users[m.sender].limit -= 40000 * count;
+global.db.data.users[m.sender].ambulancia += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *AMBULANCIA🚑*
+‣ ${lenguaje.rpg.buy3}: ${40000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un ambulancia`)
+}
+
+if (command == 'avion' || command == 'avión') {
+let count = command.replace(/^avion/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 100000 * count) {
+global.db.data.users[m.sender].limit -= 100000 * count;
+global.db.data.users[m.sender].avion += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *AVIÓN✈*
+‣ ${lenguaje.rpg.buy3}: ${100000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un avión`)
+}
+
+if (command == 'cohete') {
+let count = command.replace(/^cohete/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 1000000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 1000000 * count) {
+global.db.data.users[m.sender].limit -= 1000000 * count;
+global.db.data.users[m.sender].cohete += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *COHETE🚀*
+‣ ${lenguaje.rpg.buy3}: ${1000000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un cohete`)
+}
+
+if (command == 'ovni') {
+let count = command.replace(/^ovni/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 2000000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 2000000 * count) {
+global.db.data.users[m.sender].limit -= 2000000 * count;
+global.db.data.users[m.sender].ovni += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *ONVI🛸*
+‣ ${lenguaje.rpg.buy3}: ${2000000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un onvi`)
+}
+
+ if (command == 'helicoptero' || command == 'helicóptero') {
+let count = command.replace(/^helicoptero/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 50000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 50000 * count) {
+global.db.data.users[m.sender].limit -= 50000 * count;
+global.db.data.users[m.sender].helicoptero += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *HELICÓPTERO🚁*
+‣ ${lenguaje.rpg.buy3}: ${50000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un helicóptero`)
+}
+
+ if (command == 'autobus') {
+let count = command.replace(/^autobus/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 30000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 30000 * count) {
+global.db.data.users[m.sender].limit -= 30000 * count;
+global.db.data.users[m.sender].autobus += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *AUTOBÚS🚌*
+‣ ${lenguaje.rpg.buy3}: ${30000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un autobús`)
+}
+
+ if (command == 'fuente') {
+let count = command.replace(/^fuente/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 10000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 10000 * count) {
+global.db.data.users[m.sender].limit -= 10000 * count;
+global.db.data.users[m.sender].fuente += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *FUENTE ⛲*
+‣ ${lenguaje.rpg.buy3}: ${10000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un fuente`)
+}
+
+if (command == 'castillo') {
+let count = command.replace(/^castillo/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 5000000) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].limit >= 5000000 * count) {
+global.db.data.users[m.sender].limit -= 5000000 * count;
+global.db.data.users[m.sender].castillo += count;
+m.reply(`💫 Felicidades ✨
+
+Has comprado: ${count} *CASTILLO 🏰*
+‣ ${lenguaje.rpg.buy3}: ${5000000 * count}
+
+_Para ver tus artículos por el comando: #misarticulos_ 
+${lenguaje.rpg.buy2} 💎\n`);
+} else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un tridente`)
+}
+
+if (command == 'perro') {
+    // Verificar si el usuario ya tiene un perro
+    if (global.db.data.users[m.sender].perro > 1) {
+        m.reply(`Ya tienes un perro y no puedes comprar otro.`);
+        return;
+    }
+
+    // Definir el conteo de perros a comprar
+    let count = command.replace(/^perro/i, '');
+    count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+    count = Math.max(1, count);
+
+    // Verificar si el usuario tiene suficientes recursos para comprar el perro
+    if (global.db.data.users[m.sender].limit >= 100 * count) {
+        global.db.data.users[m.sender].limit -= 100 * count;
+        global.db.data.users[m.sender].perro += count;
+        m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝𝐪𝐮𝐢𝐫𝐢𝐝𝐨🥳
+ ᴀ ${count} ᴘᴇʀʀɪᴛᴏ 🐕 
+
+ᴘᴇʀʀɪᴛᴏ🐕 (${pushname}) 
+sᴇʀᴀ ᴛᴜ ᴀᴄᴏᴍᴘᴀñᴀɴᴛᴇ ᴇɴ ʙᴀᴛᴀʟʟᴀ. ᴇs ғɪᴇʟ, ᴀᴍᴏʀᴏsᴏ ʏ ᴛᴇ sᴇɢᴜɪʀᴀ ᴀ ᴛᴏᴅᴀs ᴘᴀʀᴛᴇs. ᴘᴇʀᴏ ɴᴏ ʟᴏ ᴍᴀʟᴛʀᴀᴛᴇs ɴɪ ʟᴏ ᴅᴇᴊᴇs ᴍᴏʀɪʀ.🥹
+
+𝕊𝕦𝕤 𝕙𝕒𝕓𝕚𝕝𝕚𝕕𝕒𝕕𝕖𝕤 𝕤𝕠𝕟:
+- ᴍᴇᴀʀ 
+- ᴄᴀɢᴀʀ
+- ᴄᴏᴍᴇʀ 
+
+𝑵𝒊𝒗𝒆𝒍: 1.
+
+💯𝙿𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚗 𝚚𝚞𝚎 𝚝𝚘𝚙 𝚎𝚜𝚝𝚊 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚖𝚌
+💯𝚙𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚕 𝚗𝚒𝚟𝚎𝚕 𝚍𝚎 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚎𝚗 𝚝𝚒𝚎𝚖𝚙𝚘. 𝚛𝚎𝚊𝚕 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚗𝚒𝚟𝚎𝚕𝚖𝚊𝚜𝚌𝚘𝚝𝚊`);
+    } else {
+        m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
+    }
+}
+
+if (command == 'lobos') {
+let count = command.replace(/^alllobos/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].lobos > 1) return m.reply(`Ya tiene 1 lobos`) 
+if (global.db.data.users[m.sender].limit >= 100 * count) {
+global.db.data.users[m.sender].limit -= 100 * count;
+global.db.data.users[m.sender].lobos += count;
+m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝𝐪𝐮𝐢𝐫𝐢𝐝𝐨🥳
+ ᴀ ${count} ʟᴏʙᴏ🐺 
+
+ʟᴏʙᴏ🐺(${pushname}) 
+ɢᴜᴇʀʀᴇʀᴏ ʟᴇᴛᴀʟ.
+ʟᴏs ʟᴏʙᴏs sᴏɴ ᴀɴɪᴍᴀʟᴇs ǫᴜᴇ ʜᴀɴ ᴇxɪsᴛɪᴅᴏ ᴘᴏʀ ᴍɪʟᴇs ᴅᴇ ᴀñᴏs, ᴅɪғɪᴄɪʟ ᴅᴇ ᴄᴏɴᴛʀᴏʟᴀʀ ᴘᴇʀᴏ ᴇxᴄᴇʟᴇɴᴛᴇ ᴀᴄᴏᴍᴘᴀñᴀɴᴛᴇ, ᴍᴜʏ ɪɴᴛɪᴍɪᴅᴀɴᴛᴇ ʜᴀsᴛᴀ ǫᴜᴇ ʟᴇs ʀᴀsᴄᴀs ʟᴀ ᴘᴀɴᴢᴀ.☺️
+
+𝕊𝕦𝕤 𝕙𝕒𝕓𝕚𝕝𝕚𝕕𝕒𝕕𝕖𝕤 𝕤𝕠𝕟:
+- ᴍᴏʀᴅᴇʀ 
+- ᴄᴏʀʀᴇʀ 
+- ᴄᴀᴢᴀʀ
+
+𝑵𝒊𝒗𝒆𝒍: 1.
+
+💯𝙿𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚗 𝚚𝚞𝚎 𝚝𝚘𝚙 𝚎𝚜𝚝𝚊 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚖𝚌
+💯𝚙𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚕 𝚗𝚒𝚟𝚎𝚕 𝚍𝚎 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚎𝚗 𝚝𝚒𝚎𝚖𝚙𝚘. 𝚛𝚎𝚊𝚕 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚗𝚒𝚟𝚎𝚕𝚖𝚊𝚜𝚌𝚘𝚝𝚊`);
+} else m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
+}
+
+if (command == 'monos') {
+let count = command.replace(/^monos/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].monos > 1) return m.reply(`Ya tiene 1 monos🐵`) 
+if (global.db.data.users[m.sender].limit >= 100 * count) {
+global.db.data.users[m.sender].limit -= 100 * count;
+global.db.data.users[m.sender].monos += count;
+m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝𝐪𝐮𝐢𝐫𝐢𝐝𝐨🥳
+ ᴀ ${count} ᴄʜᴀɴɢᴜɪᴛᴏ (ᴄᴏᴍᴏ ᴛᴜ ᴇx)🐵 
+
+ᴄʜᴀɴɢᴜɪᴛᴏ🐵(${pushnane}) 
+ᴇs ᴄᴏᴍᴏ ᴜɴ ʙᴇʙᴇ ᴄᴏɴ ᴍᴜᴄʜᴏs ᴘᴇʟᴏs, ᴅɪᴠᴇʀᴛɪᴅᴏ ʏ ᴛʀᴀᴠɪᴇsᴏ, ᴀᴍᴀ ʟᴀs ʙᴀɴᴀɴᴀs ʏ ᴍᴏɴᴛᴀʀsᴇ ᴇɴ ᴛᴜ ʜᴏᴍʙʀᴏ. ᴘᴇʀᴏ ᴛᴇ ʀᴇᴄᴏᴍɪᴇɴᴅᴏ ᴘᴏɴᴇʀʟᴇ ᴘᴀñᴀʟᴇs.😁
+
+𝕊𝕦𝕤 𝕙𝕒𝕓𝕚𝕝𝕚𝕕𝕒𝕕𝕖𝕤 𝕤𝕠𝕟:
+- ᴍᴇᴀʀ 
+- ᴄᴏᴍᴇʀ ɪɴsᴇᴄᴛᴏs 
+- ʟᴀɴᴢᴀʀ ᴘᴏᴘᴏ ᴀ ᴛᴜs ᴇɴᴇᴍɪɢᴏs  
+
+𝑵𝒊𝒗𝒆𝒍: 1.
+
+💯𝙿𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚗 𝚚𝚞𝚎 𝚝𝚘𝚙 𝚎𝚜𝚝𝚊 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚖𝚌
+💯𝚙𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚕 𝚗𝚒𝚟𝚎𝚕 𝚍𝚎 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚎𝚗 𝚝𝚒𝚎𝚖𝚙𝚘. 𝚛𝚎𝚊𝚕 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚗𝚒𝚟𝚎𝚕𝚖𝚊𝚜𝚌𝚘𝚝𝚊`);
+} else m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
+}
+
+if (command == 'gato') {
+let count = command.replace(/^gato/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].gato > 1) return m.reply(`Ya tiene 1 monos🐵`) 
+if (global.db.data.users[m.sender].limit >= 100 * count) {
+global.db.data.users[m.sender].limit -= 100 * count;
+global.db.data.users[m.sender].gato += count;
+m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝𝐪𝐮𝐢𝐫𝐢𝐝𝐨🥳
+ ᴀ ᴜɴ ɢᴀᴛɪᴛᴏ 🐈‍⬛
+
+ɢᴀᴛɪᴛᴏ🐈‍⬛(${pushname}) 
+sᴇʀᴀ ᴛᴜ ᴘᴇǫᴜᴇñᴏ ᴀᴍɪɢᴏ, ᴇs ᴄᴀʀɪñᴏsᴏ ᴏᴄᴀsɪᴏɴᴀʟᴍᴇɴᴛᴇ ʏ ᴅᴇsᴀᴘᴀʀᴇᴄᴇ ᴍᴜᴄʜᴏ, ᴘᴇʀᴏ ᴛʀᴀɴǫᴜɪʟᴏ, sɪᴇᴍᴘʀᴇ ᴠᴏʟᴠᴇʀᴀ ᴄᴏɴ ᴜɴᴀ ʀᴀᴛᴀ ᴘᴀʀᴀ ᴛɪ. ᴛᴇ sᴜʙɪʀᴀ ᴇʟ ᴀɴɪᴍᴏ ᴄᴏɴ sᴜs ᴛʀᴀᴠᴇsᴜʀᴀs ᴘᴇʀᴏ ʀᴇᴄᴜᴇʀᴅᴀ, ᴊᴀᴍᴀs ʟᴇ ᴛɪʀᴇs ᴀɢᴜᴀ.💦
+
+𝕊𝕦𝕤 𝕙𝕒𝕓𝕚𝕝𝕚𝕕𝕒𝕕𝕖𝕤 𝕤𝕠𝕟:
+- ᴘᴜᴇᴅᴇ sᴇʀ ᴍᴀs ᴏᴅɪᴏsᴏ ǫᴜᴇ ᴛᴜ ᴇx  
+- ᴅᴏʀᴍɪʀ
+- ᴀʀᴜñᴀʀ  
+
+𝑵𝒊𝒗𝒆𝒍: 1.
+
+💯𝙿𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚗 𝚚𝚞𝚎 𝚝𝚘𝚙 𝚎𝚜𝚝𝚊 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚖𝚌
+💯𝚙𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚕 𝚗𝚒𝚟𝚎𝚕 𝚍𝚎 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚎𝚗 𝚝𝚒𝚎𝚖𝚙𝚘. 𝚛𝚎𝚊𝚕 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚗𝚒𝚟𝚎𝚕𝚖𝚊𝚜𝚌𝚘𝚝𝚊`);
+} else m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
 }
 
 if (command == 'bal' || command == 'balance' || command == 'diamond') {
@@ -266,6 +723,27 @@ if (user.banco < count) return m.reply(`*Che no sabes cuanto dinero tiene el tu 
 user.banco -= count * 1
 user.limit += count * 1
 await m.reply(`*[ 🏦 ] ʜᴀs ʀᴇᴛɪʀᴀᴅᴏ (${count}) ᴄʀᴇᴅɪᴛᴏ ᴅᴇʟ ʙᴀɴᴄᴏ.*`)}
+
+if (command == 'batalla' || command == 'batalla2') {
+
+const date = global.db.data.users[m.sender].timebatalla + 1800000; //3600000 = 30 min 
+if (new Date - global.db.data.users[m.sender].timebatalla < 1800000) return m.reply(`⏰ Tu mascota esta cansada, vuelvas mas tardes: ${msToTime(date - new Date())}`)
+const exp = Math.floor(Math.random() * 15000)
+const diamond = Math.floor(Math.random() * 150)
+const money = Math.floor(Math.random() * 15000)
+
+if (global.db.data.users[m.sender].exp < 0) return m.reply(`${batall2} ${exp} XP`).catch(global.db.data.users[m.sender].exp += exp)
+if (global.db.data.users[m.sender].limit < 0) return m.reply(`${batall2} ${diamond} ᴄʀᴇᴅɪᴛᴏs💳`).catch(global.db.data.users[m.sender].limit += diamond)
+if (global.db.data.users[m.sender].money < 0) return m.reply(`${batall2} ${money} Coins`).catch(global.db.data.users[m.sender].money += money) 
+
+let or = ['text', 'text2']; 
+let media = or[Math.floor(Math.random() * 2)]
+global.db.data.users[m.sender].timebatalla = new Date * 1
+
+if (media === 'text') m.reply(`${batall2} ${exp} XP`).catch(global.db.data.users[m.sender].exp += exp) 
+if (media === 'text2') m.reply(`${batall} ${exp} XP`).catch(global.db.data.users[m.sender].exp -= exp) 
+if (media === 'text3') m.reply(`${batall2}\n\n${diamond} ᴄʀᴇᴅɪᴛᴏs💳`).catch(global.db.data.users[m.sender].limit += diamond) 
+if (media === 'text4') m.reply(`${batall}\n\n${diamond} ᴄʀᴇᴅɪᴛᴏs💳`).catch(global.db.data.users[m.sender].limit -= diamond)}
 
 if (command == 'minar' || command == 'mine') {
 const date = global.db.data.users[m.sender].lastmiming + 600000;
