@@ -363,6 +363,7 @@ let menuRPG = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┃ ❏ ${prefix}articulos
 ┊┃ ❏ ${prefix}tienda
 ┊┃ ❏ ${prefix}fuente
+┊┃ ❏ ${prefix}batalla
 ┊┃ ❏ ${prefix}autobus
 ┊┃ ❏ ${prefix}helicóptero
 ┊┃ ❏ ${prefix}ovni
