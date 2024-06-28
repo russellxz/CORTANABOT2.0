@@ -73,7 +73,7 @@ if (command == 'listcmd') {
 let _teks = `${lenguaje.owner.text14}\n\n──────────────────\n${Object.entries(global.db.data.sticker).map(([key, value], index) => `${index + 1}. ${value.locked ? `*${key}*` : key} : ${value.text}`).join('\n')}`.trim()
 conn.sendText(m.chat, _teks, m, { mentions: Object.values(global.db.data.sticker).map(x => x.mentionedJid).reduce((a,b) => [...a, ...b], []) })}
 
-if (command == 'añadirdiamantes' || command == 'dardiamantes' || command == 'addlimit') {
+if (command == 'añadircreditos' || command == 'darcreditos') {
 const pajak = 0;
 let who;
 if (m.isGroup) who = m.mentionedJid[0];
@@ -89,7 +89,7 @@ limit += pjk;
 if (limit < 1) return m.reply(lenguaje.owner.text18) 
 const users = global.db.data.users;
 users[who].limit += dmt;
-m.reply(`≡ 💎 ${lenguaje.owner.text19}
+m.reply(`≡ 💳 ${lenguaje.owner.text19}
 ┏╍╍╍╍╍╍╍╍╍╍╍╍╍
 ┃• *𝗍᥆𝗍ᥲᥣ:* ${dmt}
 ┗╍╍╍╍╍╍╍╍╍╍╍╍╍`)}

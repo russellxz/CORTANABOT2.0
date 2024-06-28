@@ -355,11 +355,15 @@ let menuRPG = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┃ ❏ ${prefix}claim _(Recoger tu recompensa)_
 ┊┃ ❏ ${prefix}lb
 ┊┃ ❏ ${prefix}leaderboard
+┊┃ ❏ ${prefix}topmillonario
 ┊┃ ❏ ${prefix}cofre
 ┊┃ ❏ ${prefix}perfil
 ┊┃ ❏ ${prefix}nivel
 ┊┃ ❏ ${prefix}dep
 ┊┃ ❏ ${prefix}misarticulos
+┊┃ ❏ ${prefix}cartera
+┊┃ ❏ ${prefix}mismascotas
+┊┃ ❏ ${prefix}inventario
 ┊┃ ❏ ${prefix}articulos
 ┊┃ ❏ ${prefix}tienda
 ┊┃ ❏ ${prefix}fuente
@@ -486,7 +490,7 @@ let xd = `${pickRandom([`\`¿𝐐𝐮𝐢𝐞𝐫𝐞𝐬 𝐨𝐛𝐭𝐞𝐧�
 
 let listSections = []    
 listSections.push({
-title: '🎮𝙇𝙄𝙎𝙏𝘼 𝘿𝙀 𝘾𝙊𝙈𝘼𝙉𝘿𝙊🎮',
+title: '🎮𒋨𝙇𝙄𝙎𝙏𝘼 𝘿𝙀 𝘾𝙊𝙈𝘼𝙉𝘿𝙊𒈒🎮',
 rows: [{ header: "𝐌𝐄𝐍𝐔 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎", title: "", id: `.allmenu`, description: `Muestra el menu completo\n` }, 
 { header: "𝐌𝐄𝐍𝐔 𝐃𝐄𝐒𝐂𝐀𝐑𝐆𝐀𝐑", title: "", id: `.menu1`, description: `Muestra el menu de descarga\n` },
 { header: "𝐀𝐔𝐃𝐈𝐎𝐒", title: "", id: `.menu2`, description: `Muestra el menu de audios palabra clave para interactuar con el bot\n` },
@@ -500,7 +504,16 @@ rows: [{ header: "𝐌𝐄𝐍𝐔 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎", title: "",
 { header: "𝐌𝐄𝐍𝐔 𝐒𝐓𝐈𝐂𝐊𝐄𝐑", title: "", id: `.menu10`, description: `Muestra el menu de creación de sticker\n` }, 
 { header: "𝐌𝐄𝐍𝐔 𝐏𝐀𝐑𝐀 𝐏𝐑𝐎𝐏𝐈𝐄𝐓𝐀𝐑𝐈𝐎", title: "", id: `.menu11`, description: `Muestra el menu solo para propietario del bot\n` }, 
 { header: "𝐌𝐄𝐍𝐔 +𝟏𝟖", title: "", id: `.menu18`, description: `Muestra el menu +18 (usarlo bajo tu responsabilidad)\n` }, 
-{ header: "𝐋𝐈𝐒𝐓𝐀 𝐃𝐄 𝐋𝐎𝐆𝐎𝐒", title: "", id: `.logos`, description: `Muestra la lista para crear logos\n` }
+{ header: "✌️𝐴𝑔𝑟𝑒𝑔𝑎𝑑𝑜 𝑃𝑜𝑟: 𝑅𝑢𝑠𝑠𝑒𝑙𝑙✌️", title: "𝐓𝐈𝐄𝐍𝐃𝐀", id: `.tienda`, description: `ᴍᴇɴᴜᴅᴇᴄᴏᴍᴘʀᴀs\n` }, 
+{ header: "𝐋𝐈𝐒𝐓𝐀 𝐃𝐄 𝐋𝐎𝐆𝐎𝐒", title: "", id: `.logos`, description: `Muestra la lista para crear logos\n` }, 
+{ header: "💯𒋨𝙄𝙉𝙁𝙊𝙍𝙈𝘼𝘾𝙄𝙊𝙉𒈒💯 ", title: "𝐄𝐒𝐓𝐀𝐃𝐎", id: `.estado`, description: `Conprueba si el bot esta obline\n` }, 
+{ header: "𝐕𝐄𝐋𝐎𝐂𝐈𝐃𝐀𝐃", title: "", id: `.ping`, description: `Ping || test de velocidad de respuesta\n` },
+{ header: "𝐆𝐑𝐔𝐏𝐎𝐒", title: "", id: `.grupos`, description: `unirte al los grupos oficiales\n` },
+{ header: "𝐒𝐎𝐋𝐈𝐂𝐈𝐓𝐀 𝐁𝐎𝐓", title: "", id: `.join`, description: `Solicitar un bot para tu grupo\n` },
+{ header: "𝐎𝐖𝐍𝐄𝐑", title: "", id: `.owner`, description: `Numero de propietario del bot\n` },
+{ header: "𝐈𝐍𝐒𝐓𝐀𝐋𝐋 𝐁𝐎𝐓", title: "", id: `.instalarbot`, description: `Paso a paso para instalar el bot\n` },
+{ header: "𝐄𝐍𝐀𝐁𝐋𝐄", title: "", id: `.enable`, description: `Opciones para activae y desactivar\n` },
+{ header: "𝐒𝐏𝐄𝐄𝐃", title: "", id: `.speedtest`, description: `Ping || test de velocidad\n` }
 ]})
 
 conn.sendList(m.chat, menu, botname, `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, listSections, {quoted: fkontak})
@@ -508,75 +521,77 @@ conn.sendList(m.chat, menu, botname, `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, li
 
 /*if (command == 'menu' || command == 'help') {
 m.react('🟢') 
-let menu = `       (҂"_")
+let menu = `(҂"_")
          <,︻╦̵̵̿╤─ ҉     ~  •
 █۞███████]▄▄▄▄▄▄▄▄▄▄▃ ●●●
 ▂▄▅█████████▅▄▃▂…
 [███████████████████]
 ◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙
 ╔─━━━━━░★░━━━━━─╗
-║ ${lenguaje['smsWel']()} @${sender.split("@")[0]} ${user.registered === true ? 'ͧͧͧͦꙶͣͤ✓' : ''} 👋🏻
+║ нσłค @⁨メz๛russell乡⁩ ͧͧͧͦꙶͣͤ✓ 👋🏻
 ║★━━━━━━✩━━━━━━★
-║${lenguaje.menu.text} [ ${prefix} ]
-║${lenguaje.menu.text2} ${date}
-║${lenguaje.menu.text3} ${time}
-║${lenguaje.menu.text4} ${vs}
-║${lenguaje.menu.text5} ${Object.keys(global.db.data.users).length}
-║${lenguaje.menu.text6} ${runtime(process.uptime())}
-║${lenguaje.menu.text7} ${conn.public ? 'ρυвℓι¢σ' : 'ρяινα∂σ'}
-║${conn.user.id == global.numBot2 ? `${lenguaje.menu.textt} ` : `${lenguaje.menu.texttt} @${global.numBot.split`@`[0]}`}
-║ ${lenguaje.menu.text8} ${user.limit}
-║ ${lenguaje.menu.text9} ${user.level}
-║ ${lenguaje.menu.text10} ${user.role}
-║ ☬Eˣᵖ : ${user.exp}
-║ ☬Cᵒᶤᶰˢ : ${user.money}
-║${lenguaje.menu.text11} ${rtotalreg} ∂є ${totalreg}
+║☬Pʳᵉᶠᶤʲᵒ : [ . ]
+║☬Fᵉᶜʰᵃ : 19/04/2024
+║☬Hᵒʳᵃ : 12:34 AM
+║☬Vᵉʳˢᶤᵒᶰ : (Personalizado)
+║☬Uˢᵘᵃʳᶤᵒ : 752
+║☬Aᶜᵗᶤᵛᶤᵈᵃᵈ : 01:06:01:39
+║☬Mᵒᵈᵒ : ρυвℓι¢σ
+║☬Bᵒᵗ ᵒᶠᶜ : 𝐸𝑠𝑡𝑒 𝑒𝑠 𝑒𝑙 𝑏𝑜𝑡 𝑜𝑓𝑐  
+║ ☬Lᶤᵐᶤᵗᵉ : 85
+║ ☬Nᶤᵛᵉˡ :  21
+║ ☬Rᵃᶰᵍᵒ: 🤓 APRENDIS II
+║ ☬Eˣᵖ : 94050
+║ ☬Cᵒᶤᶰˢ : 14683
+║☬Rᵉᵍᶤˢᵗʳᵃᵈᵒ : 126 ∂є 752
 ║★━━━━━━✩━━━━━━★
 ╚─━━━━━░★░━━━━━─╝
 
-\`ᰔᩚ 𝐐𝐔𝐈𝐄𝐑𝐄 𝐎𝐁𝐓𝐄𝐍𝐄𝐑 𝐓𝐔 𝐁𝐎𝐓 𝐏𝐄𝐑𝐒𝐎𝐍𝐀𝐋𝐈𝐙𝐀𝐃𝐎? :\`
+`ᰔᩚ 𝐐𝐔𝐈𝐄𝐑𝐄 𝐎𝐁𝐓𝐄𝐍𝐄𝐑 𝐓𝐔 𝐁𝐎𝐓 𝐏𝐄𝐑𝐒𝐎𝐍𝐀𝐋𝐈𝐙𝐀𝐃𝐎? :`
 ◈ https://www.facebook.com/elrebelde21
 
 ╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┏━━━━━━━━━━━━━━•
-┊┃ 🎮𝙇𝙄𝙎𝙏𝘼 𝘿𝙀 𝘾𝙊𝙈𝘼𝙉𝘿𝙊🎮
+┊┃ 🎮𒋨𝙇𝙄𝙎𝙏𝘼 𝘿𝙀 𝘾𝙊𝙈𝘼𝙉𝘿𝙊𒈒🎮
 ┊┃━━━━━━━━━━━━━━•
-┊┃ ➫ ${prefix}allmenu | menucompleto
-┊┃ ➫ ${prefix}menu1 | descarga
-┊┃ ➫ ${prefix}menu2 | audio
-┊┃ ➫ ${prefix}menu3 | menugrupos
-┊┃ ➫ ${prefix}menu4 | menubuscadores
-┊┃ ➫ ${prefix}menu5 | menujuegos
-┊┃ ➫ ${prefix}menu6 | menuefecto
-┊┃ ➫ ${prefix}menu7 | menuconvertidores
-┊┃ ➫ ${prefix}menu8 | menurandow
-┊┃ ➫ ${prefix}menu9 | menuRPG
-┊┃ ➫ ${prefix}menu10 | menuSticker
-┊┃ ➫ ${prefix}menu11 | menuOwner
-┊┃ ➫ ${prefix}menu18 | Menuhony
-┊┃ ➫ ${prefix}logos 
+┊┃ ➫ .ᴀʟʟᴍᴇɴᴜ | ᴍᴇɴᴜᴄᴏᴍᴘʟᴇᴛᴏ
+┊┃ ➫ .ᴍᴇɴᴜ1 | ᴅᴇsᴄᴀʀɢᴀ
+┊┃ ➫ .ᴍᴇɴᴜ2 | ᴀᴜᴅɪᴏ
+┊┃ ➫ .ᴍᴇɴᴜ3 | ᴍᴇɴᴜɢʀᴜᴘᴏs
+┊┃ ➫ .ᴍᴇɴᴜ4 | ᴍᴇɴᴜʙᴜsᴄᴀᴅᴏʀᴇs
+┊┃ ➫ .ᴍᴇɴᴜ5 | ᴍᴇɴᴜᴊᴜᴇɢᴏs
+┊┃ ➫ .ᴍᴇɴᴜ6 | ᴍᴇɴᴜᴇғᴇᴄᴛᴏ
+┊┃ ➫ .ᴍᴇɴᴜ7 | ᴍᴇɴᴜᴄᴏɴᴠᴇʀᴛɪᴅᴏʀᴇs
+┊┃ ➫ .ᴍᴇɴᴜ8 | ᴍᴇɴᴜʀᴀɴᴅᴏᴡ
+┊┃ ➫ .ᴍᴇɴᴜ9 | ᴍᴇɴᴜʀᴘɢ
+┊┃ ➫ .ᴍᴇɴᴜ10 | ᴍᴇɴᴜsᴛɪᴄᴋᴇʀ
+┊┃ ➫ .ᴍᴇɴᴜ11 | ᴍᴇɴᴜᴏᴡɴᴇʀ
+┊┃ ➫ .ᴍᴇɴᴜ18 | ᴍᴇɴᴜʜᴏɴʏ
+┊┃ ➫ .ʟᴏɢᴏs 
+┊┃ ✌️𝐴𝑔𝑟𝑒𝑔𝑎𝑑𝑜 𝑃𝑜𝑟: 𝑅𝑢𝑠𝑠𝑒𝑙𝑙✌️
+┊┃ ➫.ᴛɪᴇɴᴅᴀ| ᴍᴇɴᴜᴅᴇᴄᴏᴍᴘʀᴀs
 ┊┃━━━━━━━━━━━━━━•
-┊┃ 💯 𝙄𝙉𝙁𝙊𝙍𝙈𝘼𝘾𝙄𝙊𝙉💯 
+┊┃ 💯𒋨𝙄𝙉𝙁𝙊𝙍𝙈𝘼𝘾𝙄𝙊𝙉𒈒💯 
 ┊┃━━━━━━━━━━━━━━•
-┊┃ ➫ ${prefix}estado _(estado del bot)_
-┊┃ ➫ ${prefix}nuevo _(nuevo comando)_
-┊┃ ➫ ${prefix}reglas _(reglas)_
-┊┃ ➫ ${prefix}ping
-┊┃ ➫ ${prefix}velocidad
-┊┃ ➫ ${prefix}grupos _(grupos oficiales)_
-┊┃ ➫ ${prefix}join _(solicita un bot para tu grupo)_
-┊┃ ➫ ${prefix}owner
-┊┃ ➫ ${prefix}creador _(contactos de mi creador)_
-┊┃ ➫ ${prefix}instalarbot (Tutorial del instalacion)_
-┊┃ ➫ ${prefix}solicitud
-┊┃ ➫ ${prefix}cuenta 
-┊┃ ➫ ${prefix}cuentaoficiales
-┊┃ ➫ ${prefix}status 
-┊┃ ➫ ${prefix}enable 
-┊┃ ➫ ${prefix}configurar
-┊┃ ➫ ${prefix}infohost
-┊┃ ➫ ${prefix}cafirexos
-┊┃ ➫ ${prefix}report _(reporta errores)_
+┊┃ ➫ .ᴇsᴛᴀᴅᴏ _(ᴇsᴛᴀᴅᴏ ᴅᴇʟ ʙᴏᴛ)_
+┊┃ ➫ .ɴᴜᴇᴠᴏ _(ɴᴜᴇᴠᴏ ᴄᴏᴍᴀɴᴅᴏ)_
+┊┃ ➫ .ʀᴇɢʟᴀs _(ʀᴇɢʟᴀs)_
+┊┃ ➫ .ᴘɪɴɢ
+┊┃ ➫ .ᴠᴇʟᴏᴄɪᴅᴀᴅ
+┊┃ ➫ .ɢʀᴜᴘᴏs _(ɢʀᴜᴘᴏs ᴏғɪᴄɪᴀʟᴇs)_
+┊┃ ➫ .ᴊᴏɪɴ _(sᴏʟɪᴄɪᴛᴀ ᴜɴ ʙᴏᴛ ᴘᴀʀᴀ ᴛᴜ ɢʀᴜᴘᴏ)_
+┊┃ ➫ .ᴏᴡɴᴇʀ
+┊┃ ➫ .ᴄʀᴇᴀᴅᴏʀ _(ᴄᴏɴᴛᴀᴄᴛᴏs ᴅᴇ ᴍɪ ᴄʀᴇᴀᴅᴏʀ)_
+┊┃ ➫ .ɪɴsᴛᴀʟᴀʀʙᴏᴛ (ᴛᴜᴛᴏʀɪᴀʟ ᴅᴇʟ ɪɴsᴛᴀʟᴀᴄɪᴏɴ)_
+┊┃ ➫ .sᴏʟɪᴄɪᴛᴜᴅ
+┊┃ ➫ .ᴄᴜᴇɴᴛᴀ 
+┊┃ ➫ .ᴄᴜᴇɴᴛᴀᴏғɪᴄɪᴀʟᴇs
+┊┃ ➫ .sᴛᴀᴛᴜs 
+┊┃ ➫ .ᴇɴᴀʙʟᴇ 
+┊┃ ➫ .ᴄᴏɴғɪɢᴜʀᴀʀ
+┊┃ ➫ .ɪɴғᴏʜᴏsᴛ
+┊┃ ➫ .ᴄᴀғɪʀᴇxᴏs
+┊┃ ➫ .ʀᴇᴘᴏʀᴛ _(ʀᴇᴘᴏʀᴛᴀ ᴇʀʀᴏʀᴇs)_
 ┊┗━━━━━━━━━━━━━━•
 ╰┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩`
 conn.sendMessage(m.chat, { text: menu,  
@@ -615,7 +630,7 @@ sourceUrl: tiktok
 
 if (command == 'menu2' || command == 'audio') {
 
-let menu2 = `${lenguaje.menu.text13}\n\na\nfeliz navidad\nMerry Christmas\nFeliz cumpleaños\nPasa pack\nUwu\nSiuuu\nhola\nhello\nVete a la verga\nPasen porno\nHora del sexito\nPongan cuties\nFiesta del admin\nAdmin party\nViernes\nGOOOOD\nAlto temazo\nTodo bien\nBuenos dias\nBot gay\nGracias\nFua\nFino señores\n🧐🍷\nCorte\nGaspi buenos dias\nGaspi me saludas\nGaspi y las minitas\nGaspi todo bien\nGaspi ya no aguanto\nContate algo bot\nSexo\nMomento epico\nEl bot del orto no funciona\nEpicardo\nInsta de la minita\nUna mierda de bot\nUltimo momento\nNefasto\nParaguayo\nBot de mierda\nVenezolano\na nadie le importa\nGaspi corte\nYa me voy a dormir\nCalefon\nApurate bot\nUn chino\nNo funciona\nBoliviano\nEnano\nQuien es tu sempai botsito\nMe gimes 7u7\nTe amo botsito uwu\nOnichan\nLa toca 7w7\nautodestruction\n\n*• Mas Audios agregados por Russell :*\nQue\nque\nquien para jugar\nbr mj jugar\nJuegar\nKien pa jugar\nQuien pa jugar\nquien pa jugar\nte gusta los hombres\nYoce que vez porno gay\nMi amiga es trapito\nTe gusta el yaoi\nTe quiero cortana\nTe amo Cortana\nBroken\nLotex\nBroken vs lotex\nGay\nMaldito\nMal pario\nMmgb\nMmwb\nHijo de puta\nHdp\nCara de verga\nMarico\nMarica\nte Gusta el pito\nHijo de perra\nBuenas Tardes\nBuenas noches\nPene\nfollar\nCojer\nNovio\nNovia\nrico\nsabraso\ntetas\nhermosa\nluuk\nMamate un wuebo\n❥ ${wm}`
+let menu2 = `${lenguaje.menu.text13}\n\na\nfeliz navidad\nMerry Christmas\nFeliz cumpleaños\nPasa pack\nUwu\nSiuuu\nhola\nhello\nVete a la verga\nPasen porno\nHora del sexito\nPongan cuties\nFiesta del admin\nAdmin party\nViernes\nGOOOOD\nAlto temazo\nTodo bien\nBuenos dias\nBot gay\nGracias\nFua\nFino señores\n🧐🍷\nCorte\nGaspi buenos dias\nGaspi me saludas\nGaspi y las minitas\nGaspi todo bien\nGaspi ya no aguanto\nContate algo bot\nSexo\nMomento epico\nEl bot del orto no funciona\nEpicardo\nInsta de la minita\nUna mierda de bot\nUltimo momento\nNefasto\nParaguayo\nBot de mierda\nVenezolano\na nadie le importa\nGaspi corte\nYa me voy a dormir\nCalefon\nApurate bot\nUn chino\nNo funciona\nBoliviano\nEnano\nQuien es tu sempai botsito\nMe gimes 7u7\nTe amo botsito uwu\nOnichan\nLa toca 7w7\nautodestruction\n\n*𝕄𝕒𝕤 𝔸𝕦𝕕𝕚𝕠𝕤 𝕒𝕘𝕣𝕖𝕘𝕒𝕕𝕠𝕤 𝕡𝕠𝕣 ℝ𝕦𝕤𝕤𝕖𝕝𝕝 :*\nQue\nque\nquien para jugar\nbr mj jugar\nJuegar\nKien pa jugar\nQuien pa jugar\nquien pa jugar\nte gusta los hombres\nYoce que vez porno gay\nMi amiga es trapito\nTe gusta el yaoi\nTe quiero cortana\nTe amo Cortana\nBroken\nLotex\nBroken vs lotex\nGay\nMaldito\nMal pario\nMmgb\nMmwb\nHijo de puta\nHdp\nCara de verga\nMarico\nMarica\nte Gusta el pito\nHijo de perra\nBuenas Tardes\nBuenas noches\nPene\nfollar\nCojer\nNovio\nNovia\nrico\nsabraso\ntetas\nhermosa\nluuk\nMamate un wuebo\n${wm}`
 conn.sendButton(m.chat, menu2, botname, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
 //conn.sendMessage(m.chat, { text: menu2}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 }

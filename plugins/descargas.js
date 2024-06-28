@@ -18,10 +18,57 @@ let user = global.db.data.users[m.sender]
 let limit = 320
 
 async function descarga(m, command, conn, text, command, args, fkontak, from, buffer, getFile, q, includes, lolkeysapi) {
-if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
 if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (global.db.data.users[m.sender].banned) return
-if (command == 'play') {
+
+if (command == 'play' || command == 'play2') {
+if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
+
+const yt_play = await search(args.join(' '))
+const texto1 = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
+│║◈ ${lenguaje.descargar.title} ${yt_play[0].title}
+│║◈ ${lenguaje.descargar.ago} ${yt_play[0].ago}
+│║◈ ${lenguaje.descargar.duracion} ${secondString(yt_play[0].duration.seconds)}
+│║◈ ${lenguaje.descargar.views} ${MilesNumber(yt_play[0].views)}
+│║◈ ${lenguaje.descargar.autor} ${yt_play[0].author.name}
+│║◈ Link: ${yt_play[0].url}
+│║
+│║        *████████████┃%100*
+╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`.trim()
+
+let listSections = [];             
+listSections.push({
+title: yt_play[0].title, 
+rows: [{ header: "Audio (opción 1)", title: "", id: `${prefix}musica ${yt_play[0].url}`, description: `${yt_play[0].title}\n` },
+{ header: "Audio Doc (Opcion 2)", title: "", id: `${prefix}ytmp3doc ${yt_play[0].url}`, description: `${yt_play[0].title}\n` },
+{ header: "Video (Opción 1)", title: "", id: `${prefix}video ${yt_play[0].url}`, description: `${yt_play[0].title}\n` },
+{ header: "Video Doc (Opcion 2)", title: "", id: `${prefix}ytmp4doc ${yt_play[0].url}`, description: `${yt_play[0].title}\n` },
+{header: "Mas Resultados", title: "", id: `${prefix}yts ${yt_play[0].url}`, description: `${yt_play[0].title}\n`}
+]});
+
+await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.ytmp3 ${text}`], ['Video', `.ytmp4 ${text}`], ['Mas resultados', `.yts ${text}`]], null, null, m)
+
+await conn.sendList(m.chat, `*𝙴𝙻𝙸𝙹𝙰𝚁 𝚀𝚄𝙴 𝚅𝙰 𝙷𝙰𝙲𝙴𝚁 𝙲𝙾𝙽:* ${text}`, wm, `Click Aqui`, listSections, m)}
+
+if (command == 'play3' || command == 'play4') {
+if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
+
+const yt_play = await search(args.join(' '))
+const texto1 = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
+│║◈ ${lenguaje.descargar.title} ${yt_play[0].title}
+│║◈ ${lenguaje.descargar.ago} ${yt_play[0].ago}
+│║◈ ${lenguaje.descargar.duracion} ${secondString(yt_play[0].duration.seconds)}
+│║◈ ${lenguaje.descargar.views} ${MilesNumber(yt_play[0].views)}
+│║◈ ${lenguaje.descargar.autor} ${yt_play[0].author.name}
+│║◈ Link: ${yt_play[0].url}
+│║
+│║        *████████████┃%100*
+╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`.trim()
+
+await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.ytmp3 ${text}`], ['Video', `.ytmp4 ${text}`], ['Mas resultados', `.yts ${text}`]], null, null, m)}
+
+if (command == 'musica') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
 m.react(rwait) 
 let vid = (await yts(text)).all[0]
@@ -73,7 +120,7 @@ m.react(error)
 return m.reply(info.error) 
 console.log(e)}}}}}
 
-if (command == 'play2') {
+if (command == 'video') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
 m.react(rwait) 
 let vid = (await yts(text)).all[0]
@@ -123,7 +170,7 @@ m.react(error)
 return m.reply(info.error) 
 console.log(e)}}}}}
 
-if (command == 'play3' || command == 'playdoc' || command == 'playaudiodoc' || command == 'ytmp3doc') {
+if (command == 'ytmp3' || command == 'ytmp3doc') {
 if (!text) return m.reply(lenguaje.descargar.text1 + `\n• *${prefix + command}* ozuna\n• ${prefix + command} https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`) 
 try { 
 m.react(rwait) 
@@ -159,7 +206,7 @@ m.react(error)
 return m.reply(info.error) 
 console.log(e)}}}}
 
-if (command == 'play4' || command == 'playdoc2' || command == 'playvideodoc' || command == 'ytmp4doc' || command == 'ytmp4') {
+if (command == 'playdoc2' || command == 'playvideodoc' || command == 'ytmp4doc' || command == 'ytmp4') {
 if (!text) return m.reply(lenguaje.descargar.text1 + `\n• *${prefix + command}* ozuna\n• ${prefix + command} https://youtu.be/7ouFkoU8Ap8?si=Bvm3LypvU_uGv0bw`) 
 m.react(rwait) 
 let vid = (await yts(text)).all[0]
@@ -208,7 +255,7 @@ m.react(error)
 return m.reply(info.error) 
 console.log(e)}}}}}}
 
-if (command == 'play.1' || command == 'musica' || command == 'play.2' || command == 'video') {
+if (command == 'play.1' || command == 'play.2') {
 let data;
 let buff;
 let mimeType;
@@ -233,7 +280,7 @@ if (!data.resultado || !data.resultado.url) {
 enviando = false;
 } else {
 try {
-if (command == 'play.1' || command == 'musica') {
+if (command == 'play.1') {
 m.reply(lenguaje.descargar.audio) 
 apiUrl = `https://api-brunosobrino.zipponodes.xyz/api/v1/ytmp3?url=${data.resultado.url}`;
 mimeType = 'audio/mpeg';
@@ -249,7 +296,7 @@ buff = await conn.getFile(apiUrl);
 m.react(done) 
 }} catch {
 try {
-if (command == 'play.1' || command == 'musica') {
+if (command == 'play.1') {
 apiUrl = `https://api-brunosobrino.onrender.com/api/v1/ytmp3?url=${data.resultado.url}`;
 mimeType = 'audio/mpeg';
 fileName = 'error.mp3';
@@ -324,13 +371,27 @@ m.react(done)
 m.react(error) 
 m.reply(info.error)}}
 
+
 if (command == 'tiktok' || command == 'tt') {
 if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://vm.tiktok.com/ZMjdrFCtg/`)
 if (!isUrl(args[0]) && !args[0].includes('tiktok')) return m.reply(`Link invalido!!`)
 conn.fakeReply(m.chat, `${lenguaje.lengua.espere}`, '0@s.whatsapp.net', 'No haga spam')
 try {
 require('../libs/tiktok').Tiktok(args).then( data => {
-conn.sendMessage(m.chat, { video: { url: data.nowm }}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendButton(m.chat, `_*• Titulo:*_ ${result.title}`, wm, data.nowm, [['Descargar audio', `.tik2 ${text}`]], null, null, m)}) 
+/*conn.sendMessage(m.chat, { video: { url: data.nowm }}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendMessage(m.chat, { audio: { url: data.audio }, mimetype: 'audio/mp4' }, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})})*/
+db.data.users[m.sender].limit -= 1
+m.reply('1 ' + info.limit)
+} catch {
+m.reply(info.error)}}
+
+if (command == 'tik2') {
+if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://vm.tiktok.com/ZMjdrFCtg/`)
+if (!isUrl(args[0]) && !args[0].includes('tiktok')) return m.reply(`Link invalido!!`)
+conn.fakeReply(m.chat, `${lenguaje.lengua.espere}`, '0@s.whatsapp.net', 'No haga spam')
+try {
+require('../libs/tiktok').Tiktok(args).then( data => {
 conn.sendMessage(m.chat, { audio: { url: data.audio }, mimetype: 'audio/mp4' }, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})})
 db.data.users[m.sender].limit -= 1
 m.reply('1 ' + info.limit)
@@ -355,13 +416,9 @@ imagesSent = false
 return m.reply(`${info.error}\n\n${e}`)}}
 
 if (command == 'lyrics' || command == 'letra') {
+const { lyrics, lyricsv2 } = require('@bochilteam/scraper')
 if (!text) return m.reply(lenguaje.descargar.text11 + `\n${prefix + command} ozuna`)
 m.react('🕔') 
-try {
-let res = await fg.lyrics(text);
-conn.sendFile(m.chat, res.thumb, 'img.png', `${lenguaje.lengua.espere}`, `❏ ${lenguaje.descargar.title} ${res.title}\n❏ ${lenguaje.descargar.autor}  ${res.artist}\n\n❏ ${lenguaje.descargar.letra} ${res.lyrics}`, fkontak);
-m.react(done) 
-} catch {
 try {
 const result = await lyricsv2(text).catch(async _ => await lyrics(text))
 conn.editMessage(m.chat, `${lenguaje.lengua.espere}`, `❏ ${lenguaje.descargar.title} ${result.title}\n❏ ${lenguaje.descargar.autor}  ${result.author}\n*❏ Url :* ${result.link}\n\n❏ ${lenguaje.descargar.letra} ${result.lyrics}`, 3, fkontak)
@@ -371,7 +428,7 @@ m.react(done)
 } catch (e) {
 m.react(error)
 console.log(e) 
-}}}
+}}
 
 if (command == 'mediafire') {
 const { mediafireDl } = require('../libs/mediafire.js') 
@@ -401,7 +458,7 @@ conn.sendMessage(m.chat, { document : { url : baby1[0].link}, fileName : baby1[0
 m.reply('2 ' + info.limit)}}
 
 async function descarga2(m, command, text, args, conn, lolkeysapi, isCreator) {
-if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
 if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (global.db.data.users[m.sender].banned) return
 if (command == 'facebook' || command == 'fb') { 

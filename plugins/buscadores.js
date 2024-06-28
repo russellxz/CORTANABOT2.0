@@ -25,6 +25,53 @@ const {key} = await conn.sendMessage(from, {text: info.wait}, { quoted: fkontak 
 await conn.sendMessage(from, {text: info.waitt, edit: key}, { quoted: fkontak })
 await conn.sendMessage(from, {text: info.waittt, edit: key}, { quoted: fkontak })
 await conn.sendMessage(from, {text: info.waitttt, edit: key}, { quoted: fkontak })	
+
+let result = await yts(text);
+let ytres = result.videos;
+let themeemoji = "🔶"
+let teskd = `𝘽𝙪𝙨𝙦𝙪𝙚𝙙𝙖 𝙙𝙚 *${text}*`
+    
+let listSections = [];
+for (let index in ytres) {
+        let v = ytres[index];
+        listSections.push({
+         title: `${v.title}`,
+            rows: [
+                {
+                    header: '𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚁 𝙼𝙿𝟹',
+                    title: "",
+                    description: `${themeemoji} ${lenguaje.lengua.titulo} ${v.title}\n${themeemoji} Duracion: ${v.timestamp}\n${themeemoji} ${lenguaje.lengua.vista} ${v.views}\n${themeemoji} ${lenguaje.lengua.subidos} ${v.ago}\n`, 
+                    id: `${prefix}musica ${v.url}`
+                },
+                {
+                    header: "𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰 𝙼𝙿𝟺",
+                    title: "" ,
+                    description: `${themeemoji} ${lenguaje.lengua.titulo} ${v.title}\n${themeemoji} Duracion: ${v.timestamp}\n${themeemoji} ${lenguaje.lengua.vista} ${v.views}\n${themeemoji} ${lenguaje.lengua.subidos} ${v.ago}\n`, 
+                    id: `${prefix}video ${v.url}`
+                }, 
+              {
+                    header: "𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰 𝙼𝙿𝟹-𝙳𝙾𝙲",
+                    title: "" ,
+                    description: `${themeemoji} ${lenguaje.lengua.titulo} ${v.title}\n${themeemoji} Duracion: ${v.timestamp}\n${themeemoji} ${lenguaje.lengua.vista} ${v.views}\n${themeemoji} ${lenguaje.lengua.subidos} ${v.ago}\n`, 
+                    id: `${prefix}ytmp3 ${v.url}`
+                }, 
+                {
+                    header: "𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰 𝙼𝙿𝟺-𝙳𝙾𝙲",
+                    title: "" ,
+                    description: `${themeemoji} ${lenguaje.lengua.titulo} ${v.title}\n${themeemoji} Duracion: ${v.timestamp}\n${themeemoji} ${lenguaje.lengua.vista} ${v.views}\n${themeemoji} ${lenguaje.lengua.subidos} ${v.ago}\n`, 
+                    id: `${prefix}ytmp4 ${v.url}`
+                }
+            ]
+        });
+    }
+await conn.sendList(m.chat, '╭┄〔 *ʙᴜsᴄᴀᴅᴏ 🔎* 〕┄⊱-\n┆~~••~~••~~••~~••~~~~', `┆ 📀 ${lenguaje['result']()} *${text}*\n╰────────────────\nᴇʟɪᴊᴀ ᴀ ᴜɴᴀ ᴏᴘᴄɪᴏɴ ʏ ᴘʀᴇsɪᴏɴᴇ ᴇɴᴠɪᴀʀ`, `♦ 𝙍𝙀𝙎𝙐𝙇𝙏𝘼𝘿𝙊𝙎 ♦`, listSections, fkontak);
+
+/*const yts = require("youtube-yts");
+const search = await yts(text);
+const {key} = await conn.sendMessage(from, {text: info.wait}, { quoted: fkontak })
+await conn.sendMessage(from, {text: info.waitt, edit: key}, { quoted: fkontak })
+await conn.sendMessage(from, {text: info.waittt, edit: key}, { quoted: fkontak })
+await conn.sendMessage(from, {text: info.waitttt, edit: key}, { quoted: fkontak })	
 let teks = `💫 ${lenguaje['result']()} ` + text + '\n\n';
 let no = 1;
 let themeemoji = "🔶"
@@ -32,7 +79,7 @@ for (let i of search.all) {
   teks += `${themeemoji} ${lenguaje.lengua.opcion} ${no++}\n${themeemoji} ${lenguaje.lengua.tipo} ${i.type}\n${themeemoji} ${lenguaje.lengua.id} ${i.videoId}\n${themeemoji} ${lenguaje.lengua.titulo} ${i.title}\n${themeemoji} ${lenguaje.lengua.vista} ${i.views}\n${themeemoji} ${lenguaje.lengua.dura} ${i.timestamp}\n${themeemoji} ${lenguaje.lengua.subidos} ${i.ago}\n${themeemoji} URL: ${i.url}\n\n✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧\n\n`;
 }
 await conn.sendMessage(from, { image: { url: search.all[0].thumbnail }, caption: teks }, { quoted: fkontak });
-await conn.sendMessage(from, {text: info.result, edit: key}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+await conn.sendMessage(from, {text: info.result, edit: key}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
 m.react('💫') 
 }
 
@@ -59,19 +106,21 @@ m.reply(teks)})
 
 if (command == 'imagen') {
 const {googleImage} = require('@bochilteam/scraper') 
-if (budy.includes('gore') || budy.includes('cp')|| budy.includes('porno')|| budy.includes('Gore')|| budy.includes('rule')|| budy.includes('CP')|| budy.includes('Rule34')) return m.reply('😐 NO PIDA BOLUDECES');
+if (budy.includes('gore') || budy.includes('cp')|| budy.includes('porno')|| budy.includes('Gore')|| budy.includes('rule')|| budy.includes('CP')|| budy.includes('Rule34')) return m.reply(`😐 NO PIDA BOLUDECES`) 
 if (!text) return m.reply(`${lenguaje.lengua.ejemplo}\n${prefix + command} gatito`)
 try {  
 image = await fetchJson(`https://api.akuari.my.id/search/googleimage?query=${text}`)
 n = image.result
 images = n[Math.floor(Math.random() * n.length)]
-conn.sendMessage(m.chat, { image: { url: images}, caption: `💫 ${lenguaje['result']()} ${text}`}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendButton(m.chat, `💫 ${lenguaje['result']()} ${text}`, botname, images, [['🔄 𝐒𝐈𝐆𝐔𝐈𝐄𝐍𝐓𝐄 🔄', `/imagen ${text}`]], null, null, m)
+//conn.sendMessage(m.chat, { image: { url: images}, caption: `💫 ${lenguaje['result']()} ${text}`}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 } catch {
 try {  
 const res = await googleImage(text);
 const image = res[Math.floor(Math.random() * res.length)]
 const link = image;
-conn.sendMessage(m.chat, { image: { url: link}, caption: `💫 ${lenguaje['result']()} : ${text}`}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendButton(m.chat, `💫 ${lenguaje['result']()} ${text}`, botname, link, [['🔄 𝐒𝐈𝐆𝐔𝐈𝐄𝐍𝐓𝐄 🔄', `/imagen ${text}`]], null, null, m)
+//conn.sendMessage(m.chat, { image: { url: link}, caption: `💫 ${lenguaje['result']()} : ${text}`}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 } catch (e) {
 console.log(e)
 }}}
@@ -151,7 +200,11 @@ const empireApijson1 = await Empireapi1.json();
 if (empireApijson1.resultado == 'error' || empireApijson1.resultado == '' || !empireApijson1.resultado) return XD; // causar error undefined para lanzar msg de error
 m.reply(`${empireApijson1.resultado}`.trim());
 } catch {
-return m.reply(info.error)}}}}
+try {
+let ia = await axios.get(`https://delirius-api-oficial.vercel.app/api/chatgpt?q=${text}`)
+await m.reply(ia.data.data)
+} catch {
+return m.reply(info.error)}}}}}
 
 if (command == 'bard' || command == 'ia2') { 
 if (prefix == 'a' || prefix == 'A') return
@@ -165,6 +218,20 @@ await m.reply(res.result)
 return m.reply(info.error)
 console.log(e)
 }}
+
+if (command == 'gemini') { 
+if (!text) return m.reply(`${lenguaje.lengua.ia} ${prefix + command} Recomienda un top 10 de películas de acción`) 
+conn.sendPresenceUpdate('composing', m.chat);
+let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/gemini?query=${text}`)
+let res = await gpt.json()
+await m.reply(res.message)}
+
+if (command == 'copilot' || command == 'bing') { 
+if (!text) return m.reply(`${lenguaje.lengua.ia} ${prefix + command} Recomienda un top 10 de películas de acción`) 
+conn.sendPresenceUpdate('composing', m.chat);
+let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/bingia?query=${text}`)
+let res = await gpt.json()
+await m.reply(res.message)}
 
 if (command == 'dalle' || command == 'aimg' || command == 'imagine' || command == 'dall-e') {
 if (!text) return m.reply(`${lenguaje.lengua.ia2} ${prefix + command} gatitos llorando`) 
@@ -205,7 +272,8 @@ if (global.db.data.users[m.sender].level < 2) return m.reply(`${lenguaje['nivel'
 if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} Gatos`)
 m.react("🔍") 
 const json = await pinterest(text)
-conn.sendFile(m.chat, pickRandom(json), 'pinterest.jpg', `${lenguaje['result']()} ${text}`.trim(), m)
+conn.sendButton(m.chat, `${lenguaje['result']()} ${text}`, botname, pickRandom(json), [['🔄 𝐒𝐈𝐆𝐔𝐈𝐄𝐍𝐓𝐄 🔄', `/imagen ${text}`]], null, null, m)
+//conn.sendFile(m.chat, pickRandom(json), 'pinterest.jpg', `${lenguaje['result']()} ${text}`.trim(), m)
 }
 
 if (command == 'wikipedia' || command == 'wiki') {
@@ -229,7 +297,9 @@ m.react("🔍")
 let { wallpaper, wallpaperv2 } = require('@bochilteam/scraper')
 let _res = await (/2/.test(command) ? wallpaperv2 : wallpaper)(text) 
 let _img = _res[Math.floor(Math.random() * _res.length)]
-conn.sendMessage(m.chat, { image: { url: _img }, caption: `_${lenguaje['result']()} ${text}_`}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
+conn.sendButton(m.chat, `_${lenguaje['result']()} ${text}_`, botname, _img, [['🔄 𝐒𝐈𝐆𝐔𝐈𝐄𝐍𝐓𝐄 🔄', `/imagen ${text}`]], null, null, m)
+//conn.sendMessage(m.chat, { image: { url: _img }, caption: `_${lenguaje['result']()} ${text}_`}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+}
 
 if (command == 'hd') {
 const FormData = require("form-data") 
@@ -247,6 +317,25 @@ conn.sendMessage(m.chat, {image: pr, caption: `${lenguaje.lengua.hd}`}, {quoted:
 return m.reply(info.error) 
 console.log(e) 
 }}
+
+if (command == 'style' || command == 'styletext') {
+let { styletext } = require('../libs/scraper')
+if (!text) return m.reply( '⚠️ ¡Ingrese el texto!') 
+let anu = await styletext(text)
+let teks = `🔰 *${text}*\n\n`
+for (let i of anu) {
+teks += `* ${i.result}\n\n` }
+m.reply(teks)}
+
+if (command == 'npmsearch') {
+let fetch = require('node-fetch') 
+if (!text) return m.reply(`_Ingresa el nombre del paquete npm_\n_Ejemplo_ : ${prefix}npmsearch whatsapp-web.js`) 
+let res = await fetch(`http://registry.npmjs.com/-/v1/search?text=${text}`)
+let { objects } = await res.json()
+if (!objects.length) throw `Query "${text}" not found :/`
+let txt = objects.map(({ package: pkg }) => {
+return `*${pkg.name}* (v${pkg.version})\n_${pkg.links.npm}_\n_${pkg.description}_` }).join`\n\n`
+m.reply(txt)}
 
 if (command == 'horario') {
 const moment = require('moment-timezone') 
@@ -270,7 +359,8 @@ const moment = require('moment-timezone')
   const tzBR = moment().tz('America/Sao_Paulo').format('DD/MM HH:mm');
   const tzAS = moment().tz('Asia/Jakarta').format('DD/MM HH:mm');
   const tzAF = moment().tz('Africa/Malabo').format('DD/MM HH:mm');
-  await conn.sendMessage(m.chat, {text: `┏╼┅┅⪻ \`\`\`ZONA-HORARIA 🗺️\`\`\` ⪼┅┅┅┓
+  await conn.sendMessage(m.chat, {text: `
+  ┏╼┅┅⪻ \`\`\`ZONA-HORARIA 🗺️\`\`\` ⪼┅┅┅┓
 ┋• Perú       : ${tzPE}
 ┋• México     : ${tzMX}
 ┋• Bolivia    : ${tzBO}

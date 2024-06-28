@@ -41,8 +41,9 @@ console.log(e)}}
 async function efect2(m, text, prefix, command, conn) {
 if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
-if (!text) return m.reply(`\`🪄 𝐋𝐈𝐒𝐓𝐀𝐒 𝐃𝐄 𝐋𝐎𝐆𝐎𝐒\`
+if (!text) return m.reply(`\`🪄𝑩𝑰𝑬𝑵𝑽𝑬𝑵𝑰𝑫𝑶 𝑨𝑳 𝑴𝑬𝑵𝑼 𝐃𝐄 𝐋𝐎𝐆𝐎𝐒 🪄\`
 
+🪄 𝐋𝐈𝐒𝐓𝐀𝐒 𝐃𝐄 𝐋𝐎𝐆𝐎𝐒 : 
 * ${prefix}logololi
 * ${prefix}neon
 * ${prefix}txt 

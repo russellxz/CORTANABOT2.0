@@ -52,7 +52,7 @@ conn.sendMessage(m.chat, {image: imagen1, caption: stateRun, contextInfo:{ menti
 }
 
 if (command == 'owner' || command == 'creador' || command == 'contacto') {
-let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;OWNER 👑;;;\nFN:OWNER\nORG:OWNER 👑\nTITLE:\nitem1.TEL;waid=447700179665:+44 7700 179665\nitem1.X-ABLabel:OWNER👑\nX-WA-BIZ-DESCRIPTION:Russell\nX-WA-BIZ-NAME:OWNER 👑\nEND:VCARD`
+let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;OWNER 👑;;;\nFN:OWNER\nORG:OWNER 👑\nTITLE:\nitem1.TEL;waid=15167096032:+1 516-709-6032\nitem1.X-ABLabel:OWNER👑\nX-WA-BIZ-DESCRIPTION:Russell\nX-WA-BIZ-NAME:OWNER 👑\nEND:VCARD`
 let a = await conn.sendMessage(m.chat, { contacts: { displayName: wm, contacts: [{ vcard }] }}, {quoted: m})
 await conn.sendTextWithMentions(m.chat, `${lenguaje['smsWel']()} @${sender.split("@")[0]},\nEse es mi dueño, ¡NO SPAM!\n👉 Si deseas añadir el bot a uno de tus grupos comunicate con el\n\n◎ *Importante:* El no es un bot porfavor ten modales y saluda\n\n${yt}`, a)
 //conn.sendMessage(m.chat, { text : `${lenguaje['smsWel']()} @${sender.split("@")[0]}, este Bot Fue Modificado por russell. Aqui tienes el numero solo por la dudas y problema del bot.\n\n‼️ 𝙽𝚘 𝚑𝚊𝚐𝚊𝚗 𝚜𝚙𝚊𝚖 𝚊 𝚖𝚒 𝚌𝚛𝚎𝚊𝚍𝚘𝚛 𝚘 𝚚𝚞𝚎𝚍𝚊 𝚋𝚕𝚘𝚚𝚞𝚎𝚊𝚍𝚘\n\n${yt}`, mentions: [sender]}, { quoted: a, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
@@ -150,7 +150,7 @@ conn.sendMessage(from, { text: `*🟢 Velocidad: ${latensi.toFixed(4)}*` }, { qu
 
 if (command == 'report') {
 if (!text) return m.reply(`${lenguaje.info.text21}\n${prefix + command} sticker no funciona`)
-conn.sendMessage(`19293719827@s.whatsapp.net`, {text: `╭━━〔 *𝚁𝙴𝙿𝙾𝚁𝚃𝙴 | 𝚁𝙴𝙿𝙾𝚁𝚃* 〕━━⬣\n┃\n┃✿ *𝙽𝚞𝚖𝚎𝚛𝚘 | 𝚗𝚞𝚖𝚋𝚎𝚛*\n┃⇢ wa.me/${m.sender.split("@")[0]}\n┃\n┃✿ *𝙼𝚎𝚗𝚜𝚊𝚓𝚎 | 𝚝𝚎𝚡𝚝*\n┃: ${text}┃\n╰━━━〔 *${vs}* 〕━━━⬣` })
+conn.sendMessage(`15167096032@s.whatsapp.net`, {text: `╭━━〔 *𝚁𝙴𝙿𝙾𝚁𝚃𝙴 | 𝚁𝙴𝙿𝙾𝚁𝚃* 〕━━⬣\n┃\n┃✿ *𝙽𝚞𝚖𝚎𝚛𝚘 | 𝚗𝚞𝚖𝚋𝚎𝚛*\n┃⇢ wa.me/${m.sender.split("@")[0]}\n┃\n┃✿ *𝙼𝚎𝚗𝚜𝚊𝚓𝚎 | 𝚝𝚎𝚡𝚝*\n┃: ${text}┃\n╰━━━〔 *${vs}* 〕━━━⬣` })
 m.reply(`${lenguaje.info.text22}`)
 }
 
