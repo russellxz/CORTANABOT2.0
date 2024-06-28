@@ -96,15 +96,15 @@ const smsAntiLink6 = () => { return `Te salvarte gil, no soy admin no te puedo e
 const smsAutoSicker = () => { return `🤡 Hey Donde carajo viste un sticker que dure tanto bobo 🤣. (Máximo 15 segundos)` }
 
 //autonivel
-const smsAutonivel = () => { return `*「 FELICIDADES LEVEL UP 🆙🥳 」*\n\n🥳 Felicidades` }
-const smsAutonivel2 = () => { return `👏 Subiste de nivel sigue asi 👏\n` }
-const smsAutonivel3 = () => { return `*❑ NIVEL :*` }
-const smsAutonivel4 = () => { return `*❐ NIVEL ANTERIOR :* ` }
-const smsAutonivel5 = () => { return `*❐ NIVEL ACTUAL :*` }
-const smsAutonivel6 = () => { return `*❑ RANGO :*` }
-const smsAutonivel7 = () => { return `*❐ FECHA :*` }
-const smsAutonivel8 = () => { return `_*Para saber cual es tu puesto del top, coloca el comando #lb*_` }
-const smsAutonivel9 = () => { return `*🥳 FELICIDADES LLEGARTE A UN NUEVO NIVEL 🎊*\n\n` }
+const smsAutonivel = () => { return `🌋 *𝑭𝑬𝑳𝑰𝑪𝑰𝑫𝑨𝑫𝑬𝑺 𝑳𝑬𝑽𝑬𝑳 𝑼𝑷 🆙🌋*\n\n🥳 ғᴇʟɪᴄɪᴅᴀᴅᴇs` }
+const smsAutonivel2 = () => { return `👏 sᴜʙɪsᴛᴇ ᴅᴇ ɴɪᴠᴇʟ sɪɢᴜᴇ ᴀsɪ 💯\n` }
+const smsAutonivel3 = () => { return `*➫ 𝐍𝐈𝐕𝐄𝐋 :*` }
+const smsAutonivel4 = () => { return `*➫ 𝐍𝐈𝐕𝐄𝐋 ANTERIOR :* ` }
+const smsAutonivel5 = () => { return `*➫ 𝐍𝐈𝐕𝐄𝐋 𝐀𝐂𝐓𝐔𝐀𝐋 :*` }
+const smsAutonivel6 = () => { return `*➫ 𝐑𝐀𝐍𝐆𝐎 :*` }
+const smsAutonivel7 = () => { return `*➫ 𝐅𝐄𝐂𝐇𝐀 :*` }
+const smsAutonivel8 = () => { return `😎 _*ᴘᴀʀᴀ sᴀʙᴇʀ ᴄᴜᴀʟ ᴇs ᴛᴜ ᴘᴜᴇsᴛᴏ ᴅᴇʟ ᴛᴏᴘ, ᴄᴏʟᴏᴄᴀ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ: #lb 😎*_` }
+const smsAutonivel9 = () => { return `*🆙 𝑭𝑬𝑳𝑰𝑪𝑰𝑫𝑨𝑫𝑬𝑺 𝑳𝑬𝑽𝑬𝑳 𝑼𝑷 🎊*\n\n` }
 
 //info
 const nivel = () => { return `[ ❇️ ] ɴᴇᴄᴇsɪᴛᴀ ᴇʟ ɴɪᴠᴇʟ` }
@@ -118,7 +118,7 @@ const bot = () => { return `*⚠️ Este comando solo (YO) lo puedo usar*` }
 const error = () => { return `⪨╼╼≪⚠️ ERROR ⚠️≫╾╼⪩\n\nOCURRIÓ UN ERROR INESPERADO, (API CAIDA 😢)` }
 const AvisoMG = () => { return `⪨╼╼≪⚠️ ACCION MAL USADA ⚠️≫╾╼⪩\n\n` }
 const advertencia = () => { return `[ ⚠️ ＡＤＶＥＲＴＥＮＣＩＡ ]` }
-const registra = () => { return `❌ No estas registrado para registrarte utiliza\n#reg nombre.edad\n\n*Ejemplo:*\n\n#reg Cortana|12` }
+const registra = () => { return `❌ ℕ𝕠 𝕖𝕤𝕥𝕒𝕤 𝕣𝕖𝕘𝕚𝕤𝕥𝕣𝕒𝕕𝕠 𝕡𝕒𝕣𝕒 𝕣𝕖𝕘𝕚𝕤𝕥𝕣𝕒𝕣𝕥𝕖 𝕦𝕥𝕚𝕝𝕚𝕫𝕒 ❌\n#ʀᴇɢ ɴᴏᴍʙʀᴇ.ᴇᴅᴀᴅ\n\n*𝑬𝒋𝒆𝒎𝒑𝒍𝒐:*\n\n#reg Cortana|12` }
 const limit = () => { return `*𝙲𝚁𝙴𝙳𝙸𝚃𝙾 💳 𝙼𝙴𝙽𝙾𝚂*` }
 const AntiNsfw = () => { return `*Los comando +18 esta desactivado*\nSi eres admin y quiere activarlos usar:\n• modocaliente on` }
 const endLimit = () => { return `*😢 𝐍𝐎𝐎 𝐓𝐈𝐄𝐍𝐄 𝐌𝐀𝐒 𝐂𝐑𝐄𝐃𝐈𝐓𝐎𝐒 💳*\n\nᴘᴜᴇᴅᴇ ᴄᴏᴍᴘʀᴀʀ ᴍᴀs ᴜsᴀɴᴅᴏ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ: #buy` }
@@ -190,8 +190,8 @@ text20: (fb, md) => `╭─────────────┈⊷
 │ \`COMO INSTALAR ESTE BOT?\`
 ╰┬────────────┈⊷
 ┌┤\`📌 REQUISITOS PARA LAS INSTALACION \`
-┌┤❇️ _Dudas: ${fb}_
-┌┤❇️ _Tutoríal: https://youtu.be/Ky29KDT1QRQ?si=6S1yq3P72BNtHf3D
+┌┤❇️ _Dudas: wa.me/15167096032_
+┌┤❇️ _Tutoríal: https://youtu.be/yXhrXyS9jBE?si=GQJbrOSSILCVxtzJ_
 ┌┤❇️ _1 GB de almacenamiento_
 ┌┤❇️ _Termux: https://www.mediafire.com/file/3hsvi3xkpq3a64o/termux_118.apk/file_
 ┌┤❇️ _GitHub: ${md}_
@@ -216,23 +216,6 @@ text20: (fb, md) => `╭─────────────┈⊷
 
 > (𝘌𝘴𝘤𝘢𝘯𝘦𝘢𝘳 𝘦𝘭 𝘘𝘙, 𝘙𝘢𝘱𝘪𝘥𝘰)
 
-🚀 --------[ Vortexuscloud host ]--------- 🚀
-> 💞 Agraciemiento a: mauro 
-
-* https://youtube.com/@vortexuscloud
-
-> Pagina oficial :
-https://vortexuscloud.com
-
-> dashboard:
-* https://dash.vortexuscloud.com
-
-> panel:
-" https://panel.vortexuscloud.com
-
-> Canal de WhatsApp sobre informacion del host 
-* https://whatsapp.com/channel/0029Va8ZD6O3mFXxTPl1m13A
-
 🚀 --------[ Cafirexos host ]--------- 🚀
 
 *Página oficial:*
@@ -248,7 +231,42 @@ https://vortexuscloud.com
 * https://chat.whatsapp.com/FBtyc8Q5w2iJXVl5zGJdFJ  (Pregunta por Diego: cafirexos) 
 
 *Canal de WhatsApp:*
-* https://whatsapp.com/channel/0029VaFVSkRCMY0KFmCMDX2q`, 
+* https://whatsapp.com/channel/0029VaFVSkRCMY0KFmCMDX2q
+
+🚩 --------[ Infinity-Host ]--------- 🚩
+
+*🔰 Tutorial :*
+https://youtu.be/c9RCnOV418E?si=ChPO8tzNp_qwqFYO
+
+*📍Dashboard:*
+https://dashboard.infinitywa.xyz
+
+*✅ Panel:*
+https://live.panel-infinitywa.store
+
+*⚙️Grupo support:*
+https://chat.whatsapp.com/GQ82mPnSYnm0XL2hLPk7FV
+> Dudas *UNICAMENTE SOBRE EL HOST*
+
+*🟣 Discord:*
+https://discord.com/invite/vgfpe4Nwd8
+
+🚀 --------[ Vortexuscloud host ]--------- 🚀
+> 💞 Agraciemiento a: mauro 
+
+* https://youtube.com/@vortexuscloud
+
+> Pagina oficial :
+https://vortexuscloud.com
+
+> dashboard:
+* https://dash.vortexuscloud.com
+
+> panel:
+" https://panel.vortexuscloud.com
+
+> Canal de WhatsApp sobre informacion del host 
+* https://whatsapp.com/channel/0029Va8ZD6O3mFXxTPl1m13A`, 
 text21: `*𝙸𝙽𝙶𝚁𝙴𝚂𝙴 𝙴𝙻 𝙲𝙾𝙼𝙰𝙽𝙳𝙾 𝙲𝙾𝙽 𝙵𝙰𝙻𝙻𝙾𝚂*\n\n*𝙴𝙹𝙴𝙼𝙿𝙻𝙾:`, 
 text22: `𝙴𝙻 𝚁𝙴𝙿𝙾𝚁𝚃𝙴 𝙵𝚄𝙴 𝙴𝙽𝚅𝙸𝙰𝙳𝙾 𝙰 𝙼𝙸 𝙲𝚁𝙴𝙰𝙳𝙾𝚁, 𝙽𝙾𝚂 𝙲𝙾𝙽𝚃𝙰𝚁𝙴𝙼𝙾𝚂 𝙲𝙾𝙽 𝚄𝚂𝚃𝙴𝙳 𝚂𝙸 𝙴𝚂 𝙽𝙴𝙲𝙴𝚂𝙰𝚁𝙸𝙾, 𝙳𝙴 𝚂𝙴𝚁 𝙵𝙰𝙻𝚂𝙾 𝚂𝙴𝚁𝙰 𝙸𝙶𝙽𝙾𝚁𝙰𝙳𝙾 𝚈 𝙱𝙻𝙾𝚀𝚄𝙴𝙰𝙳𝙾 𝙳𝙴𝙻 𝙱𝙾𝚃*`, 
 text23: `*╼╼╼╼╼╼╼[ 💖 DONACION 💖 ]╾╾╾╾╾╾╾╾*\n\n*Hola 👋, si quieres apoyar este proyecto, puedes hacerlo a través de donaciones voluntarias por PayPal, Mercado Pago o Naranja X.*\n\n╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n\n*❇️PayPal:*\nhttps://paypal.me/OfcGB\n\n╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n\n*❇️Mercado pago:*\n*• Alias :* OficialGB\n*• CVU :* 0000003100059201491917\n\n╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍\n\n*❇️ Naranja X:*\n*• Alias :* OficialGL\n*• CVU :* 4530000800017922067114`, 
@@ -296,11 +314,9 @@ text10: `☬Rᵃᶰᵍᵒ:`,
 text11: `☬Rᵉᵍᶤˢᵗʳᵃᵈᵒ :`, 
 textt: `☬Bᵒᵗ ᵒᶠᶜ : 𝐸𝑠𝑡𝑒 𝑒𝑠 𝑒𝑙 𝑏𝑜𝑡 𝑜𝑓𝑐 `, 
 texttt: `☬ ˢᵒʸ ᵘⁿ ˢᵘᵇᴮᵒᵗ ᵈᵉ :`, 
-text12: `꧁🎮𝙇𝙄𝙎𝙏𝘼 𝘿𝙀 𝘾𝙊𝙈𝘼𝙉𝘿𝙊𝙎🎮꧂
-៚ʙᴏᴛ sɪᴍᴘʟᴇ ᴄᴏɴ ᴘᴏᴄᴏs ᴄᴏᴍᴀɴᴅᴏs࿐`, 
-text13: `*Palabras especificas para que el bot interactue con usted*`, 
-text14: `_*ᴼʲᶦᵗᵒ ᵉˢᶜʳᶦᵇᵉ ᵗᵃˡ ʸ ᶜᵒᵐᵒ ᵉˢᵗᵃ ᵉⁿ ᵉˡ ᵐᵉⁿˢᵃʲᵉ*_
-*ᵠᵘᶦᵉʳᵉ ᵃᵍʳᵉᵍᵃ ᵃˡᵍᵘⁿ ᵃᵘᵈᶦᵒ ⁿᵘᵉᵛᵒ ᵉˢᶜʳᶦᵇᶦʳˡᵉ ᵃ ᵐᶦ ᶜʳᵉᵃᵈᵒʳ ᵘʷᵘ*`,
+text12: `◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆\n꧁🎮𝙇𝙄𝙎𝙏𝘼 𝘿𝙀 𝘾𝙊𝙈𝘼𝙉𝘿𝙊𝙎🎮꧂\n៚ʙᴏᴛ sɪᴍᴘʟᴇ ᴄᴏɴ ᴘᴏᴄᴏs ᴄᴏᴍᴀɴᴅᴏs࿐\n◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆\n\n😎 *𝑩𝑰𝑬𝑵𝑽𝑬𝑵𝑰𝑫𝑶 𝑨𝑳 𝑴𝑬𝑵𝑼𝐀𝐋𝐋*😎 `, 
+text13: `🔥𝑩𝑰𝑬𝑵𝑽𝑬𝑵𝑰𝑫𝑶 𝑨𝑳 𝑴𝑬𝑵𝑼 2🔥\n\n😎 *ℙ𝕒𝕝𝕒𝕓𝕣𝕒𝕤 𝕖𝕤𝕡𝕖𝕔𝕚𝕗𝕚𝕔𝕒𝕤 𝕡𝕒𝕣𝕒 𝕢𝕦𝕖 𝕖𝕝 𝕓𝕠𝕥 𝕚𝕟𝕥𝕖𝕣𝕒𝕔𝕥𝕦𝕖 𝕔𝕠𝕟 𝕦𝕤𝕥𝕖𝕕*😎`, 
+text14: `➫ 𝙲𝙾𝚁𝚃𝙰𝙽𝙰𝙱𝙾𝚃-𝟸.𝟶`,
 text15: (vs) => `*\`🤔 Que hay de nuevo? 🤗\`*\n\n*🌐 Nueva Version:* [ ${vs} ]\n\n*Nuevo comando:*
 
 \`🎮👾 Nuevo juegos :\`
@@ -612,7 +628,7 @@ const rpg = {
 text: `[ 💤 𝙽𝙾 𝙻𝙾𝚂 𝙴𝚃𝙸𝚀𝚄𝙴𝚃𝙴 💤 ]\n\n𝙴𝚜𝚝𝚎 𝚞𝚜𝚞𝚊𝚛𝚒𝚘 𝚚𝚞𝚎 𝚖𝚎𝚗𝚌𝚒𝚘𝚗𝚊𝚜 𝚎𝚜𝚝𝚊 𝙰𝙵𝙺`, 
 text1: `*𝙴𝚂𝚃𝚄𝚅𝙾 𝙸𝙽𝙰𝙲𝚃𝙸𝚅𝙾 𝙳𝚄𝚁𝙰𝙽𝚃𝙴 : `, 
 text2: `*🕔 𝙳𝙴𝙹𝙰𝚂𝚃𝙴 𝙳𝙴 𝙴𝚂𝚃𝙰 𝙰𝙵𝙺 🕔*`, 
-text3: `🎮𝐓𝐀𝐁𝐋𝐀 𝐃𝐄 𝐂𝐋𝐀𝐒𝐈𝐅𝐈𝐂𝐀𝐂𝐈𝐎𝐍🎮`, 
+text3: `🎮 𝚃𝙰𝙱𝙻𝙰 𝙳𝙴 𝙲𝙻𝙰𝚂𝙸𝙵𝙸𝙲𝙰𝙲𝙸𝙾𝙽 `, 
 text4: `𝙴𝚂𝚃𝙴 𝚄𝚂𝚄𝙰𝚁𝙸𝙾𝚂`, 
 text5: `𝙴𝚂𝚃𝙰 𝙸𝙽𝙰𝙲𝚃𝙸𝚅𝙾 😴\n💤 𝙽𝙾 𝙻𝙾𝚂 𝙴𝚃𝙸𝚀𝚄𝙴𝚃𝙴 💤\n☣️ 𝙼𝙾𝚃𝙸𝚅𝙾𝚂 :`, 
 text6: `*🚓 Regresa el*`, 
@@ -652,13 +668,13 @@ pp4: `*💳 CRÉDITO :*`,
 pp5: `*🆙 NIVEL :*`, 
 pp6: `*🏆 RANGO :*`, 
 pp7: `*📇 REGISTRADOS :*`, 
-level: `*💫 TUS ESTADISTICAS 🆙*`, 
-level2: `『 Tus estadisticas en tiempo real 🕐 』`, 
-level3: `💫 *NOMBRE:*`, 
-level4: `🎊 𝘛𝘦 𝘧𝘢𝘭𝘵𝘢`, 
-level5: `𝘥𝘦 *XP* 𝘱𝘢𝘳𝘢 𝘴𝘶𝘣𝘪𝘳 𝘥𝘦 𝘯𝘪𝘷𝘦𝘭`, 
-level6: `𝘍𝘦𝘭𝘪𝘤𝘪𝘥𝘢𝘥𝘦𝘴\n├ 𝘭𝘭𝘦𝘨𝘢𝘴𝘵𝘦 𝘢 𝘶𝘯 𝘯𝘶𝘦𝘷𝘰 𝘯𝘪𝘷𝘦𝘭 』`, 
-level7: `*💫 𝘊𝘶𝘢𝘯𝘵𝘰 𝘮𝘢𝘴 𝘪𝘯𝘵𝘦𝘳𝘢𝘤𝘵𝘶𝘦𝘴 𝘤𝘰𝘯 𝘭𝘰𝘴 𝘣𝘰𝘵𝘴, 𝘮𝘢𝘺𝘰𝘳 𝘴𝘦𝘳𝘢 𝘵𝘶 𝘯𝘪𝘷𝘦𝘭*` }
+level: `*🪼 𝑻𝑼𝑺 𝑬𝑺𝑻𝑨𝑫𝑰𝑺𝑻𝑰𝑪𝑨𝑺 🆙*`, 
+level2: `『𝑇𝑢𝑠 𝑒𝑠𝑡𝑎𝑑𝑖𝑠𝑡𝑖𝑐𝑎𝑠 𝑒𝑛 𝑡𝑖𝑒𝑚𝑝𝑜 𝑟𝑒𝑎𝑙🕐』`, 
+level3: `➫ *𝑵𝑶𝑴𝑩𝑹𝑬:*`, 
+level4: `🎊 ᴛᴇ ғᴀʟᴛᴀ `, 
+level5: `ᴅᴇ *xᴘ* ᴘᴀʀᴀ sᴜʙɪʀ ᴅᴇ ɴɪᴠᴇʟ💯`, 
+level6: `ғᴇʟɪᴄɪᴅᴀᴅᴇs\n├ ʟʟᴇɢᴀsᴛᴇ ᴀ ᴜɴ ɴᴜᴇᴠᴏ ɴɪᴠᴇʟ 』`, 
+level7: `*🪼 ᴄᴜᴀɴᴛᴏ ᴍᴀs ɪɴᴛᴇʀᴀᴄᴛᴜᴇs ᴄᴏɴ ʟᴏs ʙᴏᴛs, ᴍᴀʏᴏʀ sᴇʀᴀ ᴛᴜ ɴɪᴠᴇʟ*` }
 
 //sticker.js
 const sticker = {
