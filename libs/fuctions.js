@@ -429,7 +429,8 @@ if (!isNumber(user.afkTime)) user.afkTime = -1
 if (!isNumber(user.joincount)) user.joincount = 1;
 if (!('afkReason' in user)) user.afkReason = ''  
 if (!('banned' in user)) user.banned = false
-if (!isNumber(user.limit)) user.limit = 20  
+if (!isNumber(user.limit)) user.limit = 25
+if (!isNumber(user.coins)) user.coins = 100
 if (!isNumber(user.gato)) user.gato = 0
 if (!isNumber(user.perro)) user.perro = 0
 if (!isNumber(user.monos)) user.monos = 0
@@ -456,10 +457,10 @@ if (!isNumber(user.fuente)) user.fuente = 0
 if (!isNumber(user.castillo)) user.castillo = 0
 if (!user.premiumTime)  user.premiumTime = 0
 if (!isNumber(user.warn)) user.warn = 0
-if(!isNumber(user.money)) user.money = 0  
+if(!isNumber(user.money)) user.money = 300
 if(!isNumber(user.health)) user.health = 100  
 if(!isNumber(user.warn)) user.warn = 0  
-if(!isNumber(user.exp)) user.exp = 0
+if(!isNumber(user.exp)) user.exp = 5
 if(!isNumber(user.role)) user.role = '🙊 NOVATO(A) :v'
 if (!('autolevelup' in user)) user.autolevelup = true
 if(!isNumber(user.level)) user.level = 0
@@ -507,9 +508,9 @@ if (!isNumber(user.trash)) user.trash = 0
 afkTime: -1,  
 afkReason: '',  
 banned: false, 
-limit: 20,  
+limit: 25, 
 warn: 0,
-money: 0,
+money: 300,
 banco: 0,
 registered: false,
 premium: false, 
