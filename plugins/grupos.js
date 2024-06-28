@@ -1,7 +1,7 @@
 //COMANDO PARA GRUPOS
 require('../main.js') 
 const fs = require("fs")
-const { smsg, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom } = require('../libs/fuctions.js'); 
+const { smsg, fetchBuffer, getBuffer, buffergif, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom, msToTime, downloadMediaMessage, convertirMsADiasHorasMinutosSegundos, pickRandom, getUserBio, asyncgetUserProfilePic} = require('../libs/fuctions') 
 const path = require("path")
 const chalk = require("chalk");
 const moment = require('moment-timezone') 
@@ -13,9 +13,10 @@ const Jimp = require('jimp')
 const os = require('os')
 require('../main')
 
-async function grupo(m, command, isGroupAdmins, text, conn, participants, isBotAdmins, args, isCreator, delay, sender, quoted, mime, from, isCreator, groupMetadata, fkontak, delay, store) {
-if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+async function grupo(m, command, isGroupAdmins, text, conn, participants, isBotAdmins, args, isCreator, delay, sender, quoted, mime, from, isCreator, groupMetadata, fkontak, delay, store, chats) {
+//if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
 if (global.db.data.users[m.sender].banned) return
+let usuario = global.db.data.users[m.sender]
 if (command == 'hidetag' || command == 'notificar' || command == 'tag') {  
 if (!m.isGroup) return m.reply(info.group) 
 if (!isGroupAdmins) return m.reply(info.admin)
@@ -29,12 +30,14 @@ if (command == 'grupo') {
 if (!m.isGroup) return m.reply(info.group);  
 if (!isBotAdmins) return m.reply(info.botAdmin);  
 if (!isGroupAdmins) return m.reply(info.admin)
-if (!text) return m.reply(`${lenguaje.enable.text}\n*${prefix + command} abrir*\n*${prefix + command} cerrar*`)
+if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n*${prefix + command} abrir*\n*${prefix + command} cerrar*`, wm, null, [['Grupo abierto 🔓', `.grupo abrir`], ['Grupo cerrado 🔐', '.grupo cerrar']], null, null, m)
+//m.reply(`${lenguaje.enable.text}\n*${prefix + command} abrir*\n*${prefix + command} cerrar*`)
 if (args[0] === 'abrir') {
-m.reply(lenguaje.grupos.text1)
+conn.sendButton(m.chat, lenguaje.grupos.text1, wm, null, [['🔐Cerrar', `.grupo cerrar`]], null, null, m)
+//m.reply(lenguaje.grupos.text1)
 await conn.groupSettingUpdate(m.chat, 'not_announcement')
 } else if (args[0] === 'cerrar') {
-m.reply(lenguaje.grupos.text2)
+conn.sendButton(m.chat, lenguaje.grupos.text2, wm, null, [['🔓abrir', `.grupo abrir`]], null, null, m)
 await conn.groupSettingUpdate(m.chat, 'announcement')
 }}
     
@@ -50,7 +53,7 @@ return conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id
   
 if (command == 'setrules' || command == 'addrules' || command == 'addrule') {  
 let chat = global.db.data.chats[m.chat]
-if (!text) return m.reply(`⚠️ Escriba la reglas de este grupo!`) 
+if (!text) return m.reply(`⚠️ Escriba la reglas de este grupo!`)  
 chat.rules = text
 m.reply(`${lenguaje['exito']()}`)}
  
@@ -72,11 +75,11 @@ let res = await conn.groupAcceptInvite(code).then((code) => m.reply(jsonformat(c
 //await conn.groupAcceptInvite(code)
 } else {
 const data = global.owner.filter(([number, _, isDeveloper]) => isDeveloper && number)
-await delay(1 * 1000)
+await delay(2 * 2000)
 m.reply(lenguaje.grupos.text7)
-await delay(3 * 1000)
+await delay(3 * 3000)
 for (let jid of data.map(([id]) => [id] + '@s.whatsapp.net').filter(v => v != conn.user.jid)) m.reply(`${lenguaje.grupos.text5}\nwa.me/${m.sender.split('@')[0]}\n\n${lenguaje.grupos.text6}\n${link}`, jid)
-await delay(25 * 5000)
+await delay(25 * 25000)
 m.reply(lenguaje.grupos.text8(md, yt, nn7, fb))}
 }
 
@@ -120,17 +123,7 @@ if (!isBotAdmins) return m.reply(info.botAdmin)
 if (!isGroupAdmins) return m.reply(info.admin)
 let res = conn.groupRevokeInvite(m.chat)}
 
-if (command == 'add' || command == 'agregar') {
-if (!m.isGroup) return m.reply(info.group);  
-if (!isBotAdmins) return m.reply(info.botAdmin)
-if (!isGroupAdmins) return m.reply(info.admin)
-if (!text) return m.reply(`${lenguaje.grupos.text13}\n${prefix}add +5244446577`)
-let users = m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-await conn.groupParticipantsUpdate(m.chat, [users], 'add')
-m.reply(lenguaje.exito())
-}
-
-if (command == 'invitar') {
+if (command == 'add' || command == 'agregar' || command == 'invitar') {
 if (!m.isGroup) return m.reply(info.group);  
 if (!isBotAdmins) return m.reply(info.botAdmin)
 if (!isGroupAdmins) return m.reply(info.admin)
@@ -177,14 +170,14 @@ conn.sendText(m.chat, `https://chat.whatsapp.com/${response}`, m, { detectLink: 
 if (command == 'banchat') { 
 if (!m.isGroup) return m.reply(info.group) 
 if (!isCreator) return m.reply(info.owner) 
-if (!text) return conn.sendPoll(m.chat, `${lenguaje.enable.text}\n*$*${prefix + command} on*\n*${prefix + command} off*`, ['banchat on','banchat off'])
+if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n*${prefix + command} on*\n*${prefix + command} off*`, wm, null, [['On', `.banchat on`], ['off', '.banchat off']], null, null, m)
 //m.reply(`${lenguaje.enable.text}\n*${prefix + command} on*\n*${prefix + command} off*`)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].isBanned = true
-m.reply(lenguaje.grupos.text19)
+conn.sendButton(m.chat, lenguaje.grupos.text19, wm, null, [['Apagar', '.banchat off']], null, null, m)
 } else if (args[0] === "off") {  
 global.db.data.chats[m.chat].isBanned = false
-m.reply(lenguaje.grupos.text20)}}
+conn.sendButton(m.chat, lenguaje.grupos.text20, wm, null, [['Activar', '.banchat on']], null, null, m)}}
 
 if (command == 'tagall' || command == 'invocar' || command == 'todos') {
 if (!m.isGroup) return m.reply(info.group) 
@@ -206,7 +199,7 @@ const listAdmin = groupAdmins.map((v, i) => `${i + 1}. @${v.id.split('@')[0]}`).
 const owner = groupMetadata.owner || groupAdmins.find((p) => p.admin === 'superadmin')?.id || m.chat.split`-`[0] + '@s.whatsapp.net';
 const pesan = args.join` `;
 const oi = `${lenguaje.grupos.text21} ${pesan}`;
-const text = `═✪〘 *ＩＮＶＯＣＡＮＤＯ ＡＤＭＩＮＳ* 〙✪═\n\n• *ɢʀᴜᴘᴏ:* [ ${groupMetadata.subject} ]\n\n• ${oi}\n\n• *ᴀᴅᴍɪɴs:*\n➥ ${listAdmin}\n\n${lenguaje.grupos.text22}`.trim(); 
+const text = `═✪〘 **ＩＮＶＯＣＡＮＤＯ ＡＤＭＩＮＳ* 〙✪═\n\n• *ɢʀᴜᴘᴏ:* [ ${groupMetadata.subject} ]\n\n• ${oi}\n\n• *ᴀᴅᴍɪɴs:*\n➥ ${listAdmin}\n\n${lenguaje.grupos.text22}`.trim(); 
 conn.sendMessage(m.chat, { text: text, mentions: participants.map(a => a.id) }, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 
 if (command == 'infogrupo' || command == 'groupinfo') {
@@ -308,7 +301,7 @@ const user = global.db.data.users;
 const imagewarn = './src/warn.jpg';
 const caption = `${lenguaje.grupos.text32}\n 
 ╔═══════════════════·•
-║ *𝚃𝚘𝚝𝚊𝚕 : ${adv.length} ${lenguaje.grupos.text33} ${adv ? '\n' + adv.map(([jid, user], i) => `
+║ '*𝚃𝚘𝚝𝚊𝚕 :* ${adv.length} ${lenguaje.grupos.text33} ${adv ? '\n' + adv.map(([jid, user], i) => `
 ║
 ║ 1.- ${isCreator ? '@' + jid.split`@`[0] : jid} *(${user.warn}/4)*\n║\n║ - - - - - - - - -`.trim()).join('\n') : ''}
 ╚══════════════════·•`;
@@ -318,7 +311,40 @@ if (command == 'enline' || command == 'online' || command == 'listonine' || comm
 if (!m.isGroup) return m.reply(info.group);  
 let id = args && /\d+\-\d+@g.us/.test(args[0]) ? args[0] : m.chat
 let online = [...Object.keys(store.presences[id]), numBot]
-conn.sendText(m.chat, '*Lista de activos | online:*\n\n' + online.map(v => '❑ @' + v.replace(/@.+/, '')).join`\n`, m, { mentions: online })}}
+conn.sendText(m.chat, '*Lista de activos | online:*\n\n' + online.map(v => '❑ @' + v.replace(/@.+/, '')).join`\n`, m, { mentions: online })}
+
+if (command == 'fantasmas' || command == 'fantasma') {
+const { areJidsSameUser } = require('@whiskeysockets/baileys') 
+const member = participants.map((u) => u.id);
+if (!text) {
+var sum = member.length;
+} else {
+var sum = text;
+}
+let total = 0;
+const sider = [];
+for (let i = 0; i < sum; i++) {
+const users = m.isGroup ? participants.find((u) => u.id == member[i]) : {};
+if ((typeof global.db.data.users[member[i]] == 'undefined' || global.db.data.users[member[i]].chat == 0) && !users.isAdmin && !users.isSuperAdmin) {
+if (typeof global.db.data.users[member[i]] !== 'undefined') {
+if (global.db.data.users[member[i]].whitelist == false) {
+total++;
+sider.push(member[i]);
+}} else {
+total++;
+sider.push(member[i]);
+}}}
+if (total == 0) return m.reply(`*⚠️ 𝐄𝐒𝐓𝐄 𝐆𝐑𝐔𝐏𝐎 𝐄𝐒 𝐀𝐂𝐓𝐈𝐕𝐎, 𝐍𝐎 𝐓𝐈𝐄𝐍𝐄 𝐅𝐀𝐍𝐓𝐀𝐒𝐌𝐀𝐒 :D*`);
+  conn.sendTextWithMentions(m.chat, `*[ ⚠️ 𝘙𝘌𝘝𝘐𝘚𝘐𝘖𝘕 𝘋𝘌 𝘐𝘕𝘈𝘊𝘛𝘐𝘝𝘖𝘚 ⚠️ ]*\n\n*ɢʀᴜᴘᴏ:* ${groupMetadata.subject}\n*ᴍɪᴇᴍʙʀᴏs:* ${sum}\n\n*[ 👻 𝘓𝘐𝘚𝘛𝘈 𝘋𝘌 𝘍𝘈𝘕𝘛𝘈𝘚𝘔𝘈𝘚 👻 ]*\n${sider.map((v) => '  👉🏻 @' + v.replace(/@.+/, '')).join('\n')}\n\n*𝘕𝘖𝘛𝘈:* 𝘌𝘴𝘵𝘰 𝘱𝘶𝘦𝘥𝘦 𝘯𝘰 𝘴𝘦𝘳 100% 𝘢𝘤𝘦𝘳𝘵𝘢𝘥𝘰, 𝘦𝘭 𝘣𝘰𝘵 𝘪𝘯𝘪𝘤𝘪𝘢 𝘦𝘭 𝘤𝘰𝘯𝘵𝘦𝘰 𝘥𝘦 𝘮𝘦𝘯𝘴𝘢𝘫𝘦 𝘢𝘱𝘢𝘳𝘵𝘪𝘳 𝘥𝘦 𝘲𝘶𝘦 𝘴𝘦 𝘢𝘤𝘵𝘪𝘷𝘰 𝘦𝘯 𝘦𝘴𝘵𝘦 𝘯𝘶𝘮𝘦𝘳𝘰`, m)}
+  
+if (command == 'grouplist' || command == 'listgc') {
+let anu = await store.chats.all().filter(v => v.id.endsWith('@g.us')).map(v => v.id)
+let teks = `💢 *\`LISTA DE GRUPOS\`*\n\n◉ Total: ${anu.length} Grupos\n\n`
+for (let i of anu) {
+let metadata = await conn.groupMetadata(i)
+teks += `• *Grupos:* ${metadata.subject}\n• *Creador :* ${metadata.owner !== undefined ? '@' + metadata.owner.split`@`[0] : 'indefinido'}\n• *ID :* ${metadata.id}\n• *Creación :* ${moment(metadata.creation * 1000).tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss')}\n• *Participantes :* ${metadata.participants.length}\n\n━━━━━━━━━━━━━━━━━━━━━━━\n\n`
+}
+conn.sendTextWithMentions(m.chat, teks, m)}}
 
 module.exports = { grupo }
 

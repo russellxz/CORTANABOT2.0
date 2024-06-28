@@ -124,6 +124,9 @@ let grupos = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┃ ❏ ${prefix}demote _(@tag)_
 ┊┃ ❏ ${prefix}infogrupo
 ┊┃ ❏ ${prefix}groupinfo
+┊┃ ❏ ${prefix}grouplist
+┊┃ ❏ ${prefix}fantasmas
+┊┃ ❏ ${prefix}kickfantasmas
 ┊┃ ❏ ${prefix}admins _(invocar a los admins)_
 ┊┃ ❏ ${prefix}grupo _(close/open)_
 ┊┃ ❏ ${prefix}warn _(@tag)_
@@ -953,6 +956,9 @@ ${lenguaje.menu.text12}
 ├➫ .demote _(@tag)_
 ├➫ .infogrupo
 ├➫ .groupinfo
+├➫ .grouplist
+├➫ .fantasmas
+├➫ .kickfantasmas
 ├➫ .admins _(llama a los admins)_
 ├➫ .grupo close/open 
 ├➫ .warn _(@tag)_
