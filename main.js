@@ -613,6 +613,9 @@ break
 
 case 'kickfantasmas': case 'kickfantasma': {
  const { areJidsSameUser } = require('@whiskeysockets/baileys');
+if (!m.isGroup) return m.reply(info.group);  
+if (!isBotAdmins) return m.reply(info.botAdmin);  
+if (!isGroupAdmins) return m.reply(info.admin)
 const member = participants.map((u) => u.id);
     if (!text) {
         var sum = member.length;
