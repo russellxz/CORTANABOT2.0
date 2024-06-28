@@ -1,8 +1,8 @@
 //Código desde cero y comentarios hecho por: 
 // @gata_dios    
 // @Skidy89  
-// @elrebelde21      
-                        
+// @elrebelde21         
+                                  
 //--------------------[ IMPORTACIONES ]-----------------------          
 const baileys = require('@whiskeysockets/baileys'); // trabajar a través de descargas por Whatsapp 
 const { WaMessageStubType, WA_DEFAULT_EPHEMERAL, BufferJSON, areJidsSameUser, downloadContentFromMessage, generateWAMessageContent, generateWAMessageFromContent, generateWAMessage, prepareWAMessageMedia, getContentType,  relayMessage} = require('@whiskeysockets/baileys'); // Importa los objetos 'makeWASocket' y 'proto' desde el módulo '@whiskeysockets/baileys'        
@@ -578,8 +578,8 @@ return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'}
 
 //ARRANCA LA DIVERSIÓN 
 switch (prefix && command) { 
-case 'yts': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
-break  
+case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
+break   
        
 //jadibot/serbot 
 case 'serbot': case 'jadibot': case 'qr':
@@ -744,7 +744,7 @@ case 'horny': case 'simp': case 'lolice': case 'comentar': case 'comment': rando
 break   
  
 //descargas
-case 'play': case 'musica': case 'play2': case 'video': case 'play3': case 'playdoc': case 'playaudiodoc': case 'ytmp3doc': case 'play4': case 'playdoc2': case 'playvideodoc': case 'ytmp4doc': case "ytmp3": case "ytaudio": case 'ytmp4': case 'ytvideo': case 'music': case 'spotify': case 'gitclone': case 'tiktok': case 'tt': case 'lyrics': case 'letra': case 'mediafire': case 'tiktokimg': case 'ttimg': case 'play.1': case 'play.2': descarga(m, command, conn, text, command, args, fkontak, from, lolkeysapi)   
+case 'play': case 'musica': case 'play2': case 'video': case 'play3': case 'playdoc': case 'playaudiodoc': case 'ytmp3doc': case 'play4': case 'playdoc2': case 'playvideodoc': case 'ytmp4doc': case "ytmp3": case "ytaudio": case 'ytmp4': case 'ytvideo': case 'music': case 'spotify': case 'gitclone': case 'tiktok': case 'tt': case 'lyrics': case 'letra': case 'mediafire': case 'tiktokimg': case 'tik2': case 'ttimg': case 'play.1': case 'play.2': descarga(m, command, conn, text, command, args, fkontak, from, lolkeysapi)   
 break
 case 'facebook': case 'fb': case 'instagram': case 'ig': case 'igstalk': case 'tiktokstalk': case 'apk': case 'modoapk': case 'gdrive': case 'tw': case 'twitter': descarga2(m, command, text, args, conn, lolkeysapi, isCreator) 
 break 
@@ -752,7 +752,7 @@ break
 //rpg  
 case 'reg': case 'verificar': case 'Registrar': case 'unreg': case 'myns': await reg(command, conn, m, sender, text, budy, fkontak, delay, args) 
 break     
-case 'lb': case 'leaderboard': case 'millonarios': case 'topmillonarios': case 'afk': case 'rob': case 'robar': case 'buy': case 'buyall': case 'bal': case 'balance': case 'diamond': case 'perro': case 'minar': case 'mine': case 'trabajar': case 'work': case 'w': case 'claim': case 'daily': case 'batalla2':  case 'batalla': case 'perfil': case 'levelup': case 'nivel': case 'cofre': case 'minar2': case 'mine2': case 'crime': case 'Crime': case 'dep': case 'depositar': case 'retirar': case 'toremove': case 'castillo': case 'fuente': case 'autobus': case 'helicóptero': case 'helicoptero': case 'ovni': case 'cohete': case 'avión': case 'avion': case 'ambulancia': case 'vehículo': case 'vehiculo': case 'moto': case 'motor': case 'auto': case 'autor': case 'impresora': case 'television': case 'daga': case 'reloj': case 'camara': case 'tridente': case 'lobos': case 'perro': case 'monos': case 'gato': rpg(m, command, participants, args, sender, pushname, text, conn, fkontak, who)     
+case 'lb': case 'leaderboard': case 'millonarios': case 'topmillonarios': case 'afk': case 'rob': case 'robar': case 'buy': case 'buyall': case 'bal': case 'balance': case 'diamond': case 'perro': case 'minar': case 'mine': case 'trabajar': case 'work': case 'w': case 'claim': case 'daily': case 'batalla2':  case 'batalla': case 'perfil': case 'levelup': case 'nivel': case 'cofre': case 'minar2': case 'mine2': case 'crime': case 'Crime': case 'dep': case 'depositar': case 'retirar': case 'toremove': case 'castillo': case 'fuente': case 'autobus': case 'helicóptero': case 'helicoptero': case 'ovni': case 'cohete': case 'avión': case 'avion': case 'ambulancia': case 'vehículo': case 'vehiculo': case 'moto': case 'motor': case 'auto': case 'autor': case 'impresora': case 'television': case 'daga': case 'reloj': case 'camara': case 'tridente': case 'lobos': case 'perro': case 'monos': case 'gato': case 'topmillonario': case 'Topmillonarios': rpg(m, command, participants, args, sender, pushname, text, conn, fkontak, who)     
 break                  
   
 case 'transferir': case 'transfer': case 'regalar': {
@@ -776,7 +776,7 @@ this.confirm[m.sender.split('@')[0]] = { sender: m.sender, to: who, message: m, 
 break
       
 case 'tienda': case 'tiendas': 
- conn.sendButton(m.chat, `꧁🪼𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝐒𝐓𝐎𝐑𝐄🪼꧂
+conn.sendButton(m.chat, `꧁🪼𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝐒𝐓𝐎𝐑𝐄🪼꧂
 █▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
 █-----╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗-----█
 █-----║║║╠─║─║─║║║║║╠─-----█
@@ -785,7 +785,6 @@ case 'tienda': case 'tiendas':
 💳Todas las compras
 serán en créditos💳
 
-❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
 🤑ℂ𝕠𝕞𝕡𝕣𝕒𝕣 𝕒𝕕𝕞𝕚𝕟𝕚𝕤𝕥𝕣𝕒𝕔𝕚𝕠𝕟🤑
 
 ║▌│█║▌│ █║▌│█│║▌║
@@ -805,19 +804,12 @@ serán en créditos💳
 ➫ .ɢᴀᴛᴏ(PRECIO:100)🐈‍⬛
 ➫ .ʟᴏʙᴏ(PRECIO:100)🐺
 ➫ .ᴍᴏɴᴏ(PRECIO:100)🙉 
-
-❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
-*COMANDO PARA SUBIRLOS DE NIVEL SON:*
-➫.BATALLA
-➫.BATALLA2
-❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
-⚠️ _*𝑃𝑟𝑒𝑐𝑎𝑢𝑐𝑖𝑜𝑛, 𝑠𝑜𝑙𝑜 𝑠𝑒 𝑝𝑒𝑟𝑚𝑖𝑡𝑒 𝑙𝑎 𝑐𝑜𝑚𝑝𝑟𝑎 𝑑𝑒 𝑢𝑛𝑎 𝑚𝑎𝑠𝑐𝑜𝑡𝑎, 𝑒𝑙𝑖𝑔𝑒 𝑐𝑜𝑛 𝑐𝑢𝑖𝑑𝑎𝑑𝑜 𝑦𝑎 𝑞𝑢𝑒 𝑛𝑜 𝑝𝑜𝑑𝑟𝑎𝑠 𝑐𝑎𝑚𝑏𝑖𝑎𝑟 𝑑𝑒𝑠𝑝𝑢𝑒𝑠*_⚠️
+PARA VER TUS MASCOTA: #mismascotas
 
 ❢◥ ▬▬▬▬▬▬ ◆ ▬▬▬▬▬▬ ◤❢
 🤑ℂ𝕠𝕞𝕡𝕣𝕒𝕣 𝕠𝕓𝕛𝕖𝕥𝕠𝕤 𝕔𝕠𝕝𝕖𝕔𝕔𝕚𝕠𝕟𝕒𝕓𝕝𝕖𝕤🤑
 ᴘᴀʀᴀ ᴍɪʟʟᴏɴᴀʀɪᴏs:
- 
-◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆
+
 🔱➫.ᴛʀɪᴅᴇɴᴛᴇ (ʀᴇʟɪǫᴜɪᴀ ᴍɪsᴛᴇʀɪᴏsᴀ)
 PRECIO:3000
 ☎️➫.ᴛᴇʟᴇғᴏɴᴏ ᴀɴᴛɪɢᴜᴏ 
@@ -867,11 +859,30 @@ case 'cartera': {
 let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
 let user = global.db.data.users[who]
 if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
-m.reply(`El usuarios ${pushname} en sus cartera tiene:
+conn.sendButton(m.chat, `El usuarios ${pushname} en sus cartera tiene:
 
 ${user.limit} Crédito 💳
 ${user.exp} Exp ⚒️
-${user.coins} Coins 🪙`)}
+${user.money} Coins 🪙`, botname, "https://telegra.ph/file/8fe1fd3c2138c1b7aeae7.jpg", [['TIENDA', `.tienda`], ['MIS MASCOTA', `.mismascota`], ['IR AL MENU', `.menu`]], null, null, m)   
+}
+break
+
+case 'mismascotas': case 'mismascota': {
+let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+let user = global.db.data.users[who]
+if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
+conn.sendButton(m.chat, `⊰᯽⊱┈─────╌❊╌────┈⊰᯽⊱
+
+❤️${pushname}: TUS MASCOTAS❤️
+
+👇𝑇𝐼𝐸𝑁𝐸𝑆:👇
+➫ .ᴘᴇʀʀᴏ (${user.perro}) 🐕 
+➫ .ɢᴀᴛᴏ (${user.gato}) 🐈‍
+➫ .ʟᴏʙᴏ (${user.lobos}) 🐺
+➫ .ᴍᴏɴᴏ (${user.monos}) 🙉 
+
+⊰᯽⊱┈─────╌❊╌─────┈⊰᯽⊱`, botname, "https://telegra.ph/file/8fe1fd3c2138c1b7aeae7.jpg", [['Ir al menu', `.menu`]], null, null, m)   
+}
 break
 
 case 'misarticulos': case 'articulo': case 'inventario': case 'inventory': {
@@ -903,7 +914,7 @@ conn.sendButton(m.chat, `⊰᯽⊱┈─────╌❊╌────┈⊰�
 《 🚍》➫ ${user.autobus}
 《⛲》➫ ${user.fuente}
 《🏰》➫ ${user.castillo}
-⊰᯽⊱┈─────╌❊╌─────┈⊰᯽⊱`, `🤑ᴘᴀʀᴀ ᴠᴇʀ ᴇɴ ǫᴜᴇ ᴛᴏᴘ ᴇsᴛᴀs ᴘᴏɴ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ ᴛᴏᴘ:#ᴍɪʟʟᴏɴᴀʀɪᴏs`, null, [['IR AL MENU', '.menu']], null, null, m)
+⊰᯽⊱┈─────╌❊╌─────┈⊰᯽⊱`, `🤑ᴘᴀʀᴀ ᴠᴇʀ ᴇɴ ǫᴜᴇ ᴛᴏᴘ ᴇsᴛᴀs ᴘᴏɴ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ ᴛᴏᴘ: #ᴍɪʟʟᴏɴᴀʀɪᴏs`, null, [['TOP MILLONARIOS', `.topmillonario`], ['TIENDA', `.tienda`], ['IR AL MENU', '.menu']], null, null, m)
 }
 break
 
@@ -941,7 +952,7 @@ m.reply(`Tu tiempo como administrador ha terminado. 🥺`)
 console.error('Error al degradar al usuario:', err)
 })}, tiempo)
 }
-break
+break 
       
 //stickers  
 case 's': case 'sticker': case 'wm': case 'take': case 'attp': case 'dado': case 'qc': stickers(m, command, conn, mime, quoted, args, text, lolkeysapi, fkontak)   
@@ -981,10 +992,6 @@ m.reply(lenguaje.idioma2() + idiomas)
 } catch (e) {
 m.reply(lenguaje.AvisoMG() + lenguaje.idioma(prefix))}}
 break  
-
-case 'prueba': { 
-await conn.sendPoll(m.chat, `Hola ${pushname}\n\n> 𝐒𝐮𝐩𝐞𝐫 𝐁𝐨𝐭 𝐃𝐞 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩 `, ['play3 billie eilish', 'estado', 'menu', 'fb'])}
-break   
 
 case 'banlist': {
 const chats = Object.entries(global.db.data.chats).filter((chat) => chat[1].isBanned);
@@ -1045,7 +1052,7 @@ await m.reply('*[❗] El número ingresado no existe en la lista de owners.*');
 break;
  
 //propietario/owner
-case 'bcgc': case 'bcgroup': case 'bc': case 'broadcast': case 'bcall': case 'block': case 'bloquear': case 'unblock': case 'desbloquear': case 'setcmd':  case 'addcmd': case 'delcmd': case 'listcmd': case 'añadirdiamantes': case 'dardiamantes': case 'addlimit': case 'añadirxp': case 'addexp': case 'addxp': case 'fetch': case 'get': case 'fotobot': case 'nuevafoto': case 'seppbot': case 'botname': case 'nuevonombre': case 'namebot': case 'banuser': case 'unbanuser': case 'backup': case 'respaldo': case 'copia': owner(isCreator, m, command, conn, text, delay, fkontak, store, quoted, sender, mime, args) 
+case 'bcgc': case 'bcgroup': case 'bc': case 'broadcast': case 'bcall': case 'block': case 'bloquear': case 'unblock': case 'desbloquear': case 'setcmd':  case 'addcmd': case 'delcmd': case 'listcmd': case 'darcreditos': case 'añadircreditos': case 'añadirxp': case 'addexp': case 'addxp': case 'fetch': case 'get': case 'fotobot': case 'nuevafoto': case 'seppbot': case 'botname': case 'nuevonombre': case 'namebot': case 'banuser': case 'unbanuser': case 'backup': case 'respaldo': case 'copia': owner(isCreator, m, command, conn, text, delay, fkontak, store, quoted, sender, mime, args) 
 break    
 case 'id': {m.reply(from)} break 
 case 'getcase':  
@@ -1107,7 +1114,7 @@ break
 //--------------------[ FUNCIONES ]-----------------------  
 function pickRandom(list) {return list[Math.floor(list.length * Math.random())]}       
 
-function isNumber(x) {return !isNaN(x)}
+function isNumber(x) {return !isNaN(x)}    
 
 //-------------------[ AUDIO/TEXTOS ]----------------------
 default:   

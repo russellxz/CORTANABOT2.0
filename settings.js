@@ -90,22 +90,22 @@ global.verificar = 'https://qu.ax/Wogm.mp4'
 //---------[ ENLACES ]---------
 global.md = 'https://github.com/russellxz/CORTANABOT2.0.git'
 global.yt = 'https://www.youtube.com/@RussellxzZing507andCrownsavage'
-global.tiktok = 'https://www.tiktok.com/@russellpaypal?_t=8kkT6zjzePf&_r=1'
+global.tiktok = 'https://www.instagram.com/russellxz507ny'
 global.fb = 'https://www.facebook.com/elrebelde21'
 global.faceb = 'https://facebook.com/groups/872989990425789/'
 
 global.n2 = "https://whatsapp.com/channel/0029VaWABAMG8l5K8K9PAB3v" //canal cortaba 
 global.nna = 'https://whatsapp.com/channel/0029Va4QjH7DeON0ePwzjS1A' //Update 
-global.nn = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //LoliBot
-global.nn2 = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //Loli & Nova
-global.nn3 = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //Grupo de Colaboracion
-global.nn4 = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' // Grupo COL 2
-global.nn5 = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //Grupo COL 3
-global.nn6 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //test
+global.nn = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //LoliBot
+global.nn2 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //Loli & Nova
+global.nn3 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //Grupo de Colaboracion
+global.nn4 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' // Grupo COL 2
+global.nn5 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //Grupo COL 3
+global.nn6 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //test
 global.nn7 = 'https://chat.whatsapp.com/FDRfhecUGrCEQswkg8FUYz' //Grupo ayuda sobre el bot
-global.nn8 = 'https://chat.whatsapp.com/IhbRST7FS6jAohqNBbKRvj' //enlace lolibot
-global.multi = 'https://chat.whatsapp.com/CR02azpyENb4XZ1RvRhQbd' //Grupo COL 4
-global.nna2 = 'CR02azpyENb4XZ1RvRhQbd'
+global.nn8 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //enlace lolibot
+global.multi = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //Grupo COL 4
+global.nna2 = 'HOcczbax7HR1TgRcLfeBRE'
 
 //---------[ INFO ]--------- 
 global.info = { wait: '*_▬▭▭▭▭▭▭_*', 

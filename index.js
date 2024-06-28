@@ -309,7 +309,7 @@ for (let fucker of fuckedcall) {
 if (fucker.isGroup == false) {
 if (fucker.status == "offer") {
 let call = await sock.sendTextWithMentions(fucker.from, `*[ ! ] @${fucker.from.split('@')[0]} ${lenguaje['smscall']()} ${fucker.isVideo ? `videollamadas` : `llamadas` }_\n\n${lenguaje['smscall2']()}\n\n• ${fb}`)
-let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;Propietario 👑;;;\nFN:Propietario\nORG:Propietario 👑\nTITLE:\nitem1.TEL;waid=447700179665:+44 7700 179665\nitem1.X-ABLabel:Propietario 👑\nX-WA-BIZ-DESCRIPTION:ᴇsᴄʀɪʙɪ sᴏʟᴏ ᴘᴏʀ ᴄᴏsᴀs ᴅᴇʟ ʙᴏᴛ.\nX-WA-BIZ-NAME:Owner 👑\nEND:VCARD`
+let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;Propietario 👑;;;\nFN:Propietario\nORG:Propietario 👑\nTITLE:\nitem1.TEL;waid=15167096032:+1 516-709-6032\nitem1.X-ABLabel:Propietario 👑\nX-WA-BIZ-DESCRIPTION:ᴇsᴄʀɪʙɪ sᴏʟᴏ ᴘᴏʀ ᴄᴏsᴀs ᴅᴇʟ ʙᴏᴛ.\nX-WA-BIZ-NAME:Owner 👑\nEND:VCARD`
 sock.sendMessage(fucker.from, { contacts: { displayName: wm, contacts: [{ vcard }] }}, {quoted: call, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 await sleep(8000)
 await sock.updateBlockStatus(fucker.from, "block")
@@ -523,9 +523,24 @@ contextInfo: { mentionedJid:[num], "externalAdReply": {
 "showAdAttribution": true}}, 
 seconds: '4556', ptt: true, mimetype: 'audio/mpeg', fileName: `error.mp3` }, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'image')
-sock.sendMessage(anu.id, { text: welcome, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(anu.id, {image: welc, caption: `😃𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃@😃 
+@${name.split("@")[0]} 😇ᴄᴏᴍᴏ ᴇsᴛᴀs😇 
+😎ʏᴏ sᴏʏ ᴄᴏʀᴛᴀɴᴀʙᴏᴛ😎 
+
+💯ᴜɴ ʙᴏᴛ ᴄᴏɴ ᴅɪғᴇʀᴇɴᴛᴇ ғᴜɴᴄɪᴏɴᴇs ᴅᴇsᴄᴀʀɢᴏ ᴍᴜsɪᴄᴀ ʏ ᴠɪᴅᴇᴏ ʜᴀɢᴏ sᴛɪᴄᴋᴇʀs ʏ ᴇɴᴛʀᴇ ᴍᴜᴄʜᴀs ᴄᴏsᴀs ᴍᴀs💯 
+
+☺️𝑫𝑰𝑭𝑹𝑼𝑻𝑨 𝑫𝑬𝑳 𝑮𝑹𝑼𝑷𝑶 𝑷𝑨𝑺𝑨𝑳𝑨 𝑩𝑰𝑬𝑵 𝑬𝑺𝑷𝑬𝑹𝑶 𝑸𝑼𝑬 𝑺𝑬𝑨 𝑫𝑬 𝑻𝑼 𝑨𝑮𝑹𝑨𝑫𝑶 𝑹𝑬𝑪𝑼𝑬𝑹𝑫𝑨 𝑳𝑬𝑬𝑹 𝑳𝑨𝑺 𝑹𝑬𝑮𝑳𝑨𝑺 𝑵𝑶𝑺 𝑽𝑬𝑴𝑶𝑺 𝑨𝑴𝑰𝑮@☺
+
+${metadata.desc}`, mentions: [num]}, {quoted: fkontak})
+//sock.sendMessage(anu.id, { text: welcome, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'video') 
-sock.sendMessage(anu.id, {video: {url: vid}, caption: `😃Bienvenid@😃 Como estas yo soy cortanabot😎 espero que la pases bien @${name.split("@")[0]}`, mentions: [num]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+sock.sendMessage(anu.id, {video: {url: vid}, caption: `😃𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃@😃 
+@${name.split("@")[0]} 😇ᴄᴏᴍᴏ ᴇsᴛᴀs😇
+😎ʏᴏ sᴏʏ ᴄᴏʀᴛᴀɴᴀʙᴏᴛ😎 
+
+💯ᴜɴ ʙᴏᴛ ᴄᴏɴ ᴅɪғᴇʀᴇɴᴛᴇ ғᴜɴᴄɪᴏɴᴇs ᴅᴇsᴄᴀʀɢᴏ ᴍᴜsɪᴄᴀ ʏ ᴠɪᴅᴇᴏ ʜᴀɢᴏ sᴛɪᴄᴋᴇʀs ʏ ᴇɴᴛʀᴇ ᴍᴜᴄʜᴀs ᴄᴏsᴀs ᴍᴀs💯 
+
+☺️𝑫𝑰𝑭𝑹𝑼𝑻𝑨 𝑫𝑬𝑳 𝑮𝑹𝑼𝑷𝑶 𝑷𝑨𝑺𝑨𝑳𝑨 𝑩𝑰𝑬𝑵 𝑬𝑺𝑷𝑬𝑹𝑶 𝑸𝑼𝑬 𝑺𝑬𝑨 𝑫𝑬 𝑻𝑼 𝑨𝑮𝑹𝑨𝑫𝑶 𝑹𝑬𝑪𝑼𝑬𝑹𝑫𝑨 𝑳𝑬𝑬𝑹 𝑳𝑨𝑺 𝑹𝑬𝑮𝑳𝑨𝑺 𝑵𝑶𝑺 𝑽𝑬𝑴𝑶𝑺 𝑨𝑴𝑰𝑮@☺`, mentions: [num]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 /*sock.sendMessage(anu.id, { text: `${lenguaje['smsWel7']()} ${lenguaje['smsWel']()} @${name.split("@")[0]} ${lenguaje['smsWel2']()}\n${lenguaje['smsWel8']()} ${metadata.subject}\n${lenguaje['smsWel9']()} ${miembros}\n${lenguaje['smsWel10']()} ${date}\n\n${lenguaje['smsWel11']()} \n\n${metadata.desc}`, contextInfo:{
 forwardingScore: 9999999,
 isForwarded: false, 
@@ -550,7 +565,7 @@ let or = ['image', 'video', 'stickers'];
 let media = or[Math.floor(Math.random() * 3)]
 let bye = by[Math.floor(Math.random() * by.length)]
 if (media === 'image')
-sock.sendMessage(anu.id, { image: { url: leave }, mentions: [num], text: bye})
+sock.sendMessage(anu.id, {image: leave, caption: bye, mentions: [num]}, {quoted: fkontak})
 //sock.sendMessage(anu.id, { text: bye, mentions: [num]}, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'video')
 sock.sendMessage(anu.id, {video: {url: vid}, caption: `\`\`\`[!] C fue alv : @${name.split("@")[0]} 😹\`\`\``, mentions: [num]}, {quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
