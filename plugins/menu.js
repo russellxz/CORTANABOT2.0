@@ -392,7 +392,8 @@ let menuRPG = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 ┊┃ ❏ ${prefix}gato
 ┊┃ ❏ ${prefix}inventario
 ┊┃ ❏ ${prefix}inventory
-┊┃ ❏ ${prefix}buyAdmins
+┊┃ ❏ ${prefix}buy2
+┊┃ ❏ ${prefix}buy_admins
 ┊┃ ❏ ${prefix}millonarios
 ┊┃ ❏ ${prefix}depositar
 ┊┃ ❏ ${prefix}retirar
