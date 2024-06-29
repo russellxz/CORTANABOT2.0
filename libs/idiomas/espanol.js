@@ -680,9 +680,9 @@ level7: `*🪼 ᴄᴜᴀɴᴛᴏ ᴍᴀs ɪɴᴛᴇʀᴀᴄᴛᴜᴇs ᴄᴏɴ �
 const sticker = {
 text: `⏳ *Aguarde un momento estoy creando tu stickers....*`, 
 text1: `_[ ❌ ] Máximo 20 segundos!_`, 
-text2: `*Y LA IMAGEN?*`, 
-text3: `*Responda un sticker para robar`, 
-text4: `ingresa algo para convertirlo a sticker :v`, 
+text2: `[ ⚠️ ] ʀᴇsᴘᴏɴᴅᴇ ᴀ ᴜɴ ᴠɪᴅᴇᴏ, ɪᴍᴀɢᴇɴ ᴏ ɪɴsᴇʀᴛᴇ ᴇʟ ᴇɴʟᴀᴄᴇ ᴅᴇ ᴜɴᴀ ɪᴍᴀɢᴇɴ ᴛᴇʀᴍɪɴᴀᴄɪᴏ́ɴ .ᴊᴘɢ ᴇʟ ᴄᴜᴀʟ sᴇʀᴀ ᴄᴏɴᴠᴇʀᴛɪᴅᴏ ᴇɴ sᴛɪᴄᴋᴇʀ,  ᴅᴇʙᴇ ʀᴇsᴘᴏɴᴅᴇʀ ᴏ ᴜsᴀʀ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ: #s`, 
+text3: `*[ ⚠️ ] Responda un sticker para robar`, 
+text4: `[ ⚠️ ] Escribe la palabra con la cual devo hacer el sticker\n*EJEMPLO:*\n#attp cortanaBot`, 
 text5: `_*Calma crack estoy haciendo tu texto a sticker 👏*_\n\n_*Esto puede demorar unos minutos....*_` }
 
 const idioma = (prefix) => { return `*✳️ Usar:*\n${prefix}idioma 1 (español)\n${prefix}idioma 2 (inglés)\n${prefix}idioma 3 (arabe)\n${prefix}idioma 4 (Indonesia)\n${prefix}idioma 5 (portugues)\n${prefix}idioma 6 (ruso)\n\n*❗Ejemplo:*\n• ${prefix}idioma 1` }
