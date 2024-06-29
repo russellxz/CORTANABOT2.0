@@ -52,7 +52,7 @@ let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
 
-const msgs = (message) => {  
+const msgs = (message) => {   
 if (message.length >= 10) { 
 return `${message.substr(0, 500)}` 
 } else {  
@@ -63,7 +63,7 @@ let buffer = Buffer.from([])
 for await(const chunk of stream) {  
 buffer = Buffer.concat([buffer, chunk]) }  
 return buffer 
-}        
+}   
   
 module.exports = conn = async (conn, m, chatUpdate, mek, store) => {  
 var body =  (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype == 'buttonsResponseMessage') ? m.message.buttonsResponseMessage.selectedButtonId : (m.mtype == 'listResponseMessage') ? m.message.listResponseMessage.singleSelectReply.selectedRowId : (m.mtype == 'templateButtonReplyMessage') ? m.message.templateButtonReplyMessage.selectedId : (m.mtype === 'messageContextInfo') ? (m.message.buttonsResponseMessage?.selectedButtonId || m.message.listResponseMessage?.singleSelectReply.selectedRowId || m.text) : '' 
@@ -830,11 +830,11 @@ serán en créditos💳
 🤑ℂ𝕠𝕞𝕡𝕣𝕒𝕣 𝕒𝕕𝕞𝕚𝕟𝕚𝕤𝕥𝕣𝕒𝕔𝕚𝕠𝕟🤑
 
 ║▌│█║▌│ █║▌│█│║▌║
-➫ ${prefix}buyAdmins 1 = 15 ᴍɪɴᴜᴛᴏs (PRECIO:1000)
-➫ ${prefix}buyAdmins 4 = 1 ʜᴏʀᴀ(PRECIO:4000)
-➫ ${prefix}buyAdmins 12 = 3 ʜᴏʀᴀs(PRECIO:12.000)
-➫ ${prefix}buyAdmins 16 = 4 ʜᴏʀᴀs(PRECIO:18,000)
-➫ ${prefix}buyAdmins 576 = 1 sᴇᴍᴀɴᴀ(PRECIO:576.000)
+➫ ${prefix}buy_admins 1 = 15 ᴍɪɴᴜᴛᴏs (PRECIO:1000)
+➫ ${prefix}buy_admins 4 = 1 ʜᴏʀᴀ(PRECIO:4000)
+➫ ${prefix}buy_admins 12 = 3 ʜᴏʀᴀs(PRECIO:12.000)
+➫ ${prefix}buy_admins 16 = 4 ʜᴏʀᴀs(PRECIO:18,000)
+➫ ${prefix}buy_admins 576 = 1 sᴇᴍᴀɴᴀ(PRECIO:576.000)
 ║▌│█║▌│ █║▌│█│║▌║
 
 🚫 *(𝑆𝑒 𝑟𝑒𝑣𝑜𝑐𝑎𝑟𝑎 𝑙𝑎 𝑎𝑑𝑚𝑖𝑛𝑖𝑠𝑡𝑟𝑎𝑐𝑖𝑜𝑛 𝑎𝑛𝑡𝑒𝑠 𝑑𝑒𝑙 𝑡𝑖𝑒𝑚𝑝𝑜 𝑐𝑜𝑚𝑝𝑟𝑎𝑑𝑜 𝑠𝑖 𝑑𝑖𝑐ℎ𝑜 𝑐𝑜𝑚𝑝𝑟𝑎𝑑𝑜𝑟 𝑖𝑛𝑐𝑢𝑚𝑝𝑙𝑒 𝑎𝑙𝑔𝑢𝑛𝑎 𝑟𝑒𝑔𝑙𝑎 𝑜 𝑎𝑏𝑢𝑠𝑎 𝑑𝑒 𝑠𝑢 𝑐𝑎𝑟𝑔𝑜)*🚫
@@ -894,7 +894,7 @@ PRECIO:5000,000
 
 😃𝐆𝐫𝐚𝐜𝐢𝐚𝐬 𝐩𝐨𝐫 𝐯𝐢𝐬𝐢𝐭𝐚𝐫 𝐥𝐚😃
 🪼𝐂𝐨𝐫𝐭𝐚𝐧𝐚 𝐒𝐭𝐨𝐫𝐞 𝟐.𝟎🪼
-💳𝑽𝑼𝑬𝑳𝑽𝑨 𝑷𝑹𝑶𝑵𝑻𝑶.💳`, botname, null, [['IR A MI ARTICULO', '.misarticulos'], ['VER TOP MILLONARIO', '.millonarios'], ['COMPRAR ADMINS', '.buyAdmins 1']], null, null, m)
+💳𝑽𝑼𝑬𝑳𝑽𝑨 𝑷𝑹𝑶𝑵𝑻𝑶.💳`, botname, null, [['IR A MI ARTICULO', '.misarticulos'], ['VER TOP MILLONARIO', '.millonarios'], ['COMPRAR ADMINS', '.buy2 1']], null, null, m)
 break
 
 case 'cartera': {
@@ -960,7 +960,9 @@ conn.sendButton(m.chat, `⊰᯽⊱┈─────╌❊╌────┈⊰�
 }
 break
 
-case 'buyAdmins': case 'comprarAdmins': {      
+case 'comprar': case 'comprar_admins': case 'buy_admins': case 'buy2': {      
+if (!m.isGroup) return m.reply(info.group);  
+if (!isBotAdmins) return m.reply(info.botAdmin);  
 var tiempoPremium = 5 * text // tiempo total en minutos multiplicado por el factor
 var tiempoDecretado = 5 * 1 // tiempo decretado en minutos
 const costo = 1000 // costo en créditos
@@ -1181,7 +1183,8 @@ let vn = 'https://qu.ax/hJA.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.includes(`simi`)) {  
 game(m, budy, command, text, pickRandom, pushname, conn, participants, sender, who, body, sendImageAsUrl)}
-if (m.mentionedJid.includes(conn.user.jid)) {
+//if (m.mentionedJid.includes(conn.user.jid)) {
+if (budy.includes("@"+ conn.user.id.split('@')[0])) {
 let noetiqueta = 'https://qu.ax/lqFC.webp'
 let or = ['texto', 'sticker']; 
 let media = or[Math.floor(Math.random() * 2)]
@@ -1239,7 +1242,7 @@ conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralE
 if (/^novio|Novio$/i.test(budy)) {
 const vn = 'https://qu.ax/xzDx.mp4'
 conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
-if (/^admin|adminitración|Admins|administrador|administradores|AdMiN$/i.test(budy)) {
+if (budy.startsWith(`admin`) || budy.startsWith(`adminitración`) || budy.startsWith(`administrador`) || budy.startsWith(`administradores`) || budy.startsWith(`AdMiN`)) {
 const vn = 'https://qu.ax/teCT.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (/^frio|Frio$/i.test(budy)) { 
@@ -1298,6 +1301,9 @@ const vn = 'https://qu.ax/Kosf.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`+507 6791-4578`) || budy.startsWith(`@50767914578`)) {
 const vn = 'https://qu.ax/enOL.mp3';
+conn.sendAudio(m.chat, vn, m)}
+if (budy.startsWith(`+1 516-709-6032`) || budy.startsWith(`@15167096032`)) {
+const vn = 'https://qu.ax/VSNH.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`+1 929-371-9827`) || budy.startsWith(`@19293719827`)) {
 const vn = 'https://qu.ax/FPeg.mp3';
