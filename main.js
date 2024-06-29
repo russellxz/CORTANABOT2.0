@@ -125,6 +125,29 @@ const time = moment(Number(msg.messageTimestamp + "000")).locale("es-mx").tz("Am
   
 /*const reply = (text) => {  
 m.reply(text)}*/
+function ucapan() {
+  const time = moment.tz("America/Los_Angeles").format("HH"); //America/Los_Angeles  Asia/Jakarta   America/Toronto
+
+  let res = "🌉Buenas madrugadas";
+
+  if (time >= 4) {
+    res = "🌇Buenos Días";
+  }
+
+  if (time >= 11) {
+    res = "🏙️Buenas Tardes";
+  }
+
+  if (time >= 15) {
+    res = "🌆Buenas tardes";
+  }
+
+  if (time >= 17) {
+    res = "🌃Buenas noches";
+  }
+
+  return res;
+}
 function sendMessage(conn, chat, text, m) {conn.sendMessage(chat, { text: text, contextInfo: { forwardedNewsletterMessageInfo: {newsletterJid: '120363160031023229@newsletter', serverMessageId: '', newsletterName: `${ucapan()} ${pushname}` }, forwardingScore: 9999999, isForwarded: true }}, {quoted: m, ephemeralExpiration: 24*60*60*1000, disappearingMessagesInChat: 24*60*60*1000 // Ajustado a milisegundos
 })} 
 m.reply = (text) => {  
@@ -1163,31 +1186,6 @@ break
 function pickRandom(list) {return list[Math.floor(list.length * Math.random())]}       
 
 function isNumber(x) {return !isNaN(x)}    
-
-function ucapan() {
-  const time = moment.tz("America/Los_Angeles").format("HH"); //America/Los_Angeles  Asia/Jakarta   America/Toronto
-
-  let res = "🌉Buenas madrugadas";
-
-  if (time >= 4) {
-    res = "🌇Buenos Días";
-  }
-
-  if (time >= 11) {
-    res = "🏙️Buenas Tardes";
-  }
-
-  if (time >= 15) {
-    res = "🌆Buenas tardes";
-  }
-
-  if (time >= 17) {
-    res = "🌃Buenas noches";
-  }
-
-  return res;
-}
-
 //-------------------[ AUDIO/TEXTOS ]----------------------
 default:   
 if (budy.includes(`Todo bien`)) {
