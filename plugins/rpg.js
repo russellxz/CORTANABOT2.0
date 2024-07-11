@@ -536,7 +536,7 @@ m.reply(`╔═❖  ${lenguaje.rpg.buy}
 } else m.reply(`No tiene suficiente *${count}* crédito💳 para comprar un tridente`)
 }
 
-if (command == 'perro') {
+if (command == 'perro' || command == 'perros') {
     // Verificar si el usuario ya tiene un perro
     if (global.db.data.users[m.sender].perro > 1) {
         m.reply(`Ya tienes un perro y no puedes comprar otro.`);
@@ -572,7 +572,7 @@ sᴇʀᴀ ᴛᴜ ᴀᴄᴏᴍᴘᴀñᴀɴᴛᴇ ᴇɴ ʙᴀᴛᴀʟʟᴀ. ᴇs 
     }
 }
 
-if (command == 'lobos') {
+if (command == 'lobos' || command == 'lobo') {
 let count = command.replace(/^alllobos/i, '');
 count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
 count = Math.max(1, count);
@@ -599,7 +599,7 @@ m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝
 } else m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
 }
 
-if (command == 'monos') {
+if (command == 'monos' || command == 'mono') {
 let count = command.replace(/^monos/i, '');
 count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
 count = Math.max(1, count);
@@ -625,7 +625,7 @@ m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝
 } else m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
 }
 
-if (command == 'gato') {
+if (command == 'gato' || command == 'gatos') {
 let count = command.replace(/^gato/i, '');
 count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
 count = Math.max(1, count);
