@@ -47,7 +47,7 @@ rows: [{ header: "Audio (opción 1)", title: "", id: `${prefix}musica ${yt_play[
 {header: "Mas Resultados", title: "", id: `${prefix}yts ${yt_play[0].url}`, description: `${yt_play[0].title}\n`}
 ]});
 
-await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.ytmp3 ${text}`], ['Video', `.ytmp4 ${text}`], ['Mas resultados', `.yts ${text}`]], null, null, m)
+await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.musica ${text}`], ['Video', `.ytmp4 ${text}`], ['Mas resultados', `.yts ${text}`]], null, null, m)
 
 await conn.sendList(m.chat, `*𝙴𝙻𝙸𝙹𝙰𝚁 𝚀𝚄𝙴 𝚅𝙰 𝙷𝙰𝙲𝙴𝚁 𝙲𝙾𝙽:* ${text}`, wm, `Click Aqui`, listSections, m)}
 
