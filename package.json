@@ -12,7 +12,7 @@
   "author": "elrebelde21",
   "license": "ISC",
   "dependencies": {
-   "@whiskeysockets/baileys": "npm:@whiskeysockets/baileys",
+"@whiskeysockets/baileys": "npm:@whiskeysockets/baileys@6.7.2",
    "@bochilteam/scraper": "4.2.4",
    "awesome-phonenumber": "^5.10.0",
    "@brandond/findthelyrics": "^2.0.5",
