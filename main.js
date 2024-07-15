@@ -216,9 +216,9 @@ if (m.message) {
 conn.readMessages([m.key])}	
 
 //Marcar como (Escribiendo...) 
-if (command) {
-await conn.sendPresenceUpdate('composing', m.chat)
-}
+// if (command) {
+// await conn.sendPresenceUpdate('composing', m.chat)
+// }
           
 //--------------------[ viewOnceMessage ]-----------------------
 if (m.mtype == 'viewOnceMessageV2') { 
@@ -380,7 +380,7 @@ return }
 
 //----------------[ AUTOSTICKERS]--------------------
 if (global.db.data.chats[m.chat].autosticker) {  
-await conn.sendPresenceUpdate('composing', m.chat)
+// await conn.sendPresenceUpdate('composing', m.chat)
 if (/image/.test(mime) && !/webp/.test(mime)) {
 m.reply(`_Calma crack estoy haciendo tu sticker 👏_\n\n_*Autosticker esta activado*_`)   
 let media = await quoted.download()
@@ -410,7 +410,7 @@ return conn.sendMessage(m.chat, { text: str, contextInfo:{mentionedJid:[sender]}
 if (global.db.data.chats[m.chat].simi) {
 let textodem = budy
 try {
-await conn.sendPresenceUpdate('composing', m.chat)
+// await conn.sendPresenceUpdate('composing', m.chat)
 let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/simi?text=${encodeURIComponent(textodem)}`)
 let res = await gpt.json()
 await delay(1 * 1000) 
@@ -1189,7 +1189,7 @@ function isNumber(x) {return !isNaN(x)}
 //-------------------[ AUDIO/TEXTOS ]----------------------
 default:   
 if (budy.includes(`Todo bien`)) {
-conn.sendPresenceUpdate('composing', m.chat)
+// conn.sendPresenceUpdate('composing', m.chat)
 await m.reply(`${pickRandom(['Si amigo todo bien, vite', 'Todo bien capo y tu 😎'])}`)} 
 if (budy.includes(`Autodestruction`)) { 
 //let e = fs.readFileSync('./src/autodestruction.webp')
