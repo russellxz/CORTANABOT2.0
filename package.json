@@ -35,7 +35,7 @@
    "util": "^0.12.4",
    "acrcloud": "^1.4.0",
    "cfonts": "^2.10.0",   
-   "cheerio": "^1.0.0-rc.10",
+   "cheerio": "^1.0.0-rc.12",
    "axios": "^0.24.0",
    "api-dylux": "^1.6.2",
    "@hapi/boom": "^10.0.1",
