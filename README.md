@@ -78,10 +78,7 @@ npm i -g pm2 && pm2 start index.js && pm2 save && pm2 logs
 
 ------------------ 
 
-### 📌 CAFIREXOS HOST
-[![blog](https://img.shields.io/badge/Cafirexos-NovaBotMD-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
-]()
-> Activar NovaBot-MD 24/7 en cafirexos Host
+
 
 <a href="https://www.cafirexos.com/"><img src="https://telegra.ph/file/f400ffe819ad3c0fc87b9.jpg" height="125px"></a>
 ### Información del Host
