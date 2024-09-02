@@ -705,6 +705,47 @@ process.on('uncaughtException', console.log)
 process.on('unhandledRejection', console.log)
 process.on('RefenceError', console.log)
 }
+async function startBot() {
+
+    console.info = () => {}
+    const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }), })
+    const msgRetry = (MessageRetryMap) => { }
+    const msgRetryCache = new NodeCache()
+    let { version, isLatest } = await fetchLatestBaileysVersion();   
+
+    const socketSettings = {
+        printQRInTerminal: opcion == '1' ? true : methodCodeQR ? true : false,
+        logger: pino({ level: 'silent' }),
+        auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level: 'silent'})) },
+        mobile: MethodMobile, 
+        browser: opcion == '1' ? ['CortanaBot-𝟸.𝟶', 'Safari', '1.0.0'] : methodCodeQR ? ['CortanaBot-𝟸.𝟶', 'Safari', '1.0.0'] : ["Ubuntu", "Chrome", "20.0.04"],
+        msgRetry,
+        msgRetryCache,
+        version,
+        syncFullHistory: true,
+        getMessage: async (key) => {
+            if (store) { 
+                const msg = await store.loadMessage(key.remoteJid, key.id); 
+                return sock.chats[key.remoteJid] && sock.chats[key.remoteJid].messages[key.id] ? sock.chats[key.remoteJid].messages[key.id].message : undefined; 
+            } 
+            return proto.Message.fromObject({}); 
+        }
+    }
+
+    const sock = makeWASocket(socketSettings);
+
+    // Monitoreo de uso de RAM
+    setInterval(() => {
+        const used = process.memoryUsage().rss / 1024 / 1024; // Convertir a MB
+        if (used >= 1024) { // 1024 MB = 1 GB
+            console.log(chalk.red(`[SYS] Uso de memoria RAM excedido: ${used.toFixed(2)} MB. Reiniciando...`));
+            process.exit(1); // Terminar el proceso para que sea reiniciado
+        }
+    }, 60000); // Verifica cada minuto
+
+    // El resto de la función startBot sigue aquí...
+}
+
 
 startBot()
 
