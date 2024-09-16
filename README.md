@@ -60,6 +60,7 @@ npm i -g pm2 && pm2 start index.js && pm2 save && pm2 logs
 
 <img src="./media/Picsart_24-09-15_05-18-42-309.jpg" alt="Mi logo" width="200"/>
 
+[GRUPO DE WHATSAPP](https://chat.whatsapp.com/GWybjvEMu4o0Q2OGdOYWmc)
 
 
 ------------------ 
