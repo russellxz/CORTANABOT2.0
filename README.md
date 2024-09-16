@@ -56,6 +56,10 @@ npm i -g pm2 && pm2 start index.js && pm2 save && pm2 logs
 
 [`CREAR SERVIDOR`](https://github.com/codespaces/new?skip_quickstart=true&machine=basicLinux32gb&repo=elrebelde21/NovaBot-MD&ref=main&geo=UsEast)
 
+<img src="./media/Picsart_24-09-15_05-18-42-309.jpg" alt="Mi logo" width="200"/>
+
+
+
 ------------------ 
 
 ## `𝙴𝙳𝙸𝚃𝙾𝚁 && 𝙼𝙾𝙳𝙸𝙵𝙸𝙲𝙰𝙳𝙾 𝙿𝙾𝚁 𝚁𝚄𝚂𝚂𝙴𝙻𝙻`
