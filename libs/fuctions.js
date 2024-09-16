@@ -590,6 +590,7 @@ if (!('isBanned' in chats)) chats.isBanned = false
 if (!('modeadmin' in chats)) chats.modeadmin = false  
 if (!('welcome' in chats)) chats.welcome = true
 if (!('audios' in chats)) chats.audios = true
+if (!('reaccion' in chats)) chats.reaccion = true
 if (!('simi' in chats)) chats.simi = false
 if (!('antiNsfw' in chats)) chats.antiNsfw = true
 if (!('antispam' in chats)) chats.antispam = true
@@ -613,6 +614,7 @@ AntiFacebook: false,
 AntInstagram: false, 
 AntiYoutube: false, 
 isBanned: false,   
+reaccion: true, 
 modeAdmin: false,  
 welcome: true, 
 audios: true, 
