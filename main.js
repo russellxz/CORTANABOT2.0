@@ -632,6 +632,104 @@ case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': cas
 break        
 case 'estado': case 'infobot': case 'owner': case 'creador': case 'contacto': case 'grupos': case 'grupoficiales': case 'instalarbot': case 'crearbot': case 'ping': case '5492266613038': case '447700179665': case '595975740803': case 'report': case 'sc': case 'donar': case 'solicitud': case 'cuenta': case 'cuentas': case 'cuentaoficiales': case 'cuentaofc': case 'cafirexos': case 'Cafirexos': case 'velocidad': case 'status': case 'speedtest': case 'speed': case 'host': case 'infohost': info(command, conn, m, speed, sender, fkontak, pickRandom, pushname, from, msg, text) 
 break      
+
+case 'server': case 'p': {
+const os = require('os');
+const si = require('systeminformation');
+let disk = await si.fsSize()
+
+let now = new Date();
+var timestamp = speed();  
+var latensi = speed() - timestamp
+
+async function getSystemInfo() {
+  const memInfo = await si.mem(); 
+  const load = await si.currentLoad(); 
+  const fsSize = await si.fsSize();
+
+  const data = {
+    latencia: 'No disponible',
+    plataforma: os.platform(),
+    núcleosCPU: os.cpus().length,
+    modeloCPU: os.cpus()[0].model,
+    arquitecturaSistema: os.arch(),
+    versiónSistema: os.release(),
+    procesosActivos: os.loadavg()[0],
+    porcentajeCPUUsada: load.currentLoad.toFixed(2) + '%',  // 
+    ramUsada: (memInfo.used / (1024 * 1024 * 1024)).toFixed(2) + ' GB', 
+ramTotal: (memInfo.total / (1024 * 1024 * 1024)).toFixed(2) + ' GB', 
+ramLibre: (memInfo.free / (1024 * 1024 * 1024)).toFixed(2) + ' GB', 
+    porcentajeRAMUsada: ((memInfo.used / memInfo.total) * 100).toFixed(2) + '%',  
+  //espacioTotalDisco: fsSize.map(d => `${d.size / (1024 * 1024 * 1024)} GB (${d.fs})`).join(', '),  // Información del disco
+ espacioTotalDisco: humanFileSize(disk[0].available, true, 1) + ' libre de ' + humanFileSize(disk[0].size, true, 1), 
+    tiempoActividad: 'No disponible',
+    cargaPromedio: os.loadavg().map((avg, index) => `${index + 1} min: ${avg.toFixed(2)}.`).join('\n'), // Carga promedio 
+    horaActual: new Date().toLocaleString(),
+    detallesCPUNúcleo: load.cpus.map(cpu => cpu.load.toFixed(2) + '%')  
+  };
+
+  const startTime = Date.now();
+  await si.currentLoad();
+  const endTime = Date.now();
+  data.latencia = `${endTime - startTime} ms`;
+
+  const uptimeSeconds = await si.time().uptime;
+const days = Math.floor(uptimeSeconds / 60 / 60 / 24);
+const hours = Math.floor((uptimeSeconds / 60 / 60) % 24);
+const minutes = Math.floor((uptimeSeconds / 60) % 60);
+
+data.tiempoActividad = `${days}d ${hours}h ${minutes}m`;
+
+  return data;
+}
+
+getSystemInfo().then((data) => {
+m.reply(`🏓 *𝙿𝙾𝙽𝙶:* ${latensi.toFixed(4)} 
+🖥️ *𝙿𝙻𝙰𝚃𝙰𝙵𝙾𝚁𝙼𝙰;* ${data.plataforma} 
+🔢 *𝙽𝚄𝙲𝙻𝙴𝙾𝚂 𝙳𝙴 𝙲𝙿𝚄:* ${data.núcleosCPU} 
+📡 *𝙼𝙾𝙳𝙴𝙻𝙾 𝙳𝙴 𝙲𝙿𝚄:* ${data.modeloCPU} 
+🏗️ *𝙰𝚁𝚀𝚄𝙸𝚃𝙴𝙲𝙻𝚄𝚁𝙰 𝙳𝙴𝙻 𝚂𝙸𝚂𝚃𝙴𝙼𝙰:* ${data.arquitecturaSistema} 
+🔢 *𝚅𝙴𝚁𝚂𝙸𝙾𝙽 𝙳𝙴𝙻 𝚂𝙸𝚂𝚃𝙴𝙼𝙰:* ${data.versiónSistema} 
+📈 *P𝚁𝙾𝙲𝙴𝚂𝙾𝚂 𝙰𝙲𝚃𝙸𝚅𝙾𝚂:* ${data.procesosActivos} 
+🔳 *P𝙾𝚁𝙲𝙴𝙽𝚃𝙰𝙹𝙴 𝙳𝙴 𝙲𝙿𝚄 𝚄𝚂𝙰𝙱𝙰:* ${data.porcentajeCPUUsada} 
+💾 *𝚁𝙰𝙼 𝚄𝚂𝙰𝙱𝙰:* ${data.ramUsada} / ${data.ramLibre} 
+💾 *𝚁𝙰𝙼 𝙻𝙸𝙱𝚁𝙴:* ${data.ramLibre} 
+💾 *𝚃𝙾𝚃𝙰𝙻 𝚁𝙰𝙼:* ${data.ramTotal} 
+💾 *𝙿𝙾𝚁𝙲𝙴𝙽𝚃𝙰𝙹𝙴 𝙳𝙴 𝚁𝙰𝙼 𝚄𝚂𝙰𝙳𝙰:* ${data.porcentajeRAMUsada} 
+📦 *𝙴𝚂𝙿𝙰𝙲𝙸𝙾 𝚃𝙾𝚃𝙰𝙻 𝙴𝙽 𝙳𝙸𝚂𝙲𝙾:* ${data.espacioTotalDisco} 
+⏳ *𝚄𝙿𝚃𝙸𝙼𝙴:* ${data.tiempoActividad} 
+ 
+📈 *𝙲𝙰𝚁𝙶𝙰 𝙿𝚁𝙾𝙼𝙴𝙳𝙸𝙾 :* 
+${data.cargaPromedio} 
+    
+⚙️ *𝙳𝚎𝚝𝚊𝚕𝚕𝚎𝚜 𝚍𝚎 𝙲𝙿𝚄 𝚙𝚘𝚛 𝙽𝚞́𝚌𝚕𝚎𝚘:* 
+${data.detallesCPUNúcleo.map((núcleo, index) => `- 𝙽𝚞́𝚌𝚕𝚎𝚘 ${index + 1}: ${núcleo}`).join('\n')}`)
+  });
+  
+function humanFileSize(bytes) {
+  const unidades = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+  const exponente = Math.floor(Math.log(bytes) / Math.log(1024));
+  return `${(bytes / Math.pow(1024, exponente)).toFixed(2)} ${unidades[exponente]}`;
+}  
+
+function times(second) {
+  days = Math.floor(second / 60 / 60 / 24)
+  hours = Math.floor(second / 60 / 60)
+  minute = Math.floor(second / 60)
+  sec = Math.floor(second)
+  return (
+    days +
+    ' dias, ' +
+    hours +
+    ' horas, ' +
+    minute +
+    ' minutos, ' +
+    sec +
+    ' segundos'
+  )
+}         
+}
+break
      
 //activar/desactivar  
 case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'game2': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': case 'reacciónes': case 'reaccion': enable(m, command, isGroupAdmins, text, command, args, conn, isBotAdmins, isGroupAdmins, isCreator, conn) 
