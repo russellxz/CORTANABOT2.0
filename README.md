@@ -64,7 +64,7 @@ EN NUESTRO HOSTING🌌
 
 [GRUPO DE WHATSAPP HOSTING](https://chat.whatsapp.com/GWybjvEMu4o0Q2OGdOYWmc)
 
-### ☁️ CORINPLUS HOTS 
+### ☁️ CORINPLUS HOST
 <a href="https://dash.corinplus.com"><img src="https://qu.ax/ZycD.png" height="125px"></a>
 
 ------------------ 
