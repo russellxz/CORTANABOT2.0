@@ -1,5 +1,3 @@
-![Texto alternativo](menu.jpg)
-
 
 
 > <b>  🚀 Cortana Bot (Personalizado) </b> 
