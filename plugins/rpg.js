@@ -572,24 +572,15 @@ sᴇʀᴀ ᴛᴜ ᴀᴄᴏᴍᴘᴀñᴀɴᴛᴇ ᴇɴ ʙᴀᴛᴀʟʟᴀ. ᴇs 
     }
 }
 
-
-if (command == 'lobos' || command == 'lobos') {
-    // Verificar si el usuario ya tiene un perro
-    if (global.db.data.users[m.sender].lobos > 1) {
-        m.reply(`Ya tienes un lobos y no puedes comprar otro.`);
-        return;
-    }
-
-    // Definir el conteo de perros a comprar
-    let count = command.replace(/^lobos/i, '');
-    count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
-    count = Math.max(1, count);
-
-    // Verificar si el usuario tiene suficientes recursos para comprar el perro
-    if (global.db.data.users[m.sender].limit >= 100 * count) {
-        global.db.data.users[m.sender].limit -= 100 * count;
-        global.db.data.users[m.sender].lobos += count;
-        m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝𝐪𝐮𝐢𝐫𝐢𝐝𝐨🥳
+if (command == 'lobos' || command == 'lobo') {
+let count = command.replace(/^lobo/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].lobo > 1) return m.reply(`Ya tiene 1 lobos`) 
+if (global.db.data.users[m.sender].limit >= 100 * count) {
+global.db.data.users[m.sender].limit -= 100 * count;
+global.db.data.users[m.sender].lobo += count;
+m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝𝐪𝐮𝐢𝐫𝐢𝐝𝐨🥳
  ᴀ ${count} ʟᴏʙᴏ🐺 
 
 ʟᴏʙᴏ🐺(${pushname}) 
@@ -605,29 +596,20 @@ if (command == 'lobos' || command == 'lobos') {
 
 💯𝙿𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚗 𝚚𝚞𝚎 𝚝𝚘𝚙 𝚎𝚜𝚝𝚊 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚖𝚌
 💯𝚙𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚕 𝚗𝚒𝚟𝚎𝚕 𝚍𝚎 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚎𝚗 𝚝𝚒𝚎𝚖𝚙𝚘. 𝚛𝚎𝚊𝚕 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚗𝚒𝚟𝚎𝚕𝚖𝚊𝚜𝚌𝚘𝚝𝚊`);
-    } else {
-        m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
-    }
+} else m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
 }
 
 
+
 if (command == 'monos' || command == 'mono') {
-    // Verificar si el usuario ya tiene un perro
-    if (global.db.data.users[m.sender].monos > 1) {
-        m.reply(`Ya tienes un 🐒 y no puedes comprar otro.`);
-        return;
-    }
-
-    // Definir el conteo de perros a comprar
-    let count = command.replace(/^monos/i, '');
-    count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
-    count = Math.max(1, count);
-
-    // Verificar si el usuario tiene suficientes recursos para comprar el perro
-    if (global.db.data.users[m.sender].limit >= 100 * count) {
-        global.db.data.users[m.sender].limit -= 100 * count;
-        global.db.data.users[m.sender].monos += count;
-        m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝𝐪𝐮𝐢𝐫𝐢𝐝𝐨🥳
+let count = command.replace(/^mono/i, '');
+count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
+count = Math.max(1, count);
+if (global.db.data.users[m.sender].mono > 1) return m.reply(`Ya tiene 1 monos🐵`) 
+if (global.db.data.users[m.sender].limit >= 100 * count) {
+global.db.data.users[m.sender].limit -= 100 * count;
+global.db.data.users[m.sender].mono += count;
+m.reply(`🥳𝐅𝐞𝐥𝐢𝐜𝐢𝐝𝐚𝐝𝐞𝐬! 𝐇𝐚𝐬 𝐚𝐝𝐪𝐮𝐢𝐫𝐢𝐝𝐨🥳
  ᴀ ${count} ᴄʜᴀɴɢᴜɪᴛᴏ (ᴄᴏᴍᴏ ᴛᴜ ᴇx)🐵 
 
 ᴄʜᴀɴɢᴜɪᴛᴏ🐵(${pushnane}) 
@@ -642,16 +624,14 @@ if (command == 'monos' || command == 'mono') {
 
 💯𝙿𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚗 𝚚𝚞𝚎 𝚝𝚘𝚙 𝚎𝚜𝚝𝚊 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚖𝚌
 💯𝚙𝚊𝚛𝚊 𝚟𝚎𝚛 𝚎𝚕 𝚗𝚒𝚟𝚎𝚕 𝚍𝚎 𝚝𝚞 𝚖𝚊𝚜𝚌𝚘𝚝𝚊 𝚎𝚗 𝚝𝚒𝚎𝚖𝚙𝚘. 𝚛𝚎𝚊𝚕 𝚙𝚘𝚗 𝚎𝚕 𝚌𝚘𝚖𝚊𝚗𝚍𝚘: #𝚗𝚒𝚟𝚎𝚕𝚖𝚊𝚜𝚌𝚘𝚝𝚊`);
-    } else {
-        m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
-    }
+} else m.reply(`No tiene suficiente *${count}* Para hacer la comprar`)
 }
 
 if (command == 'gato' || command == 'gatos') {
 let count = command.replace(/^gato/i, '');
 count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].limit / 100) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
 count = Math.max(1, count);
-if (global.db.data.users[m.sender].gato > 1) return m.reply(`Ya tiene 1 monos🐵`) 
+if (global.db.data.users[m.sender].gato > 1) return m.reply(`Ya tiene 1 gatos `) 
 if (global.db.data.users[m.sender].limit >= 100 * count) {
 global.db.data.users[m.sender].limit -= 100 * count;
 global.db.data.users[m.sender].gato += count;
