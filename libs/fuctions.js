@@ -433,8 +433,8 @@ if (!isNumber(user.limit)) user.limit = 25
 if (!isNumber(user.coins)) user.coins = 100
 if (!isNumber(user.gato)) user.gato = 0
 if (!isNumber(user.perro)) user.perro = 0
-if (!isNumber(user.monos)) user.monos = 0
-if (!isNumber(user.lobos)) user.lobos = 0
+if (!isNumber(user.mono)) user.mono = 0
+if (!isNumber(user.lobo)) user.lobo = 0
 if (!isNumber(user.banco)) user.banco = 0
 if (!isNumber(user.tridente)) user.tridente = 0
 if (!isNumber(user.telefeno)) user.telefeno = 0
@@ -545,8 +545,8 @@ regTime: -1,
 afk: -1,
 afkReason: '',
 money: 0,  
-lobos: 0,
-monos: 0,
+lobo: 0,
+mono: 0,
 perro: 0,
 gato: 0,
 health: 100,  
