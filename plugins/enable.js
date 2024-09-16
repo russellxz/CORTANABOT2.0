@@ -361,6 +361,17 @@ conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, 
 global.db.data.chats[m.chat].simi = false
 conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
 
+if (command == 'reaccion' || command == 'reacciónes') {
+//if (!m.isGroup) return m.reply(info.group)
+//if (!isGroupAdmins) return m.reply(info.admin)
+if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+if (args[0] === "on") {
+global.db.data.chats[m.chat].reaccion = true
+conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].reaccion = false
+conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+
 if (command == 'autolevelup' || command == 'autonivel') {
 if (!m.isGroup) return m.reply(info.group)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
