@@ -84,6 +84,9 @@ let t = m.messageTimestamp
 const pushname = m.pushName || "Sin nombre" 
 const botnm = conn.user.id.split(":")[0] + "@s.whatsapp.net"  
 const _isBot = conn.user.jid
+m.isBot = m.id.startsWith('BAE5') && m.id.length === 16 || m.id.startsWith('3EB0') && m.id.length === 12 || m.id.startsWith('3EB0') && (m.id.length === 20 || m.id.length === 22) || m.id.startsWith('B24E') && m.id.length === 20;
+if (m.isBot) return
+
 const userSender = m.key.fromMe ? botnm : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? botnm : m.isGroup ? m.key.participant : m.key.remoteJid  
 const isCreator = [conn.decodeJid(conn.user.id), ...global.owner.map(([numero]) => numero)].map((v) => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender);
 const isOwner = isCreator || m.fromMe;
@@ -631,7 +634,7 @@ case 'estado': case 'infobot': case 'owner': case 'creador': case 'contacto': ca
 break      
      
 //activar/desactivar  
-case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'game2': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': enable(m, command, isGroupAdmins, text, command, args, conn, isBotAdmins, isGroupAdmins, isCreator, conn) 
+case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'game2': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': case 'reacciónes': case 'reaccion': enable(m, command, isGroupAdmins, text, command, args, conn, isBotAdmins, isGroupAdmins, isCreator, conn) 
 break
      
 //Grupos    
@@ -1200,9 +1203,13 @@ if (media === 'texto')
 m.reply('*Mi jefe no me quiere 😢*')        
 if (media === 'sticker')         
 conn.sendFile(m.chat, e, 'sticker.webp', '',m, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: 'ᶜ ᴬᵘᵗᵒᵈᵉˢᶜʳᵘʸᵉ', mediaType: 2, sourceUrl: nna, thumbnail: imagen4}}}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
-if (budy.includes(`NovaBot`) || budy.includes(`novabot`) || budy.includes(`CortanaBot-𝟸.𝟶`) || budy.includes(`Cortana`)) {
-m.react(`${pickRandom(['💠', '👀', '😈', '💢', '🤠'])}`)}
+if (budy.includes(`NovaBot`) || budy.includes(`novabot`) || budy.includes(`CortanaBot-𝟸.𝟶`) || budy.includes(`Cortana`) || budy.includes(``)) {
+if (!global.db.data.chats[m.chat].reaccion) return
+m.react(`${pickRandom(["😀", "😃", "😄", "😁", "😆", "🥹", "😅", "😂", "🤣", "🥲", "☺️", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🥸", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😶‍🌫️", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🫣", "🤭", "🫢", "🫡", "🤫", "🫠", "🤥", "😶", "🫥", "😐", "🫤", "😑", "🫨", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😮‍💨", "😵", "😵‍💫", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👺", "🤡", "💩", "👻", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾", "🫶", "👍", "✌️", "🙏", "🫵", "🤏", "🤌", "☝️", "🖕", "🙏", "🫵", "🫂", "🐱", "🤹‍♀️", "🤹‍♂️", "🗿", "✨", "⚡", "🔥", "🌈", "🩷", "❤️", "🧡", "💛", "💚", "🩵", "💙", "💜", "🖤", "🩶", "🤍", "🤎", "💔", "❤️‍🔥", "❤️‍🩹", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "🏳️‍🌈", "👊", "👀", "💋", "🫰", "💅", "👑", "🐣", "🐤", "🐈"])}`)
+}
+
 if (budy.includes(`Avisos`) || budy.includes(`Atencion`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 m.react(`${pickRandom(['📣', '👀', '‼️'])}`)}
 if (budy.includes(`Bot`)) {   
 let vn = 'https://qu.ax/hJA.mp3'
@@ -1218,7 +1225,36 @@ if (media === 'sticker')
 conn.sendFile(m.chat, noetiqueta, 'sticker.webp', '',m, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: 'Yo que?', mediaType: 2, sourceUrl: nna, thumbnail: imagen4}}}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'texto')
 await conn.sendMessage(m.chat, {text: `${pickRandom(['*QUE YO QUE?*', 'Que?'])}`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
+
+if (m.mentionedJid.includes(conn.user.jid) || (m.quoted && m.quoted.sender === conn.user.jid)) {
+const axios = require('axios');
+    await conn.sendPresenceUpdate('composing', m.chat)    
+
+async function luminsesi(q, username, logic) {
+    try {
+        const response = await axios.post("https://lumin-ai.xyz/", {
+            content: q,
+            user: username,
+            prompt: logic,
+            webSearchMode: true // true = resultado con url
+        });
+        return response.data.result;
+    } catch (error) {
+        console.error('Error al obtener:', error);
+    }
+}
+
+let query = m.text;
+let username = `${m.pushName}`;
+
+let syms1 = await axios.get(`https://raw.githubusercontent.com/Skidy89/chat-gpt-jailbreak/main/Text.txt`);
+
+let result = await luminsesi(query, username, syms1);
+await conn.sendTextWithMentions(m.chat, result, m) 
+}
+
 if (budy.includes(`Yaoi`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 m.react(`${pickRandom(['😐', '👀', '😹'])}`)
 m.reply(`${pickRandom(['Que mamada? vete a estudiar mejor', 'Soy un bot hetero, no pida mamada (︶｡︶)zzZ '])}`)}
 if (budy.startsWith(`a`)) {
@@ -1538,7 +1574,7 @@ conn.copyNForward(m.chat, msgs[budy.toLowerCase()], true)
  
 //--------------------[ REPORTE/ERRORS ]-----------------------     
 let e = String(err) 
-conn.sendMessage("6283114761386@s.whatsapp.net", { text: "Hola Creador/desarrollador, parece haber un error, por favor arreglarlo 🥲\n\n" + util.format(e), 
+conn.sendMessage("573147616444@s.whatsapp.net", { text: "Hola Creador/desarrollador, parece haber un error, por favor arreglarlo 🥲\n\n" + util.format(e), 
 contextInfo:{forwardingScore: 9999999, isForwarded: false }})
 process.on('uncaughtException', function (err) {
 console.log('Caught exception: ', err)})}}}}
