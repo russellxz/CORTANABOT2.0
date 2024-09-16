@@ -57,7 +57,7 @@ npm i -g pm2 && pm2 start index.js && pm2 save && pm2 logs
 [`CREAR SERVIDOR`](https://github.com/codespaces/new?skip_quickstart=true&machine=basicLinux32gb&repo=elrebelde21/NovaBot-MD&ref=main&geo=UsEast)
 
 ### HOSTING ACTIVO 24/7🌠
-🌌PUEDES ACTIVARLA AQUI 24/7 SIN PARA
+🌌PUEDES ACTIVARLA AQUI 24/7 SIN PARAR
 EN NUESTRO HOSTING🌌
 
 <img src="./media/Picsart_24-09-15_05-18-42-309.jpg" alt="Mi logo" width="200"/>
