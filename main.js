@@ -732,7 +732,7 @@ function times(second) {
 break
      
 //activar/desactivar  
-case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'game2': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': case 'reacciónes': case 'reaccion': enable(m, command, isGroupAdmins, text, command, args, conn, isBotAdmins, isGroupAdmins, isCreator, conn) 
+case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'game2': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': case 'reacciónes': case 'reaccion': case 'antireac': case 'antireaciones': case 'desactivar': enable(m, command, isGroupAdmins, text, command, args, conn, isBotAdmins, isGroupAdmins, isCreator, conn) 
 break
      
 //Grupos    
@@ -1290,9 +1290,11 @@ function isNumber(x) {return !isNaN(x)}
 //-------------------[ AUDIO/TEXTOS ]----------------------
 default:   
 if (budy.includes(`Todo bien`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 // conn.sendPresenceUpdate('composing', m.chat)
 await m.reply(`${pickRandom(['Si amigo todo bien, vite', 'Todo bien capo y tu 😎'])}`)} 
 if (budy.includes(`Autodestruction`)) { 
+if (!global.db.data.chats[m.chat].reaccion) return
 //let e = fs.readFileSync('./src/autodestruction.webp')
 let e = 'https://qu.ax/gCQo.webp'
 let or = ['texto', 'sticker']; 
@@ -1357,11 +1359,13 @@ if (!global.db.data.chats[m.chat].reaccion) return
 m.react(`${pickRandom(['😐', '👀', '😹'])}`)
 m.reply(`${pickRandom(['Que mamada? vete a estudiar mejor', 'Soy un bot hetero, no pida mamada (︶｡︶)zzZ '])}`)}
 if (budy.startsWith(`a`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 if (!global.db.data.chats[m.chat].audios) return
 let vn = './media/a.mp3'
 await conn.sendPresenceUpdate('recording', m.chat)
 conn.sendMessage(m.chat, { audio: { url: vn }, contextInfo: { "externalAdReply": { "title": botname, "body": ``, "previewType": "PHOTO", "thumbnailUrl": null,"thumbnail": imagen4, "sourceUrl": md, "showAdAttribution": true}}, seconds: '4556', ptt: true, mimetype: 'audio/mpeg', fileName: `error.mp3` }, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 if (/^Hola|hello|Hello|hola|ola$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 let vid = 'https://qu.ax/bfbU.mp4'
 let vn = 'https://qu.ax/hJA.mp3'
 let stic = 'https://qu.ax/LTVf.webp' 
@@ -1372,6 +1376,7 @@ if (media === 'sticker') conn.sendFile(m.chat, pickRandom([stic, stic2]), 'stick
 if (media === 'audio') conn.sendAudio(m.chat, vn, m)
 if (media === 'video') conn.sendMessage(m.chat, {video: {url: vid}, caption: `Hola ${pushname} 👋`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 if (/^Fino señores|fino señores|Fino senores|fino senores|Fino🧐|🧐🍷|🧐🍷$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 let s = 'https://qu.ax/DbMX.webp'
 let s2 = 'https://qu.ax/zXa.webp'
 let vn = 'https://qu.ax/hapR.mp3'
@@ -1380,6 +1385,7 @@ let media = or[Math.floor(Math.random() * 2)]
 if (media === 'sticker') conn.sendFile(m.chat, pickRandom([s, s2]), 'sticker.webp', '',m, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: wm, mediaType: 2, sourceUrl: nna, thumbnail: imagen4}}}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})    
 if (media === 'audio') conn.sendAudio(m.chat, vn, m)}
 if (/^anadieleimporta|a nadie le importa|y que|no importa|literal$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 let s = 'https://qu.ax/SHgM.webp' 
 let s2 = 'https://qu.ax/glpp.webp'
 let vn = 'https://qu.ax/JocM.mp3'
@@ -1388,6 +1394,7 @@ let media = or[Math.floor(Math.random() * 2)]
 if (media === 'sticker') conn.sendFile(m.chat, pickRandom([s, s2]), 'sticker.webp', '',m, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: wm, mediaType: 2, sourceUrl: tiktok, thumbnail: imagen4}}}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})   
 if (media === 'audio') conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Feliz cumpleaños`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/UtmZ.mp3'
 conn.sendAudio(m.chat, vn, m)
 m.react(`${pickRandom(['🥳', '💫', '🎊'])}`)} 
@@ -1395,247 +1402,328 @@ if (budy.startsWith(`Feliz navidad`) || budy.startsWith(`Merry Christmas`) || bu
 const vn = 'https://qu.ax/XYyY.m4a'
 conn.sendAudio(m.chat, vn, m)} 
 if (/^Hermosa|hermosa|guada|luuk$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/GLuo.mp4'
 conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
 if (/^riko|rico|sabraso|tetas|nepe|pene|Pene|Teta|Tetas|Rico|RiKo$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/Mwjf.mp4'
 conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
 if (/^novio|Novio$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/xzDx.mp4'
 conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
 if (budy.startsWith(`admin`) || budy.startsWith(`adminitración`) || budy.startsWith(`administrador`) || budy.startsWith(`administradores`) || budy.startsWith(`AdMiN`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/teCT.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (/^frio|Frio$/i.test(budy)) { 
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/croh.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (/^novia|Novia$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/OBYM.mp4'
 conn.sendMessage(m.chat, {video: {url: vn}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})} 
 if (/^cojer|follar|Cojer|cojemos|Follar|folla$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vid = 'https://qu.ax/BcgR.mp4'
 conn.sendMessage(m.chat, {video: {url: vid}, caption: ``}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 if (budy.startsWith(`+58 416-3393168`) || budy.startsWith(`@584163393168`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/tkLb.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`+58 412-3552078`) || budy.startsWith(`@584123552078`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/kziX.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`+57 324 2402359`) || budy.startsWith(`@573242402359`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/GWBA.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`+52 686 526 8215`) || budy.startsWith(`@5216865268215`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/WrRT.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`+52 653 137 4035`) || budy.startsWith(`@5216531374035`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/uoDX.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Lotex`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/oXGa.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Broken`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/BcXf.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (/^bienveni|🥳|🤗|welcome$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/cUYg.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (/^Te quiero cortana|Te amo Cortana$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/Npoz.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (/^te gusta los hombres|Yoce que vez porno gay|Mi amiga es trapito|Te gusta el yaoi$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/PtaB.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (/^quien para jugar|br mj jugar|Kien pa jugar|Quien pa jugar|quien pa jugar|Juegar|jugar|Jugar|🎮$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/nRfU.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (/^Maldito|Mal pario|Mmgb|Mmwb|Hijo de puta|Hdp|Cara de verga|Marico|Marica|te Gusta el pito|Hijo de perra|Mamate un wuebo$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/ftaR.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (/^Gay|gay$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/hPEG.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (/^Buenos Dias|buenos dias|Bueno dias|Buenos dias$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/VrnK.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (/^Broken vs lotex|broken vs lotex|Broken vs Loten$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/Kosf.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`+507 6791-4578`) || budy.startsWith(`@50767914578`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/enOL.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`+1 516-709-6032`) || budy.startsWith(`@15167096032`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/VSNH.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`+1 929-371-9827`) || budy.startsWith(`@19293719827`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/FPeg.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Vete a la verga`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/pXts.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Uwu`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/lOCR.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Siuuu`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/bfC.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Pasa pack`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/KjHR.mp3';
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Audio hentai`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/GSUY.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Pasen porno`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/JDZB.mp3'
 conn.sendAudio(m.chat, vn, m)}			
 if (budy.startsWith(`VAMOOO`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/XGAp.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Hora del sexito`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/Jpjm.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Cuentate un chiste`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/MSiQ.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Admin party`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/MpnG.mp3' 
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Fiesta del admin`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/jDVi.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Viernes`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/wqXs.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`:v`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/cxDg.mp3'
 const stic = 'https://qu.ax/ahLV.webp'
 let or = ['sticker', 'audio'];   
 let media = or[Math.floor(Math.random() * 2)] 
 if (media === 'sticker') conn.sendFile(m.chat, stic, 'sticker.webp', '',m, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: `${pushname}`, mediaType: 2, sourceUrl: nn2, thumbnail: imagen4}}}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})   
 if (media === 'audio') conn.sendAudio(m.chat, vn, m)}
+
 if (budy.startsWith(`La toca 7w7`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/Payh.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Quien es tu sempai botsito`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/likr.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Me gimes 7u7`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/kebK.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Te amo botsito uwu`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/tEpE.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Onichan`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/oZj.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Pasen sexo`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/xJMQ.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Paraguayo`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/wTxz.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Venezolano`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/hXh.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Gaspi corte`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/vYSf.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Gaspi buenos dias`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/kEsc.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Enano`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/XRgo.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`feliz`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/NcPR.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`triste`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/BGbf.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (/^Buenas Tardes|buenas tardes|buena tarde|Buenas tarde$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/AMjs.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (/^Buenas noches|Buenas Noches|buenas noches|buena noche|Buena noches$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/PDBb.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (/^nepe|Nepe|Pene|pene$/i.test(budy)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/WdGF.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Peruano`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/avLe.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Alto temazo`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/SWYV.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`GOOOOD`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/wlJD.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Ya me voy a dormir`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/jeKb.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Calefon`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/UeXx.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Bot de mierda`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/oZfD.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Apurate bot`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/slhL.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Un chino`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/zfBR.mp3'
 conn.sendAudio(m.chat, vn, m)}				
 if (budy.startsWith(`No funciona`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/BEnA.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Boliviano`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/KsCp.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Corte`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/glrC.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Gaspi me saludas`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/xZRW.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Gaspi y las minitas`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/wYil.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Gaspi todo bien`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/MSpr.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Me quiero suicidar`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/ksFd.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Gaspi ya no aguanto`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/gNwU.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Contate algo bot`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/cFnb.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Sexo`)) { 
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/VZYF.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Pongan cuties`)) { 
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/cDFj.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Momento epico`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/pDNC.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`El bot del orto no funciona`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/STib.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Epicardo`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/FTaB.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Insta de la minita`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/JYh.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Una mierda de bot`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/keKg.mp3'
 conn.sendAudio(m.chat, vn, m)}
 if (budy.startsWith(`Ultimo momento`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/tleA.mp3'
 conn.sendAudio(m.chat, vn, m)}			
 if (budy.startsWith(`Nefasto`)) {
+if (!global.db.data.chats[m.chat].reaccion) return
 const vn = 'https://qu.ax/MaJu.mp3'
 conn.sendAudio(m.chat, vn, m)}
                   
