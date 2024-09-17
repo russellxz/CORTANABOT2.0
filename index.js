@@ -73,27 +73,34 @@ if (global.db.data) await global.db.write()
 //_________________
 
 //tmp
-function clearTmp() {
-const tmp = [tmpdir(), join(__dirname, './tmp')];
-const filename = [];
-tmp.forEach((dirname) => readdirSync(dirname).forEach((file) => filename.push(join(dirname, file))));
-return filename.map((file) => {
-const stats = statSync(file);
-if (stats.isFile() && (Date.now() - stats.mtimeMs >= 1000 * 60 * 3)) {
-return unlinkSync(file); // 3 minutes
-}
-return false;
-})}
+if (!opts['test']) {
+  setInterval(async () => {
+    if (global.db.data) await global.db.write().catch(console.error)
+    if (opts['autocleartmp']) try {
+      clearTmp()
 
-if (!opts['test']) { 
-if (global.db) { 
-setInterval(async () => { 
-if (global.db.data) await global.db.write(); 
-if (opts['autocleartmp'] && (global.support || {}).find) (tmp = [os.tmpdir(), 'tmp'], tmp.forEach((filename) => cp.spawn('find', [filename, '-amin', '3', '-type', 'f', '-delete']))); 
-}, 30 * 1000); 
-}}
+    } catch (e) { console.error(e) }
+  }, 60 * 1000)
+}
+
+if (opts['server']) (await import('./server.js')).default(global.conn, PORT)
+
+/* Clear */
+async function clearTmp() {
+  const tmp = [tmpdir(), join(__dirname, './tmp')]
+  const filename = []
+  tmp.forEach(dirname => readdirSync(dirname).forEach(file => filename.push(join(dirname, file))))
+
+  //---
+  return filename.map(file => {
+    const stats = statSync(file)
+    if (stats.isFile() && (Date.now() - stats.mtimeMs >= 1000 * 60 * 1)) return unlinkSync(file) // 1 minuto
+    return false
+  })
+}
+
 setInterval(async () => {
-await clearTmp()
+	await clearTmp()
 console.log(chalk.cyanBright(lenguaje['tmp']()))}, 180000)
 //_________________
 
@@ -199,7 +206,7 @@ console.log(chalk.bold.redBright(`NO SE PERMITE NÚMEROS QUE NO SEAN ${chalk.bol
     
 async function startBot() {
 
-console.info = () => {}
+//console.info = () => {}
 const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }), })
 const msgRetry = (MessageRetryMap) => { }
 const msgRetryCache = new NodeCache()
