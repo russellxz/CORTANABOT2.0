@@ -5,7 +5,7 @@
 🌌PUEDES ACTIVARLA AQUI 24/7 SIN PARAR
 EN NUESTRO HOSTING🌌
 
-<img src="./media/Picsart_24-09-15_05-18-42-309.jpg" alt="Mi logo" width="200"/>
+<img src="./media/Picsart_24-09-15_05-18-42-309.jpg" alt="Mi logo" width="100"/>
 
 [GRUPO DE WHATSAPP HOSTING](https://chat.whatsapp.com/GWybjvEMu4o0Q2OGdOYWmc)
 
