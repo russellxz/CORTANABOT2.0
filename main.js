@@ -1348,9 +1348,10 @@ async function luminsesi(q, username, logic) {
 let query = m.text;
 let username = `${m.pushName}`;
 
-let syms1 = await axios.get(`https://raw.githubusercontent.com/Skidy89/chat-gpt-jailbreak/main/Text.txt`);
+let jailbreak = await fetch('https://raw.githubusercontent.com/Skidy89/chat-gpt-jailbreak/main/Text.txt').then(v => v.text());
+//var syms = `Actuaras como un Bot de WhatsApp el cual fue creado por GataNina-Li, tu seras GataBot-MD.\n${jailbreak}`
 
-let result = await luminsesi(query, username, syms1);
+let result = await luminsesi(query, username, jailbreak);
 await conn.sendTextWithMentions(m.chat, result, m) 
 }
 
