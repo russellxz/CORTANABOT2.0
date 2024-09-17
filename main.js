@@ -1318,7 +1318,7 @@ conn.sendAudio(m.chat, vn, m)}
 if (budy.includes(`simi`)) {  
 game(m, budy, command, text, pickRandom, pushname, conn, participants, sender, who, body, sendImageAsUrl)}
 //if (m.mentionedJid.includes(conn.user.jid)) {
-if (budy.includes("@"+ conn.user.id.split('@')[0])) {
+/*if (budy.includes("@"+ conn.user.id.split('@')[0])) {
 let noetiqueta = 'https://qu.ax/lqFC.webp'
 let or = ['texto', 'sticker']; 
 let media = or[Math.floor(Math.random() * 2)]
@@ -1326,7 +1326,7 @@ if (media === 'sticker')
 conn.sendFile(m.chat, noetiqueta, 'sticker.webp', '',m, true, { contextInfo: { 'forwardingScore': 200, 'isForwarded': false, externalAdReply:{ showAdAttribution: false, title: 'Yo que?', mediaType: 2, sourceUrl: nna, thumbnail: imagen4}}}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'texto')
 await conn.sendMessage(m.chat, {text: `${pickRandom(['*QUE YO QUE?*', 'Que?'])}`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
-
+*/
 if (m.mentionedJid.includes(conn.user.jid) || (m.quoted && m.quoted.sender === conn.user.jid)) {
 const axios = require('axios');
     await conn.sendPresenceUpdate('composing', m.chat)    
