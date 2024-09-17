@@ -1,61 +1,6 @@
 ![CORTANA BOT 2.0](media/menu.jpg
 )
 
-> <b>  🚀 Cortana Bot 2.0(Personalizado) </b> 
-
------------------- 
-
-## 𝙰𝙲𝚃𝙸𝚅𝙰 𝙴𝙻 𝚃𝙴𝚁𝙼𝚄𝚇
-👇 Pasos para instalar el bot via termux 👇
-
-[![blog](https://img.shields.io/badge/Video-Tutorial-FF0000?style=for-the-badge&logo=youtube&logoColor=white)
-](https://youtu.be/OhbJjp0L2QA?si=LUTw6tIkQmP7XOhp)
-
-[`💫 Instalar termux clic aqui`](https://www.mediafire.com/file/3hsvi3xkpq3a64o/termux_118.apk/file)
-
-```bash
-termux-setup-storage
-```
-```bash
-apt update && apt upgrade && pkg update && pkg upgrade && pkg install bash && pkg install libwebp && pkg install git -y && pkg install nodejs -y && pkg install ffmpeg -y && pkg install wget && pkg install imagemagick -y && pkg install yarn
-```
-```bash
-git clone https://github.com/russellxz/CORTANABOT2.0.git
-```
-```bash
-cd CORTANABOT2.0
-```
-```bash
-yarn install && npm install && npm update
-```
-```bash
-npm start
-```
-
-### `🟢 𝙰𝙲𝚃𝙸𝚅𝙰𝚁 𝙴𝙽 𝙲𝙰𝚂𝙾 𝙳𝙴 𝙳𝙴𝚃𝙴𝙽𝙴𝚁𝚂𝙴 𝙴𝙽 𝚃𝙴𝚁𝙼𝚄𝚇`
-Si despues que ya instalastes tu bot y termux te salta en blanco, se fue tu internet o reiniciaste tu celular, solo realizaras estos pasos
-```bash
-> cd CORTANABOT2.0
-> npm start
-```
-### `🟢 𝙾𝙱𝚃𝙴𝙽𝙴𝚁 𝙾𝚃𝚁𝙾 𝙲𝙾𝙳𝙸𝙶𝙾 𝚀𝚁 𝙴𝙽 𝚃𝙴𝚁𝙼𝚄𝚇`
-Detener el bot apretado CTRL y aplastas Z en tu teclado, darle enter y escribe:
-```bash
-> cd 
-> cd CORTANABOT2.0
-> rm -rf sessions
-> npm start
-```
-### `🤖 𝙿𝙰𝚁𝙰 𝙰𝙲𝚃𝙸𝚅𝙰𝚁 𝟸𝟺/𝟽 (𝚃𝙴𝚁𝙼𝚄𝚇)`
-```bash
-npm i -g pm2 && pm2 start index.js && pm2 save && pm2 logs
-```
-
-
-### 🟢 ACTIVAR EN CODES SPACES 
-
-[`CREAR SERVIDOR`](https://github.com/codespaces/new?skip_quickstart=true&machine=basicLinux32gb&repo=elrebelde21/NovaBot-MD&ref=main&geo=UsEast)
-
 ### HOSTING ACTIVO 24/7🌠
 🌌PUEDES ACTIVARLA AQUI 24/7 SIN PARAR
 EN NUESTRO HOSTING🌌
