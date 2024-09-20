@@ -1329,7 +1329,7 @@ conn.sendFile(m.chat, noetiqueta, 'sticker.webp', '',m, true, { contextInfo: { '
 if (media === 'texto')
 await conn.sendMessage(m.chat, {text: `${pickRandom(['*QUE YO QUE?*', 'Que?'])}`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 */
-if (m.mentionedJid.includes(conn.user.jid) || (m.quoted && m.quoted.sender === conn.user.jid)) {
+if (m.mentionedJid.includes(conn.user.jid) || (m.quoted && m.quoted.sender === conn.user.jid) || budy.includes(`Bot`) || budy.includes(`bot`) || budy.includes(`alexa`) || budy.includes(`Alexa`) || budy.includes(`simi`) || budy.includes(`Simi`) || budy.includes(`Simsimi`)) {
 const axios = require('axios');
     await conn.sendPresenceUpdate('composing', m.chat)    
 
@@ -1778,4 +1778,3 @@ console.log(chalk.redBright(`Update ${__filename}`))
 delete require.cache[file]
 require(file)
 })
-
