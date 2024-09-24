@@ -7,6 +7,10 @@ EN NUESTRO HOSTING🌌
 
 <img src="./media/Picsart_24-09-15_05-18-42-309.jpg" alt="Mi logo" width="150"/>
 
+[DASH AZURA](https://store.azuraultra-host.pro/home)
+
+[PANEL AZURA](https://control.azuraultra-host.pro/auth/login)
+
 [GRUPO DE WHATSAPP HOSTING](https://chat.whatsapp.com/GsyFIcRe8bNHBnfdQGYaT1)
 
 [LINK DEL CANAL DE WHATSAPP](https://whatsapp.com/channel/0029VamOVm08fewr5jix2Z3t)
