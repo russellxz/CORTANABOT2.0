@@ -9,6 +9,8 @@ EN NUESTRO HOSTING🌌
 
 [GRUPO DE WHATSAPP HOSTING](https://chat.whatsapp.com/GsyFIcRe8bNHBnfdQGYaT1)
 
+[LINK DEL CANAL DE WHATSAPP](https://whatsapp.com/channel/0029VamOVm08fewr5jix2Z3t)
+
 ### ☁️ CORINPLUS HOST
 <a href="https://dash.corinplus.com"><img src="https://qu.ax/ZycD.png" height="125px"></a>
 
