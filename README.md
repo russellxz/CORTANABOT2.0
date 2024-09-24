@@ -7,7 +7,7 @@ EN NUESTRO HOSTING🌌
 
 <img src="./media/Picsart_24-09-15_05-18-42-309.jpg" alt="Mi logo" width="150"/>
 
-[GRUPO DE WHATSAPP HOSTING](https://chat.whatsapp.com/GWybjvEMu4o0Q2OGdOYWmc)
+[GRUPO DE WHATSAPP HOSTING](https://chat.whatsapp.com/GsyFIcRe8bNHBnfdQGYaT1)
 
 ### ☁️ CORINPLUS HOST
 <a href="https://dash.corinplus.com"><img src="https://qu.ax/ZycD.png" height="125px"></a>
