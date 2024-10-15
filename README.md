@@ -1,22 +1,18 @@
 ![CORTANA BOT 2.0](media/menu.jpg
 )
 
-### HOSTING ACTIVO 24/7🌠
-🌌PUEDES ACTIVARLA AQUI 24/7 SIN PARAR
-EN NUESTRO HOSTING🌌
+### Despliegue en SkyUltraPlus Host
+<a href="https://dash.corinplus.com"><img src="https://qu.ax/zFzXF.png" height="125px"></a>
 
-<img src="./media/Picsart_24-09-15_05-18-42-309.jpg" alt="Mi logo" width="150"/>
-
-[DASH AZURA](https://store.azuraultra.com/home)
-
-[PANEL AZURA](https://control.azuraultra.com/auth/login)
-
-[GRUPO DE WHATSAPP HOSTING](https://chat.whatsapp.com/GsyFIcRe8bNHBnfdQGYaT1)
-
-[LINK DEL CANAL DE WHATSAPP](https://whatsapp.com/channel/0029VamOVm08fewr5jix2Z3t)
-
-### ☁️ CORINPLUS HOST
-<a href="https://dash.corinplus.com"><img src="https://qu.ax/ZycD.png" height="125px"></a>
+### Información sobre Sky
+- **Tutorial:** [`Aquí`](https://youtu.be/fZbcCLpSH6Y?si=1sDen7Bzmb7jVpAI)
+- **Dashboard:** [`Aquí`](https://dash.skyultraplus.com)
+- **Panel:** [`Aquí`](https://panel.skyultraplus.com)
+- **Estado de servicios:** [`Aquí`](https://estado.skyultraplus.com)
+- **Canal de WhatsApp:** [`Aquí`](https://whatsapp.com/channel/0029VakUvreFHWpyWUr4Jr0g)
+- **Comunidad:** [`Aquí`](https://chat.whatsapp.com/JPwcXvPEUwlEOyjI3BpYys)
+- **Contacto(s):** [`Gata Dios`](https://wa.me/message/B3KTM5XN2JMRD1) / [`Russell`](https://api.whatsapp.com/send/?phone=15167096032&text&type=phone_number&app_absent=0) / [`elrebelde21`](https://facebook.com/elrebelde21)
+- **Discord:** [`SkyUltraPlus`](https://discord.gg/Ph4eWsZ8)
 
 ------------------ 
 
