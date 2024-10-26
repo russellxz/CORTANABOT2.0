@@ -22,6 +22,8 @@ const PhoneNumber = require('awesome-phonenumber')
 const readline = require("readline")
 const { Boom } = require('@hapi/boom')
 const { parsePhoneNumber } = require("libphonenumber-js")
+const libphonenumber = require('google-libphonenumber')
+const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance()
 
 const { readdirSync, statSync, unlinkSync } = require('fs')
 const {say} = cfonts;
@@ -174,8 +176,9 @@ const useMobile = process.argv.includes("--mobile")
 const MethodMobile = process.argv.includes("mobile")
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
 const question = (text) => new Promise((resolve) => rl.question(text, resolve))
-let { version, isLatest } = await fetchLatestBaileysVersion()
+const msgRetry = (MessageRetryMap) => { }
 const msgRetryCounterCache = new NodeCache() //para mensaje de reintento, "mensaje en espera"
+let { version, isLatest } = await fetchLatestBaileysVersion();   
     
 //codigo adaptado por: https://github.com/GataNina-Li && https://github.com/elrebelde21
 let opcion
@@ -187,80 +190,72 @@ do {
 let lineM = '┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅'
 opcion = await question(`┏${lineM}  
 ┋ ${chalk.blueBright('┏┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}
-┋ ${chalk.blueBright('┋')} ${chalk.blue.bgBlue.bold.cyan('MÉTODO DE VINCULACIÓN')}
+┋ ${chalk.blueBright('┋')} ${chalk.blue.bgBlue.bold.cyan(lenguaje.console.text1)}
 ┋ ${chalk.blueBright('┗┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}   
 ┋ ${chalk.blueBright('┏┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}     
-┋ ${chalk.blueBright('┋')} ${chalk.green.bgMagenta.bold.yellow('¿CÓMO DESEA CONECTARSE?')}
-┋ ${chalk.blueBright('┋')} ${chalk.bold.redBright('⇢  Opción 1:')} ${chalk.greenBright('Código QR.')}
-┋ ${chalk.blueBright('┋')} ${chalk.bold.redBright('⇢  Opción 2:')} ${chalk.greenBright('Código de 8 digitos.')}
+┋ ${chalk.blueBright('┋')} ${chalk.green.bgMagenta.bold.yellow(lenguaje.console.text2)}
+┋ ${chalk.blueBright('┋')} ${chalk.bold.redBright(lenguaje.console.text3)} ${chalk.greenBright(lenguaje.console.text4)}
+┋ ${chalk.blueBright('┋')} ${chalk.bold.redBright(lenguaje.console.text5)} ${chalk.greenBright(lenguaje.console.text6)}
 ┋ ${chalk.blueBright('┗┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}
 ┋ ${chalk.blueBright('┏┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}     
-┋ ${chalk.blueBright('┋')} ${chalk.italic.magenta('Escriba sólo el número de')}
-┋ ${chalk.blueBright('┋')} ${chalk.italic.magenta('la opción para conectarse.')}
+┋ ${chalk.blueBright('┋')} ${chalk.italic.magenta(lenguaje.console.text7)}
+┋ ${chalk.blueBright('┋')} ${chalk.italic.magenta(lenguaje.console.text8)}
 ┋ ${chalk.blueBright('┗┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅')}
 ┗${lineM}\n${chalk.bold.magentaBright('---> ')}`)
 if (!/^[1-2]$/.test(opcion)) {
-console.log(chalk.bold.redBright(`NO SE PERMITE NÚMEROS QUE NO SEAN ${chalk.bold.greenBright("1")} O ${chalk.bold.greenBright("2")}, TAMPOCO LETRAS O SÍMBOLOS ESPECIALES.\n${chalk.bold.yellowBright("CONSEJO: COPIE EL NÚMERO DE LA OPCIÓN Y PÉGUELO EN LA CONSOLA.")}`))
+console.log(chalk.bold.redBright(`${lenguaje.console.text9(chalk)}`))
 }} while (opcion !== '1' && opcion !== '2' || fs.existsSync(`./sessions/creds.json`))
 }
     
 async function startBot() {
 
-//console.info = () => {}
-const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }), })
-const msgRetry = (MessageRetryMap) => { }
-const msgRetryCache = new NodeCache()
-let { version, isLatest } = await fetchLatestBaileysVersion();   
-
+console.info = () => {}
 const socketSettings = {
 printQRInTerminal: opcion == '1' ? true : methodCodeQR ? true : false,
 logger: pino({ level: 'silent' }),
 auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level: 'silent'})) },
 mobile: MethodMobile, 
-browser: opcion == '1' ? ['CortanaBot-𝟸.𝟶', 'Safari', '1.0.0'] : methodCodeQR ? ['CortanaBot-𝟸.𝟶', 'Safari', '1.0.0'] : ["Ubuntu", "Chrome", "20.0.04"],
-msgRetry,
-msgRetryCache,
-version,
+browser: opcion == '1' ? ['CortanaBot-MD', 'Safari', '1.0.0'] : methodCodeQR ? ['CortanaBot-MD', 'Safari', '1.0.0'] : ["Ubuntu", "Chrome", "20.0.04"],
+markOnlineOnConnect: true, 
+generateHighQualityLinkPreview: true, 
 syncFullHistory: true,
 getMessage: async (key) => {
-if (store) { 
-const msg = await store.loadMessage(key.remoteJid, key.id); 
-return sock.chats[key.remoteJid] && sock.chats[key.remoteJid].messages[key.id] ? sock.chats[key.remoteJid].messages[key.id].message : undefined; 
-} 
-return proto.Message.fromObject({}); 
-}}
+let jid = jidNormalizedUser(key.remoteJid)
+let msg = await store.loadMessage(jid, key.id)
+return (msg?.message || "").replace(/(?:Closing stale open|Closing open session)/g, "")
+},
+msgRetryCounterCache, // Resolver mensajes en espera
+msgRetry, 
+defaultQueryTimeoutMs: undefined,
+version: [2, 3000, 1015901307],
+}
 
 const sock = makeWASocket(socketSettings)
+sock.isInit = false
 
 if (!fs.existsSync(`./sessions/creds.json`)) {
 if (opcion === '2' || methodCode) {
 opcion = '2'
-if (!sock.authState.creds.registered) {  
+if (!sock.authState.creds.registered) {
 let addNumber
 if (!!phoneNumber) {
 addNumber = phoneNumber.replace(/[^0-9]/g, '')
-if (!Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
-console.log(chalk.bgBlack(chalk.bold.redBright("🟢 Comience con el código de país de su número de WhatsApp, ejemplo: +59178862672"))) 
-process.exit(0)
-}} else {
-while (true) {
-addNumber = await question(chalk.bgBlack(chalk.bold.greenBright(`🟢 Ingresa el número que sera bot\nPor ejemplo: +59178862672 `)))
-addNumber = addNumber.replace(/[^0-9]/g, '')
-  
-if (addNumber.match(/^\d+$/) && Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
-break 
 } else {
-console.log(chalk.bold.redBright("❌ Asegúrese de agregar el código de país."))
-}}
-rl.close()  
+do {
+phoneNumber = await question(chalk.bgBlack(chalk.bold.greenBright("\n\n✳️ Escriba su número\n\nEjemplo: 5491168xxxx\n\n\n\n")))
+phoneNumber = phoneNumber.replace(/\D/g,'')
+if (!phoneNumber.startsWith('+')) {
+phoneNumber = `+${phoneNumber}`
 }
-
+} while (!await isValidPhoneNumber(phoneNumber))
+rl.close()
+addNumber = phoneNumber.replace(/\D/g, '')
 setTimeout(async () => {
 let codeBot = await sock.requestPairingCode(addNumber)
 codeBot = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot
-console.log(chalk.bold.white(chalk.bgMagenta(`👑 CÓDIGO DE VINCULACIÓN 👑: `)), chalk.bold.white(chalk.white(codeBot)))
+console.log(chalk.bold.white(chalk.bgMagenta(`CÓDIGO DE VINCULACIÓN:`)), chalk.bold.white(chalk.white(codeBot)))
 }, 2000)
-}}
+}}}
 }
 
 async function getMessage(key) {
@@ -635,6 +630,21 @@ return list[Math.floor(list.length * Math.random())]
 }  
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+async function isValidPhoneNumber(number) {
+try {
+number = number.replace(/\s+/g, '')
+// Si el número empieza con '+521' o '+52 1', quitar el '1'
+if (number.startsWith('+521')) {
+number = number.replace('+521', '+52'); // Cambiar +521 a +52
+} else if (number.startsWith('+52') && number[4] === '1') {
+number = number.replace('+52 1', '+52'); // Cambiar +52 1 a +52
+}
+const parsedNumber = phoneUtil.parseAndKeepRawInput(number)
+return phoneUtil.isValidNumber(parsedNumber)
+} catch (error) {
+return false
+}}
 
 sock.ev.on('connection.update', async (update) => {
 const { connection, lastDisconnect, qr, receivedPendingNotifications, isNewLogin} = update;
