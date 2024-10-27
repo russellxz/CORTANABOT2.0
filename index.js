@@ -168,6 +168,8 @@ setInterval(async () => {
 }, 1000 * 60 * 60);
 //___________
     
+const store = makeInMemoryStore({logger: pino().child({level: 'silent', stream: 'store' })})
+    
 //configuración 
 const methodCodeQR = process.argv.includes("qr")
 const pairingCode = !!phoneNumber || process.argv.includes("--pairing-code")
