@@ -211,7 +211,7 @@ console.log(chalk.bold.redBright(`NO SE PERMITE NÚMEROS QUE NO SEAN ${chalk.bol
     
 async function startBot() {
 
-console.info = () => {}
+//console.info = () => {}
 const socketSettings = {
 printQRInTerminal: opcion == '1' ? true : methodCodeQR ? true : false,
 logger: pino({ level: 'silent' }),
