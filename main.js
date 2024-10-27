@@ -1794,25 +1794,25 @@ conn.sendAudio(m.chat, vn, m)}
                   
 //--------------------[ OWNER ]-----------------------     
 if (budy.startsWith('>')) {
-if (!isCreator) return reply(info.owner)
+if (!isCreator) return m.reply(info.owner)
 try {
-return reply(JSON.stringify(eval(budy.slice(2)), null, '\t'))
+return m.reply(JSON.stringify(eval(budy.slice(2)), null, '\t'))
 } catch (e) {
 e = String(e)
-reply(e)
+m.reply(e)
 }}
 if (budy.startsWith('=>')) {
 if (!isCreator) return
 try {
-return reply(JSON.stringify(eval(`(async () => { ${budy.slice(3)} })()`), null, '\t'))  
+return m.reply(JSON.stringify(eval(`(async () => { ${budy.slice(3)} })()`), null, '\t'))  
 } catch (e) {
 e = String(e)
-reply(e)
+m.reply(e)
 }}
 if (budy.startsWith('$')) {
-if (!isCreator) return reply(info.owner) 
+if (!isCreator) return m.reply(info.owner) 
 try {
-return reply(String(execSync(budy.slice(2), { encoding: 'utf-8' })))
+return m.reply(String(execSync(budy.slice(2), { encoding: 'utf-8' })))
 } catch (err) { 
 console.log(util.format(err))  
  
