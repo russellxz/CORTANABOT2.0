@@ -138,6 +138,8 @@ return { id, nombre }
 	
 let randomChannel = await getRandomChannel()
   
+function pickRandom(list) {return list[Math.floor(list.length * Math.random())]}    
+  
 /*const reply = (text) => {  
 m.reply(text)}*/
 function ucapan() {
@@ -1321,9 +1323,9 @@ break
 /////////////////////////////////    
    
 //--------------------[ FUNCIONES ]-----------------------  
-function pickRandom(list) {return list[Math.floor(list.length * Math.random())]}       
 
 function isNumber(x) {return !isNaN(x)}    
+
 //-------------------[ AUDIO/TEXTOS ]----------------------
 default:   
 if (budy.includes(`Todo bien`)) {
