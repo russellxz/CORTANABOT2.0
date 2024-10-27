@@ -921,6 +921,29 @@ break
 case 'facebook': case 'fb': case 'instagram': case 'ig': case 'igstalk': case 'tiktokstalk': case 'apk': case 'modoapk': case 'gdrive': case 'tw': case 'twitter': descarga2(m, command, text, args, conn, lolkeysapi, isCreator) 
 break 
 
+case 'audio': case 'musica2': {
+const yts = require("youtube-yts");
+if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra);
+if (!text) return m.reply(`*• Ejemplo:* ${prefix + command} Duki`) 
+m.react("⌛");
+m.reply(`🚀 𝐄𝐬𝐩𝐞𝐫𝐞 𝐬𝐮𝐬 𝐚𝐮𝐝𝐢𝐨𝐬 𝐬𝐞 𝐞𝐬𝐭𝐚́ 𝐝𝐞𝐬𝐜𝐚𝐫𝐠𝐚𝐧𝐝𝐨...`)	
+const videoSearch = await yts(text);
+if (!videoSearch.all.length) {
+return m.react("❌");
+}
+const vid = videoSearch.all[0];
+const videoUrl = vid.url;
+const apiUrl = `https://deliriussapi-oficial.vercel.app/download/ytmp4?url=${encodeURIComponent(videoUrl)}`;
+const apiResponse = await fetch(apiUrl);
+const delius = await apiResponse.json();
+
+if (!delius.status) {
+return m.react("❌")}
+const downloadUrl = delius.data.download.url;
+await conn.sendMessage(m.chat, { audio: { url: downloadUrl }, mimetype: 'audio/mpeg' }, { quoted: m });
+m.react("✅")}
+break
+		
 //rpg  
 case 'reg': case 'verificar': case 'Registrar': case 'unreg': case 'myns': await reg(command, conn, m, sender, text, budy, fkontak, delay, args) 
 break     
