@@ -4,7 +4,7 @@ const chalk = require('chalk')
 const { en, es, ar, id, pt, rs} = require('./libs/idiomas/total-idiomas.js') 
 
 //---------[ PROPIETARIO/OWNER ]---------
-global.owner = [["15167096032", "Owner", true], ["50766666665"], ["595975740803"], ["595986172767"], ["5492266466080"], ["50768888888"], ["5492266613038"], ["584123552078"], ["573242402359"], ["5217294888993"],["5214437863111"], ["51906662557"], ["595992302861"], ["5217441298510"], ["5491155983299"], ["5493795319022"], ["5217821153974"], ["584163393168"], ["573147616444"], ["5216865268215"], ["50765000000"], ["573012482694"]]
+global.owner = [["525659131070", "Owner", true], ["528621261195"], ["522461771637"], ["595986172767"], ["5492266466080"], ["50768888888"], ["5492266613038"], ["584123552078"], ["573242402359"], ["5217294888993"],["5214437863111"], ["51906662557"], ["595992302861"], ["5217441298510"], ["5491155983299"], ["5493795319022"], ["5217821153974"], ["584163393168"], ["573147616444"], ["5216865268215"], ["50765000000"], ["573012482694"]]
 global.mods = []
 global.premium = []  
 global.blockList = []  
@@ -94,17 +94,17 @@ global.tiktok = 'https://www.instagram.com/russellxz507ny'
 global.fb = 'https://www.facebook.com/elrebelde21'
 global.faceb = 'https://facebook.com/groups/872989990425789/'
 
-global.n2 = "https://whatsapp.com/channel/0029VaWABAMG8l5K8K9PAB3v" //canal cortaba 
-global.nna = 'https://whatsapp.com/channel/0029Va4QjH7DeON0ePwzjS1A' //Update 
-global.nn = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //LoliBot
-global.nn2 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //Loli & Nova
-global.nn3 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //Grupo de Colaboracion
-global.nn4 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' // Grupo COL 2
-global.nn5 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //Grupo COL 3
-global.nn6 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //test
-global.nn7 = 'https://chat.whatsapp.com/FDRfhecUGrCEQswkg8FUYz' //Grupo ayuda sobre el bot
-global.nn8 = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //enlace lolibot
-global.multi = 'https://chat.whatsapp.com/HOcczbax7HR1TgRcLfeBRE' //Grupo COL 4
+global.n2 = "https://whatsapp.com/channel/0029Vatc4Vk1SWt6zQ4ZFY1l" //canal Vegeta
+global.nna = 'https://whatsapp.com/channel/0029Vatc4Vk1SWt6zQ4ZFY1l' //Update 
+global.nn = 'https://chat.whatsapp.com/JAN61DvAeNsI8br7ctM1VE' //LoliBot
+global.nn2 = 'https://chat.whatsapp.com/JAN61DvAeNsI8br7ctM1VE' //Loli & Nova
+global.nn3 = 'https://chat.whatsapp.com/JAN61DvAeNsI8br7ctM1VE' //Grupo de Colaboracion
+global.nn4 = 'https://chat.whatsapp.com/JAN61DvAeNsI8br7ctM1VE' // Grupo COL 2
+global.nn5 = 'https://chat.whatsapp.com/JAN61DvAeNsI8br7ctM1VE' //Grupo COL 3
+global.nn6 = 'https://chat.whatsapp.com/JAN61DvAeNsI8br7ctM1VE' //test
+global.nn7 = 'https://chat.whatsapp.com/JAN61DvAeNsI8br7ctM1VE' //Grupo ayuda sobre el bot
+global.nn8 = 'https://chat.whatsapp.com/JAN61DvAeNsI8br7ctM1VE' //enlace lolibot
+global.multi = 'https://chat.whatsapp.com/JAN61DvAeNsI8br7ctM1VE' //Grupo COL 4
 global.nna2 = 'HOcczbax7HR1TgRcLfeBRE'
 
 //---------[ INFO ]--------- 
