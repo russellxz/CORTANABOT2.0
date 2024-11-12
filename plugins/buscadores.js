@@ -85,33 +85,37 @@ m.reply(`${shortUrl1}`)
 }
 
 if (command == 'google') {
-if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} gatito`)
-try {
-const res = await fetch(`https://deliriussapi-oficial.vercel.app/search/googlesearch?query=${encodeURIComponent(text)}`);
-const data = await res.json();
-    
-if (data.status && data.data && data.data.length > 0) {
-let teks = `\`🔍 𝘙𝘌𝘚𝘜𝘓𝘛𝘈𝘋𝘖𝘚 𝘋𝘌:\` ${text}\n\n`;
-for (let result of data.data) {
-teks += `*${result.title}*\n_${result.url}_\n_${result.description}_\n\n─────────────────\n\n`;
+  if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} gatito`)
+  try {
+    const res = await fetch(`https://deliriussapi-oficial.vercel.app/search/googlesearch?query=${encodeURIComponent(text)}`);
+    const data = await res.json();
+
+    if (data.status && data.data && data.data.length > 0) {
+      let teks = `\`🔍 𝘙𝘌𝘚𝘜𝘓𝘛𝘈𝘋𝘖𝘚 𝘋𝘌:\` ${text}\n\n`;
+      for (let result of data.data) {
+        teks += `*${result.title}*\n_${result.url}_\n_${result.description}_\n\n─────────────────\n\n`;
+      }
+
+      const ss = `https://image.thum.io/get/fullpage/https://google.com/search?q=${encodeURIComponent(text)}`;
+      conn.sendFile(m.chat, ss, 'result.png', teks, m);
+    }
+  } catch (error) {
+    try {
+      let google = require('google-it');
+      google({ 'query': text }).then(res => {
+        let teks = `💫  ${lenguaje['result']()} ${text}\n\n`
+        for (let g of res) {
+          teks += `🔶 ${lenguaje.lengua.titulo} ${g.title}\n`
+          teks += `🔶 ${lenguaje.lengua.desc} ${g.snippet}\n`
+          teks += `🔶 *LINK* : ${g.link}\n\n✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧\n\n`
+        }
+        m.reply(teks);
+      });
+    } catch (e) {
+      m.reply(e);
+    }
+  }
 }
-                
-const ss = `https://image.thum.io/get/fullpage/https://google.com/search?q=${encodeURIComponent(text)}`;
-conn.sendFile(m.chat, ss, 'result.png', teks, m);
-} catch (error) {
-try {
-let google = require('google-it')
-google({'query': text}).then(res => {
-let teks = `💫  ${lenguaje['result']()} ${text}\n\n`
-for (let g of res) {
-teks += `🔶 ${lenguaje.lengua.titulo} ${g.title}\n`
-teks += `🔶 ${lenguaje.lengua.desc} ${g.snippet}\n`
-teks += `🔶 *LINK* : ${g.link}\n\n✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧\n\n`
-} 
-m.reply(teks)})
-} catch (e) {
-m.reply(e) 
-}}}
 
 if (command == 'imagen') {
 const {googleImage} = require('@bochilteam/scraper') 
