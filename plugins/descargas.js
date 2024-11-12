@@ -750,17 +750,6 @@ async function ttimg(link) {
     };
 };
 
-async function getBuffer(url) {
-  try {
-    const response = await fetch(url);
-    const buffer = await response.arrayBuffer();
-    return Buffer.from(buffer);
-  } catch (error) {
-    console.error("Error al obtener el buffer", error);
-    throw new Error("Error al obtener el buffer");
-  }
-}
-
 module.exports = { descarga, descarga2}
 
 let file = require.resolve(__filename)
