@@ -567,7 +567,7 @@ rows: [{ header: "𝐌𝐄𝐍𝐔 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎", title: "",
 ]})
 
 //conn.sendList(m.chat, menu, botname, `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, listSections, {quoted: fkontak})
-conn.sendFile(m.chat, imagen3, 'img.jpg', saludos + menu + menu2, m, null, { contextInfo:{  
+conn.sendFile(m.chat, imagen3, 'img.jpg', saludos + menu + menu2, fkontak, null, { contextInfo:{  
 forwardedNewsletterMessageInfo: { 
 newsletterJid: '120363266665814365@newsletter', 
 serverMessageId: '', 
@@ -580,9 +580,9 @@ mentionedJid:[sender, numBot],
 "renderLargerThumbnail": false,  
 "title": wm,   
 "mediaType": 1,   
-"thumbnail": imagen3, 
+"thumbnail": imagen2, 
 sourceUrl: tiktok
-}}}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) 
+}}}) 
 /*conn.sendMessage(m.chat, { text: saludos + menu + menu2, 
 contextInfo:{  
 forwardingScore: 9999999,  
@@ -621,7 +621,22 @@ if (command == 'menu2' || command == 'audio') {
 
 let menu2 = `${lenguaje.menu.text13}\n\na\nfeliz navidad\nMerry Christmas\nFeliz cumpleaños\nPasa pack\nUwu\nSiuuu\nhola\nhello\nVete a la verga\nPasen porno\nHora del sexito\nPongan cuties\nFiesta del admin\nAdmin party\nViernes\nGOOOOD\nAlto temazo\nTodo bien\nBuenos dias\nBot gay\nGracias\nFua\nFino señores\n🧐🍷\nCorte\nGaspi buenos dias\nGaspi me saludas\nGaspi y las minitas\nGaspi todo bien\nGaspi ya no aguanto\nContate algo bot\nSexo\nMomento epico\nEl bot del orto no funciona\nEpicardo\nInsta de la minita\nUna mierda de bot\nUltimo momento\nNefasto\nParaguayo\nBot de mierda\nVenezolano\na nadie le importa\nGaspi corte\nYa me voy a dormir\nCalefon\nApurate bot\nUn chino\nNo funciona\nBoliviano\nEnano\nQuien es tu sempai botsito\nMe gimes 7u7\nTe amo botsito uwu\nOnichan\nLa toca 7w7\nautodestruction\n\n*𝕄𝕒𝕤 𝔸𝕦𝕕𝕚𝕠𝕤 𝕒𝕘𝕣𝕖𝕘𝕒𝕕𝕠𝕤 𝕡𝕠𝕣 ℝ𝕦𝕤𝕤𝕖𝕝𝕝 :*\nQue\nque\nquien para jugar\nbr mj jugar\nJuegar\nKien pa jugar\nQuien pa jugar\nquien pa jugar\nte gusta los hombres\nYoce que vez porno gay\nMi amiga es trapito\nTe gusta el yaoi\nTe quiero cortana\nTe amo Cortana\nBroken\nLotex\nBroken vs lotex\nGay\nMaldito\nMal pario\nMmgb\nMmwb\nHijo de puta\nHdp\nCara de verga\nMarico\nMarica\nte Gusta el pito\nHijo de perra\nBuenas Tardes\nBuenas noches\nPene\nfollar\nCojer\nNovio\nNovia\nrico\nsabraso\ntetas\nhermosa\nluuk\nMamate un wuebo\n${wm}`
 //conn.sendButton(m.chat, menu2, botname, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-conn.sendMessage(m.chat, { text: menu2}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+conn.sendFile(m.chat, imagen3, 'img.jpg', menu2, fkontak, null, { contextInfo:{  
+forwardedNewsletterMessageInfo: { 
+newsletterJid: '120363266665814365@newsletter', 
+serverMessageId: '', 
+newsletterName: 'メ๛ᴄᴏʀᴛᴀɴᴀ𝐷𝑀2.0 ULTRA乡' },
+forwardingScore: 9999999,  
+isForwarded: true,   
+mentionedJid:[sender],  
+"externalAdReply": {  
+"showAdAttribution": false,  
+"renderLargerThumbnail": false,  
+"title": wm,   
+"mediaType": 1,   
+"thumbnail": imagen2, 
+sourceUrl: tiktok
+}}}) 
 }
 
 if (command == 'menu3' || command == 'menugrupos') {
