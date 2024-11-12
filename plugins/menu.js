@@ -576,10 +576,9 @@ forwardingScore: 9999999,
 isForwarded: true,   
 mentionedJid:[sender, numBot],  
 "externalAdReply": {  
-"showAdAttribution": true,  
-"renderLargerThumbnail": true,  
+"showAdAttribution": false,  
+"renderLargerThumbnail": false,  
 "title": wm,   
-"containsAutoReply": true,  
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
