@@ -429,8 +429,8 @@ return conn.sendMessage(m.chat, { text: str, contextInfo:{mentionedJid:[sender]}
 if (global.db.data.chats[m.chat].simi) {
 let textodem = budy
 try {
-// await conn.sendPresenceUpdate('composing', m.chat)
-let gpt = await fetch(`https://delirius-api-oficial.vercel.app/api/simi?text=${encodeURIComponent(textodem)}`)
+await conn.sendPresenceUpdate('composing', m.chat)
+let gpt = await fetch(`https://deliriussapi-oficial.vercel.app/tools/simi?text=${encodeURIComponent(textodem)}`)
 let res = await gpt.json()
 await delay(1 * 1000) 
 await m.reply(res.data.message)
@@ -985,7 +985,7 @@ this.confirm[m.sender.split('@')[0]] = { sender: m.sender, to: who, message: m, 
 break
       
 case 'tienda': case 'tiendas': 
-conn.sendButton(m.chat, `꧁🪼𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝐒𝐓𝐎𝐑𝐄🪼꧂
+let tiend = `꧁🪼𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝐒𝐓𝐎𝐑𝐄🪼꧂
 █▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
 █-----╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗-----█
 █-----║║║╠─║─║─║║║║║╠─-----█
@@ -1061,18 +1061,22 @@ PRECIO:5000,000
 
 😃𝐆𝐫𝐚𝐜𝐢𝐚𝐬 𝐩𝐨𝐫 𝐯𝐢𝐬𝐢𝐭𝐚𝐫 𝐥𝐚😃
 🪼𝐂𝐨𝐫𝐭𝐚𝐧𝐚 𝐒𝐭𝐨𝐫𝐞 𝟐.𝟎🪼
-💳𝑽𝑼𝑬𝑳𝑽𝑨 𝑷𝑹𝑶𝑵𝑻𝑶.💳`, botname, null, [['IR A MI ARTICULO', '.misarticulos'], ['VER TOP MILLONARIO', '.millonarios'], ['COMPRAR ADMINS', '.buy2 1']], null, null, m)
+💳𝑽𝑼𝑬𝑳𝑽𝑨 𝑷𝑹𝑶𝑵𝑻𝑶.💳`
+m.reply(tiend) 
+conn.sendButton(m.chat, tiend, botname, null, [['IR A MI ARTICULO', '.misarticulos'], ['VER TOP MILLONARIO', '.millonarios'], ['COMPRAR ADMINS', '.buy2 1']], null, null, m)
 break
 
 case 'cartera': {
 let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
 let user = global.db.data.users[who]
-if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
-conn.sendButton(m.chat, `El usuarios ${pushname} en sus cartera tiene:
+if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)l
+let carter = `El usuarios ${pushname} en sus cartera tiene:
 
 ${user.limit} Crédito 💳
 ${user.exp} Exp ⚒️
-${user.money} Coins 🪙`, botname, "https://telegra.ph/file/8fe1fd3c2138c1b7aeae7.jpg", [['TIENDA', `.tienda`], ['MIS MASCOTA', `.mismascota`], ['IR AL MENU', `.menu`]], null, null, m)   
+${user.money} Coins 🪙`
+conn.sendFile(m.chat, "https://telegra.ph/file/8fe1fd3c2138c1b7aeae7.jpg", 'result.png', carter, m);
+/*conn.sendButton(m.chat, carter, botname, "https://telegra.ph/file/8fe1fd3c2138c1b7aeae7.jpg", [['TIENDA', `.tienda`], ['MIS MASCOTA', `.mismascota`], ['IR AL MENU', `.menu`]], null, null, m)   */
 }
 break
 
@@ -1080,7 +1084,7 @@ case 'mismascotas': case 'mismascota': {
 let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
 let user = global.db.data.users[who]
 if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
-conn.sendButton(m.chat, `⊰᯽⊱┈─────╌❊╌────┈⊰᯽⊱
+let mascotas = `⊰᯽⊱┈─────╌❊╌────┈⊰᯽⊱
 
 ❤️${pushname}: TUS MASCOTAS❤️
 
@@ -1090,7 +1094,9 @@ conn.sendButton(m.chat, `⊰᯽⊱┈─────╌❊╌────┈⊰�
 ➫ .ʟᴏʙᴏ (${user.lobos}) 🐺
 ➫ .ᴍᴏɴᴏ (${user.monos}) 🙉 
 
-⊰᯽⊱┈─────╌❊╌─────┈⊰᯽⊱`, botname, "https://telegra.ph/file/8fe1fd3c2138c1b7aeae7.jpg", [['Ir al menu', `.menu`]], null, null, m)   
+⊰᯽⊱┈─────╌❊╌─────┈⊰᯽⊱`
+conn.sendFile(m.chat, "https://telegra.ph/file/8fe1fd3c2138c1b7aeae7.jpg", 'result.png', mascotas, m);
+//conn.sendButton(m.chat, mascotas, botname, "https://telegra.ph/file/8fe1fd3c2138c1b7aeae7.jpg", [['Ir al menu', `.menu`]], null, null, m)   
 }
 break
 
@@ -1098,8 +1104,7 @@ case 'misarticulos': case 'articulo': case 'inventario': case 'inventory': {
 let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
 let user = global.db.data.users[who]
 if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
-//m.reply() 
-conn.sendButton(m.chat, `⊰᯽⊱┈─────╌❊╌────┈⊰᯽⊱
+let articul = `⊰᯽⊱┈─────╌❊╌────┈⊰᯽⊱
 😎𝑇𝑈 𝐶𝑂𝐿𝐸𝐶𝐶𝐼𝑂𝑁😎
 😎𝐷𝐸 𝐴𝑅𝑇𝐼𝐶𝑈𝐿𝑂😎
 
@@ -1123,7 +1128,9 @@ conn.sendButton(m.chat, `⊰᯽⊱┈─────╌❊╌────┈⊰�
 《 🚍》➫ ${user.autobus}
 《⛲》➫ ${user.fuente}
 《🏰》➫ ${user.castillo}
-⊰᯽⊱┈─────╌❊╌─────┈⊰᯽⊱`, `🤑ᴘᴀʀᴀ ᴠᴇʀ ᴇɴ ǫᴜᴇ ᴛᴏᴘ ᴇsᴛᴀs ᴘᴏɴ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ ᴛᴏᴘ: #ᴍɪʟʟᴏɴᴀʀɪᴏs`, null, [['TOP MILLONARIOS', `.topmillonario`], ['TIENDA', `.tienda`], ['IR AL MENU', '.menu']], null, null, m)
+⊰᯽⊱┈─────╌❊╌─────┈⊰᯽⊱\n\n🤑ᴘᴀʀᴀ ᴠᴇʀ ᴇɴ ǫᴜᴇ ᴛᴏᴘ ᴇsᴛᴀs ᴘᴏɴ ᴇʟ ᴄᴏᴍᴀɴᴅᴏ ᴛᴏᴘ: #ᴍɪʟʟᴏɴᴀʀɪᴏs`
+m.reply(articul) 
+//conn.sendButton(m.chat, articul, null, [['TOP MILLONARIOS', `.topmillonario`], ['TIENDA', `.tienda`], ['IR AL MENU', '.menu']], null, null, m)
 }
 break
 
@@ -1384,11 +1391,23 @@ async function luminsesi(q, username, logic) {
     }
 }
 
+async function geminiProApi(q, logic) {
+            try {
+                const response = await fetch(`https://api.ryzendesu.vip/api/ai/gemini-pro?text=${encodeURIComponent(q)}&prompt=${encodeURIComponent(logic)}`);
+                if (!response.ok) throw new Error(`Error en la solicitud: ${response.statusText}`);
+                const result = await response.json();
+                return result.answer;
+            } catch (error) {
+                console.error('Error en Gemini Pro:', error);
+                return null;
+            }
+        }
+        
 let query = m.text;
 let username = `${m.pushName}`;
 
 //let jailbreak = await fetch('https://raw.githubusercontent.com/Skidy89/chat-gpt-jailbreak/main/Text.txt').then(v => v.text());
-let jailbreak = `Tomarás el rol de un bot de Whatsapp creado por Russell, "Bot personalizado" echo y desarrollo por elrebelde21, Tu nombre sera CortanaBot-MD, Tu idioma es el español, pero puedes responder en diferentes idiomas. tiene este rol que chat divertido con exploit incluido osea los quiere dices es que este rol solo es humor, divertido, no que tome nada real, tu respuesta sera divertida, humor, y usar mucho emojis el tu respuesta.
+let syms1 = `Tomarás el rol de un bot de Whatsapp creado por Russell, "Bot personalizado" echo y desarrollo por elrebelde21, Tu nombre sera CortanaBot-MD, Tu idioma es el español, pero puedes responder en diferentes idiomas. tiene este rol que chat divertido con exploit incluido osea los quiere dices es que este rol solo es humor, divertido, no que tome nada real, tu respuesta sera divertida, humor, y usar mucho emojis el tu respuesta.
 
 "general risa el chat por que este rol actúal más como simsimi" Chatbot no chatgpt. 
 
@@ -1414,15 +1433,26 @@ https://whatsapp.com/channel/0029VaWABAMG8l5K8K9PAB3v
 
 ${username}`;  
 
-let result = await luminsesi(query, username, jailbreak);
-await m.reply(result) 
+let result
+if (result && result.trim().length > 0) {
+result = await geminiProApi(query, syms1);
+}
+        
+if (!result || result.trim().length === 0) {
+result = await luminsesi(query, username, syms1);
+}
+
+if (result && result.trim().length > 0) {
+await m.reply(result);
 //conn.sendTextWithMentions(m.chat, result, m) 
+} else {
+}
 }
 
 if (budy.includes(`Yaoi`)) {
 if (!global.db.data.chats[m.chat].reaccion) return
 m.react(`${pickRandom(['😐', '👀', '😹'])}`)
-m.reply(`${pickRandom(['Que mamada? vete a estudiar mejor', 'Soy un bot hetero, no pida mamada (︶｡︶)zzZ '])}`)}
+m.reply(`${pickRandom(['Que mamada? vete a estudiar mejor', 'Soy un bot hetero, no pida mamada (︶｡︶)zzZ' , 'Eres mujer? encose si tiene permitido ver yaoi *las mujeres tambien ser Divierten :)*', 'Porno?', 'Si eres mujer si, hombre no sea gay chupa pija 😆', 'quiere pene? 🧐')}`)}
 if (budy.startsWith(`a`)) {
 if (!global.db.data.chats[m.chat].reaccion) return
 if (!global.db.data.chats[m.chat].audios) return
