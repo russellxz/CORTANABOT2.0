@@ -154,12 +154,12 @@ m.react(done)
 m.react(error) 
 return m.reply(info.error) 
 console.log(e)
-}}}}}}}}
+}}}}}}}}}
 
 if (command == 'play2' || command == 'video') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
 m.react(rwait) 
-//let vid2 = (await yts(text)).all[0]
+let vid2 = (await yts(text)).all[0]
 const yt_play = await search(args.join(" "))
 let { title, description, url, thumbnail, videoId, timestamp, views, published } = vid
 let message = await conn.sendMessage(m.chat, { text: `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
