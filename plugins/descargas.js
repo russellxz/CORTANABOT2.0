@@ -53,6 +53,7 @@ await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', 
 
 await conn.sendList(m.chat, `*𝙴𝙻𝙸𝙹𝙰𝚁 𝚀𝚄𝙴 𝚅𝙰 𝙷𝙰𝙲𝙴𝚁 𝙲𝙾𝙽:* ${text}`, wm, `Click Aqui`, listSections, m)}
 */
+
 if (command == 'play3' || command == 'play4') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
 
@@ -68,7 +69,8 @@ const texto1 = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞
 │║        *████████████┃%100*
 ╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`.trim()
 
-await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.ytmp3 ${text}`], ['Video', `.ytmp4 ${text}`], ['Mas resultados', `.yts ${text}`]], null, null, m)}
+await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.ytmp3 ${text}`], ['Video', `.ytmp4 ${text}`], ['Mas resultados', `.yts ${text}`]], null, null, m)
+}
 
 if (command == 'play' || command == 'musica') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
@@ -154,10 +156,10 @@ return m.reply(info.error)
 console.log(e)
 }}}}}}}}
 
-if (command == 'video') {
+if (command == 'play2' || command == 'video') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
 m.react(rwait) 
-let vid = (await yts(text)).all[0]
+//let vid2 = (await yts(text)).all[0]
 const yt_play = await search(args.join(" "))
 let { title, description, url, thumbnail, videoId, timestamp, views, published } = vid
 let message = await conn.sendMessage(m.chat, { text: `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
