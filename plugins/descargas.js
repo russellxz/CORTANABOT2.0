@@ -157,6 +157,7 @@ console.log(e)
 }}}}}}}}
 
 if (command == 'play2' || command == 'video') {
+const yts = require('yt-search');
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
 m.react(rwait) 
 let vid2 = (await yts(text)).all[0]
