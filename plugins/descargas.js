@@ -22,7 +22,7 @@ if (global.db.data.users[m.sender].registered < true) return m.reply(info.regist
 if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (global.db.data.users[m.sender].banned) return
 
-if (command == 'play' || command == 'play2') {
+if (command == 'playBotones') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
 
 const yt_play = await search(args.join(' '))
@@ -49,7 +49,8 @@ rows: [{ header: "Audio (opción 1)", title: "", id: `${prefix}musica ${yt_play[
 
 await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.musica ${text}`], ['Video', `.ytmp4 ${text}`], ['Mas resultados', `.yts ${text}`]], null, null, m)
 
-await conn.sendList(m.chat, `*𝙴𝙻𝙸𝙹𝙰𝚁 𝚀𝚄𝙴 𝚅𝙰 𝙷𝙰𝙲𝙴𝚁 𝙲𝙾𝙽:* ${text}`, wm, `Click Aqui`, listSections, m)}
+await conn.sendList(m.chat, `*𝙴𝙻𝙸𝙹𝙰𝚁 𝚀𝚄𝙴 𝚅𝙰 𝙷𝙰𝙲𝙴𝚁 𝙲𝙾𝙽:* ${text}`, wm, `Click Aqui`, listSections, m)
+}
 
 if (command == 'play3' || command == 'play4') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
@@ -68,13 +69,35 @@ const texto1 = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞
 
 await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.ytmp3 ${text}`], ['Video', `.ytmp4 ${text}`], ['Mas resultados', `.yts ${text}`]], null, null, m)}
 
-if (command == 'musica') {
+if (command == 'play' || command == 'musica') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
 m.react(rwait) 
 let vid = (await yts(text)).all[0]
 const yt_play = await search(args.join(" "))
 let { title, description, url, thumbnail, videoId, timestamp, views, published } = vid
 let message = await conn.sendMessage(m.chat, { text: `${lenguaje.descargar.text2}\n\n◉ ${lenguaje.descargar.title} ${yt_play[0].title}\n◉ ${lenguaje.descargar.duracion} ${secondString(yt_play[0].duration.seconds)}\n◉ ${lenguaje.descargar.ago} ${yt_play[0].ago}\n◉ ${lenguaje.descargar.autor} ${yt_play[0].author.name}\n◉ ${lenguaje.descargar.views} ${MilesNumber(yt_play[0].views)}\n\n${lenguaje.descargar.music}`, contextInfo: { externalAdReply: { title: wm, body: yt_play[0].title.replace(/\*/g, ''), thumbnailUrl: thumbnail, sourceUrl: yt_play[0].url, mediaType: 1, showAdAttribution: false, renderLargerThumbnail: true }}}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+try {
+const apiUrl = `https://deliriussapi-oficial.vercel.app/download/ytmp3?url=${encodeURIComponent(yt_play[0].url)}`;
+const apiResponse = await fetch(apiUrl);
+const delius = await apiResponse.json();
+if (!delius.status) return m.react("❌");
+const downloadUrl = delius.data.download.url;
+await conn.sendMessage(m.chat, { document: { url: downloadUrl }, mimetype: 'audio/mpeg', fileName: `${yt_play[0].title}.mp3` }, { quoted: m });
+} catch {
+try {
+const res = await fetch(`https://api.zenkey.my.id/api/download/ytmp3?apikey=zenkey&url=${yt_play[0].url}`)
+const audioData = await res.json()
+
+if (audioData.status && audioData.result?.downloadUrl) {
+    await conn.sendMessage(m.chat, { audio: { url: audioData.result.downloadUrl }, mimetype: 'audio/mpeg' }, { quoted: m });
+}
+} catch {
+try {
+let d2 = await fetch(`https://exonity.tech/api/ytdlp2-faster?apikey=adminsepuh&url=${yt_play[0].url}`);
+let dp = await d2.json();
+const audiop = await getBuffer(dp.result.media.mp3);
+await conn.sendMessage(m.chat, { document: { url: audiop }, mimetype: 'audio/mpeg', fileName: `${yt_play[0].title}.mp3` }, { quoted: m });
+} catch {
 try {
 const q = '128kbps';
 const v = yt_play[0].url;
@@ -118,7 +141,7 @@ m.react(done)
 } catch (e) {
 m.react(error) 
 return m.reply(info.error) 
-console.log(e)}}}}}
+console.log(e)}}}}}}}}
 
 if (command == 'video') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
@@ -726,6 +749,17 @@ async function ttimg(link) {
         return { data: '*[ ⚠️ ] No se obtuvo respuesta de la página, intente más tarde.*'};
     };
 };
+
+async function getBuffer(url) {
+  try {
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+    return Buffer.from(buffer);
+  } catch (error) {
+    console.error("Error al obtener el buffer", error);
+    throw new Error("Error al obtener el buffer");
+  }
+}
 
 module.exports = { descarga, descarga2}
 
