@@ -66,12 +66,6 @@ for (let index in ytres) {
     }
 await conn.sendList(m.chat, '╭┄〔 *ʙᴜsᴄᴀᴅᴏ 🔎* 〕┄⊱-\n┆~~••~~••~~••~~••~~~~', `┆ 📀 ${lenguaje['result']()} *${text}*\n╰────────────────\nᴇʟɪᴊᴀ ᴀ ᴜɴᴀ ᴏᴘᴄɪᴏɴ ʏ ᴘʀᴇsɪᴏɴᴇ ᴇɴᴠɪᴀʀ`, `♦ 𝙍𝙀𝙎𝙐𝙇𝙏𝘼𝘿𝙊𝙎 ♦`, listSections, fkontak);
 
-/*const yts = require("youtube-yts");
-const search = await yts(text);
-const {key} = await conn.sendMessage(from, {text: info.wait}, { quoted: fkontak })
-await conn.sendMessage(from, {text: info.waitt, edit: key}, { quoted: fkontak })
-await conn.sendMessage(from, {text: info.waittt, edit: key}, { quoted: fkontak })
-await conn.sendMessage(from, {text: info.waitttt, edit: key}, { quoted: fkontak })	
 let teks = `💫 ${lenguaje['result']()} ` + text + '\n\n';
 let no = 1;
 let themeemoji = "🔶"
@@ -79,7 +73,7 @@ for (let i of search.all) {
   teks += `${themeemoji} ${lenguaje.lengua.opcion} ${no++}\n${themeemoji} ${lenguaje.lengua.tipo} ${i.type}\n${themeemoji} ${lenguaje.lengua.id} ${i.videoId}\n${themeemoji} ${lenguaje.lengua.titulo} ${i.title}\n${themeemoji} ${lenguaje.lengua.vista} ${i.views}\n${themeemoji} ${lenguaje.lengua.dura} ${i.timestamp}\n${themeemoji} ${lenguaje.lengua.subidos} ${i.ago}\n${themeemoji} URL: ${i.url}\n\n✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧\n\n`;
 }
 await conn.sendMessage(from, { image: { url: search.all[0].thumbnail }, caption: teks }, { quoted: fkontak });
-await conn.sendMessage(from, {text: info.result, edit: key}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})*/
+await conn.sendMessage(from, {text: info.result, edit: key}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 m.react('💫') 
 }
 
@@ -93,6 +87,20 @@ m.reply(`${shortUrl1}`)
 
 if (command == 'google') {
 if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} gatito`)
+try {
+const res = await fetch(`https://deliriussapi-oficial.vercel.app/search/googlesearch?query=${encodeURIComponent(text)}`);
+const data = await res.json();
+    
+if (data.status && data.data && data.data.length > 0) {
+let teks = `\`🔍 𝘙𝘌𝘚𝘜𝘓𝘛𝘈𝘋𝘖𝘚 𝘋𝘌:\` ${text}\n\n`;
+for (let result of data.data) {
+teks += `*${result.title}*\n_${result.url}_\n_${result.description}_\n\n─────────────────\n\n`;
+}
+                
+const ss = `https://image.thum.io/get/fullpage/https://google.com/search?q=${encodeURIComponent(text)}`;
+conn.sendFile(m.chat, ss, 'result.png', teks, m);
+} catch (error) {
+try {
 let google = require('google-it')
 google({'query': text}).then(res => {
 let teks = `💫  ${lenguaje['result']()} ${text}\n\n`
@@ -102,7 +110,9 @@ teks += `🔶 ${lenguaje.lengua.desc} ${g.snippet}\n`
 teks += `🔶 *LINK* : ${g.link}\n\n✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧\n\n`
 } 
 m.reply(teks)})
-}
+} catch (e) {
+m.reply(e) 
+}}}
 
 if (command == 'imagen') {
 const {googleImage} = require('@bochilteam/scraper') 

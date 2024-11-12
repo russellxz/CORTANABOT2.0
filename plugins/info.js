@@ -59,54 +59,53 @@ await conn.sendTextWithMentions(m.chat, `${lenguaje['smsWel']()} @${sender.split
 }
 
 if (command == 'infohost' || command == 'host') {
-conn.sendMessage(m.chat, { text: `*\`💫 Te presentamos un nuevo hosting: "Infinity-Wa Host"\`*
+conn.sendMessage(m.chat, { text: `*¿Tu Nokia es muy lento y necesitas que tu bot esté activo 24/7?* 📱⏳
 
-*¿Muy lento tu nokia y necesitas tener activo tu bot 24/7?*
+¡Tenemos la solución perfecta para ti! 🎉 Mantén tu bot funcionando sin interrupciones con nuestros servidores, Ofrecemos servidores gratuitos y de pago a precios súper accesibles, al alcance de todos. 💸 
 
-> *Te tenemos la mejor opción para mantener activo tu bot 24/7, a precios muy accesibles. Es muy barato y todos pueden comprar.*
-
-*🚩Precios :*
-* 1GB, 100 CPU = 1Dolar
-* 2GB, 120 CPU = 2Dolar
-* 3GB, 140 CPU = 3Dolar
-* 4GB, 175 CPU = 4Dolar
-* 5GB, 200 CPU = 5 Dólar. 
+🖥️ *Totalmente compatible con CortanaBot-MD:* Disfruta al máximo de su potencial en nuestros servidores de alto rendimiento, asegurando una experiencia fluida y de alta calidad. El staff de CortanaBot y SkyUltraPlus-Host se encarga de que disfrutes de todas sus funciones al máximo. 😺✨
 
 🟢 \`\`\`Información del Host\`\`\`
 
 💻 *Página:*
-https://host.panel-infinitywa.store
+https://skyultraplus.com
+
+*🟢 Dashboard:*
+https://dash.skyultraplus.com
+
+⚙️ *Panel*
+https://panel.skyultraplus.com
+
+💥 *Comunidad de WhatsApp:*
+https://chat.whatsapp.com/KGPhTIfgOzZCMNqoc3R7OW
+
+*🟣 Discord:*
+https://discord.gg/zvKgtc2RBc
 
 🧡 *Canal de WhatsApp:*
-${nna}
+https://whatsapp.com/channel/0029VakUvreFHWpyWUr4Jr0g
 
-💚 *Grupo:*
-https://chat.whatsapp.com/GQ82mPnSYnm0XL2hLPk7FV
+🗣📲 *Contacto:*
+• wa.me/5214531287294
+• wa.me/15167096032
+• wa.me/573147616444
+• https://www.facebook.com/elrebelde21
 
-🛍️ *Método de pago:*
-*• PayPal :* https://paypal.me/OfcGB
-*• Mercado pago, alías:* OficialGB
-*• Naranja x, alías:* OficialGL
-*• Yape (Perú) :* +51948705559
-
-*\`💙 Contactanos para más información o alquidir los servicios:\`*
-• ${fb}
-• wa.me/527294888993
-• wa.me/5492964650915`,
+No esperes más y lleva tu bot al siguiente nivel con nuestro servicio de alojamiento. ¡Es fácil, rápido y económico! 💪🚀`,
 contextInfo:{
 forwardedNewsletterMessageInfo: { 
-newsletterJid: '120363160031023229@newsletter', 
+newsletterJid: '120363301598733462@newsletter', 
 serverMessageId: '', 
-newsletterName: 'INFINITY-WA 💫' },
+newsletterName: 'Sky-Ultra-Plus ☁️' }, 
 forwardingScore: 9999999,
 isForwarded: true, 
 "externalAdReply": {
 "showAdAttribution": true,
 "containsAutoReply": true,
-title: `🤖 𝐈𝐍𝐅𝐈𝐍𝐈𝐓𝐘𝐖𝐀-𝐇𝐎𝐒𝐓 🤖`,
-body: `✅ Hosting de Calidad`,
+title: `🤖 𝐒𝐊𝐘𝐏𝐋𝐔𝐒-𝐇𝐎𝐒𝐓 🤖`,
+body: `¡El plus que necesitas!_`,
 "previewType": "PHOTO",
-thumbnailUrl: 'https://qu.ax/EQTd.jpg', 
+thumbnailUrl: 'https://qu.ax/wXciz.jpg', 
 "sourceUrl": nna}}},
 { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 
@@ -142,11 +141,11 @@ isForwarded: false,
 { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 }
 
-/*if (command == 'ping') {
+if (command == 'ping') {
 var timestamp = speed();  
 var latensi = speed() - timestamp
 conn.sendMessage(from, { text: `*🟢 Velocidad: ${latensi.toFixed(4)}*` }, { quoted: msg, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
-}*/
+}
 
 if (command == 'report') {
 if (!text) return m.reply(`${lenguaje.info.text21}\n${prefix + command} sticker no funciona`)

@@ -21,9 +21,12 @@ if (budy.includes(`Bot`) || budy.includes(`simi`)) {
 if (!text) return m.reply(`*Hola ${pushname} 👋 Quieres hablar un rato conmigo? usar de esta forma*\n\n• *Ejemplo:* ${prefix}Bot hello ${wm}`) 
 try {
 await conn.sendPresenceUpdate('composing', m.chat)
-const api = await fetch('https://api.simsimi.net/v2/?budy=' + budy + '&lc=es');
+let gpt = await fetch(`https://deliriussapi-oficial.vercel.app/tools/simi?text=${m.text}`)
+let res = await gpt.json()
+await m.reply(res.data.message)
+/*const api = await fetch('https://api.simsimi.net/v2/?budy=' + budy + '&lc=es');
 const resSimi = await api.json();
-m.reply(resSimi.success)
+m.reply(resSimi.success)*/
 } catch {
 try {
 if (text.includes('Hola')) text = text.replace('Hola', 'Hello');
@@ -270,7 +273,7 @@ let doxeo = `*_🤣 Persona Hackeada/doxxeada con éxito 🤣_*\n\n*_Tiempo: ${s
 *RESULTADOS:*
 
 *Nombre:* ${text}
-*Ip:* 92.28.211.234
+*Ip:* ${pickRandom(['92.28.211.234', '107.66.778.457', '778.77.889.678', '345.56.907.578'])}
 *N:* 43 7462
 *W:* 12.4893
 *SS NUMBER:* 6979191519182016

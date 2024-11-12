@@ -56,46 +56,92 @@ conn.sendList(m.chat, `╔═════ೋೋ═════╗
 ╚════ ≪ •❈• ≫ ════╝
 
 `, "Preciona aquí", `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, listSections, m)
+m.reply(`╔═════ೋೋ═════╗
+║◤━━━━━ ☆. ∆ .☆ ━━━━━◥
+║aqui tiene las lista para activa y desactivar
+║◤━━━━━ ☆. ∆ .☆ ━━━━━◥
+║ Ejemplo de usó:
+║❍ _#welcome on_
+║❍ _#welcome off_
+║◤━━━━━ ☆. ∆ .☆ ━━━━━◥
+╚════ ≪ •❈• ≫ ════╝
+
+╔════ OPCIONES PARA GRUPO ═════•
+║◤━━━━━ ☆. ∆ .☆ ━━━━━◥
+║❍ _${prefix}welcome on/off_
+║❍ _${prefix}antilink on/off_
+║❍ _${prefix}antilink2 on/off_
+║❍ _${prefix}AntiTiktok on/off_
+║❍ _${prefix}AntiTelegram on/off_
+║❍ _${prefix}AntiFacebook on/off_
+║❍ _${prefix}AntiYoutube on/off_
+║❍ _${prefix}AntiTwitter on/off_
+║❍ _${prefix}antiFake on/off_
+║❍ _${prefix}antiArabe on/off_
+║❍ _${prefix}game2 on/off_
+║❍ _${prefix}antitoxic on/off_
+║❍ _${prefix}autolevelup on/off_
+║❍ _${prefix}antiNsfw on/off_
+║❍ _${prefix}autolevelup on/off_
+║❍ _${prefix}detect on/off_
+║❍ _${prefix}modoadmin on/off_
+║❍ _${prefix}audios on/off_
+║❍ _${prefix}autosticker on/off_
+║❍ _${prefix}reaccion on/off_
+║❍ _${prefix}viewonce on/off_
+║◤━━━━━ ☆. ∆ .☆ ━━━━━◥
+║ *⚠️ OPCIONES DE PROPIETARIO*
+║◤━━━━━ ☆. ∆ .☆ ━━━━━◥
+║❍ _${prefix}modojadibot on/off_
+║❍ _${prefix}antiprivado on/off_
+║❍ _${prefix}autoread on/off_
+║❍ _${prefix}anticall on/off_
+║❍ _${prefix}autoread on/off_
+║◤━━━━━ ☆. ∆ .☆ ━━━━━◥
+╚════ ≪ •❈• ≫ ════╝`) 
 }
 
 if (command == 'welcome' || command == 'bienvenida') {
 if (!m.isGroup) return m.reply(info.group)
 if (!isGroupAdmins) return m.reply(info.admin)
-if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+if (!text) return m.reply(`${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`) 
+//if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].welcome = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
-//m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
+//conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].welcome = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)
-//m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)
+//conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
 }}
 
 if (command == 'antilink' || command == 'antienlace') {
 if (!m.isGroup) return m.reply(info.group)
 if (!isBotAdmins) return m.reply(info.botAdmin)
 if (!isGroupAdmins) return m.reply(info.admin)
-if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+if (!text) return m.reply(`${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`) 
 // m.reply(`${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*`)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].antilink = true
 m.reply(lenguaje.enable.text3)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].antilink = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antilink2') {
 if (!m.isGroup) return m.reply(info.group)
 if (!isBotAdmins) return m.reply(info.botAdmin)
 if (!isGroupAdmins) return m.reply(info.admin)
-if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+if (!text) return m.reply(`${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`) 
 if (args[0] === "on") {
 global.db.data.chats[m.chat].antiLink2 = true
 m.reply(lenguaje.enable.text3)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].antiLink2 = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antitwiter' || command == 'AntiTwiter') {
 if (!m.isGroup) return m.reply(info.group)
@@ -104,10 +150,12 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].AntiTwitter = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+//conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].AntiTwitter = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antitiktok' || command == 'AntiTikTok') {
 if (!m.isGroup) return m.reply(info.group)
@@ -116,10 +164,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].AntiTiktok = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].AntiTiktok = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antitelegram' || command == 'AntiTelegram') {
 if (!m.isGroup) return m.reply(info.group)
@@ -128,10 +177,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].AntiTelegram = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].AntiTelegram = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antifacebook' || command == 'AntiFacebook' || command == 'AntiFb') {
 if (!m.isGroup) return m.reply(info.group)
@@ -140,10 +190,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].AntiFacebook = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].AntiFacebook = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antinstagram' || command == 'AntInstagram' || command == 'AntiIg') {
 if (!m.isGroup) return m.reply(info.group)
@@ -152,10 +203,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].AntInstagram = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].AntInstagram = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antiyoutube' || command == 'AntiYoutube') {
 if (!m.isGroup) return m.reply(info.group)
@@ -164,10 +216,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].AntiYoutube = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].AntiYoutube = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antifake' || command == 'antiFake') {
 if (!m.isGroup) return m.reply(info.group)
@@ -176,11 +229,12 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].antiFake = true
-conn.sendButton(m.chat, `*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero fake (virtuales), seran explusado automáticamente del Grupo...*`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
-//m.reply(`*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero fake (virtuales), seran explusado automáticamente del Grupo...*`)
+//conn.sendButton(m.chat, `*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero fake (virtuales), seran explusado automáticamente del Grupo...*`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero fake (virtuales), seran explusado automáticamente del Grupo...*`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].antiFake = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antiarabe' || command == 'antiArabe') {
 if (!m.isGroup) return m.reply(info.group)
@@ -189,11 +243,12 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].antiArabe = true
-conn.sendButton(m.chat, `*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero arabe (+212, +91, +92, etc), seran explusado automáticamente del Grupo...*\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
-//m.reply(`*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero arabe (+212, +91, +92, etc), seran explusado automáticamente del Grupo...*`)
+//conn.sendButton(m.chat, `*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero arabe (+212, +91, +92, etc), seran explusado automáticamente del Grupo...*\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`*Atención a todos los miembros activos de este grupo 📣*\n\n*El ${command} esta activo*\n\n⚠️ *Los cual el grupo no esta permitido ingreso de numero arabe (+212, +91, +92, etc), seran explusado automáticamente del Grupo...*`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].antiArabe = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antiviewonce') {
 if (!m.isGroup) return m.reply(info.group)
@@ -202,10 +257,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].viewonce = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].viewonce = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antitoxic') {
 if (!m.isGroup) return m.reply(info.group)
@@ -214,10 +270,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].antitoxic = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].antitoxic = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'autodetect' || command == 'detect') {
 if (!m.isGroup) return m.reply(info.group)
@@ -225,19 +282,21 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].detect = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].detect = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'audios') {
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].audios = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].audios = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'autosticker' || command == 'stickers') {
 if (!m.isGroup) return m.reply(info.group)
@@ -245,10 +304,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].autosticker = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].autosticker = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'modocaliente' || command == 'antinsfw') {
 if (!m.isGroup) return m.reply(info.group)
@@ -256,10 +316,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].antiNsfw = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].antiNsfw = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'game2') {
 if (!m.isGroup) return m.reply(info.group)
@@ -267,10 +328,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].game2 = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].game2 = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'modoadmin' || command == 'soloadmin' || command == 'modoadmins') {
 if (!m.isGroup) return m.reply(info.group)
@@ -279,10 +341,11 @@ if (!isGroupAdmins) return m.reply(info.admin)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") { 
 global.db.data.chats[m.chat].modeadmin = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n\n${lenguaje.enable.text4}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].modeadmin = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n\n${lenguaje.enable.text5}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antiprivado') {
 if (!isCreator) return m.reply(info.owner)
@@ -290,11 +353,12 @@ if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${pre
 if (args[0] === "on") {
 global.db.data.settings[numBot].antiprivado = true
 //conn.antiprivado = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.settings[numBot].antiprivado = false
 //conn.antiprivado = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antipv') {
 if (!isCreator) return m.reply(info.owner)
@@ -302,28 +366,30 @@ if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${pre
 if (args[0] === "on") {
 global.db.data.settings[numBot].antipv = true
 //conn.antiprivado = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.settings[numBot].antipv = false
 //conn.antiprivado = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
        
 if (command == 'anticall' || command == 'antillamada') {
 if (!isCreator) return m.reply(info.owner)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.settings[numBot].anticall = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.settings[numBot].anticall = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'modojadibot' || command == 'jadibot') {
 if (!isCreator) return m.reply(info.owner)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].jadibot = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].jadibot = false
 m.reply(`🟢 *${command}* ${lenguaje.enable.text2}`)}}
@@ -334,21 +400,23 @@ if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${pre
 if (args[0] === "on") {
 global.db.data.settings[conn.user.jid].autoread = false
 //conn.autoread = false
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.settings[conn.user.jid].autoread = true
 //conn.autoread = true
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'antispam') {
 if (!isCreator) return m.reply(info.owner)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].antispam = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].antispam = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'chatbot' || command == 'simsimi') {
 //if (!m.isGroup) return m.reply(info.group)
@@ -356,10 +424,11 @@ if (command == 'chatbot' || command == 'simsimi') {
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].simi = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].simi = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'reaccion' || command == 'reacciónes' || command == 'desactivar' || command == 'antireaciones' || command == 'antireac') {
 //if (!m.isGroup) return m.reply(info.group)
@@ -367,20 +436,22 @@ if (command == 'reaccion' || command == 'reacciónes' || command == 'desactivar'
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].reaccion = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].reaccion = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
 
 if (command == 'autolevelup' || command == 'autonivel') {
 if (!m.isGroup) return m.reply(info.group)
 if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
 if (args[0] === "on") {
 global.db.data.chats[m.chat].autolevelup = true
-conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
 } else if (args[0] === "off") {
 global.db.data.chats[m.chat].autolevelup = false
-conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)}}}
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}}
 
 module.exports = { enable }
 

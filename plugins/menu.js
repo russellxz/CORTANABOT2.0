@@ -489,8 +489,53 @@ let menu = `       (҂"_")
 ║
 ║ ${lenguaje.menu.text11} ${rtotalreg} de ${totalreg}
 ║★━━━━━━✩━━━━━━★
-╚─━━━━━░★░━━━━━─╝`
-let xd = `${pickRandom([`\`¿𝐐𝐮𝐢𝐞𝐫𝐞𝐬 𝐨𝐛𝐭𝐞𝐧𝐞𝐫 𝐭𝐮 𝐛𝐨𝐭 𝐩𝐞𝐫𝐬𝐨𝐧𝐚𝐥𝐢𝐳𝐚𝐝𝐨?\`https://www.facebook.com/elrebelde21`, `\`□ CÓMO INSTALAR EL BOT\`\n${yt}`, `\`¿Qué hay de nuevo?\`\n• Pon : ${prefix}nuevo`, `\`💫 INFÓMARTE SOBRE LAS NUEVAS ACTUALIZACIONES, NOVEDADES DEL BOT AQUI\`\n${nna}`, `\`🌟¿Te agrada el bot? califica nuestro repositorio con una estrellita ☺\`\n${md}\``])}`
+╚─━━━━━░★░━━━━━─╝
+
+${pickRandom([`\`¿𝐐𝐮𝐢𝐞𝐫𝐞𝐬 𝐨𝐛𝐭𝐞𝐧𝐞𝐫 𝐭𝐮 𝐛𝐨𝐭 𝐩𝐞𝐫𝐬𝐨𝐧𝐚𝐥𝐢𝐳𝐚𝐝𝐨?\`https://www.facebook.com/elrebelde21`, `\`□ CÓMO INSTALAR EL BOT\`\n${yt}`, `\`¿Qué hay de nuevo?\`\n• Pon : ${prefix}nuevo`, `\`💫 INFÓMARTE SOBRE LAS NUEVAS ACTUALIZACIONES, NOVEDADES DEL BOT AQUI\`\n${nna}`, `\`🌟¿Te agrada el bot? califica nuestro repositorio con una estrellita ☺\`\n${md}\``])}`
+let menu2 = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
+┊┏━━━━━━━━━━━━━━•
+┊┃ 🎮𒋨𝙇𝙄𝙎𝙏𝘼 𝘿𝙀 𝘾𝙊𝙈𝘼𝙉𝘿𝙊𒈒🎮
+┊┃━━━━━━━━━━━━━━•
+┊┃ ➫ ${prefix}ᴀʟʟᴍᴇɴᴜ | ᴍᴇɴᴜᴄᴏᴍᴘʟᴇᴛᴏ
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ1 | ᴅᴇsᴄᴀʀɢᴀ
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ2 | ᴀᴜᴅɪᴏ
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ3 | ᴍᴇɴᴜɢʀᴜᴘᴏs
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ4 | ᴍᴇɴᴜʙᴜsᴄᴀᴅᴏʀᴇs
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ5 | ᴍᴇɴᴜᴊᴜᴇɢᴏs
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ6 | ᴍᴇɴᴜᴇғᴇᴄᴛᴏ
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ7 | ᴍᴇɴᴜᴄᴏɴᴠᴇʀᴛɪᴅᴏʀᴇs
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ8 | ᴍᴇɴᴜʀᴀɴᴅᴏᴡ
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ9 | ᴍᴇɴᴜʀᴘɢ
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ10 | ᴍᴇɴᴜsᴛɪᴄᴋᴇʀ
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ11 | ᴍᴇɴᴜᴏᴡɴᴇʀ
+┊┃ ➫ ${prefix}ᴍᴇɴᴜ18 | ᴍᴇɴᴜʜᴏɴʏ
+┊┃ ➫ ${prefix}ʟᴏɢᴏs 
+┊┃ ✌️𝐴𝑔𝑟𝑒𝑔𝑎𝑑𝑜 𝑃𝑜𝑟: 𝑅𝑢𝑠𝑠𝑒𝑙𝑙✌️
+┊┃ ➫.ᴛɪᴇɴᴅᴀ| ᴍᴇɴᴜᴅᴇᴄᴏᴍᴘʀᴀs
+┊┃━━━━━━━━━━━━━━•
+┊┃ 💯𒋨𝙄𝙉𝙁𝙊𝙍𝙈𝘼𝘾𝙄𝙊𝙉𒈒💯 
+┊┃━━━━━━━━━━━━━━•
+┊┃ ➫ ${prefix}ᴇsᴛᴀᴅᴏ _(ᴇsᴛᴀᴅᴏ ᴅᴇʟ ʙᴏᴛ)_
+┊┃ ➫ ${prefix}ɴᴜᴇᴠᴏ _(ɴᴜᴇᴠᴏ ᴄᴏᴍᴀɴᴅᴏ)_
+┊┃ ➫ ${prefix}ʀᴇɢʟᴀs _(ʀᴇɢʟᴀs)_
+┊┃ ➫ ${prefix}ᴘɪɴɢ
+┊┃ ➫ ${prefix}ᴠᴇʟᴏᴄɪᴅᴀᴅ
+┊┃ ➫ ${prefix}ɢʀᴜᴘᴏs _(ɢʀᴜᴘᴏs ᴏғɪᴄɪᴀʟᴇs)_
+┊┃ ➫ ${prefix}ᴊᴏɪɴ _(sᴏʟɪᴄɪᴛᴀ ᴜɴ ʙᴏᴛ ᴘᴀʀᴀ ᴛᴜ ɢʀᴜᴘᴏ)_
+┊┃ ➫ ${prefix}ᴏᴡɴᴇʀ
+┊┃ ➫ ${prefix}ᴄʀᴇᴀᴅᴏʀ _(ᴄᴏɴᴛᴀᴄᴛᴏs ᴅᴇ ᴍɪ ᴄʀᴇᴀᴅᴏʀ)_
+┊┃ ➫ ${prefix}ɪɴsᴛᴀʟᴀʀʙᴏᴛ (ᴛᴜᴛᴏʀɪᴀʟ ᴅᴇʟ ɪɴsᴛᴀʟᴀᴄɪᴏɴ)_
+┊┃ ➫ ${prefix}sᴏʟɪᴄɪᴛᴜᴅ
+┊┃ ➫ ${prefix}ᴄᴜᴇɴᴛᴀ 
+┊┃ ➫ ${prefix}ᴄᴜᴇɴᴛᴀᴏғɪᴄɪᴀʟᴇs
+┊┃ ➫ ${prefix}sᴛᴀᴛᴜs 
+┊┃ ➫ ${prefix}ᴇɴᴀʙʟᴇ 
+┊┃ ➫ ${prefix}ᴄᴏɴғɪɢᴜʀᴀʀ
+┊┃ ➫ ${prefix}ɪɴғᴏʜᴏsᴛ
+┊┃ ➫ ${prefix}ᴄᴀғɪʀᴇxᴏs
+┊┃ ➫ ${prefix}ʀᴇᴘᴏʀᴛ _(ʀᴇᴘᴏʀᴛᴀ ᴇʀʀᴏʀᴇs)_
+┊┗━━━━━━━━━━━━━━•
+╰┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩`
 
 let listSections = []    
 listSections.push({
@@ -520,85 +565,8 @@ rows: [{ header: "𝐌𝐄𝐍𝐔 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎", title: "",
 { header: "𝐒𝐏𝐄𝐄𝐃", title: "", id: `.speedtest`, description: `Ping || test de velocidad\n` }
 ]})
 
-conn.sendList(m.chat, menu, botname, `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, listSections, {quoted: fkontak})
-}
-
-/*if (command == 'menu' || command == 'help') {
-m.react('🟢') 
-let menu = `(҂"_")
-         <,︻╦̵̵̿╤─ ҉     ~  •
-█۞███████]▄▄▄▄▄▄▄▄▄▄▃ ●●●
-▂▄▅█████████▅▄▃▂…
-[███████████████████]
-◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙
-╔─━━━━━░★░━━━━━─╗
-║ нσłค @⁨メz๛russell乡⁩ ͧͧͧͦꙶͣͤ✓ 👋🏻
-║★━━━━━━✩━━━━━━★
-║☬Pʳᵉᶠᶤʲᵒ : [ . ]
-║☬Fᵉᶜʰᵃ : 19/04/2024
-║☬Hᵒʳᵃ : 12:34 AM
-║☬Vᵉʳˢᶤᵒᶰ : (Personalizado)
-║☬Uˢᵘᵃʳᶤᵒ : 752
-║☬Aᶜᵗᶤᵛᶤᵈᵃᵈ : 01:06:01:39
-║☬Mᵒᵈᵒ : ρυвℓι¢σ
-║☬Bᵒᵗ ᵒᶠᶜ : 𝐸𝑠𝑡𝑒 𝑒𝑠 𝑒𝑙 𝑏𝑜𝑡 𝑜𝑓𝑐  
-║ ☬Lᶤᵐᶤᵗᵉ : 85
-║ ☬Nᶤᵛᵉˡ :  21
-║ ☬Rᵃᶰᵍᵒ: 🤓 APRENDIS II
-║ ☬Eˣᵖ : 94050
-║ ☬Cᵒᶤᶰˢ : 14683
-║☬Rᵉᵍᶤˢᵗʳᵃᵈᵒ : 126 ∂є 752
-║★━━━━━━✩━━━━━━★
-╚─━━━━━░★░━━━━━─╝
-
-`ᰔᩚ 𝐐𝐔𝐈𝐄𝐑𝐄 𝐎𝐁𝐓𝐄𝐍𝐄𝐑 𝐓𝐔 𝐁𝐎𝐓 𝐏𝐄𝐑𝐒𝐎𝐍𝐀𝐋𝐈𝐙𝐀𝐃𝐎? :`
-◈ https://www.facebook.com/elrebelde21
-
-╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
-┊┏━━━━━━━━━━━━━━•
-┊┃ 🎮𒋨𝙇𝙄𝙎𝙏𝘼 𝘿𝙀 𝘾𝙊𝙈𝘼𝙉𝘿𝙊𒈒🎮
-┊┃━━━━━━━━━━━━━━•
-┊┃ ➫ .ᴀʟʟᴍᴇɴᴜ | ᴍᴇɴᴜᴄᴏᴍᴘʟᴇᴛᴏ
-┊┃ ➫ .ᴍᴇɴᴜ1 | ᴅᴇsᴄᴀʀɢᴀ
-┊┃ ➫ .ᴍᴇɴᴜ2 | ᴀᴜᴅɪᴏ
-┊┃ ➫ .ᴍᴇɴᴜ3 | ᴍᴇɴᴜɢʀᴜᴘᴏs
-┊┃ ➫ .ᴍᴇɴᴜ4 | ᴍᴇɴᴜʙᴜsᴄᴀᴅᴏʀᴇs
-┊┃ ➫ .ᴍᴇɴᴜ5 | ᴍᴇɴᴜᴊᴜᴇɢᴏs
-┊┃ ➫ .ᴍᴇɴᴜ6 | ᴍᴇɴᴜᴇғᴇᴄᴛᴏ
-┊┃ ➫ .ᴍᴇɴᴜ7 | ᴍᴇɴᴜᴄᴏɴᴠᴇʀᴛɪᴅᴏʀᴇs
-┊┃ ➫ .ᴍᴇɴᴜ8 | ᴍᴇɴᴜʀᴀɴᴅᴏᴡ
-┊┃ ➫ .ᴍᴇɴᴜ9 | ᴍᴇɴᴜʀᴘɢ
-┊┃ ➫ .ᴍᴇɴᴜ10 | ᴍᴇɴᴜsᴛɪᴄᴋᴇʀ
-┊┃ ➫ .ᴍᴇɴᴜ11 | ᴍᴇɴᴜᴏᴡɴᴇʀ
-┊┃ ➫ .ᴍᴇɴᴜ18 | ᴍᴇɴᴜʜᴏɴʏ
-┊┃ ➫ .ʟᴏɢᴏs 
-┊┃ ✌️𝐴𝑔𝑟𝑒𝑔𝑎𝑑𝑜 𝑃𝑜𝑟: 𝑅𝑢𝑠𝑠𝑒𝑙𝑙✌️
-┊┃ ➫.ᴛɪᴇɴᴅᴀ| ᴍᴇɴᴜᴅᴇᴄᴏᴍᴘʀᴀs
-┊┃━━━━━━━━━━━━━━•
-┊┃ 💯𒋨𝙄𝙉𝙁𝙊𝙍𝙈𝘼𝘾𝙄𝙊𝙉𒈒💯 
-┊┃━━━━━━━━━━━━━━•
-┊┃ ➫ .ᴇsᴛᴀᴅᴏ _(ᴇsᴛᴀᴅᴏ ᴅᴇʟ ʙᴏᴛ)_
-┊┃ ➫ .ɴᴜᴇᴠᴏ _(ɴᴜᴇᴠᴏ ᴄᴏᴍᴀɴᴅᴏ)_
-┊┃ ➫ .ʀᴇɢʟᴀs _(ʀᴇɢʟᴀs)_
-┊┃ ➫ .ᴘɪɴɢ
-┊┃ ➫ .ᴠᴇʟᴏᴄɪᴅᴀᴅ
-┊┃ ➫ .ɢʀᴜᴘᴏs _(ɢʀᴜᴘᴏs ᴏғɪᴄɪᴀʟᴇs)_
-┊┃ ➫ .ᴊᴏɪɴ _(sᴏʟɪᴄɪᴛᴀ ᴜɴ ʙᴏᴛ ᴘᴀʀᴀ ᴛᴜ ɢʀᴜᴘᴏ)_
-┊┃ ➫ .ᴏᴡɴᴇʀ
-┊┃ ➫ .ᴄʀᴇᴀᴅᴏʀ _(ᴄᴏɴᴛᴀᴄᴛᴏs ᴅᴇ ᴍɪ ᴄʀᴇᴀᴅᴏʀ)_
-┊┃ ➫ .ɪɴsᴛᴀʟᴀʀʙᴏᴛ (ᴛᴜᴛᴏʀɪᴀʟ ᴅᴇʟ ɪɴsᴛᴀʟᴀᴄɪᴏɴ)_
-┊┃ ➫ .sᴏʟɪᴄɪᴛᴜᴅ
-┊┃ ➫ .ᴄᴜᴇɴᴛᴀ 
-┊┃ ➫ .ᴄᴜᴇɴᴛᴀᴏғɪᴄɪᴀʟᴇs
-┊┃ ➫ .sᴛᴀᴛᴜs 
-┊┃ ➫ .ᴇɴᴀʙʟᴇ 
-┊┃ ➫ .ᴄᴏɴғɪɢᴜʀᴀʀ
-┊┃ ➫ .ɪɴғᴏʜᴏsᴛ
-┊┃ ➫ .ᴄᴀғɪʀᴇxᴏs
-┊┃ ➫ .ʀᴇᴘᴏʀᴛ _(ʀᴇᴘᴏʀᴛᴀ ᴇʀʀᴏʀᴇs)_
-┊┗━━━━━━━━━━━━━━•
-╰┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩`
-conn.sendMessage(m.chat, { text: menu,  
+//conn.sendList(m.chat, menu, botname, `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, listSections, {quoted: fkontak})
+conn.sendMessage(m.chat, { text: menu 
 contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
@@ -612,12 +580,12 @@ mentionedJid:[sender, numBot],
 "thumbnail": imagen3, 
 sourceUrl: tiktok
 }}}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) 
-}*/
+}
 
 if (command == 'menu1' || command == 'descarga') {
 m.react('🚀') 
-conn.sendButton(m.chat, submenu, descargar, img, [['𝙼𝙴𝙽𝚄𝟸', `.menu2`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + descargar, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, descargar, img, [['𝙼𝙴𝙽𝚄𝟸', `.menu2`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + descargar, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -629,20 +597,20 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menu2' || command == 'audio') {
 
 let menu2 = `${lenguaje.menu.text13}\n\na\nfeliz navidad\nMerry Christmas\nFeliz cumpleaños\nPasa pack\nUwu\nSiuuu\nhola\nhello\nVete a la verga\nPasen porno\nHora del sexito\nPongan cuties\nFiesta del admin\nAdmin party\nViernes\nGOOOOD\nAlto temazo\nTodo bien\nBuenos dias\nBot gay\nGracias\nFua\nFino señores\n🧐🍷\nCorte\nGaspi buenos dias\nGaspi me saludas\nGaspi y las minitas\nGaspi todo bien\nGaspi ya no aguanto\nContate algo bot\nSexo\nMomento epico\nEl bot del orto no funciona\nEpicardo\nInsta de la minita\nUna mierda de bot\nUltimo momento\nNefasto\nParaguayo\nBot de mierda\nVenezolano\na nadie le importa\nGaspi corte\nYa me voy a dormir\nCalefon\nApurate bot\nUn chino\nNo funciona\nBoliviano\nEnano\nQuien es tu sempai botsito\nMe gimes 7u7\nTe amo botsito uwu\nOnichan\nLa toca 7w7\nautodestruction\n\n*𝕄𝕒𝕤 𝔸𝕦𝕕𝕚𝕠𝕤 𝕒𝕘𝕣𝕖𝕘𝕒𝕕𝕠𝕤 𝕡𝕠𝕣 ℝ𝕦𝕤𝕤𝕖𝕝𝕝 :*\nQue\nque\nquien para jugar\nbr mj jugar\nJuegar\nKien pa jugar\nQuien pa jugar\nquien pa jugar\nte gusta los hombres\nYoce que vez porno gay\nMi amiga es trapito\nTe gusta el yaoi\nTe quiero cortana\nTe amo Cortana\nBroken\nLotex\nBroken vs lotex\nGay\nMaldito\nMal pario\nMmgb\nMmwb\nHijo de puta\nHdp\nCara de verga\nMarico\nMarica\nte Gusta el pito\nHijo de perra\nBuenas Tardes\nBuenas noches\nPene\nfollar\nCojer\nNovio\nNovia\nrico\nsabraso\ntetas\nhermosa\nluuk\nMamate un wuebo\n${wm}`
-conn.sendButton(m.chat, menu2, botname, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-//conn.sendMessage(m.chat, { text: menu2}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+//conn.sendButton(m.chat, menu2, botname, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendMessage(m.chat, { text: menu2}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 }
 
 if (command == 'menu3' || command == 'menugrupos') {
 m.react('🔰') 
-conn.sendButton(m.chat, submenu, grupos, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + grupos, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, grupos, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + grupos, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -654,13 +622,13 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menu4' || command == 'menubuscadores') {
 m.react('🪄') 
-conn.sendButton(m.chat, submenu, buscadores, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + buscadores, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, buscadores, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + buscadores, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -672,13 +640,13 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menu5' || command == 'menujuegos') {
 m.react('👾') 
-conn.sendButton(m.chat, submenu, juegos, img1, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + juegos, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, juegos, img1, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + juegos, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -690,13 +658,13 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menu6' || command == 'menuefecto') {
 m.react('🎤') 
-conn.sendButton(m.chat, submenu, efecto, img1, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + efecto, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, efecto, img1, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + efecto, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -708,13 +676,13 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menu7' || command == 'menuconvertidores') {
 m.react('🧧') 
-conn.sendButton(m.chat, submenu, convertidores, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + convertidores, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, convertidores, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + convertidores, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -726,13 +694,13 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menu18' || command == 'Menuhony') {
 m.react('🥵') 
-conn.sendButton(m.chat, submenu, menu18, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menu18, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, menu18, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menu18, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -744,13 +712,13 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menurandow' || command == 'menu8') {
 m.react('⛩️') 
-conn.sendButton(m.chat, submenu, menurandow, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menurandow, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, menurandow, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menurandow, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -762,13 +730,13 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menuRPG' || command == 'menu9') {
 m.react('⚒️') 
-conn.sendButton(m.chat, submenu, menuRPG, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menuRPG, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, menuRPG, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menuRPG, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -780,13 +748,13 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menuSticker' || command == 'menu10') {
 m.react('🎈') 
-conn.sendButton(m.chat, submenu, menuSticker, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menuSticker, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, menuSticker, img2, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menuSticker, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -798,13 +766,13 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'menuOwner' || command == 'menu11') {
 m.react('👑') 
-conn.sendButton(m.chat, submenu, menuOwner, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
-/*conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menuOwner, fkontak, false, { contextInfo:{  
+//conn.sendButton(m.chat, submenu, menuOwner, img, [['𝙸𝚁 𝙰𝙻 𝙼𝙴𝙽𝚄 𝙿𝚁𝙸𝙽𝙲𝙸𝙿𝙰𝙻', `.menu`], ['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`]], null, null, m)
+conn.sendFile(m.chat, imagen2, 'lp.jpg', submenu + menuOwner, fkontak, false, { contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender],  
@@ -816,7 +784,7 @@ mentionedJid:[sender],
 "mediaType": 1,   
 "thumbnail": imagen3, 
 sourceUrl: tiktok
-}}})*/
+}}})
 }
 
 if (command == 'allmenu' || command == 'menucompleto') {
@@ -1211,8 +1179,8 @@ ${lenguaje.menu.text12}
 ├➫ >
 ├➫ => 
 *╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*`
-conn.sendButton(m.chat, menu, botname, img, [['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`], ['𝚃𝙸𝙴𝙽𝙳𝙰 𝙲𝙾𝚁𝚃𝙰𝙽𝙰', `.tienda`], ['𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚁', `.menu1`], ['𝙲𝙾𝙽𝙵𝙸𝙶𝚄𝚁𝙰𝙲𝙸𝙾́𝙽', `.enable`]], null, null, m)
-/*conn.sendMessage(m.chat, { text: menu,  
+//conn.sendButton(m.chat, menu, botname, img, [['𝙴𝚂𝚃𝙰𝙳𝙾', `.status`], ['𝚅𝙴𝙻𝙾𝙲𝙸𝙳𝙰𝙳', `.ping`], ['𝚃𝙸𝙴𝙽𝙳𝙰 𝙲𝙾𝚁𝚃𝙰𝙽𝙰', `.tienda`], ['𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰𝚁', `.menu1`], ['𝙲𝙾𝙽𝙵𝙸𝙶𝚄𝚁𝙰𝙲𝙸𝙾́𝙽', `.enable`]], null, null, m)
+conn.sendMessage(m.chat, { text: menu,  
 contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
@@ -1225,7 +1193,7 @@ mentionedJid:[sender, numBot],
 "mediaType": 1,   
 "thumbnail": imagen2, 
 sourceUrl: tiktok
-}}}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) */
+}}}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) 
 }}
 
 module.exports = { menu }
