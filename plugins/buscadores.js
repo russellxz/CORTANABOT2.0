@@ -68,7 +68,6 @@ await conn.sendList(m.chat, '╭┄〔 *ʙᴜsᴄᴀᴅᴏ 🔎* 〕┄⊱-\n┆
 
 let teks = `💫 ${lenguaje['result']()} ` + text + '\n\n';
 let no = 1;
-let themeemoji = "🔶"
 for (let i of search.all) {
   teks += `${themeemoji} ${lenguaje.lengua.opcion} ${no++}\n${themeemoji} ${lenguaje.lengua.tipo} ${i.type}\n${themeemoji} ${lenguaje.lengua.id} ${i.videoId}\n${themeemoji} ${lenguaje.lengua.titulo} ${i.title}\n${themeemoji} ${lenguaje.lengua.vista} ${i.views}\n${themeemoji} ${lenguaje.lengua.dura} ${i.timestamp}\n${themeemoji} ${lenguaje.lengua.subidos} ${i.ago}\n${themeemoji} URL: ${i.url}\n\n✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧\n\n`;
 }
