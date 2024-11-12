@@ -460,7 +460,7 @@ let menuOwner = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 
 if (command == 'menu' || command == 'help') {
 m.react('🟢') 
-let saludos = `~ Hola ${pushname} ${user.registered === true ? '✓' : ''}`
+let saludos = `~ Hola @${sender.split("@")[0]}  ${user.registered === true ? '✓™' : ''} 👋😄\n`
 let menu = `       (҂"_")
          <,︻╦̵̵̿╤─ ҉     ~  •
 █۞███████]▄▄▄▄▄▄▄▄▄▄▃ ●●●
@@ -481,6 +481,7 @@ let menu = `       (҂"_")
 ║★━━━━━━✩━━━━━━★
 ║ \`👥 INFO DEL USUARIO\`
 ║★━━━━━━✩━━━━━━★
+║ ☬υѕυαяισѕ: ${pushname} 
 ║ ${lenguaje.menu.text8} ${user.limit}
 ║ ${lenguaje.menu.text9} ${user.level}
 ║ ${lenguaje.menu.text10} ${user.role}
@@ -566,7 +567,7 @@ rows: [{ header: "𝐌𝐄𝐍𝐔 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎", title: "",
 ]})
 
 //conn.sendList(m.chat, menu, botname, `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, listSections, {quoted: fkontak})
-conn.sendMessage(m.chat, { text: menu + menu2, 
+conn.sendMessage(m.chat, { text: saludos + menu + menu2, 
 contextInfo:{  
 forwardingScore: 9999999,  
 isForwarded: true,   
