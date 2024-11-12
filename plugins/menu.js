@@ -460,7 +460,7 @@ let menuOwner = `╭┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈⪩
 
 if (command == 'menu' || command == 'help') {
 m.react('🟢') 
-let saludos = `~ Hola @${sender.split("@")[0]}  ${user.registered === true ? '✓™' : ''} 👋😄\n`
+let saludos = `~ Hola @${sender.split("@")[0]}  ${user.registered === true ? '✓™' : ''} 👋😄\n\n`
 let menu = `       (҂"_")
          <,︻╦̵̵̿╤─ ҉     ~  •
 █۞███████]▄▄▄▄▄▄▄▄▄▄▃ ●●●
@@ -567,8 +567,11 @@ rows: [{ header: "𝐌𝐄𝐍𝐔 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎", title: "",
 ]})
 
 //conn.sendList(m.chat, menu, botname, `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, listSections, {quoted: fkontak})
-conn.sendMessage(m.chat, { text: saludos + menu + menu2, 
-contextInfo:{  
+conn.sendFile(m.chat, imagen3, 'img.jpg', saludos + menu + menu2, m, null, { contextInfo:{  
+forwardedNewsletterMessageInfo: { 
+newsletterJid: '120363266665814365@newsletter', 
+serverMessageId: '', 
+newsletterName: 'メ๛ᴄᴏʀᴛᴀɴᴀ𝐷𝑀2.0 ULTRA乡' },
 forwardingScore: 9999999,  
 isForwarded: true,   
 mentionedJid:[sender, numBot],  
@@ -581,6 +584,20 @@ mentionedJid:[sender, numBot],
 "thumbnail": imagen3, 
 sourceUrl: tiktok
 }}}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) 
+/*conn.sendMessage(m.chat, { text: saludos + menu + menu2, 
+contextInfo:{  
+forwardingScore: 9999999,  
+isForwarded: true,   
+mentionedJid:[sender, numBot],  
+"externalAdReply": {  
+"showAdAttribution": true,  
+"renderLargerThumbnail": true,  
+"title": wm,   
+"containsAutoReply": true,  
+"mediaType": 1,   
+"thumbnail": imagen3, 
+sourceUrl: tiktok
+}}}, { quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100}) */
 }
 
 if (command == 'menu1' || command == 'descarga') {
