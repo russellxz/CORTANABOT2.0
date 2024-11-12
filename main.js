@@ -1452,7 +1452,7 @@ await m.reply(result);
 if (budy.includes(`Yaoi`)) {
 if (!global.db.data.chats[m.chat].reaccion) return
 m.react(`${pickRandom(['😐', '👀', '😹'])}`)
-m.reply(`${pickRandom(['Que mamada? vete a estudiar mejor', 'Soy un bot hetero, no pida mamada (︶｡︶)zzZ' , 'Eres mujer? encose si tiene permitido ver yaoi *las mujeres tambien ser Divierten :)*', 'Porno?', 'Si eres mujer si, hombre no sea gay chupa pija 😆', 'quiere pene? 🧐')}`)}
+m.reply(`${pickRandom(['Que mamada? vete a estudiar mejor', 'Soy un bot hetero, no pida mamada (︶｡︶)zzZ' , 'Eres mujer? encose si tiene permitido ver yaoi *las mujeres tambien ser Divierten :)*', 'Porno?', 'Si eres mujer si, hombre no sea gay chupa pija 😆', 'quiere pene? 🧐'])}`)}
 if (budy.startsWith(`a`)) {
 if (!global.db.data.chats[m.chat].reaccion) return
 if (!global.db.data.chats[m.chat].audios) return
