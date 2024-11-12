@@ -1069,7 +1069,7 @@ break
 case 'cartera': {
 let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
 let user = global.db.data.users[who]
-if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)l
+if (!(who in global.db.data.users)) return m.reply(lenguaje.grupos.text31)
 let carter = `El usuarios ${pushname} en sus cartera tiene:
 
 ${user.limit} Crédito 💳
