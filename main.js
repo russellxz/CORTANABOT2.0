@@ -1211,6 +1211,17 @@ m.reply(lenguaje.idioma2() + idiomas)
 m.reply(lenguaje.AvisoMG() + lenguaje.idioma(prefix))}}
 break  
 
+case 'sw': case 'robarestado': case 'robastatus': case 'RobaStatus': case 'dldownload': case 'swstatus': case 'swdescargar': case 'historia': {
+if ("status@broadcast" != m.quoted?.chat) return m.reply("*Por favor, responde a un estado de WhatsApp para descargar su contenido*") 
+try {
+let buffer = await m.quoted?.download()
+await conn.sendFile(m.chat, buffer, "", m.quoted?.text || "", null, false, { quoted: m })
+} catch (e) {
+console.log(e)
+await m.reply(m.quoted?.text)
+}}
+break
+
 case 'banlist': {
 const chats = Object.entries(global.db.data.chats).filter((chat) => chat[1].isBanned);
   const users = Object.entries(global.db.data.users).filter((user) => user[1].banned);
