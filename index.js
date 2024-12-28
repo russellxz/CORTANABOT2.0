@@ -648,6 +648,11 @@ return phoneUtil.isValidNumber(parsedNumber)
 return false
 }}
 
+async function joinChannels(sock) {
+for (const channelId of Object.values(global.ch)) {
+await sock.newsletterFollow(channelId).catch(() => {})
+}}
+
 sock.ev.on('connection.update', async (update) => {
 const { connection, lastDisconnect, qr, receivedPendingNotifications, isNewLogin} = update;
 console.log(receivedPendingNotifications)
@@ -697,6 +702,7 @@ console.log(color('[SYS]', '#009FFF'),
 color(moment().format('DD/MM/YY HH:mm:ss'), '#A1FFCE'),
 color(`\n╭━─━─━─≪ ${vs} ≫─━─━─━╮\n│${lenguaje['smsConectado']()}\n╰━─━━─━─≪ 🟢 ≫─━─━━─━╯` + receivedPendingNotifications, '#38ef7d')
 );
+await joinChannels(sock)
 
 if (!sock.user.connect) {
 await delay(3 * 1000)
