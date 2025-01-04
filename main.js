@@ -230,7 +230,6 @@ console.log(`[𝚄𝙿𝙳𝙰𝚃𝙴]\n𝙿𝚒𝚗𝚐: ${latensi.toFixed(4)}
   
 //--------------------[ AUTOREAD ]-----------------------
 if (m.message && prefix) {
-await conn.sendPresenceUpdate('composing', m.chat)
 conn.readMessages([m.key])
 }	
  
