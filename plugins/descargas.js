@@ -556,12 +556,17 @@ if (!args[0].match(/www.facebook.com|fb.watch/g)) return m.reply(`${lenguaje.len
 m.react("📥") 
 conn.fakeReply(m.chat, `${lenguaje.lengua.espere}`, '0@s.whatsapp.net', 'No haga spam')
 try {
-const d2ata = await facebook.v1(args[0]);
-let r2es = '';
-if (d2ata.urls && d2ata.urls.length > 0) {
-r2es = `${d2ata.urls[0]?.hd || d2ata.urls[1]?.sd || ''}`;
-}
-conn.sendFile(m.chat, r2es, 'error.mp4', `${lenguaje.descargar.text16}`, m);
+const response = await axios.get(`https://api.dorratz.com/fbvideo?url=${encodeURIComponent(args)}`);
+            const results = response.data; 
+            if (results && Array.isArray(results) && results.length > 0) {
+                const message = `Resoluciones disponibles:
+${results.map((res, index) => `- ${res.resolution}`).join('\n')}
+
+🔥 Enviado en 720p
+
+> 🍧 request answered by api.dorratz.com`.trim();
+  
+conn.sendFile(m.chat, results[0].url, 'error.mp4', message, m);
 } catch (err1) {
 try {
 const req = await igeh(args[0]);
