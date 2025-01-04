@@ -426,7 +426,7 @@ let str = text[Math.floor(Math.random() * text.length)]
 return conn.sendMessage(m.chat, { text: str, contextInfo:{mentionedJid:[sender]}},{quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}} 
  
 //----------------[ CHATBOT/AUTOMATICO ]-------------------
-/*if (global.db.data.chats[m.chat].simi) {
+if (global.db.data.chats[m.chat].simi) {
 let textodem = budy
 try {
 await conn.sendPresenceUpdate('composing', m.chat)
@@ -448,7 +448,7 @@ const res = await api.json()
 const reis2 = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=es&dt=t&q=' + res.cnt)
 const resu2 = await reis2.json()
 await delay(3 * 3000) 
-await m.reply(resu2[0][0][0])}} */
+await m.reply(resu2[0][0][0])}} 
     
 //---------------------[ ANTIPRIVADO ]------------------------
 if (!m.isGroup && !isCreator) {  
@@ -1384,7 +1384,7 @@ conn.sendFile(m.chat, noetiqueta, 'sticker.webp', '',m, true, { contextInfo: { '
 if (media === 'texto')
 await conn.sendMessage(m.chat, {text: `${pickRandom(['*QUE YO QUE?*', 'Que?'])}`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 */
-if (m.mentionedJid.includes(conn.user.jid) || (m.quoted && m.quoted.sender === conn.user.jid) || budy.includes(`Bot`) || budy.includes(`bot`) || budy.includes(`alexa`) || budy.includes(`Alexa`) || budy.includes(`simi`) || budy.includes(`Simi`) || budy.includes(`Simsimi`)) {
+/*if (m.mentionedJid.includes(conn.user.jid) || (m.quoted && m.quoted.sender === conn.user.jid) || budy.includes(`Bot`) || budy.includes(`bot`) || budy.includes(`alexa`) || budy.includes(`Alexa`) || budy.includes(`simi`) || budy.includes(`Simi`) || budy.includes(`Simsimi`)) {
 const axios = require('axios');
     await conn.sendPresenceUpdate('composing', m.chat)    
 
@@ -1462,7 +1462,7 @@ await m.reply(result);
 //conn.sendTextWithMentions(m.chat, result, m) 
 } else {
 }
-}
+}*/
 
 if (budy.includes(`Yaoi`)) {
 if (!global.db.data.chats[m.chat].reaccion) return
