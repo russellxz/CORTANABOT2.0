@@ -426,7 +426,7 @@ let str = text[Math.floor(Math.random() * text.length)]
 return conn.sendMessage(m.chat, { text: str, contextInfo:{mentionedJid:[sender]}},{quoted: fkontak, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}} 
  
 //----------------[ CHATBOT/AUTOMATICO ]-------------------
-if (global.db.data.chats[m.chat].simi) {
+/*if (global.db.data.chats[m.chat].simi) {
 let textodem = budy
 try {
 await conn.sendPresenceUpdate('composing', m.chat)
@@ -448,7 +448,7 @@ const res = await api.json()
 const reis2 = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=es&dt=t&q=' + res.cnt)
 const resu2 = await reis2.json()
 await delay(3 * 3000) 
-await m.reply(resu2[0][0][0])}} 
+await m.reply(resu2[0][0][0])}} */
     
 //---------------------[ ANTIPRIVADO ]------------------------
 if (!m.isGroup && !isCreator) {  
