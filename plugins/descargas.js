@@ -591,9 +591,9 @@ const url3 = await json.video;
 await conn.sendFile(m.chat, url3, 'error.mp4', `${lenguaje.descargar.text16}`, m);
 } catch (err6) {
 m.reply(info.error)
-console.log(e)
+console.log(err6)
 }}}}}}
-  
+
 if (command == 'instagram' || command == 'ig') {
 if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://www.instagram.com/p/CCoI4DQBGVQ/?igshid=YmMyMTA2M2Y=`)
 m.react("📥") 
