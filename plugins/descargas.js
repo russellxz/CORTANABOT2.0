@@ -454,14 +454,22 @@ if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://
 if (!isUrl(args[0]) && !args[0].includes('tiktok')) return m.reply(`Link invalido!!`)
 conn.fakeReply(m.chat, `${lenguaje.lengua.espere}`, '0@s.whatsapp.net', 'No haga spam')
 try {
-require('../libs/tiktok').Tiktok(args).then( data => {
-conn.sendButton(m.chat, `_*• Titulo:*_ ${result.title}`, wm, data.nowm, [['Descargar audio', `.tik2 ${text}`]], null, null, m)}) 
+const response = await axios.get(`https://api.dorratz.com/v2/tiktok-dl?url=${args}`);
+const videoData = response.data.data.media;
+const videoUrl = videoData.org; 
+const videoDetails = `*Título*: ${response.data.data.title}\n` +
+                             `*Autor*: ${response.data.data.author.nickname}\n` +
+                             `*Duración*: ${response.data.data.duration}s
+` +
+                             `*Likes*: ${response.data.data.like}\n` +
+                             `*Comentarios*: ${response.data.data.comment}`;
+conn.sendButton(m.chat, `${videoDetails}`, wm, videoUrl, [['Descargar audio', `.tik2 ${text}`]], null, null, m)
 /*conn.sendMessage(m.chat, { video: { url: data.nowm }}, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 conn.sendMessage(m.chat, { audio: { url: data.audio }, mimetype: 'audio/mp4' }, { quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})})*/
 db.data.users[m.sender].limit -= 1
 m.reply('1 ' + info.limit)
 } catch {
-m.reply(info.error)}}
+m.reply(info.error)}}}
 
 if (command == 'tik2') {
 if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://vm.tiktok.com/ZMjdrFCtg/`)
