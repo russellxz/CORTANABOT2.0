@@ -558,7 +558,6 @@ conn.fakeReply(m.chat, `${lenguaje.lengua.espere}`, '0@s.whatsapp.net', 'No haga
 try {
 const response = await axios.get(`https://api.dorratz.com/fbvideo?url=${encodeURIComponent(args)}`);
             const results = response.data; 
-            if (results && Array.isArray(results) && results.length > 0) {
                 const message = `Resoluciones disponibles:
 ${results.map((res, index) => `- ${res.resolution}`).join('\n')}
 
