@@ -929,7 +929,7 @@ case 'horny': case 'simp': case 'lolice': case 'comentar': case 'comment': rando
 break   
  
 //descargas
-case 'play': case 'musica': case 'play2': case 'video': case 'play3': case 'playdoc': case 'playaudiodoc': case 'ytmp3doc': case 'play4': case 'playdoc2': case 'playvideodoc': case 'ytmp4doc': case "ytmp3": case "ytaudio": case 'ytmp4': case 'ytvideo': case 'music': case 'spotify': case 'gitclone': case 'tiktok': case 'tt': case 'lyrics': case 'letra': case 'mediafire': case 'tiktokimg': case 'tik2': case 'ttimg': case 'play.1': case 'play.2': descarga(m, command, conn, text, command, args, fkontak, from, lolkeysapi)   
+case 'play3': case 'playdoc': case 'playaudiodoc': case 'ytmp3doc': case 'play4': case 'playdoc2': case 'playvideodoc': case 'ytmp4doc': case "ytmp3": case "ytaudio": case 'ytmp4': case 'ytvideo': case 'music': case 'spotify': case 'gitclone': case 'tiktok': case 'tt': case 'lyrics': case 'letra': case 'mediafire': case 'tiktokimg': case 'tik2': case 'ttimg': case 'play.1': case 'play.2': descarga(m, command, conn, text, command, args, fkontak, from, lolkeysapi)   
 break
 case 'facebook': case 'fb': case 'instagram': case 'ig': case 'igstalk': case 'tiktokstalk': case 'apk': case 'modoapk': case 'gdrive': case 'tw': case 'twitter': descarga2(m, command, text, args, conn, lolkeysapi, isCreator) 
 break 
@@ -982,7 +982,215 @@ let confirm = `¿ESTA SEGURO QUE DESEA TRANSFERIR ${count} ${type} a @${(who || 
 await conn.sendTextWithMentions(m.chat, confirm, m)
 this.confirm[m.sender.split('@')[0]] = { sender: m.sender, to: who, message: m, type, count, timeout: setTimeout(() => (m.reply(`*⚠️ Se acabó el tiempo, no se obtuvo respuesta. Transferencia cancelada.*`), delete this.confirm[m.sender.split('@')[0]]), 60 * 1000)}}
 break
+  
       
+case 'play2':
+case 'play': {
+    const yts = require('yt-search'),
+        ytdl = require('ytdl-core'),
+        fetch = require('node-fetch');
+
+    if (!text || text.trim() === '') return m.reply('Por favor, proporciona el nombre o término de búsqueda del video.');
+m.react(rwait)
+    const query = args.join(' ') || text;
+    let video = {};
+
+    try {
+        const yt_play = await yts(query);
+        if (!yt_play || yt_play.all.length === 0) return m.reply('No se encontraron resultados para tu búsqueda.');
+        const firstResult = yt_play.all[0];
+        video = {
+            url: firstResult.url,
+            title: firstResult.title,
+            thumbnail: firstResult.thumbnail || 'default-thumbnail.jpg',
+            timestamp: firstResult.duration.seconds,
+            views: firstResult.views,
+            author: firstResult.author.name,
+        };
+    } catch {
+        return m.reply('Ocurrió un error al buscar el video.');
+    }
+
+    function secondString(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return [h, m, s]
+            .map(v => v < 10 ? `0${v}` : v)
+            .filter((v, i) => v !== '00' || i > 0)
+            .join(':');
+    }
+
+    await conn.sendMessage(m.chat, {
+        image: { url: video.thumbnail },
+        caption: `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
+│║◈ ${lenguaje.descargar.title} ${video.title}
+│║◈ ${lenguaje.descargar.duracion} ${secondString(video.timestamp || 0)}
+│║◈ ${lenguaje.descargar.views} ${video.views || 0}
+│║◈ ${lenguaje.descargar.autor} ${video.author || 'Desconocido'}
+│║◈ Link: ${video.url}
+╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`,
+        footer: "𝙲𝙾𝚁𝚃𝙰𝙽𝙰 𝟸.𝟶",
+        buttons: [
+            {
+                buttonId: `.musica ${video.url}`,
+                buttonText: { displayText: "🎼AUDIO🎼" },
+                type: 1,
+            },
+            {
+                buttonId: `.video ${video.url}`,
+                buttonText: { displayText: "🎬VIDEO🎬" },
+                type: 1,
+            },
+            {
+                buttonId: `.menu`,
+                buttonText: { displayText: "📘MENU📘" },
+                type: 1,
+            },
+        ],
+        viewOnce: true,
+        headerType: 4,
+        mentions: [m.sender],
+    }, { quoted: m });
+    break;
+}
+
+case 'video': {
+    if (!text) return m.reply('Por favor, proporciona un enlace de YouTube válido.');
+    const url = args[0];
+
+    if (!url.includes('youtu')) return m.reply('Por favor, proporciona un enlace válido de YouTube.');
+
+    m.reply('🚀 𝙿𝚁𝙾𝚂𝙿𝙴𝚁𝙰𝙽𝙳𝙾 𝚃𝚄 𝚂𝙾𝙻𝙸𝙲𝙸𝚃𝚄𝙳...');
+    
+    try {
+        const api = `https://api.siputzx.my.id/api/d/ytmp4?url=${url}`;
+        const res = await fetch(api);
+        const json = await res.json();
+
+        if (json.status) {
+            const videoUrl = json.data.dl;
+            await conn.sendMessage(m.chat, {
+                video: { url: videoUrl },
+                caption: '✅ Aquí está tu video.',
+            }, { quoted: m });
+        } else {
+            throw new Error('API de Siputzx falló.');
+        }
+    } catch {
+        try {
+            const axeelApi = `https://axeel.my.id/api/download/video?url=${encodeURIComponent(url)}`;
+            const axeelRes = await fetch(axeelApi);
+            const axeelJson = await axeelRes.json();
+
+            if (axeelJson && axeelJson.downloads?.url) {
+                const videoUrl = axeelJson.downloads.url;
+                await conn.sendMessage(m.chat, {
+                    video: { url: videoUrl },
+                    caption: `✅ Aquí está tu video: ${axeelJson.metadata.title}`,
+                }, { quoted: m });
+            } else {
+                throw new Error('API de Axeel falló.');
+            }
+        } catch {
+            m.reply('❌ Todas las APIs fallaron. No se pudo procesar tu solicitud.');
+        }
+    }
+    break;
+}
+
+case 'musica': {
+    const fetch = require('node-fetch');
+
+    if (!args.length || !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(args[0])) {
+        return m.reply('Por favor, ingresa un enlace de YouTube válido.');
+    }
+    m.reply('🚀 𝙿𝚁𝙾𝚂𝙿𝙴𝚁𝙰𝙽𝙳𝙾 𝚃𝚄 𝚂𝙾𝙻𝙸𝙲𝙸𝚃𝚄𝙳...');
+    const videoUrl = args[0];
+
+    try {
+        const apiUrl = `https://deliriussapi-oficial.vercel.app/download/ytmp4?url=${encodeURIComponent(videoUrl)}`;
+        const apiResponse = await fetch(apiUrl);
+        const delius = await apiResponse.json();
+        if (!delius || !delius.status) throw new Error();
+        const downloadUrl = delius.data.download.url;
+        await conn.sendMessage(m.chat, { audio: { url: downloadUrl }, mimetype: 'audio/mpeg' }, { quoted: m });
+    } catch {
+        try {
+            const yt = await ytdl(videoUrl);
+            const dl_url = yt.audio['128kbps']?.download();
+            if (!dl_url) throw new Error();
+            await conn.sendFile(m.chat, dl_url, `${videoUrl.split('v=')[1]}.mp3`, null, m, false, { mimetype: 'audio/mp4' });
+        } catch {
+            try {
+                const axeelUrl = `https://axeel.my.id/api/download/audio?url=${encodeURIComponent(videoUrl)}`;
+                const axeelResponse = await fetch(axeelUrl);
+                const axeelData = await axeelResponse.json();
+                if (!axeelData || !axeelData.downloads?.url) throw new Error();
+                await conn.sendMessage(m.chat, { audio: { url: axeelData.downloads.url }, mimetype: 'audio/mpeg' }, { quoted: m });
+            } catch {
+                try {
+                    const siputzxUrl = `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(videoUrl)}`;
+                    const siputzxResponse = await fetch(siputzxUrl);
+                    const siputzxData = await siputzxResponse.json();
+                    if (!siputzxData.status || !siputzxData.data?.dl) throw new Error();
+                    await conn.sendMessage(m.chat, { audio: { url: siputzxData.data.dl }, mimetype: 'audio/mpeg' }, { quoted: m });
+                } catch {
+                    try {
+                        const ryzenUrl = `https://api.ryzendesu.vip/api/downloader/ytmp3?url=${encodeURIComponent(videoUrl)}`;
+                        const ryzenResponse = await fetch(ryzenUrl);
+                        const ryzenData = await ryzenResponse.json();
+                        if (ryzenData.status === 'tunnel' && ryzenData.url) {
+                            const downloadUrl = ryzenData.url;
+                            await conn.sendMessage(m.chat, { audio: { url: downloadUrl }, mimetype: 'audio/mpeg' }, { quoted: m });
+                        } else {
+                            throw new Error();
+                        }
+                    } catch {
+                        try {
+                            const dorratzUrl = `https://api.dorratz.com/v2/yt-mp3?url=${encodeURIComponent(videoUrl)}`;
+                            await conn.sendMessage(m.chat, { audio: { url: dorratzUrl }, mimetype: 'audio/mpeg' }, { quoted: m });
+                        } catch {
+                            try {
+                                const downloadUrl = await fetch9Convert(videoUrl);
+                                await conn.sendFile(m.chat, downloadUrl, 'audio.mp3', null, m, false, { mimetype: 'audio/mp4' });
+                            } catch {
+                                try {
+                                    const downloadUrl = await fetchY2mate(videoUrl);
+                                    await conn.sendFile(m.chat, downloadUrl, 'audio.mp3', null, m, false, { mimetype: 'audio/mp4' });
+                                } catch {
+                                    try {
+                                        const res = await fetch(`https://api.zenkey.my.id/api/download/ytmp3?apikey=zenkey&url=${videoUrl}`);
+                                        const audioData = await res.json();
+                                        if (!audioData.status || !audioData.result?.downloadUrl) throw new Error();
+                                        await conn.sendMessage(m.chat, { audio: { url: audioData.result.downloadUrl }, mimetype: 'audio/mpeg' }, { quoted: m });
+                                    } catch {
+                                        try {
+                                            const d2 = await fetch(`https://exonity.tech/api/ytdlp2-faster?apikey=adminsepuh&url=${videoUrl}`);
+                                            const dp = await d2.json();
+                                            const audiop = dp.result.media.mp3;
+                                            const fileSize = dp.result.media.mp3_size;
+                                            if (!audiop) throw new Error();
+                                            if (fileSize > LimitAud) {
+                                                await conn.sendMessage(m.chat, { document: { url: audiop }, mimetype: 'audio/mp3', fileName: `${videoUrl.split('v=')[1]}.mp3` }, { quoted: m });
+                                            } else {
+                                                await conn.sendMessage(m.chat, { audio: { url: audiop }, mimetype: 'audio/mpeg' }, { quoted: m });
+                                            }
+                                        } catch {
+                                            await m.reply('Todas las APIs fallaron. No se pudo procesar tu solicitud.');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    break;
+}          
+                  
 case 'tienda': case 'tiendas': 
 let tiend = `꧁🪼𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝐒𝐓𝐎𝐑𝐄🪼꧂
 █▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
