@@ -85,7 +85,14 @@ const pushname = m.pushName || "Sin nombre"
 const botnm = conn.user.id.split(":")[0] + "@s.whatsapp.net"  
 const _isBot = conn.user.jid
 m.isBot = m.id.startsWith('BAE5') && m.id.length === 16 || m.id.startsWith('3EB0') && m.id.length === 12 || m.id.startsWith('3EB0') && (m.id.length === 20 || m.id.length === 22) || m.id.startsWith('B24E') && m.id.length === 20;
-if (m.isBot) return
+if (m.isBot) return;
+
+/**
+ * Returns early if ID starts with 'NJX-' due to Baileys' different generateId system.
+ * @param {Object} m - The object containing the ID to check.
+ * @returns {void} - Returns early if ID starts with 'NJX-', otherwise continues with the function.
+ */
+if (m.id.startsWith('NJX-')) return;
 
 const userSender = m.key.fromMe ? botnm : m.isGroup && m.key.participant.includes(":") ? m.key.participant.split(":")[0] + "@s.whatsapp.net" : m.key.remoteJid.includes(":") ? m.key.remoteJid.split(":")[0] + "@s.whatsapp.net" : m.key.fromMe ? botnm : m.isGroup ? m.key.participant : m.key.remoteJid  
 const isCreator = [conn.decodeJid(conn.user.id), ...global.owner.map(([numero]) => numero)].map((v) => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender);
