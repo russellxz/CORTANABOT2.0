@@ -71,7 +71,7 @@ var body =  (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 
 //----------------------[ ATRIBUTOS ]-------------------------  
 if (m.key.id.startsWith("BAE5")) return    
 var budy = (typeof m.text == 'string' ? m.text : '')   
-  var prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : ""
+var prefix = /^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi.test(body) ? body.match(/^[°•π÷×¶∆£¢€¥®™+✓_=|~!?@#$%^&.©^]/gi)[0] : ""
 //var prefix = body.match(/^[/.*#]/)   
 const isCmd = body.startsWith(prefix) 
 const command = isCmd ? body.slice(1).trim().split(/ +/).shift().toLocaleLowerCase() : null
@@ -238,6 +238,7 @@ console.log(`[𝚄𝙿𝙳𝙰𝚃𝙴]\n𝙿𝚒𝚗𝚐: ${latensi.toFixed(4)}
 //--------------------[ AUTOREAD ]-----------------------
 if (m.message && prefix) {
 conn.readMessages([m.key])
+await conn.sendPresenceUpdate('composing', m.chat)	
 }	
  
 //Marcar como (Escribiendo...) 
@@ -629,7 +630,7 @@ return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'}
 }}}
 
 //ARRANCA LA DIVERSIÓN 
-switch (prefix + command) { 
+switch (command) { 
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
        
