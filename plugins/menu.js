@@ -566,8 +566,9 @@ rows: [{ header: "𝐌𝐄𝐍𝐔 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎", title: "",
 { header: "𝐒𝐏𝐄𝐄𝐃", title: "", id: `.speedtest`, description: `Ping || test de velocidad\n` }
 ]})
 
-//conn.sendList(m.chat, menu, botname, `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, listSections, {quoted: fkontak})
-conn.sendFile(m.chat, imagen3, 'img.jpg', saludos + menu + menu2, fkontak, null, { contextInfo:{  
+conn.sendList(m.chat, menu, botname, `sᴇʟᴇᴄᴄɪᴏɴᴇs ᴀǫᴜɪ`, listSections, {quoted: fkontak})
+m.reply(`Si esta usando en bot en un WhatsApp business y no enviar los mensajes con botones usar: /allmenu`)
+/*conn.sendFile(m.chat, imagen3, 'img.jpg', saludos + menu + menu2, fkontak, null, { contextInfo:{  
 forwardedNewsletterMessageInfo: { 
 newsletterJid: '120363266665814365@newsletter', 
 serverMessageId: '', 
@@ -582,7 +583,7 @@ mentionedJid:[sender, numBot],
 "mediaType": 1,   
 "thumbnail": imagen2, 
 sourceUrl: tiktok
-}}}) 
+}}}) */
 /*conn.sendMessage(m.chat, { text: saludos + menu + menu2, 
 contextInfo:{  
 forwardingScore: 9999999,  
