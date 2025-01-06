@@ -1277,7 +1277,6 @@ PRECIO:5000,000
 😃𝐆𝐫𝐚𝐜𝐢𝐚𝐬 𝐩𝐨𝐫 𝐯𝐢𝐬𝐢𝐭𝐚𝐫 𝐥𝐚😃
 🪼𝐂𝐨𝐫𝐭𝐚𝐧𝐚 𝐒𝐭𝐨𝐫𝐞 𝟐.𝟎🪼
 💳𝑽𝑼𝑬𝑳𝑽𝑨 𝑷𝑹𝑶𝑵𝑻𝑶.💳`
-m.reply(tiend) 
 conn.sendButton(m.chat, tiend, botname, null, [['IR A MI ARTICULO', '.misarticulos'], ['VER TOP MILLONARIO', '.millonarios'], ['COMPRAR ADMINS', '.buy2 1']], null, null, m)
 break
 
