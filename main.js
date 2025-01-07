@@ -1598,7 +1598,8 @@ conn.sendFile(m.chat, noetiqueta, 'sticker.webp', '',m, true, { contextInfo: { '
 if (media === 'texto')
 await conn.sendMessage(m.chat, {text: `${pickRandom(['*QUE YO QUE?*', 'Que?'])}`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 */
-/*if (m.mentionedJid.includes(conn.user.jid) || (m.quoted && m.quoted.sender === conn.user.jid) || budy.includes(`Bot`) || budy.includes(`bot`) || budy.includes(`alexa`) || budy.includes(`Alexa`) || budy.includes(`simi`) || budy.includes(`Simi`) || budy.includes(`Simsimi`)) {
+//if (m.mentionedJid.includes(conn.user.jid) || (m.quoted && m.quoted.sender === conn.user.jid) || budy.includes(`Bot`) || budy.includes(`bot`) || budy.includes(`alexa`) || budy.includes(`Alexa`) || budy.includes(`simi`) || budy.includes(`Simi`) || budy.includes(`Simsimi`)) {
+if (m.mentionedJid.includes(conn.user.jid) || budy.includes(`bot`) || budy.includes(`cortana`) || budy.includes(`alexa`) || budy.includes(`Alexa`) || budy.includes(`Simi`) || budy.includes(`Simsimi`)) {
 const axios = require('axios');
     await conn.sendPresenceUpdate('composing', m.chat)    
 
@@ -1676,7 +1677,7 @@ await m.reply(result);
 //conn.sendTextWithMentions(m.chat, result, m) 
 } else {
 }
-}*/
+}
 
 if (budy.includes(`Yaoi`)) {
 if (!global.db.data.chats[m.chat].reaccion) return
