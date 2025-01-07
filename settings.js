@@ -159,7 +159,7 @@ global.error = '🚫'
 global.xmoji = '👿' 
 
 //---------------[ NIVELES, ADVERTENCIA ]----------------
-global.multiplier = 30 // Cuanto más alto, más difícil subir de nivel 
+global.multiplier = 35 // Cuanto más alto, más difícil subir de nivel 
 global.maxwarn = '6' // máxima advertencias 
 
 //---------------[ IDs de canales ]----------------
