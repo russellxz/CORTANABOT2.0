@@ -1069,7 +1069,7 @@ case 'video': {
 
     if (!url.includes('youtu')) return m.reply('Por favor, proporciona un enlace válido de YouTube.');
 
-    m.reply('🚀 𝙿𝚁𝙾𝚂𝙿𝙴𝚁𝙰𝙽𝙳𝙾 𝚃𝚄 𝚂𝙾𝙻𝙸𝙲𝙸𝚃𝚄𝙳...');
+    m.reply('🚀 ᴘʀᴏsᴇsᴀɴᴅᴏ ᴛᴜ sᴏʟɪᴄɪᴛᴜᴅ...');
     
     try {
         const api = `https://api.siputzx.my.id/api/d/ytmp4?url=${url}`;
@@ -1113,7 +1113,7 @@ case 'musica': {
     if (!args.length || !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(args[0])) {
         return m.reply('Por favor, ingresa un enlace de YouTube válido.');
     }
-    m.reply('🚀 𝙿𝚁𝙾𝚂𝙿𝙴𝚁𝙰𝙽𝙳𝙾 𝚃𝚄 𝚂𝙾𝙻𝙸𝙲𝙸𝚃𝚄𝙳...');
+    m.reply('🚀 ᴘʀᴏsᴇsᴀɴᴅᴏ ᴛᴜ sᴏʟɪᴄɪᴛᴜᴅ...');
     const videoUrl = args[0];
 
     try {
