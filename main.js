@@ -942,6 +942,12 @@ break
 case 'facebook': case 'fb': case 'instagram': case 'ig': case 'igstalk': case 'tiktokstalk': case 'apk': case 'modoapk': case 'gdrive': case 'tw': case 'twitter': descarga2(m, command, text, args, conn, lolkeysapi, isCreator) 
 break 
 case 'videomp42': {
+conn.sendMessage(m.chat, {
+        react: {
+          text: '⏱️',
+          key: m.key,
+        },
+      });
 const { ytmp4 } = require("@hiudyy/ytdl");
    const video = await ytmp4(text);
     
