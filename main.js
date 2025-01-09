@@ -941,6 +941,17 @@ case 'play3': case 'playdoc': case 'playaudiodoc': case 'ytmp3doc': case 'play4'
 break
 case 'facebook': case 'fb': case 'instagram': case 'ig': case 'igstalk': case 'tiktokstalk': case 'apk': case 'modoapk': case 'gdrive': case 'tw': case 'twitter': descarga2(m, command, text, args, conn, lolkeysapi, isCreator) 
 break 
+case 'videomp42': {
+const { ytmp4 } = require("@hiudyy/ytdl");
+   const video = await ytmp4(text);
+    
+    conn.sendMessage(m.chat, { 
+            video: video, 
+            caption: 'Aquí está tu video!' })
+}
+
+break 
+
 
 case 'audio': case 'musica2': {
 const yts = require("youtube-yts");
