@@ -958,6 +958,22 @@ const { ytmp4 } = require("@hiudyy/ytdl");
 
 break 
 
+case 'audiomp32': {
+conn.sendMessage(m.chat, {
+        react: {
+          text: '⏱️',
+          key: m.key,
+        },
+      });
+const { ytmp3 } = require("@hiudyy/ytdl");
+   const audiodlp = await ytmp3(text);
+    
+    conn.sendMessage(m.chat, { audio: audiodlp, mimetype: "audio/mpeg", caption: `Here is your audio` }, { quoted: m });
+      
+}
+
+break 
+
 
 case 'audio': case 'musica2': {
 const yts = require("youtube-yts");
