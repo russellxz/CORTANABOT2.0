@@ -953,7 +953,7 @@ const { ytmp4 } = require("@hiudyy/ytdl");
     
     conn.sendMessage(m.chat, { 
             video: video, 
-            caption: 'Aquí está tu video!' })
+            caption: 'Aquí está tu video!'}, {quoted: m})
 }
 
 break 
