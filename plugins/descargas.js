@@ -67,7 +67,7 @@ const texto1 = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞
 │║        *████████████┃%100*
 ╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`.trim()
 
-await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.ytmp3 ${text}`], ['Video', `.videomp42 ${text}`], ['Mas resultados', `.yts ${text}`]], null, null, m)}
+await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `.ytmp3 ${text}`], ['Video', `.videomp42 ${yt_play[0].url}`], ['Mas resultados', `.yts ${text}`]], null, null, m)}
 
 if (command == 'play' || command == 'musica') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
