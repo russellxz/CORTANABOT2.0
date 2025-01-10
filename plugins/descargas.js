@@ -54,7 +54,12 @@ await conn.sendList(m.chat, `*𝙴𝙻𝙸𝙹𝙰𝚁 𝚀𝚄𝙴 𝚅𝙰 �
 
 if (command == 'play3' || command == 'play4') {
 if (!text) return m.reply(lenguaje.descargar.text + ` *${prefix + command}* ozuna`) 
-
+conn.sendMessage(m.chat, {
+        react: {
+          text: '⏱️',
+          key: m.key,
+        },
+      });
 const yt_play = await search(args.join(' '))
 const texto1 = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
 │║◈ ${lenguaje.descargar.title} ${yt_play[0].title}
