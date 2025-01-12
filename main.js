@@ -972,7 +972,7 @@ conn.sendMessage(m.chat, {
     conn.sendMessage(m.chat, { audio: audiodlp, mimetype: "audio/mpeg", caption: `Here is your audio` }, { quoted: m });
     }
 break 
-case "vision": {
+case "vision": case "visión": {
 conn.sendMessage(m.chat, {
         react: {
             text: '⏱️',
@@ -981,6 +981,21 @@ conn.sendMessage(m.chat, {
     });
     if (!text) return m.reply(` *${prefix + command}* cat`) 
 const apiUrl = `https://api.spiderx.com.br/api/ai/pixart?text=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`;
+   const response = await axios.get(apiUrl);
+   const imageUrl = response.data.image;
+ conn.sendMessage(m.chat, { image: { url: imageUrl }, caption: `✅`}, { quoted: m });           
+}
+break
+
+case "vision2": case "visión2": {
+conn.sendMessage(m.chat, {
+        react: {
+            text: '⏱️',
+            key: m.key,
+        },
+    });
+    if (!text) return m.reply(` *${prefix + command}* cat`) 
+const apiUrl = `https://api.spiderx.com.br/api/ai/prodia?text=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`;
    const response = await axios.get(apiUrl);
    const imageUrl = response.data.image;
  conn.sendMessage(m.chat, { image: { url: imageUrl }, caption: `✅`}, { quoted: m });           
