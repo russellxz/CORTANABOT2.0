@@ -214,7 +214,7 @@ if (empireApijson1.resultado == 'error' || empireApijson1.resultado == '' || !em
 m.reply(`${empireApijson1.resultado}`.trim());
 } catch {
 try {
-let ia = await axios.get(`https://delirius-api-oficial.vercel.app/api/chatgpt?q=${text}`)
+let ia = await axios.get(`https://delirius-apiofc.vercel.app/ia/chatgpt?q=${text}`)
 await m.reply(ia.data.data)
 } catch {
 return m.reply(info.error)}}}}}
