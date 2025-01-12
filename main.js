@@ -631,7 +631,6 @@ return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'}
 
 //ARRANCA LA DIVERSIÓN 
 switch (prefix && command) { 
-	
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
        
@@ -997,6 +996,21 @@ conn.sendMessage(m.chat, {
     });
     if (!text) return m.reply(` *${prefix + command}* cat`) 
 const apiUrl = `https://api.spiderx.com.br/api/ai/prodia?text=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`;
+   const response = await axios.get(apiUrl);
+   const imageUrl = response.data.image;
+ conn.sendMessage(m.chat, { image: { url: imageUrl }, caption: `✅`}, { quoted: m });           
+}
+break
+
+case "vision3": case "visión3": {
+conn.sendMessage(m.chat, {
+        react: {
+            text: '⏱️',
+            key: m.key,
+        },
+    });
+    if (!text) return m.reply(` *${prefix + command}* cat`) 
+const apiUrl = `https://api.spiderx.com.br/api/ai/stable-diffusion-turbo?search=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`;
    const response = await axios.get(apiUrl);
    const imageUrl = response.data.image;
  conn.sendMessage(m.chat, { image: { url: imageUrl }, caption: `✅`}, { quoted: m });           
