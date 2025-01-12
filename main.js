@@ -972,7 +972,20 @@ conn.sendMessage(m.chat, {
     conn.sendMessage(m.chat, { audio: audiodlp, mimetype: "audio/mpeg", caption: `Here is your audio` }, { quoted: m });
     }
 break 
-
+case "vision": {
+conn.sendMessage(m.chat, {
+        react: {
+            text: '⏱️',
+            key: m.key,
+        },
+    });
+    if (!text) return m.reply(` *${prefix + command}* cat`) 
+const apiUrl = `https://api.spiderx.com.br/api/ai/pixart?text=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`;
+   const response = await axios.get(apiUrl);
+   const imageUrl = response.data.image;
+ conn.sendMessage(m.chat, { image: { url: imageUrl }, caption: `✅`}, { quoted: m });           
+}
+break
 case "play5": {
     conn.sendMessage(m.chat, {
         react: {
@@ -996,7 +1009,7 @@ case "play5": {
 │║        *████████████┃%100*
 ╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`
       
- conn.sendMessage(m.chat, { image: { url: thumbnailUrl }, caption: cat}, { quoted: m });
+ await conn.sendMessage(m.chat, { image: { url: thumbnailUrl }, caption: cat}, { quoted: m });
         conn.sendMessage(m.chat, { 
             audio: { url: audioUrl }, 
             mimetype: "audio/mpeg", 
