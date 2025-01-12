@@ -988,16 +988,13 @@ case "play5": {
         const audioUrl = data.url;
         const thumbnailUrl = data.thumbnail;  
         const cat = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
-        │║◈ titulo: ${title}
-        │║◈ descripcion: ${description}
-        │║
-        │║        *████████████┃%100*
-        ╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`
-        await conn.sendMessage(m.chat, { 
-            text: cat, 
-            image: { url: thumbnailUrl }  
-        }, { quoted: m });
-
+│║◈ titulo: ${title}
+│║◈ descripcion: ${description}
+│║
+│║        *████████████┃%100*
+╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`
+      
+await conn.sendMessage(m.chat, { image: { url: thumbnailUrl }, caption: cat}, { quoted: m });
         conn.sendMessage(m.chat, { 
             audio: { url: audioUrl }, 
             mimetype: "audio/mpeg", 
