@@ -967,7 +967,7 @@ conn.sendMessage(m.chat, {
       });
 
   const apiKey = 'Xbvr2DYp3HPJp9ed9ntU'; // Tu API key
-        const apiUrl = `https://api.spiderx.com.br/api/downloads/play-audio?search=${encodeURIComponent(text)}&api_key=${apiKey}`;
+        const apiUrl = `https://api.spiderx.com.br/api/downloads/play-audio?search=${text}&api_key=${apiKey}`;
             const response = await axios.get(apiUrl);
             const audioUrl = response.data.url;
               
