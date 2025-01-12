@@ -976,21 +976,27 @@ conn.sendMessage(m.chat, {
 }
 
 break 
+
 case "play5": {
-const p = `${text}`
-const response = await axios.get('https://api.spiderx.com.br/api/downloads/play-audio?search=${p}&api_key=Xbvr2DYp3HPJp9ed9ntU');
-            const data = response.data;
-            const title = data.title;
-            const description = data.description;
-            const audioUrl = data.url;
-            await conn.sendMessage(m.chat, {text:`${title}\n\n${description}`}, {quoted: m});
-conn.sendMessage(m.chat, { 
-    audio: { url: audioUrl }, 
-    mimetype: "audio/mpeg", 
-    caption: "Here is your audio" 
-}, { quoted: m });
+    const response = await axios.get(`https://api.spiderx.com.br/api/downloads/play-audio?search=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`);
+    const data = response.data;
+    if (data && data.title && data.url) {
+        const title = data.title;
+        const description = data.description || "No description available"; 
+        const audioUrl = data.url;
+       await conn.sendMessage(m.chat, { text: `${title}\n
+${description}` }, { quoted: m });
+        conn.sendMessage(m.chat, { 
+            audio: { url: audioUrl }, 
+            mimetype: "audio/mpeg", 
+            caption: "Here is your audio" 
+        }, { quoted: m });
+    } else {
+        await conn.sendMessage(m.chat, { text: "No se encontraron resultados." }, { quoted: m });
+    }
 }
-break
+break;
+
 
 case 'audio': case 'musica2': {
 const yts = require("youtube-yts");
