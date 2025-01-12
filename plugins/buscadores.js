@@ -176,9 +176,25 @@ conn.sendMessage(m.chat, { audio: { url: texttospeechurl }, contextInfo: { "exte
 m.react('🗣️')}
 
 if (command == 'chatgpt' || command == 'ia') {
-if (!text) return m.reply(`${lenguaje.lengua.ia} ${prefix + command} Recomienda un top 10 de películas de acción`)  
-let ia = await axios.get(`https://delirius-apiofc.vercel.app/ia/chatgpt?q=${text}`)
-await m.reply(ia.data.data)}
+    if (!text) return m.reply(`${lenguaje.lengua.ia} ${prefix + command} Recomienda un top 10 de películas de acción`);
+    
+    try {
+        const response = await fetch("https://api.spiderx.com.br/api/ai/gpt-4?api_key=Xbvr2DYp3HPJp9ed9ntU", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                text: text 
+            })
+        });
+        
+        const data = await response.json();
+        await m.reply(data); 
+    } catch (error) {
+        await m.reply("Ocurrió un error al comunicarse con la API. Inténtalo de nuevo."); // Manejo de errores
+    }
+}
 
 if (command == 'bard' || command == 'ia2') { 
 if (prefix == 'a' || prefix == 'A') return
