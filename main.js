@@ -976,7 +976,16 @@ conn.sendMessage(m.chat, {
 }
 
 break 
-
+case "play5": {
+const response = await axios.get('https://api.spiderx.com.br/api/downloads/play-audio?search=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU');
+            const data = response.data;
+            const title = data.title;
+            const description = data.description;
+            const audioUrl = data.url;
+            await conn.sendMessage(m.chat, {text:`${title}\n${description}`}, {quoted: m});
+  conn.sendMessage(m.chat, { audio: audioUrl, mimetype: "audio/mpeg", caption: `Here is your audio` }, { quoted: m });
+}
+break
 
 case 'audio': case 'musica2': {
 const yts = require("youtube-yts");
