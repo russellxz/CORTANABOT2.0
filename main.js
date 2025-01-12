@@ -982,8 +982,12 @@ const response = await axios.get('https://api.spiderx.com.br/api/downloads/play-
             const title = data.title;
             const description = data.description;
             const audioUrl = data.url;
-            await conn.sendMessage(m.chat, {text:`${title}\n${description}`}, {quoted: m});
-  conn.sendMessage(m.chat, { audio: audioUrl, mimetype: "audio/mpeg", caption: `Here is your audio` }, { quoted: m });
+            await conn.sendMessage(m.chat, {text:`${title}\n\n${description}`}, {quoted: m});
+conn.sendMessage(m.chat, { 
+    audio: { url: audioUrl }, 
+    mimetype: "audio/mpeg", 
+    caption: "Here is your audio" 
+}, { quoted: m });
 }
 break
 
