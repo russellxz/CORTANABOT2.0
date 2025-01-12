@@ -965,10 +965,13 @@ conn.sendMessage(m.chat, {
           key: m.key,
         },
       });
-const { ytmp3 } = require("@hiudyy/ytdl");
-   const audiodlp = await ytmp3(text);
-    
-    conn.sendMessage(m.chat, { audio: audiodlp, mimetype: "audio/mpeg", caption: `Here is your audio` }, { quoted: m });
+
+  const apiKey = 'Xbvr2DYp3HPJp9ed9ntU'; // Tu API key
+        const apiUrl = `https://api.spiderx.com.br/api/downloads/play-audio?search=${encodeURIComponent(text)}&api_key=${apiKey}`;
+            const response = await axios.get(apiUrl);
+            const audioUrl = response.data.url;
+              
+    conn.sendMessage(m.chat, { audio: audioUrl, mimetype: "audio/mpeg", caption: `Here is your audio` }, { quoted: m });
       
 }
 
