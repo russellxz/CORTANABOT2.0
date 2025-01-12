@@ -966,26 +966,38 @@ conn.sendMessage(m.chat, {
         },
       });
 
-  const apiKey = 'Xbvr2DYp3HPJp9ed9ntU'; // Tu API key
-        const apiUrl = `https://api.spiderx.com.br/api/downloads/play-audio?search=${text}&api_key=${apiKey}`;
-            const response = await axios.get(apiUrl);
-            const audioUrl = response.data.url;
-              
-    conn.sendMessage(m.chat, { audio: audioUrl, mimetype: "audio/mpeg", caption: `Here is your audio` }, { quoted: m });
-      
-}
-
+  const { ytmp3 } = require("@hiudyy/ytdl");
+   const audiodlp = await ytmp3(text);
+    
+    conn.sendMessage(m.chat, { audio: audiodlp, mimetype: "audio/mpeg", caption: `Here is your audio` }, { quoted: m });
+    }
 break 
 
 case "play5": {
+    conn.sendMessage(m.chat, {
+        react: {
+            text: '⏱️',
+            key: m.key,
+        },
+    });
     const response = await axios.get(`https://api.spiderx.com.br/api/downloads/play-audio?search=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`);
     const data = response.data;
     if (data && data.title && data.url) {
         const title = data.title;
         const description = data.description || "No description available"; 
         const audioUrl = data.url;
-       await conn.sendMessage(m.chat, { text: `${title}\n
-${description}` }, { quoted: m });
+        const thumbnailUrl = data.thumbnail;  
+        const cat = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
+        │║◈ titulo: ${title}
+        │║◈ descripcion: ${description}
+        │║
+        │║        *████████████┃%100*
+        ╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`
+        await conn.sendMessage(m.chat, { 
+            text: cat, 
+            image: { url: thumbnailUrl }  
+        }, { quoted: m });
+
         conn.sendMessage(m.chat, { 
             audio: { url: audioUrl }, 
             mimetype: "audio/mpeg", 
@@ -996,6 +1008,7 @@ ${description}` }, { quoted: m });
     }
 }
 break
+
 
 
 case 'audio': case 'musica2': {
