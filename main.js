@@ -980,6 +980,8 @@ case "play5": {
             key: m.key,
         },
     });
+    if (!text) return m.reply(` *${prefix + command}* ozuna`) 
+    
     const response = await axios.get(`https://api.spiderx.com.br/api/downloads/play-audio?search=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`);
     const data = response.data;
     if (data && data.title && data.url) {
@@ -994,7 +996,7 @@ case "play5": {
 │║        *████████████┃%100*
 ╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`
       
-await conn.sendMessage(m.chat, { image: { url: thumbnailUrl }, caption: cat}, { quoted: m });
+ conn.sendMessage(m.chat, { image: { url: thumbnailUrl }, caption: cat}, { quoted: m });
         conn.sendMessage(m.chat, { 
             audio: { url: audioUrl }, 
             mimetype: "audio/mpeg", 
