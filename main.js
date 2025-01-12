@@ -995,7 +995,7 @@ ${description}` }, { quoted: m });
         await conn.sendMessage(m.chat, { text: "No se encontraron resultados." }, { quoted: m });
     }
 }
-break;
+break
 
 
 case 'audio': case 'musica2': {
