@@ -977,7 +977,8 @@ conn.sendMessage(m.chat, {
 
 break 
 case "play5": {
-const response = await axios.get('https://api.spiderx.com.br/api/downloads/play-audio?search=${args}&api_key=Xbvr2DYp3HPJp9ed9ntU');
+const p = `${text}`
+const response = await axios.get('https://api.spiderx.com.br/api/downloads/play-audio?search=${p}&api_key=Xbvr2DYp3HPJp9ed9ntU');
             const data = response.data;
             const title = data.title;
             const description = data.description;
