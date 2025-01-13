@@ -1095,7 +1095,7 @@ case "yt4": {
     });
     if (!text) return m.reply(` *${prefix + command}* youtube.com/`) 
     
-    const response = await axios.get(`https://api.spiderx.com.br/api/downloads/yt-mp3?url=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`);
+    const response = await axios.get(`https://api.spiderx.com.br/api/downloads/yt-mp4?url=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`);
     const data = response.data;
     if (data && data.title && data.url) {
         const title = data.title;
