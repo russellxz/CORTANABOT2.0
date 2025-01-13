@@ -1065,7 +1065,8 @@ case "yt3": {
         const title = data.title;
         const description = data.description || "No description available"; 
         const audioUrl = data.url;
-        const thumbnailUrl = data.thumbnail;  
+        const thumbnailUrl = data.thumbnail; 
+        const channel = data.channel 
         const cat = `╭───≪~*╌◌ᰱ•••⃙❨͟͞YTMP3❩⃘•••ᰱ◌╌*~*
 │║◈ titulo: ${title}
 │║◈ descripcion: ${description}
@@ -1085,7 +1086,35 @@ case "yt3": {
 }
 break
 
-
+case "yt4": {
+    conn.sendMessage(m.chat, {
+        react: {
+            text: '⏱️',
+            key: m.key,
+        },
+    });
+    if (!text) return m.reply(` *${prefix + command}* youtube.com/`) 
+    
+    const response = await axios.get(`https://api.spiderx.com.br/api/downloads/yt-mp3?url=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`);
+    const data = response.data;
+    if (data && data.title && data.url) {
+        const title = data.title;
+        const description = data.description || "No description available"; 
+        const videoUrl = data.url;
+        const thumbnailUrl = data.thumbnail; 
+        const channel = data.channel 
+        const cat = `🎥 *Título del Video:* ${title}\n📝 *Descripción:* ${description || "No disponible"}\n📸 *Miniatura:* ${thumbnailUrl}\n👤 *Canal:* [${channel.name}](${channel.url})`
+      
+ await conn.sendMessage(m.chat, { image: { url: thumbnailUrl }, caption: cat}, { quoted: m });
+        conn.sendMessage(m.chat, { 
+            video: { url: videoUrl },
+            caption: "Here is your video" 
+        }, { quoted: m });
+    } else {
+        await conn.sendMessage(m.chat, { text: "No se encontraron resultados." }, { quoted: m });
+    }
+}
+break
 case 'audio': case 'musica2': {
 const yts = require("youtube-yts");
 if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra);
