@@ -633,7 +633,80 @@ return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'}
 switch (prefix && command) { 
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
-       
+
+case '.guar':
+    if (!m.quoted || !m.quoted.mimetype) {
+        // Verifica si se seleccionó un multimedia o si hay algo citado
+        return conn.sendMessage(
+            m.chat,
+            { 
+                text: "❌ *Error:* Debes seleccionar un multimedia o responder al multimedia con una palabra clave para guardarlo. 📂" 
+            },
+            { quoted: m }
+        );
+    }
+
+    const guarKeyword = args.join(' '); // Obtener la palabra clave
+    if (!guarKeyword) {
+        return conn.sendMessage(
+            m.chat,
+            { 
+                text: "⚠️ *Aviso:* Por favor, escribe una palabra clave para guardar este multimedia. 📝" 
+            },
+            { quoted: m }
+        );
+    }
+
+    // Descargar el multimedia
+    const guarMediaBuffer = await downloadContentFromMessage(m.quoted, m.quoted.mimetype.split('/')[0]);
+
+    multimediaStore[guarKeyword] = {
+        buffer: guarMediaBuffer,
+        mimetype: m.quoted.mimetype,
+    };
+
+    return conn.sendMessage(
+        m.chat,
+        { 
+            text: `✅ *Listo:* El multimedia ha sido guardado con la palabra clave: *"${guarKeyword}"*. 🎉` 
+        },
+        { quoted: m }
+    );
+    break;
+
+case '.kill':
+    const killKeyword = args.join(' '); // Obtener la palabra clave
+    if (!killKeyword) {
+        return conn.sendMessage(
+            m.chat,
+            { 
+                text: "⚠️ *Aviso:* Escribe la palabra clave para borrar el multimedia guardado. 🗑️" 
+            },
+            { quoted: m }
+        );
+    }
+
+    if (!multimediaStore[killKeyword]) {
+        return conn.sendMessage(
+            m.chat,
+            { 
+                text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${killKeyword}"*. 🔍` 
+            },
+            { quoted: m }
+        );
+    }
+
+    delete multimediaStore[killKeyword]; // Eliminar el multimedia del almacenamiento
+    return conn.sendMessage(
+        m.chat,
+        { 
+            text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${killKeyword}"* ha sido eliminado. ✅` 
+        },
+        { quoted: m }
+    );
+    break;		
+
+		
 //jadibot/serbot 
 case 'serbot': case 'jadibot': case 'qr':
 jadibot(conn, m, command, text, args, sender)
