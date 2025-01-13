@@ -47,8 +47,16 @@ const {descarga, descarga2} = require('./plugins/descargas.js')
 const {stickers} = require('./plugins/stickers.js') 
 const {owner} = require('./plugins/propietario.js')  
 const {enable} = require('./plugins/enable.js')
-const multimediaStore = {};
-//global.db.data.sticker = global.db.data.sticker || {} 
+const path = './multimedia.json';  // El archivo donde se guardarán los multimedia
+
+// Cargar el archivo multimedia.json si existe, de lo contrario inicializar como vacío
+let multimediaStore = {};
+if (fs.existsSync(path)) {
+    multimediaStore = JSON.parse(fs.readFileSync(path));  // Leer el archivo si existe
+} else {
+    fs.writeFileSync(path, JSON.stringify(multimediaStore, null, 2)); // Crear el archivo vacío si no existe
+}
+//fino
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
@@ -635,45 +643,92 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 
-case '.guar':
-    if (!m.quoted || !m.quoted.mimetype) {
-        // Verifica si se seleccionó un multimedia o si hay algo citado
+// prueba desde aqui ok
+
+switch(command) {
+    case '.guar':
+        if (!m.quoted || !m.quoted.mimetype) {
+            return conn.sendMessage(
+                m.chat,
+                { 
+                    text: "❌ *Error:* Debes seleccionar un multimedia o responder al multimedia con una palabra clave para guardarlo. 📂" 
+                },
+                { quoted: m }
+            );
+        }
+
+        const guarKeyword = args.join(' '); // Obtener la palabra clave
+        if (!guarKeyword) {
+            return conn.sendMessage(
+                m.chat,
+                { 
+                    text: "⚠️ *Aviso:* Por favor, escribe una palabra clave para guardar este multimedia. 📝" 
+                },
+                { quoted: m }
+            );
+        }
+
+        // Descargar el multimedia
+        const guarMediaBuffer = await downloadContentFromMessage(m.quoted, m.quoted.mimetype.split('/')[0]);
+
+        // Guardar en el almacenamiento
+        multimediaStore[guarKeyword] = {
+            buffer: guarMediaBuffer.toString('base64'), // Guardar como base64 para evitar problemas
+            mimetype: m.quoted.mimetype,
+        };
+
+        fs.writeFileSync(path, JSON.stringify(multimediaStore, null, 2)); // Guardar en el archivo
+
         return conn.sendMessage(
             m.chat,
             { 
-                text: "❌ *Error:* Debes seleccionar un multimedia o responder al multimedia con una palabra clave para guardarlo. 📂" 
+                text: `✅ *Listo:* El multimedia ha sido guardado con la palabra clave: *"${guarKeyword}"*. 🎉` 
             },
             { quoted: m }
         );
-    }
+        break;
 
-    const guarKeyword = args.join(' '); // Obtener la palabra clave
-    if (!guarKeyword) {
+    case '.kill':
+        const killKeyword = args.join(' '); // Obtener la palabra clave
+        if (!killKeyword) {
+            return conn.sendMessage(
+                m.chat,
+                { 
+                    text: "⚠️ *Aviso:* Escribe la palabra clave para borrar el multimedia guardado. 🗑️" 
+                },
+                { quoted: m }
+            );
+        }
+
+        if (!multimediaStore[killKeyword]) {
+            return conn.sendMessage(
+                m.chat,
+                { 
+                    text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${killKeyword}"*. 🔍` 
+                },
+                { quoted: m }
+            );
+        }
+
+        delete multimediaStore[killKeyword]; // Eliminar del almacenamiento
+        fs.writeFileSync(path, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
+
         return conn.sendMessage(
             m.chat,
             { 
-                text: "⚠️ *Aviso:* Por favor, escribe una palabra clave para guardar este multimedia. 📝" 
+                text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${killKeyword}"* ha sido eliminado. ✅` 
             },
             { quoted: m }
         );
-    }
+        break;
 
-    // Descargar el multimedia
-    const guarMediaBuffer = await downloadContentFromMessage(m.quoted, m.quoted.mimetype.split('/')[0]);
+    // Otros casos de comandos que tengas...
 
-    multimediaStore[guarKeyword] = {
-        buffer: guarMediaBuffer,
-        mimetype: m.quoted.mimetype,
-    };
-
-    return conn.sendMessage(
-        m.chat,
-        { 
-            text: `✅ *Listo:* El multimedia ha sido guardado con la palabra clave: *"${guarKeyword}"*. 🎉` 
-        },
-        { quoted: m }
-    );
-    break;
+    default:
+        // Acción predeterminada si el comando no es reconocido
+        break;
+}
+	
 
 case '.kill':
     const killKeyword = args.join(' '); // Obtener la palabra clave
@@ -697,7 +752,9 @@ case '.kill':
         );
     }
 
-    delete multimediaStore[killKeyword]; // Eliminar el multimedia del almacenamiento
+    delete multimediaStore[killKeyword]; // Eliminar del almacenamiento
+    fs.writeFileSync(path, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
+
     return conn.sendMessage(
         m.chat,
         { 
@@ -705,7 +762,7 @@ case '.kill':
         },
         { quoted: m }
     );
-    break;		
+    break		
 
 		
 //jadibot/serbot 
