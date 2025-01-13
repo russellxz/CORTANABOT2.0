@@ -47,6 +47,7 @@ const {descarga, descarga2} = require('./plugins/descargas.js')
 const {stickers} = require('./plugins/stickers.js') 
 const {owner} = require('./plugins/propietario.js')  
 const {enable} = require('./plugins/enable.js')
+const multimediaStore = {};
 //global.db.data.sticker = global.db.data.sticker || {} 
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
