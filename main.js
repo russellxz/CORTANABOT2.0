@@ -1104,11 +1104,10 @@ case "yt4": {
         const thumbnailUrl = data.thumbnail; 
         const channel = data.channel 
         const cat = `🎥 *Título del Video:* ${title}\n📝 *Descripción:* ${description || "No disponible"}\n📸 *Miniatura:* ${thumbnailUrl}\n👤 *Canal:* [${channel.name}](${channel.url})`
-      
- await conn.sendMessage(m.chat, { image: { url: thumbnailUrl }, caption: cat}, { quoted: m });
+      // await conn.sendMessage(m.chat, { image: { url: thumbnailUrl }, caption: cat}, { quoted: m });
         conn.sendMessage(m.chat, { 
             video: { url: videoUrl },
-            caption: "Here is your video" 
+            caption:  cat  
         }, { quoted: m });
     } else {
         await conn.sendMessage(m.chat, { text: "No se encontraron resultados." }, { quoted: m });
