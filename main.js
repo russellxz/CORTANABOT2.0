@@ -1050,7 +1050,40 @@ case "play5": {
     }
 }
 break
-
+case "yt3": {
+    conn.sendMessage(m.chat, {
+        react: {
+            text: '⏱️',
+            key: m.key,
+        },
+    });
+    if (!text) return m.reply(` *${prefix + command}* youtube.com/`) 
+    
+    const response = await axios.get(`https://api.spiderx.com.br/api/downloads/yt-mp3?url=${text}&api_key=Xbvr2DYp3HPJp9ed9ntU`);
+    const data = response.data;
+    if (data && data.title && data.url) {
+        const title = data.title;
+        const description = data.description || "No description available"; 
+        const audioUrl = data.url;
+        const thumbnailUrl = data.thumbnail;  
+        const cat = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
+│║◈ titulo: ${title}
+│║◈ descripcion: ${description}
+│║
+│║        *████████████┃%100*
+╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`
+      
+ await conn.sendMessage(m.chat, { image: { url: thumbnailUrl }, caption: cat}, { quoted: m });
+        conn.sendMessage(m.chat, { 
+            audio: { url: audioUrl }, 
+            mimetype: "audio/mpeg", 
+            caption: "Here is your audio" 
+        }, { quoted: m });
+    } else {
+        await conn.sendMessage(m.chat, { text: "No se encontraron resultados." }, { quoted: m });
+    }
+}
+break
 
 
 case 'audio': case 'musica2': {
