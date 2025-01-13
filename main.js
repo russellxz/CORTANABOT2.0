@@ -1066,7 +1066,7 @@ case "yt3": {
         const description = data.description || "No description available"; 
         const audioUrl = data.url;
         const thumbnailUrl = data.thumbnail;  
-        const cat = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
+        const cat = `╭───≪~*╌◌ᰱ•••⃙❨͟͞YTMP3❩⃘•••ᰱ◌╌*~*
 │║◈ titulo: ${title}
 │║◈ descripcion: ${description}
 │║
