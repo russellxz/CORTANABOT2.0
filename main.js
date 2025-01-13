@@ -47,16 +47,14 @@ const {descarga, descarga2} = require('./plugins/descargas.js')
 const {stickers} = require('./plugins/stickers.js') 
 const {owner} = require('./plugins/propietario.js')  
 const {enable} = require('./plugins/enable.js')
-const path = './multimedia.json';  // El archivo donde se guardarán los multimedia
+const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 
-// Cargar el archivo multimedia.json si existe, de lo contrario inicializar como vacío
 let multimediaStore = {};
-if (fs.existsSync(path)) {
-    multimediaStore = JSON.parse(fs.readFileSync(path));  // Leer el archivo si existe
-} else {
-    fs.writeFileSync(path, JSON.stringify(multimediaStore, null, 2)); // Crear el archivo vacío si no existe
+if (fs.existsSync(path2)) {
+    multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
-//fino
+
+
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
@@ -642,121 +640,141 @@ return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'}
 switch (prefix && command) { 
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
-
 // prueba desde aqui ok
-    case 'guar':
-        if (!m.quoted || !m.quoted.mimetype) {
-            return conn.sendMessage(
-                m.chat,
-                { 
-                    text: "❌ *Error:* Debes seleccionar un multimedia o responder al multimedia con una palabra clave para guardarlo. 📂" 
-                },
-                { quoted: m }
-            );
-        }
-
-        const guarKeyword = args.join(' '); // Obtener la palabra clave
-        if (!guarKeyword) {
-            return conn.sendMessage(
-                m.chat,
-                { 
-                    text: "⚠️ *Aviso:* Por favor, escribe una palabra clave para guardar este multimedia. 📝" 
-                },
-                { quoted: m }
-            );
-        }
-
-        // Descargar el multimedia
-        const guarMediaBuffer = await downloadContentFromMessage(m.quoted, m.quoted.mimetype.split('/')[0]);
-
-        // Guardar en el almacenamiento
-        multimediaStore[guarKeyword] = {
-            buffer: guarMediaBuffer.toString('base64'), // Guardar como base64 para evitar problemas
-            mimetype: m.quoted.mimetype,
-        };
-
-        fs.writeFileSync(path, JSON.stringify(multimediaStore, null, 2)); // Guardar en el archivo
-
+case 'guar':
+    if (!m.quoted || !m.quoted.mimetype) {
         return conn.sendMessage(
             m.chat,
-            { 
-                text: `✅ *Listo:* El multimedia ha sido guardado con la palabra clave: *"${guarKeyword}"*. 🎉` 
-            },
-            { quoted: m }
-        );
-        break;
-
-    case '.kill':
-        const killKeyword = args.join(' '); // Obtener la palabra clave
-        if (!killKeyword) {
-            return conn.sendMessage(
-                m.chat,
-                { 
-                    text: "⚠️ *Aviso:* Escribe la palabra clave para borrar el multimedia guardado. 🗑️" 
-                },
-                { quoted: m }
-            );
-        }
-
-        if (!multimediaStore[killKeyword]) {
-            return conn.sendMessage(
-                m.chat,
-                { 
-                    text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${killKeyword}"*. 🔍` 
-                },
-                { quoted: m }
-            );
-        }
-
-        delete multimediaStore[killKeyword]; // Eliminar del almacenamiento
-        fs.writeFileSync(path, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
-
-        return conn.sendMessage(
-            m.chat,
-            { 
-                text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${killKeyword}"* ha sido eliminado. ✅` 
-            },
-            { quoted: m }
-        );
-        break;
-	
-
-case '.kill':
-    const killKeyword = args.join(' '); // Obtener la palabra clave
-    if (!killKeyword) {
-        return conn.sendMessage(
-            m.chat,
-            { 
-                text: "⚠️ *Aviso:* Escribe la palabra clave para borrar el multimedia guardado. 🗑️" 
+            {
+                text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) con una palabra clave para guardarlo. 📂"
             },
             { quoted: m }
         );
     }
 
-    if (!multimediaStore[killKeyword]) {
+    const saveKey = args.join(' '); // Palabra clave para guardar
+    if (!saveKey) {
         return conn.sendMessage(
             m.chat,
-            { 
-                text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${killKeyword}"*. 🔍` 
+            {
+                text: "⚠️ *Aviso:* Escribe una palabra clave para guardar este multimedia. 📝"
             },
             { quoted: m }
         );
     }
 
-    delete multimediaStore[killKeyword]; // Eliminar del almacenamiento
-    fs.writeFileSync(path, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
+    // Descargar el multimedia
+    const mediaType = m.quoted.mimetype;
+    const mediaExt = mediaType.split('/')[1]; // Ejemplo: "jpg", "mp4", etc.
+    const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
+
+    // Convertir el stream en un buffer
+    let mediaBuffer = Buffer.alloc(0);
+    for await (const chunk of mediaStream) {
+        mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+    }
+
+    // Guardar multimedia con la palabra clave
+    multimediaStore[saveKey] = {
+        buffer: mediaBuffer.toString('base64'), // Convertir a base64
+        mimetype: mediaType,
+        extension: mediaExt
+    };
+
+    fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Guardar en archivo
 
     return conn.sendMessage(
         m.chat,
-        { 
-            text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${killKeyword}"* ha sido eliminado. ✅` 
+        {
+            text: `✅ *Listo:* El multimedia se ha guardado con la palabra clave: *"${saveKey}"*. 🎉`
         },
         { quoted: m }
     );
-    break		
+    break;
 
-		
-//jadibot/serbot 
+case 'g':
+    const getKey = args.join(' '); // Palabra clave para recuperar
+    if (!getKey) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *Aviso:* Escribe una palabra clave para obtener el multimedia guardado. 🔑"
+            },
+            { quoted: m }
+        );
+    }
+
+    const storedMedia = multimediaStore[getKey];
+    if (!storedMedia) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${getKey}"*. 🔍`
+            },
+            { quoted: m }
+        );
+    }
+
+    // Recuperar y enviar el multimedia
+    const decodedBuffer = Buffer.from(storedMedia.buffer, 'base64'); // Decodificar el base64
+
+    let messageType;
+    if (storedMedia.mimetype.includes('webp')) {
+        // Enviar como sticker si es webp
+        messageType = 'sticker';
+    } else if (storedMedia.mimetype.startsWith('application')) {
+        // Enviar como documento si es application/*
+        messageType = 'document';
+    } else {
+        // Usar el tipo base para imágenes, videos o audios
+        messageType = storedMedia.mimetype.split('/')[0];
+    }
+
+    return conn.sendMessage(
+        m.chat,
+        {
+            [messageType]: decodedBuffer,
+            mimetype: storedMedia.mimetype,
+            fileName: `${getKey}.${storedMedia.extension}` // Incluir el nombre del archivo si es documento
+        },
+        { quoted: m }
+    );
+    break
+    case 'kill':
+    const deleteKey = args.join(' '); // Palabra clave para eliminar
+    if (!deleteKey) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *Aviso:* Escribe la palabra clave para borrar el multimedia guardado. 🗑️"
+            },
+            { quoted: m }
+        );
+    }
+
+    if (!multimediaStore[deleteKey]) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${deleteKey}"*. 🔍`
+            },
+            { quoted: m }
+        );
+    }
+
+    delete multimediaStore[deleteKey]; // Eliminar del almacenamiento
+    fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
+
+    return conn.sendMessage(
+        m.chat,
+        {
+            text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${deleteKey}"* ha sido eliminado. ✅`
+        },
+        { quoted: m }
+    );
+    break;
+    
+ //=£₡÷
 case 'serbot': case 'jadibot': case 'qr':
 jadibot(conn, m, command, text, args, sender)
 break  
