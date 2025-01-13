@@ -644,9 +644,7 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 
 // prueba desde aqui ok
-
-switch(command) {
-    case '.guar':
+    case 'guar':
         if (!m.quoted || !m.quoted.mimetype) {
             return conn.sendMessage(
                 m.chat,
@@ -721,13 +719,6 @@ switch(command) {
             { quoted: m }
         );
         break;
-
-    // Otros casos de comandos que tengas...
-
-    default:
-        // Acción predeterminada si el comando no es reconocido
-        break;
-}
 	
 
 case '.kill':
