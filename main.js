@@ -773,7 +773,34 @@ case 'g':
         { quoted: m }
     );
     break;
-    
+ case 'clavelista':
+    if (Object.keys(multimediaStore).length === 0) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "📂 *Lista de Palabras Clave Guardadas:*\n\n⚠️ No hay multimedia guardado aún. Usa el comando `.guar` para guardar uno. 😉"
+            },
+            { quoted: m }
+        );
+    }
+
+    let listMessage = "📂 *Lista de Palabras Clave Guardadas:*\n\n";
+    let index = 1;
+
+    for (const key in multimediaStore) {
+        const item = multimediaStore[key];
+        listMessage += `*${index}.* 🔑 *${key}*\n📎 Tipo: _${item.mimetype}_\n\n`;
+        index++;
+    }
+
+    listMessage += "📝 Usa `.g <palabra clave>` para recuperar el multimedia asociado.\n✨ Gestión de multimedia con estilo ✨";
+
+    return conn.sendMessage(
+        m.chat,
+        { text: listMessage },
+        { quoted: m }
+    );
+    break;
  //=£₡÷
 case 'serbot': case 'jadibot': case 'qr':
 jadibot(conn, m, command, text, args, sender)
