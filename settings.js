@@ -32,8 +32,6 @@ global.owner = [
 global.mods = []
 global.premium = []  
 global.blockList = []  
-// Modo Owner global (por defecto está desactivado)
-global.groupOwnerMode = {};
 
 
 //---------[ NOMBRE/INFO ]---------
