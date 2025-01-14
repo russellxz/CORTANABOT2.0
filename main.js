@@ -58,11 +58,6 @@ if (fs.existsSync(path2)) {
 // Para verificar si el remitente es un Owner
 const isOwner = global.owner.some(owner => owner[0] === m.sender);
 
-// Este bloque de código es para ignorar los mensajes si el modo Owner está activado y el remitente no es Owner
-if (isGroup && global.groupOwnerMode[m.chat] && !isOwner) {
-    return; // Ignorar mensajes si el modo Owner está activado y el remitente no es Owner
-}
-
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
