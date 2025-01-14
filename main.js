@@ -66,7 +66,8 @@ process.on('exit', () => {
     fs.writeFileSync('./modoOwner.json', JSON.stringify(global.modoOwner, null, 2));
 });
 
-
+const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
+// no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
