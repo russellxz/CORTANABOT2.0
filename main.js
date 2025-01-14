@@ -829,8 +829,7 @@ switch (mensaje) {
                 await conn.sendMessage(numRemitente, 'Comando ejecutado con éxito.', MessageType.text);
             }
             break;
-    }
-});		
+    		
 		
 		
 //=£₡÷ serbot 2
