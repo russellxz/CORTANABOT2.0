@@ -32,6 +32,7 @@ global.owner = [
 global.mods = []
 global.premium = []  
 global.blockList = []  
+global.onlyOwnerMode = false; // Modo Owner inicialmente desactivado
 
 //---------[ NOMBRE/INFO ]---------
 global.botname = "CORTANABOT-2.0"
