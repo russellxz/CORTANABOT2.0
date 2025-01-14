@@ -57,10 +57,6 @@ if (global.onlyOwnerMode && !global.owner.some(([number]) => number === m.sender
     return; // Ignorar el mensaje si no es un Owner
 }
 
-if (isGroup && global.groupOwnerMode[m.chat] && !isOwner) {
-    return; // Ignorar mensajes si el modo Owner está activado y el remitente no es Owner
-}
-
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
