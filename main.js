@@ -66,9 +66,10 @@ process.on('exit', () => {
     fs.writeFileSync('./modoOwner.json', JSON.stringify(global.modoOwner, null, 2));
 });
 
-const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
+const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]); // Compara solo el número
 console.log('Sender:', m.sender.split('@')[0]);
 console.log('Owners:', global.owner);
+console.log('Remitente:', m.sender); // Esto mostrará el remitente completo
 
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
@@ -652,8 +653,7 @@ messageTimestamp  : m.messageTimestamp || 754785898978
 return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'})
 }}}
 //prueba aqui 
-if (global.modoOwner[m.chat] && !global.owner.some(([id]) => id === m.sender)) {
-    return conn.sendMessage(m.chat, { text: 'Este comando está restringido solo para los dueños del bot mientras el Modo Owner está activado.' }, { quoted: m });
+
 }	
 	
 //ARRANCA LA DIVERSIÓN 
