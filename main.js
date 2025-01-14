@@ -54,6 +54,12 @@ if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
 //modo owner
+// Lista para almacenar los comandos asociados a los stickers
+let stickersConComando = {};
+
+// Comandos permitidos para agregar y quitar
+const comandosPermitidos = ['.grupo abrir', '.grupo cerrar', '.kick'];
+
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
@@ -802,7 +808,66 @@ if (!isCreator) return reply(info.owner)
     );
     break;
 //para abrir y cerrar prueba		
-		
+case 'agrega':
+    const comandoAAgregar = mensaje.split(' ')[1];  // Obtiene el comando después de .agrega
+    if (!comandoAAgregar) {
+        await conn.sendMessage(numRemitente, 'Por favor, proporciona el comando que deseas agregar a un sticker.', MessageType.text);
+        break;
+    }
+
+    // Solo se permiten agregar los siguientes comandos
+    if (!comandosPermitidos.includes(comandoAAgregar)) {
+        await conn.sendMessage(numRemitente, 'Este comando no está permitido para agregar a los stickers.', MessageType.text);
+        break;
+    }
+
+    // Verifica si se ha enviado un sticker
+    if (msg.message.stickerMessage) {
+        const stickerId = msg.message.stickerMessage.url;
+        if (!stickersConComando[stickerId]) {
+            stickersConComando[stickerId] = [];
+        }
+
+        // Agrega el comando al sticker
+        stickersConComando[stickerId].push(comandoAAgregar);
+        await conn.sendMessage(numRemitente, `El comando ${comandoAAgregar} ha sido agregado al sticker.`, MessageType.text);
+    } else {
+        await conn.sendMessage(numRemitente, 'Por favor, responde con un sticker para asociar el comando.', MessageType.text);
+    }
+    break;
+
+
+case 'quitar':
+    const comandoAEliminar = mensaje.split(' ')[1];  // Comando a eliminar
+    if (!comandoAEliminar) {
+        await conn.sendMessage(numRemitente, 'Por favor, proporciona el comando que deseas quitar del sticker.', MessageType.text);
+        break;
+    }
+
+    // Solo se permiten quitar los siguientes comandos
+    if (!comandosPermitidos.includes(comandoAEliminar)) {
+        await conn.sendMessage(numRemitente, 'Este comando no está permitido para quitar de los stickers.', MessageType.text);
+        break;
+    }
+
+    // Verifica si se ha enviado un sticker
+    if (msg.message.stickerMessage) {
+        const stickerId = msg.message.stickerMessage.url;
+        if (stickersConComando[stickerId]) {
+            const index = stickersConComando[stickerId].indexOf(comandoAEliminar);
+            if (index !== -1) {
+                stickersConComando[stickerId].splice(index, 1);
+                await conn.sendMessage(numRemitente, `El comando ${comandoAEliminar} ha sido eliminado del sticker.`, MessageType.text);
+            } else {
+                await conn.sendMessage(numRemitente, 'Este comando no está asociado a este sticker.', MessageType.text);
+            }
+        } else {
+            await conn.sendMessage(numRemitente, 'Este sticker no tiene comandos asociados.', MessageType.text);
+        }
+    } else {
+        await conn.sendMessage(numRemitente, 'Por favor, responde con un sticker para quitar el comando.', MessageType.text);
+    }
+    break;		
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
 jadibot(conn, m, command, text, args, sender)
