@@ -638,28 +638,6 @@ messageTimestamp  : m.messageTimestamp || 754785898978
 return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'})
 }}}
 //prueba aqui 
-
-// Función que se ejecuta cuando llega un mensaje
-conn.on('chat-update', async (message) => {
-    if (!message.hasNewMessage) return;
-
-    const m = message.messages.all()[0];
-
-    // Verifica si el grupo tiene activado el conteo de mensajes
-    if (global.grupoChat[m.chat]) {
-        const userId = m.sender.split('@')[0]; // ID del usuario sin el dominio
-        const groupId = m.chat;
-
-        // Si el usuario aún no tiene un conteo, inicialízalo
-        if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
-        if (!global.mensajesPorUsuario[groupId][userId]) {
-            global.mensajesPorUsuario[groupId][userId] = 0;
-        }
-
-        // Incrementa el contador de mensajes del usuario
-        global.mensajesPorUsuario[groupId][userId] += 1;
-    }
-});	
 	
 //ARRANCA LA DIVERSIÓN 
 switch (prefix && command) { 
