@@ -732,27 +732,6 @@ process.on('unhandledRejection', console.log)
 process.on('RefenceError', console.log)
 }
 
-// Función que se ejecuta cuando llega un mensaje
-conn.on('chat-update', async (message) => {
-    if (!message.hasNewMessage) return;
-
-    const m = message.messages.all()[0];
-    
-    // Verifica si el grupo tiene activado el conteo de mensajes
-    if (global.grupoChat[m.chat]) {
-        const userId = m.sender.split('@')[0]; // ID del usuario sin el dominio
-        const groupId = m.chat;
-
-        // Si el usuario aún no tiene un conteo, inicialízalo
-        if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
-        if (!global.mensajesPorUsuario[groupId][userId]) {
-            global.mensajesPorUsuario[groupId][userId] = 0;
-        }
-
-        // Incrementa el contador de mensajes del usuario
-        global.mensajesPorUsuario[groupId][userId] += 1;
-    }
-});
 startBot()
 
 })()
