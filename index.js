@@ -269,32 +269,25 @@ conversation: 'SimpleBot',
 }}
 // Función que se ejecuta cuando llega un mensaje
 sock.ev.on('messages.upsert', async (chatUpdate) => {
-    if (!chatUpdate.hasNewMessage) return;  // Verifica que haya un nuevo mensaje
+    const m = chatUpdate.messages[0];
+    if (!m || !m.key || !m.message || m.key.fromMe) return;
 
-    const m = chatUpdate.messages.all()[0];  // Extrae el primer mensaje
+    const groupId = m.key.remoteJid; // ID del grupo o chat
+    if (!groupId.endsWith('@g.us')) return; // Solo permite grupos
 
-    // Verifica si el grupo está en global.grupoChat
-    if (!global.grupoChat[m.chat]) {
-        console.log(`El grupo ${m.chat} no está registrado para el conteo de mensajes.`);
-        return;  // Si no está registrado, sale de la función
+    // Verifica si el grupo tiene activado el conteo de mensajes
+    if (global.grupoChat[groupId]) {
+        const userId = m.key.participant || m.key.remoteJid; // ID del usuario
+
+        // Inicializa el contador del grupo si no existe
+        if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
+
+        // Incrementa el contador de mensajes del usuario
+        if (!global.mensajesPorUsuario[groupId][userId]) {
+            global.mensajesPorUsuario[groupId][userId] = 0;
+        }
+        global.mensajesPorUsuario[groupId][userId] += 1;
     }
-
-    const userId = m.sender.split('@')[0];  // ID del usuario sin el dominio
-    const groupId = m.chat;
-
-    // Si el grupo no tiene aún un conteo, inicialízalo
-    if (!global.mensajesPorUsuario[groupId]) {
-        global.mensajesPorUsuario[groupId] = {};
-    }
-
-    // Si el usuario no tiene un conteo, inicialízalo
-    if (!global.mensajesPorUsuario[groupId][userId]) {
-        global.mensajesPorUsuario[groupId][userId] = 0;
-    }
-
-    // Incrementa el contador de mensajes del usuario
-    global.mensajesPorUsuario[groupId][userId] += 1;
-    console.log(`Mensaje de ${userId} en el grupo ${groupId}: ${global.mensajesPorUsuario[groupId][userId]} mensajes.`);
 });	
 
 // no tocar abajo
