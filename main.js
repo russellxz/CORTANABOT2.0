@@ -815,7 +815,9 @@ if (!isCreator) return reply(info.owner)
     break;
 //modo owner	
 case 'modoowner': {
-    // Usa la variable isOwner que ya tienes definida en tu código
+    // Declara isOwner directamente dentro del comando
+    const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
+
     if (!isOwner) {
         return conn.sendMessage(m.chat, { text: 'Este comando solo lo pueden usar los dueños del bot.' }, { quoted: m });
     }
