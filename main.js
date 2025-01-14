@@ -54,9 +54,6 @@ if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
 //modo owner
-let modoUnicoActivo = false;  // Controla si el modo único está activado o desactivado
-const numerosAutorizados = ['+15167096032', '+50765000000', '+50766066666'];  // Lista de números autorizados
-
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
@@ -806,31 +803,6 @@ if (!isCreator) return reply(info.owner)
     break;
 //modo owner comando 3
 // Comando .modoowner5
-switch (mensaje) {
-        case 'modounico on':
-            modoUnicoActivo = true;
-            await conn.sendMessage(numRemitente, 'Modo único activado. El bot solo responderá a los números autorizados.', MessageType.text);
-            break;
-
-        case 'modounico off':
-            modoUnicoActivo = false;
-            await conn.sendMessage(numRemitente, 'Modo único desactivado. El bot responderá a todos los números.', MessageType.text);
-            break;
-
-        default:
-            // Si el modo único está activado y el número no está en la lista autorizada
-            if (modoUnicoActivo && !numerosAutorizados.includes(numRemitente)) {
-                await conn.sendMessage(numRemitente, 'No estás autorizado para interactuar con el bot en este momento.', MessageType.text);
-                break;  // Termina aquí si no estás autorizado
-            }
-
-            // Aquí procesas el resto de comandos de tu bot (si el modo único no está activado o el número está autorizado)
-            if (mensaje === '.comandoexistente') {
-                await conn.sendMessage(numRemitente, 'Comando ejecutado con éxito.', MessageType.text);
-            }
-            break;
-    		
-		
 		
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
