@@ -852,6 +852,61 @@ case 'somecommand': {
     conn.sendMessage(m.chat, { text: 'Comando ejecutado.' }, { quoted: m });
     break;
 }
+
+//contador de chat 
+
+// Comando .grupochat on / off
+case 'grupochat': {
+    if (args[0] === 'on') {
+        // Activa el conteo de mensajes en el grupo
+        global.grupoChat[m.chat] = true;
+        conn.sendMessage(m.chat, { text: 'El conteo de mensajes ha sido activado en este grupo.' }, { quoted: m });
+    } else if (args[0] === 'off') {
+        // Desactiva el conteo de mensajes en el grupo
+        global.grupoChat[m.chat] = false;
+        conn.sendMessage(m.chat, { text: 'El conteo de mensajes ha sido desactivado en este grupo.' }, { quoted: m });
+    } else {
+        conn.sendMessage(m.chat, { text: 'Uso: .grupochat on / off' }, { quoted: m });
+    }
+    break;
+}		
+
+// chatlist
+
+case '.listachat': {
+    // Verifica si el conteo de mensajes está activo en el grupo
+    if (!global.grupoChat[m.chat]) {
+        return conn.sendMessage(m.chat, { text: '🌸 El conteo de mensajes no está activado en este grupo. Usa .grupochat on para activarlo. 🌸' }, { quoted: m });
+    }
+
+    // Obtiene el ranking de usuarios por número de mensajes
+    const groupId = m.chat;
+    const mensajes = global.mensajesPorUsuario[groupId];
+
+    // Si no hay usuarios con mensajes
+    if (!mensajes || Object.keys(mensajes).length === 0) {
+        return conn.sendMessage(m.chat, { text: '🌷 No hay usuarios con mensajes registrados en este grupo aún. 🌷' }, { quoted: m });
+    }
+
+    // Ordena los usuarios por la cantidad de mensajes
+    const ranking = Object.entries(mensajes)
+        .map(([userId, count]) => ({ userId, count }))
+        .sort((a, b) => b.count - a.count);
+
+    // Crea el mensaje de lista con diseño bonito
+    let response = '🌸🌼 **Ranking de usuarios con más mensajes** 🌼🌸\n\n';
+    ranking.forEach((user, index) => {
+        response += `✨ **${index + 1}.** ${user.userId} - **${user.count}** mensajes 🌹\n`;
+    });
+
+    // Agrega un mensaje bonito al final
+    response += `\n🌻 ¡Gracias a todos por participar! ¡Sigan chateando para subir en el ranking! 🌻`;
+
+    // Envia la lista
+    conn.sendMessage(m.chat, { text: response }, { quoted: m });
+    break;
+}
+
 		
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
