@@ -818,7 +818,6 @@ if (!isCreator) return reply(info.owner)
 // Comando para activar y desactivar el Modo Owner
 case 'modoowner': {
     const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
-    
     if (!isOwner) {
         return conn.sendMessage(m.chat, { text: 'Este comando solo lo pueden usar los dueños del bot.' }, { quoted: m });
     }
@@ -835,12 +834,11 @@ case 'modoowner': {
     }
     break;
 }
-
-// Comando restringido solo para dueños cuando el Modo Owner está activado
+		
 case 'somecommand': {
     // Verifica si el Modo Owner está activado para este grupo
     if (global.modoOwner[m.chat]) {
-        // Verifica si el usuario que ejecuta el comando es el dueño del bot
+        // Verifica si el usuario que ejecuta el comando es un dueño
         const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
 
         // Si no es dueño, no responde
@@ -855,7 +853,6 @@ case 'somecommand': {
     break;
 }
 		
-	    
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
 jadibot(conn, m, command, text, args, sender)
