@@ -804,7 +804,43 @@ if (!isCreator) return reply(info.owner)
         { quoted: m }
     );
     break;
- //=£₡÷
+//modo owner comando
+case 'modoowner':
+    if (!global.owner.some(([number]) => number === m.sender.split('@')[0])) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* Este comando solo puede ser usado por un Owner del bot. 🛑"
+            },
+            { quoted: m }
+        );
+    }
+
+    const subCommand = args[0]; // "on" o "off"
+    if (!subCommand || !['on', 'off'].includes(subCommand)) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *Uso del comando:* `.modoowner on` o `.modoowner off`.\nActiva o desactiva el modo Owner."
+            },
+            { quoted: m }
+        );
+    }
+
+    global.onlyOwnerMode = subCommand === 'on'; // Activar o desactivar el modo Owner
+
+    return conn.sendMessage(
+        m.chat,
+        {
+            text: `✅ *Modo Owner* ${global.onlyOwnerMode ? "activado" : "desactivado"}.\n` +
+                  `${global.onlyOwnerMode ? "🔒 Ahora solo los números Owner pueden usar el bot." : "🔓 El bot responde a todos nuevamente."}`
+        },
+        { quoted: m }
+    );
+    break;		
+		
+		
+//=£₡÷ serbot
 case 'serbot': case 'jadibot': case 'qr':
 jadibot(conn, m, command, text, args, sender)
 break  
