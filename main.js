@@ -54,6 +54,19 @@ if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
 //modo owner
+// Cargar el estado de modoOwner
+if (fs.existsSync('./modoOwner.json')) {
+    global.modoOwner = JSON.parse(fs.readFileSync('./modoOwner.json'));
+} else {
+    global.modoOwner = {};
+}
+
+// Guardar el estado al salir del proceso
+process.on('exit', () => {
+    fs.writeFileSync('./modoOwner.json', JSON.stringify(global.modoOwner, null, 2));
+});
+
+
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
