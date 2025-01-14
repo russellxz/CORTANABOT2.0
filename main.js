@@ -875,8 +875,11 @@ case 'grupochat': {
 }		
 
 // chatlist
-
 case 'listachat': {
+    if (!m.isGroup) {
+        return conn.sendMessage(m.chat, { text: 'Este comando solo puede usarse en grupos.' }, { quoted: m });
+    }
+
     // Verifica si el conteo de mensajes está activo en el grupo
     if (!global.grupoChat[m.chat]) {
         return conn.sendMessage(m.chat, { text: '🌸 El conteo de mensajes no está activado en este grupo. Usa .grupochat on para activarlo. 🌸' }, { quoted: m });
@@ -896,21 +899,19 @@ case 'listachat': {
         .map(([userId, count]) => ({ userId, count }))
         .sort((a, b) => b.count - a.count);
 
-    // Construye el mensaje de lista con menciones
-    let mentions = [];
-    let response = '🌸🌼 Ranking de usuarios con más mensajes 🌼🌸\n\n';
-    ranking.forEach((user, index) => {
-        response += `✨ ${index + 1}. @${user.userId.split('@')[0]} - ${user.count} mensajes 🌹\n`;
-        mentions.push(user.userId); // Agrega a la lista de menciones
-    });
+    // Crea el mensaje de lista con diseño bonito
+    let response = '🌸🌼 **Ranking de usuarios con más mensajes** 🌼🌸\n\n';
+    for (const [index, user] of ranking.entries()) {
+        const tag = (await conn.getName(user.userId)) || user.userId; 
+        response += `✨ **${index + 1}.** @${tag.replace('@s.whatsapp.net', '')} - **${user.count}** mensajes 🌹\n`;
+    }
 
     // Agrega un mensaje bonito al final
     response += `\n🌻 ¡Gracias a todos por participar! ¡Sigan chateando para subir en el ranking! 🌻`;
 
-    // Envía la lista con menciones
-    conn.sendMessage(m.chat, { text: response, mentions }, { quoted: m });
-    break;
-}
+conn.sendMessage(m.chat, { text: response, mentions: ranking.map(u => u.userId) }, { quoted: m });
+}    
+break;
 		
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
