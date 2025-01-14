@@ -801,8 +801,17 @@ if (!isCreator) return reply(info.owner)
         { quoted: m }
     );
     break;
-//modo owner comando 3
-// Comando .modoowner5
+//para abrir y cerrar prueba
+case 'abrir':
+    grupoAbierto = true;
+    await conn.sendMessage(groupId, 'El grupo ha sido abierto. Ahora todos pueden escribir.', MessageType.text);
+    break;
+
+case 'cerrar':
+    grupoAbierto = false;
+    await conn.sendMessage(groupId, 'El grupo ha sido cerrado. Solo los administradores pueden escribir.', MessageType.text);
+    break;
+		
 		
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
