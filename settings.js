@@ -32,7 +32,7 @@ global.owner = [
 global.mods = []
 global.premium = []  
 global.blockList = []  
-global.modoOwner = {}; // Objeto para almacenar el estado del modo owner en cada grupo
+global.modoOwner = [] // Objeto para almacenar el estado del modo owner en cada grupo
 
 //---------[ NOMBRE/INFO ]---------
 global.botname = "CORTANABOT-2.0"
