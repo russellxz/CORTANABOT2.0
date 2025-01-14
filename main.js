@@ -53,8 +53,14 @@ let multimediaStore = {};
 if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
-if (global.onlyOwnerMode && !global.owner.some(([number]) => number === m.sender.split('@')[0])) {
-    return; // Ignorar el mensaje si no es un Owner
+//modo owner
+// Este bloque debe ir al principio de tu archivo antes de que se procesen otros comandos
+// Para verificar si el remitente es un Owner
+const isOwner = global.owner.some(owner => owner[0] === m.sender);
+
+// Este bloque de código es para ignorar los mensajes si el modo Owner está activado y el remitente no es Owner
+if (isGroup && global.groupOwnerMode[m.chat] && !isOwner) {
+    return; // Ignorar mensajes si el modo Owner está activado y el remitente no es Owner
 }
 
 let tebaklagu = global.db.data.game.tebaklagu = []
@@ -804,7 +810,7 @@ if (!isCreator) return reply(info.owner)
         { quoted: m }
     );
     break;
-//modo owner comando
+//modo owner comando 2
 case 'modoowner':
     if (!isOwner) {
         return conn.sendMessage(
