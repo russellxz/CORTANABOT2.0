@@ -55,16 +55,6 @@ if (fs.existsSync(path2)) {
 }
 //modo owner
 // Cargar el estado de modoOwner
-if (fs.existsSync('./modoOwner.json')) {
-    global.modoOwner = JSON.parse(fs.readFileSync('./modoOwner.json'));
-} else {
-    global.modoOwner = {};
-}
-
-// Guardar el estado al salir del proceso
-process.on('exit', () => {
-    fs.writeFileSync('./modoOwner.json', JSON.stringify(global.modoOwner, null, 2));
-});
 
 const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]); // Compara solo el número
 console.log('Sender:', m.sender.split('@')[0]);
