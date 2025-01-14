@@ -268,26 +268,30 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 
-// Función que se ejecuta cuando llega un mensaje
 conn.on('chat-update', async (message) => {
-    if (!message.hasNewMessage) return;
+  if (!message.hasNewMessage) return;
 
-    const m = message.messages.all()[0];
-    
-    // Verifica si el grupo tiene activado el conteo de mensajes
-    if (global.grupoChat[m.chat]) {
-        const userId = m.sender.split('@')[0]; // ID del usuario sin el dominio
-        const groupId = m.chat;
+  const m = message.messages.all()[0];
 
-        // Si el usuario aún no tiene un conteo, inicialízalo
-        if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
-        if (!global.mensajesPorUsuario[groupId][userId]) {
-            global.mensajesPorUsuario[groupId][userId] = 0;
-        }
+  // Verifica si el grupo tiene activado el conteo de mensajes
+  if (global.grupoChat[m.chat]) {
+    const userId = m.sender.split('@')[0]; // ID del usuario sin el dominio
+    const groupId = m.chat;
 
-        // Incrementa el contador de mensajes del usuario
-        global.mensajesPorUsuario[groupId][userId] += 1;
+    // Busca si ya existe el documento para este grupo y usuario
+    let messageData = await MessageCount.findOne({ groupId, userId });
+
+    // Si no existe, crea uno nuevo
+    if (!messageData) {
+      messageData = new MessageCount({ groupId, userId, messageCount: 0 });
     }
+
+    // Incrementa el contador de mensajes del usuario
+    messageData.messageCount += 1;
+
+    // Guarda el documento actualizado
+    await messageData.save();
+  }
 });
 	
 sock.ev.on('messages.upsert', async chatUpdate => {
