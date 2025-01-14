@@ -34,11 +34,13 @@ global.premium = []
 global.blockList = []  
 global.modoOwner = [] // Objeto para almacenar el estado del modo owner en cada grupo
 // Variables globales
-global.grupoChat = []  // Para almacenar el estado del conteo de mensajes por grupo
-global.mensajesPorUsuario = []  // Para almacenar el conteo de mensajes por usuario y grupo
+// Almacena el conteo de mensajes por usuario y grupo.
+global.mensajesPorUsuario = {};  // Usamos un objeto en lugar de un array para asociar usuarios y grupos
+
+// Define los grupos donde se realizará el conteo de mensajes.
 global.grupoChat = {
     "grupo-id-aqui": true,  // Grupo donde se hará el conteo de mensajes
-    "otro-grupo-id": true,
+    "otro-grupo-id": true,  // Otro grupo donde se hará el conteo de mensajes
 };
 
 //---------[ NOMBRE/INFO ]---------
