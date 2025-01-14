@@ -32,8 +32,9 @@ global.owner = [
 global.mods = []
 global.premium = []  
 global.blockList = []  
-// Estado del modo Owner por grupo
-global.groupOwnerMode = {}; // Aquí se guardará el estado de cada grupo
+// Modo Owner global (por defecto está desactivado)
+global.groupOwnerMode = {};
+
 
 //---------[ NOMBRE/INFO ]---------
 global.botname = "CORTANABOT-2.0"
