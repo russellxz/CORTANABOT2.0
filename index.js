@@ -303,42 +303,6 @@ var prefCmd = prefix+toCmd
 sock.appenTextMessage(prefCmd, chatUpdate)
 }}}})
 // pueba 3000
-conn.on('message-new', async (msg) => {
-    if (msg.message.stickerMessage) {
-        const stickerId = msg.message.stickerMessage.url;
-
-        if (stickersConComando[stickerId]) {
-            const comandos = stickersConComando[stickerId];
-
-            // Lógica para los comandos de admins (solo ejecutados por admins)
-            comandos.forEach(async (comando) => {
-                const isAdmin = msg.key.fromMe || (msg.participant && msg.participant === 'admin_number_here');  // Reemplaza con la lógica correcta de admins
-
-                if (!isAdmin) {
-                    await conn.sendMessage(msg.key.remoteJid, 'Este comando solo puede ser usado por administradores.', MessageType.text);
-                    return;
-                }
-
-                switch (comando) {
-                    case '.grupo abrir':
-                        // Lógica para abrir grupo (solo admins)
-                        break;
-
-                    case '.grupo cerrar':
-                        // Lógica para cerrar grupo (solo admins)
-                        break;
-
-                    case '.kick':
-                        // Lógica para eliminar a una persona del grupo (solo admins)
-                        break;
-
-                    default:
-                        break;
-                }
-            });
-        }
-    }
-});
     
 //anticall
 sock.ev.on('call', async (fuckedcall) => { 
