@@ -815,23 +815,6 @@ if (!isCreator) return reply(info.owner)
     break;
 //modo owner	
 
-case 'modoowner':
-    const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]); // Verifica si eres owner
-    if (!isOwner) {
-        return conn.sendMessage(m.chat, { text: 'Este comando solo lo pueden usar los dueños del bot.' }, { quoted: m });
-    }
-
-    // Verifica si se pasó un argumento válido
-    if (args[0] === 'on') {
-        global.modoOwner[m.chat] = true; // Activa el modo owner en este grupo
-        conn.sendMessage(m.chat, { text: 'Modo Owner activado en este grupo.' }, { quoted: m });
-    } else if (args[0] === 'off') {
-        global.modoOwner[m.chat] = false; // Desactiva el modo owner en este grupo
-        conn.sendMessage(m.chat, { text: 'Modo Owner desactivado en este grupo.' }, { quoted: m });
-    } else {
-        conn.sendMessage(m.chat, { text: 'Uso: modoowner on / off' }, { quoted: m });
-    }
-    break;
 		
 	    
 //=£₡÷ serbot 2
