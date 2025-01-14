@@ -53,7 +53,9 @@ let multimediaStore = {};
 if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
-
+if (global.onlyOwnerMode && !global.owner.some(([number]) => number === m.sender.split('@')[0])) {
+    return; // Ignorar el mensaje si no es un Owner
+}
 
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
