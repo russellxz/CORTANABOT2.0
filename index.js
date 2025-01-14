@@ -303,6 +303,10 @@ var prefCmd = prefix+toCmd
 sock.appenTextMessage(prefCmd, chatUpdate)
 }}}})
 
+if (m.isGroup && global.groupOwnerMode[m.chat] && !global.owner.some(owner => owner[0] === m.sender)) {
+    return; // Ignorar mensajes si el Modo Owner está activado y el remitente no es Owner
+}
+	
 //anticall
 sock.ev.on('call', async (fuckedcall) => { 
 sock.user.jid = sock.user.id.split(":")[0] + "@s.whatsapp.net" // jid in user?
