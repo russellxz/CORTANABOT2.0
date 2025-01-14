@@ -654,7 +654,7 @@ return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'}
 }}}
 //prueba aqui 
 
-}	
+	
 	
 //ARRANCA LA DIVERSIÓN 
 switch (prefix && command) { 
