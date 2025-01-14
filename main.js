@@ -67,6 +67,9 @@ process.on('exit', () => {
 });
 
 const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
+console.log('Sender:', m.sender.split('@')[0]);
+console.log('Owners:', global.owner);
+
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
