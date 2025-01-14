@@ -856,6 +856,10 @@ case 'somecommand': {
 
 // Comando .grupochat on / off
 case 'grupochat': {
+    if (!m.isGroup) {
+        return conn.sendMessage(m.chat, { text: 'Este comando solo puede usarse en grupos.' }, { quoted: m });
+    }
+
     if (args[0] === 'on') {
         // Activa el conteo de mensajes en el grupo
         global.grupoChat[m.chat] = true;
@@ -873,6 +877,10 @@ case 'grupochat': {
 // chatlist
 
 case 'listachat': {
+    if (!m.isGroup) {
+        return conn.sendMessage(m.chat, { text: 'Este comando solo puede usarse en grupos.' }, { quoted: m });
+    }
+
     // Verifica si el conteo de mensajes está activo en el grupo
     if (!global.grupoChat[m.chat]) {
         return conn.sendMessage(m.chat, { text: '🌸 El conteo de mensajes no está activado en este grupo. Usa .grupochat on para activarlo. 🌸' }, { quoted: m });
@@ -901,11 +909,10 @@ case 'listachat': {
     // Agrega un mensaje bonito al final
     response += `\n🌻 ¡Gracias a todos por participar! ¡Sigan chateando para subir en el ranking! 🌻`;
 
-    // Envia la lista
+    // Envía la lista
     conn.sendMessage(m.chat, { text: response }, { quoted: m });
     break;
 }
-
 		
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
