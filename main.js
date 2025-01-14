@@ -58,7 +58,7 @@ if (fs.existsSync(path2)) {
 if (fs.existsSync('./modoOwner.json')) {
     global.modoOwner = JSON.parse(fs.readFileSync('./modoOwner.json'));
 } else {
-    global.modoOwner = [];
+    global.modoOwner = {};
 }
 
 // Guardar el estado al salir del proceso
