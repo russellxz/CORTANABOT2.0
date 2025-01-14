@@ -638,11 +638,6 @@ messageTimestamp  : m.messageTimestamp || 754785898978
 }
 return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'})
 }}}
-
-// Añadir la validación para modo Owner en los mensajes
-if (m.isGroup && global.groupOwnerMode[m.chat] && !isOwner) {
-    return; // Ignorar mensajes si el Modo Owner está activado y el usuario no es Owner
-}
 	
 //ARRANCA LA DIVERSIÓN 
 switch (prefix && command) { 
