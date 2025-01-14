@@ -740,7 +740,8 @@ case 'g':
         { quoted: m }
     );
     break
-    case 'kill':
+    case 'kill': {
+if (!isCreator) return reply(info.owner)
     const deleteKey = args.join(' '); // Palabra clave para eliminar
     if (!deleteKey) {
         return conn.sendMessage(
@@ -771,7 +772,7 @@ case 'g':
             text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${deleteKey}"* ha sido eliminado. ✅`
         },
         { quoted: m }
-    );
+    );}
     break;
  case 'clavelista':
     if (Object.keys(multimediaStore).length === 0) {
