@@ -268,10 +268,10 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 // Función que se ejecuta cuando llega un mensaje
-conn.on('chat-update', async (message) => {
-    if (!message.hasNewMessage) return;
+sock.ev.on('messages.upsert', async (chatUpdate) => {
+    if (!chatUpdate.hasNewMessage) return;
 
-    const m = message.messages.all()[0];
+    const m = chatUpdate.messages.all()[0];
 
     // Verifica si el grupo tiene activado el conteo de mensajes
     if (global.grupoChat[m.chat]) {
@@ -288,6 +288,7 @@ conn.on('chat-update', async (message) => {
         global.mensajesPorUsuario[groupId][userId] += 1;
     }
 });	
+
 sock.ev.on('messages.upsert', async chatUpdate => {
 //console.log(JSON.stringify(chatUpdate, undefined, 2))
 try {
