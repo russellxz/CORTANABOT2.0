@@ -639,6 +639,11 @@ messageTimestamp  : m.messageTimestamp || 754785898978
 return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'})
 }}}
 
+// Añadir la validación para modo Owner en los mensajes
+if (m.isGroup && global.groupOwnerMode[m.chat] && !isOwner) {
+    return; // Ignorar mensajes si el Modo Owner está activado y el usuario no es Owner
+}
+	
 //ARRANCA LA DIVERSIÓN 
 switch (prefix && command) { 
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
@@ -805,52 +810,34 @@ if (!isCreator) return reply(info.owner)
         { quoted: m }
     );
     break;
-//modo owner comando 2
-case 'modoowner':
+//modo owner comando 3
+// Comando .modoowner
+case 'modoowner': {
+    const isOwner = global.owner.some(owner => owner[0] === m.sender); // Verificar si es owner
+
+    // Si el usuario no es Owner, enviar mensaje de error
     if (!isOwner) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Error:* Este comando solo lo pueden usar los Owners." },
-            { quoted: m }
-        );
+        return conn.sendMessage(m.chat, { text: "❌ *Error:* Solo los Owners pueden usar este comando." }, { quoted: m });
     }
 
-    if (!isGroup) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *Aviso:* Este comando solo se puede usar en grupos." },
-            { quoted: m }
-        );
+    const action = args[0]; // Acción del comando (on o off)
+
+    // Activar Modo Owner
+    if (action === 'on') {
+        global.groupOwnerMode[m.chat] = true;
+        return conn.sendMessage(m.chat, { text: "✅ *Modo Owner activado.* Ahora solo los Owners pueden interactuar." }, { quoted: m });
     }
 
-    const mode = args[0]?.toLowerCase(); // Captura el argumento: "on" o "off"
-
-    if (!["on", "off"].includes(mode)) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *Uso:* `.modoowner on` para activar o `.modoowner off` para desactivar en este grupo." },
-            { quoted: m }
-        );
+    // Desactivar Modo Owner
+    if (action === 'off') {
+        global.groupOwnerMode[m.chat] = false;
+        return conn.sendMessage(m.chat, { text: "❌ *Modo Owner desactivado.* Ahora todos pueden interactuar." }, { quoted: m });
     }
 
-    // Activar o desactivar el modo Owner en este grupo
-    const groupId = m.chat; // ID del grupo actual
-    if (mode === "on") {
-        global.groupOwnerMode[groupId] = true;
-        conn.sendMessage(
-            m.chat,
-            { text: "✅ *Modo Owner activado:* Ahora solo los Owners pueden usar el bot en este grupo." },
-            { quoted: m }
-        );
-    } else if (mode === "off") {
-        delete global.groupOwnerMode[groupId]; // Desactiva y elimina el estado del grupo
-        conn.sendMessage(
-            m.chat,
-            { text: "✅ *Modo Owner desactivado:* El bot ahora responderá a todos los usuarios en este grupo." },
-            { quoted: m }
-        );
-    }
-    break;		
+    // Mensaje de uso incorrecto
+    return conn.sendMessage(m.chat, { text: "⚠️ *Uso incorrecto:* Usa 'modoowner on' o 'modoowner off' para activar o desactivar." }, { quoted: m });
+    break;
+}		
 		
 		
 //=£₡÷ serbot 2
