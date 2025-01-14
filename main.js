@@ -56,10 +56,9 @@ if (fs.existsSync(path2)) {
 //modo owner
 // Cargar el estado de modoOwner
 
-const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]); // Compara solo el número
-console.log('Sender:', m.sender.split('@')[0]);
-console.log('Owners:', global.owner);
-console.log('Remitente:', m.sender); // Esto mostrará el remitente completo
+if (global.modoOwner[m.chat] && !global.owner.some(([id]) => id === m.sender.split('@')[0])) {
+    return conn.sendMessage(m.chat, { text: 'Este comando está restringido solo para los dueños del bot mientras el Modo Owner está activado en este grupo.' }, { quoted: m });
+}
 
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
@@ -820,27 +819,23 @@ if (!isCreator) return reply(info.owner)
     break;
 //modo owner	
 
-case 'modoowner': {
-    if (!m.isGroup) {
-        return conn.sendMessage(m.chat, { text: 'Este comando solo se puede usar en grupos.' }, { quoted: m });
-    }
-
-    const isOwner = global.owner.some(([id]) => id === m.sender); // Verifica si el usuario es owner
+case 'modoowner':
+    const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]); // Verifica si eres owner
     if (!isOwner) {
         return conn.sendMessage(m.chat, { text: 'Este comando solo lo pueden usar los dueños del bot.' }, { quoted: m });
     }
 
-    if (!args[0] || !['on', 'off'].includes(args[0].toLowerCase())) {
-        return conn.sendMessage(m.chat, { text: 'Usa: *modoowner on* para activar o *modoowner off* para desactivar.' }, { quoted: m });
+    // Verifica si se pasó un argumento válido
+    if (args[0] === 'on') {
+        global.modoOwner[m.chat] = true; // Activa el modo owner en este grupo
+        conn.sendMessage(m.chat, { text: 'Modo Owner activado en este grupo.' }, { quoted: m });
+    } else if (args[0] === 'off') {
+        global.modoOwner[m.chat] = false; // Desactiva el modo owner en este grupo
+        conn.sendMessage(m.chat, { text: 'Modo Owner desactivado en este grupo.' }, { quoted: m });
+    } else {
+        conn.sendMessage(m.chat, { text: 'Uso: modoowner on / off' }, { quoted: m });
     }
-
-    // Cambia el estado del modo owner para este grupo
-    global.modoOwner[m.chat] = args[0].toLowerCase() === 'on';
-
-    const estado = global.modoOwner[m.chat] ? 'activado' : 'desactivado';
-    conn.sendMessage(m.chat, { text: `Modo Owner ha sido ${estado} en este grupo.` }, { quoted: m });
-}
-break;
+    break;
 		
 	    
 //=£₡÷ serbot 2
