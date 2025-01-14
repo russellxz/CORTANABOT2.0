@@ -56,10 +56,6 @@ if (fs.existsSync(path2)) {
 //modo owner
 // Cargar el estado de modoOwner
 
-if (global.modoOwner[m.chat] && !global.owner.some(([id]) => id === m.sender.split('@')[0])) {
-    return conn.sendMessage(m.chat, { text: 'Este comando está restringido solo para los dueños del bot mientras el Modo Owner está activado en este grupo.' }, { quoted: m });
-}
-
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
