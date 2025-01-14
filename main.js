@@ -872,7 +872,7 @@ case 'grupochat': {
 
 // chatlist
 
-case '.listachat': {
+case 'listachat': {
     // Verifica si el conteo de mensajes está activo en el grupo
     if (!global.grupoChat[m.chat]) {
         return conn.sendMessage(m.chat, { text: '🌸 El conteo de mensajes no está activado en este grupo. Usa .grupochat on para activarlo. 🌸' }, { quoted: m });
