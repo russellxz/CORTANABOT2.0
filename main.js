@@ -815,14 +815,14 @@ if (!isCreator) return reply(info.owner)
     break;
 //modo owner	
 case 'modoowner': {
-    // Declara isOwner directamente dentro del comando
+    // Verifica si el usuario es propietario del bot
     const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
-
+    
     if (!isOwner) {
         return conn.sendMessage(m.chat, { text: 'Este comando solo lo pueden usar los dueños del bot.' }, { quoted: m });
     }
 
-    // Verifica si se pasó un argumento válido
+    // Verifica si el argumento es 'on' o 'off'
     if (args[0] === 'on') {
         global.modoOwner[m.chat] = true; // Activa el modo owner en este grupo
         conn.sendMessage(m.chat, { text: 'Modo Owner activado en este grupo.' }, { quoted: m });
@@ -832,6 +832,22 @@ case 'modoowner': {
     } else {
         conn.sendMessage(m.chat, { text: 'Uso: modoowner on / off' }, { quoted: m });
     }
+    break;
+}
+
+// Comando para restringir el uso a los dueños si el modo owner está activado en el grupo
+case 'somecommand': {
+    // Verifica si el modo owner está activado para el grupo
+    if (global.modoOwner[m.chat]) {
+        const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
+        
+        // Si el usuario no es dueño, no puede usar el comando
+        if (!isOwner) {
+            return conn.sendMessage(m.chat, { text: 'Este comando está restringido solo para los dueños del bot mientras el Modo Owner está activado.' }, { quoted: m });
+        }
+    }
+
+    // Código para el comando normal...
     break;
 }
 		
