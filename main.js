@@ -57,6 +57,10 @@ if (global.onlyOwnerMode && !global.owner.some(([number]) => number === m.sender
     return; // Ignorar el mensaje si no es un Owner
 }
 
+if (isGroup && global.groupOwnerMode[m.chat] && !isOwner) {
+    return; // Ignorar mensajes si el modo Owner está activado y el remitente no es Owner
+}
+
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
@@ -806,41 +810,53 @@ if (!isCreator) return reply(info.owner)
     break;
 //modo owner comando
 case 'modoowner':
-    if (!global.owner.some(([number]) => number === m.sender.split('@')[0])) {
+    if (!isOwner) {
         return conn.sendMessage(
             m.chat,
-            {
-                text: "❌ *Error:* Este comando solo puede ser usado por un Owner del bot. 🛑"
-            },
+            { text: "❌ *Error:* Este comando solo lo pueden usar los Owners." },
             { quoted: m }
         );
     }
 
-    const subCommand = args[0]; // "on" o "off"
-    if (!subCommand || !['on', 'off'].includes(subCommand)) {
+    if (!isGroup) {
         return conn.sendMessage(
             m.chat,
-            {
-                text: "⚠️ *Uso del comando:* `.modoowner on` o `.modoowner off`.\nActiva o desactiva el modo Owner."
-            },
+            { text: "⚠️ *Aviso:* Este comando solo se puede usar en grupos." },
             { quoted: m }
         );
     }
 
-    global.onlyOwnerMode = subCommand === 'on'; // Activar o desactivar el modo Owner
+    const mode = args[0]?.toLowerCase(); // Captura el argumento: "on" o "off"
 
-    return conn.sendMessage(
-        m.chat,
-        {
-            text: `✅ *Modo Owner* ${global.onlyOwnerMode ? "activado" : "desactivado"}.\n` +
-                  `${global.onlyOwnerMode ? "🔒 Ahora solo los números Owner pueden usar el bot." : "🔓 El bot responde a todos nuevamente."}`
-        },
-        { quoted: m }
-    );
+    if (!["on", "off"].includes(mode)) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Uso:* `.modoowner on` para activar o `.modoowner off` para desactivar en este grupo." },
+            { quoted: m }
+        );
+    }
+
+    // Activar o desactivar el modo Owner en este grupo
+    const groupId = m.chat; // ID del grupo actual
+    if (mode === "on") {
+        global.groupOwnerMode[groupId] = true;
+        conn.sendMessage(
+            m.chat,
+            { text: "✅ *Modo Owner activado:* Ahora solo los Owners pueden usar el bot en este grupo." },
+            { quoted: m }
+        );
+    } else if (mode === "off") {
+        delete global.groupOwnerMode[groupId]; // Desactiva y elimina el estado del grupo
+        conn.sendMessage(
+            m.chat,
+            { text: "✅ *Modo Owner desactivado:* El bot ahora responderá a todos los usuarios en este grupo." },
+            { quoted: m }
+        );
+    }
     break;		
 		
 		
-//=£₡÷ serbot
+//=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
 jadibot(conn, m, command, text, args, sender)
 break  
