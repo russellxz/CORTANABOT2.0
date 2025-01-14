@@ -801,19 +801,7 @@ if (!isCreator) return reply(info.owner)
         { quoted: m }
     );
     break;
-//para abrir y cerrar prueba
-case '.abrir':
-    const groupIdAbrir = msg.key.remoteJid;  // Obtén el ID del grupo
-    grupoAbierto = true;
-    await conn.sendMessage(groupIdAbrir, 'El grupo ha sido abierto. Ahora todos pueden escribir.', MessageType.text);
-    break;
-
-case '.cerrar':
-    const groupIdCerrar = msg.key.remoteJid;  // Obtén el ID del grupo
-    grupoAbierto = false;
-    await conn.sendMessage(groupIdCerrar, 'El grupo ha sido cerrado. Solo los administradores pueden escribir.', MessageType.text);
-    break;
-		
+//para abrir y cerrar prueba		
 		
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
