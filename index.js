@@ -267,32 +267,6 @@ return msg.message
 } return {
 conversation: 'SimpleBot',
 }}
-
-conn.on('chat-update', async (message) => {
-  if (!message.hasNewMessage) return;
-
-  const m = message.messages.all()[0];
-
-  // Verifica si el grupo tiene activado el conteo de mensajes
-  if (global.grupoChat[m.chat]) {
-    const userId = m.sender.split('@')[0]; // ID del usuario sin el dominio
-    const groupId = m.chat;
-
-    // Busca si ya existe el documento para este grupo y usuario
-    let messageData = await MessageCount.findOne({ groupId, userId });
-
-    // Si no existe, crea uno nuevo
-    if (!messageData) {
-      messageData = new MessageCount({ groupId, userId, messageCount: 0 });
-    }
-
-    // Incrementa el contador de mensajes del usuario
-    messageData.messageCount += 1;
-
-    // Guarda el documento actualizado
-    await messageData.save();
-  }
-});
 	
 sock.ev.on('messages.upsert', async chatUpdate => {
 //console.log(JSON.stringify(chatUpdate, undefined, 2))
