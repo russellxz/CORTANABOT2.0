@@ -54,10 +54,6 @@ if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
 //modo owner
-// Este bloque debe ir al principio de tu archivo antes de que se procesen otros comandos
-// Para verificar si el remitente es un Owner
-const isOwner = global.owner.some(owner => owner[0] === m.sender);
-
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
@@ -807,32 +803,7 @@ if (!isCreator) return reply(info.owner)
     break;
 //modo owner comando 3
 // Comando .modoowner
-case 'modoowner': {
-    const isOwner = global.owner.some(owner => owner[0] === m.sender); // Verificar si es owner
-
-    // Si el usuario no es Owner, enviar mensaje de error
-    if (!isOwner) {
-        return conn.sendMessage(m.chat, { text: "❌ *Error:* Solo los Owners pueden usar este comando." }, { quoted: m });
-    }
-
-    const action = args[0]; // Acción del comando (on o off)
-
-    // Activar Modo Owner
-    if (action === 'on') {
-        global.groupOwnerMode[m.chat] = true;
-        return conn.sendMessage(m.chat, { text: "✅ *Modo Owner activado.* Ahora solo los Owners pueden interactuar." }, { quoted: m });
-    }
-
-    // Desactivar Modo Owner
-    if (action === 'off') {
-        global.groupOwnerMode[m.chat] = false;
-        return conn.sendMessage(m.chat, { text: "❌ *Modo Owner desactivado.* Ahora todos pueden interactuar." }, { quoted: m });
-    }
-
-    // Mensaje de uso incorrecto
-    return conn.sendMessage(m.chat, { text: "⚠️ *Uso incorrecto:* Usa 'modoowner on' o 'modoowner off' para activar o desactivar." }, { quoted: m });
-    break;
-}		
+		
 		
 		
 //=£₡÷ serbot 2
