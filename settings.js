@@ -36,6 +36,11 @@ global.modoOwner = [] // Objeto para almacenar el estado del modo owner en cada 
 // Variables globales
 global.grupoChat = []  // Para almacenar el estado del conteo de mensajes por grupo
 global.mensajesPorUsuario = []  // Para almacenar el conteo de mensajes por usuario y grupo
+global.grupoChat = {
+    "grupo-id-aqui": true,  // Grupo donde se hará el conteo de mensajes
+    "otro-grupo-id": true,
+};
+
 //---------[ NOMBRE/INFO ]---------
 global.botname = "CORTANABOT-2.0"
 global.wm = '𝙲𝙾𝚁𝚃𝙰𝙽𝙰𝙱𝙾𝚃-𝟸.𝟶'
