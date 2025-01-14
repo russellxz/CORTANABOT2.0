@@ -802,14 +802,16 @@ if (!isCreator) return reply(info.owner)
     );
     break;
 //para abrir y cerrar prueba
-case 'abrir':
+case '.abrir':
+    const groupIdAbrir = msg.key.remoteJid;  // Obtén el ID del grupo
     grupoAbierto = true;
-    await conn.sendMessage(groupId, 'El grupo ha sido abierto. Ahora todos pueden escribir.', MessageType.text);
+    await conn.sendMessage(groupIdAbrir, 'El grupo ha sido abierto. Ahora todos pueden escribir.', MessageType.text);
     break;
 
-case 'cerrar':
+case '.cerrar':
+    const groupIdCerrar = msg.key.remoteJid;  // Obtén el ID del grupo
     grupoAbierto = false;
-    await conn.sendMessage(groupId, 'El grupo ha sido cerrado. Solo los administradores pueden escribir.', MessageType.text);
+    await conn.sendMessage(groupIdCerrar, 'El grupo ha sido cerrado. Solo los administradores pueden escribir.', MessageType.text);
     break;
 		
 		
