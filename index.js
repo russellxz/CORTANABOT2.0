@@ -32,10 +32,10 @@ return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(tex
 }
 //no tocar ariba
 // Ruta del archivo para guardar los datos
-const path = require('path');
+
 
 // Ruta del archivo para guardar los datos
-const DATA_FILE = path.join(__dirname, 'datoschat.json');
+
 
 // Función para cargar los datos del archivo
 
