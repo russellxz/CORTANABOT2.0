@@ -49,9 +49,6 @@ const {owner} = require('./plugins/propietario.js')
 const {enable} = require('./plugins/enable.js')
 const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 //manejo de mensaje
-const manejarMensajes = require('./index'); // Ajusta la ruta si es necesario
-manejarMensajes(sock); // Pasa tu instancia del socket
-const { guardarDatos, cargarDatos } = require('./index'); // Ajusta la ruta si es necesario
 
 //ok
 let multimediaStore = {};
@@ -860,68 +857,10 @@ case 'somecommand': {
 //contador de chat 
 
 // Comando .grupochat on / off
-case "grupochat": {
-    if (!m.isGroup) return m.reply('⚠️ Este comando solo puede usarse en grupos.');
 
-    const groupId = m.chat;
-    const subCommand = args[0]?.toLowerCase();
+//antielimimar
 
-    if (subCommand === "on") {
-        // Cargar o inicializar datos del grupo
-        let datosGrupo = cargarDatos(groupId);
-        datosGrupo.activado = true;
-        datosGrupo.mensajesPorUsuario = datosGrupo.mensajesPorUsuario || {};
-
-        // Guardar los datos del grupo
-        guardarDatos(groupId, datosGrupo);
-
-        m.reply('✅ El conteo de mensajes ha sido activado en este grupo.');
-    } else if (subCommand === "off") {
-        // Eliminar el archivo del grupo
-        eliminarDatos(groupId);
-        m.reply('❌ El conteo de mensajes ha sido desactivado y los datos del grupo han sido eliminados.');
-    } else {
-        m.reply('⚠️ Uso incorrecto. Usa: grupochat on / grupochat off');
-    }
-    break;
-}
-
-case "listachat": {
-    if (!m.isGroup) return m.reply('⚠️ Este comando solo puede usarse en grupos.');
-
-    const groupId = m.chat;
-
-    // Cargar los datos del grupo
-    const datosGrupo = cargarDatos(groupId);
-
-    // Verificar si el conteo está activado
-    if (!datosGrupo.activado) {
-        return m.reply('⚠️ El conteo de mensajes no está activado en este grupo.');
-    }
-
-    const mensajes = datosGrupo.mensajesPorUsuario || {};
-    if (Object.keys(mensajes).length === 0) {
-        return m.reply('⚠️ No hay datos de mensajes en este grupo.');
-    }
-
-    // Ordenar usuarios por cantidad de mensajes
-    const ranking = Object.entries(mensajes)
-        .map(([userId, count]) => ({ userId, count }))
-        .sort((a, b) => b.count - a.count);
-
-    // Construir el mensaje con diseño bonito
-    let mentions = [];
-    let response = '🌟 Ranking de usuarios 🌟\n\n';
-    ranking.forEach((user, index) => {
-        response += `✨ ${index + 1}. @${user.userId.split('@')[0]} - ${user.count} mensajes\n`;
-        mentions.push(user.userId); // Agregar menciones
-    });
-    response += '\n🌼 ¡Gracias por participar en el chat! 🌼';
-
-    // Enviar el mensaje
-    conn.sendMessage(m.chat, { text: response, mentions }, { quoted: m });
-    break;
-}
+		
 
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
