@@ -40,7 +40,16 @@ function actualizarDatos() {
     fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
 }
 
-	
+function cargarDatos() {
+    if (fs.existsSync(datosPath)) {
+        return JSON.parse(fs.readFileSync(datosPath, 'utf-8'));
+    }
+    return { grupoChat: {}, mensajesPorUsuario: {} };
+}
+
+const datos = cargarDatos();
+global.grupoChat = datos.grupoChat || {};
+global.mensajesPorUsuario = datos.mensajesPorUsuario || {};	
 //notocar mas abajo
 //base de datos
 var low
