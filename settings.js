@@ -36,7 +36,7 @@ global.modoOwner = [] // Objeto para almacenar el estado del modo owner en cada 
 // Variables globales
 // Almacena el conteo de mensajes por usuario y grupo.
 global.mensajesPorUsuario = {};  // Usamos un objeto en lugar de un array para asociar usuarios y grupos
-
+global.antieliminar = {}; // Aquí se guardará el estado de los grupos
 // Define los grupos donde se realizará el conteo de mensajes.
 global.grupoChat = {
     "grupo-id-aqui": true,  // Grupo donde se hará el conteo de mensajes
