@@ -31,6 +31,22 @@ const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
 
+// Ruta del archivo para guardar los datos
+const DATA_FILE = path.join(__dirname, 'datoschat.json');
+
+// Función para cargar los datos del archivo
+const loadChatData = () => {
+    if (fs.existsSync(DATA_FILE)) {
+        return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+    }
+    return {}; // Si no existe, retorna un objeto vacío
+};
+
+// Función para guardar los datos en el archivo
+const saveChatData = (data) => {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+};
+//no tocar abajo	
 //base de datos
 var low
 try {
@@ -267,7 +283,31 @@ return msg.message
 } return {
 conversation: 'SimpleBot',
 }}
+//no tocar ariba
 
+// Evento para manejar los mensajes entrantes
+sock.ev.on('messages.upsert', async (msg) => {
+    const message = msg.messages[0];
+    if (!message.key.remoteJid.endsWith('@g.us')) return; // Solo contar mensajes de grupos
+
+    const groupId = message.key.remoteJid; // ID del grupo
+    const sender = message.key.participant; // Usuario que envió el mensaje
+
+    // Cargar datos actuales
+    const chatData = loadChatData();
+
+    // Inicializar datos del grupo y usuario si no existen
+    if (!chatData[groupId]) chatData[groupId] = {};
+    if (!chatData[groupId][sender]) chatData[groupId][sender] = 0;
+
+    // Incrementar conteo de mensajes
+    chatData[groupId][sender] += 1;
+
+    // Guardar los datos en el archivo
+    saveChatData(chatData);
+});	
+
+//no tocar abajo	
 sock.ev.on('messages.upsert', async chatUpdate => {
 //console.log(JSON.stringify(chatUpdate, undefined, 2))
 try {
