@@ -57,7 +57,6 @@ if (fs.existsSync(path2)) {
 }
 //modo owner
 // Cargar el estado de modoOwner
-global.antieliminar = {}; // Aquí se guardará el estado de los grupos
 
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
@@ -817,75 +816,13 @@ if (!isCreator) return reply(info.owner)
 //modo owner	
 // Activar y desactivar el modo owner
 // Comando para activar y desactivar el Modo Owner
-case 'modoowner': {
-    const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
-    if (!isOwner) {
-        return conn.sendMessage(m.chat, { text: 'Este comando solo lo pueden usar los dueños del bot.' }, { quoted: m });
-    }
 
-    // Verifica si el argumento es 'on' o 'off'
-    if (args[0] === 'on') {
-        global.modoOwner[m.chat] = true; // Activa el modo owner en este grupo
-        conn.sendMessage(m.chat, { text: 'Modo Owner activado en este grupo.' }, { quoted: m });
-    } else if (args[0] === 'off') {
-        global.modoOwner[m.chat] = false; // Desactiva el modo owner en este grupo
-        conn.sendMessage(m.chat, { text: 'Modo Owner desactivado en este grupo.' }, { quoted: m });
-    } else {
-        conn.sendMessage(m.chat, { text: 'Uso: modoowner on / off' }, { quoted: m });
-    }
-    break;
-}
-		
-case 'somecommand': {
-    // Verifica si el Modo Owner está activado para este grupo
-    if (global.modoOwner[m.chat]) {
-        // Verifica si el usuario que ejecuta el comando es un dueño
-        const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
-
-        // Si no es dueño, no responde
-        if (!isOwner) {
-            return conn.sendMessage(m.chat, { text: 'Este comando está restringido solo para los dueños del bot mientras el Modo Owner está activado.' }, { quoted: m });
-        }
-    }
-
-    // Si el Modo Owner no está activado o el usuario es dueño, ejecuta el comando
-    // Aquí va el código del comando
-    conn.sendMessage(m.chat, { text: 'Comando ejecutado.' }, { quoted: m });
-    break;
-}
 
 //contador de chat 
 
 // Comando .grupochat on / off
 
 //antielimimar
-
-case 'antieliminar on': {
-    if (!m.isGroup) return m.reply('⚠️ Este comando solo funciona en grupos.');
-    const groupId = m.chat;
-
-    // Activar el sistema
-    if (!global.antieliminar) global.antieliminar = {};
-    global.antieliminar[groupId] = true;
-
-    m.reply('✅ *Antieliminar activado.* Ahora los mensajes eliminados serán visibles.');
-    break;
-}
-
-case 'antieliminar off': {
-    if (!m.isGroup) return m.reply('⚠️ Este comando solo funciona en grupos.');
-    const groupId = m.chat;
-
-    // Desactivar el sistema
-    if (global.antieliminar) global.antieliminar[groupId] = false;
-
-    // Eliminar los datos del grupo
-    const { eliminarMensajes } = require('./antieliminar');
-    eliminarMensajes(groupId);
-
-    m.reply('❌ *Antieliminar desactivado.* Los mensajes eliminados ya no serán visibles.');
-    break;
-}		
 
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
