@@ -270,38 +270,7 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 // Función que se ejecuta cuando llega un mensaje
-const { guardarMensaje, cargarMensajes } = require('./antieliminar');
 
-module.exports = (sock) => {
-    // Escucha nuevos mensajes
-    sock.ev.on('messages.upsert', async (chatUpdate) => {
-        const m = chatUpdate.messages[0];
-        if (!m || !m.message || m.key.fromMe) return;
-
-        const groupId = m.key.remoteJid;
-        if (!groupId.endsWith('@g.us')) return; // Solo grupos
-
-        const antieliminarActivo = global.antieliminar && global.antieliminar[groupId];
-        if (!antieliminarActivo) return; // No hacer nada si el comando está desactivado
-
-        // Guardar el mensaje recibido
-        guardarMensaje(groupId, m);
-    });
-
-    // Escucha mensajes eliminados
-    sock.ev.on('messages.delete', async (deleteUpdate) => {
-        for (const { remoteJid, id, participant } of deleteUpdate) {
-            const mensajes = cargarMensajes(remoteJid);
-            const mensaje = mensajes.find((msg) => msg.key.id === id);
-
-            if (mensaje) {
-                const nombre = participant.split('@')[0];
-                const texto = `❗ *El usuario @${nombre} eliminó este mensaje:*\n\n`;
-                await sock.sendMessage(remoteJid, { text: texto, mentions: [participant], quoted: mensaje });
-            }
-        }
-    });
-};
 // no tocar abajo
 	
 sock.ev.on('messages.upsert', async chatUpdate => {
