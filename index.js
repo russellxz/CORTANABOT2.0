@@ -311,22 +311,21 @@ sock.ev.on("messages.update", async (updates) => {
 console.log("Event triggered: messages.update");
 
 for (const update of updates) {
-    if (update.update.message === null && update.key.fromMe === false) {
-      const { remoteJid, id, participant } = update.key;
+if (update.update.message === null && update.key.fromMe === false) {
+const { remoteJid, id, participant } = update.key;
+try {
+const sender = participant || remoteJid;
+if (!sender) return;     
 
-      try {
-        const sender = participant || remoteJid;
-        if (!sender) {
-          console.error("No se pudo obtener el remitente");
-          return;
-        }
-
-let chat = global.db.data.chats[m.chat] || {}
+let msg = this.serializeM(this.loadMessage(id))
+let chat = global.db.data.chats[msg?.chat] || {}
 if (!chat?.delete) return 
-const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
-await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender]}, { quoted: update.key });
+if (!msg) return 
 
-        console.log("Mensaje anti-delete enviado:", antideleteMessage);
+//let chat = global.db.data.chats[m.chat] || {}
+//if (!chat?.delete) return 
+const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
+await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender], quoted: update.key });
 
         const deletedMessage = messageStore[id];
         if (deletedMessage) {
