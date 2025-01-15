@@ -57,15 +57,6 @@ if (fs.existsSync(path2)) {
 // Cargar el estado de modoOwner
 global.grupoChat = {};
 global.mensajesPorUsuario = {};
-// Ruta al archivo de datos
-const datosPath = './datos.json';
-const { guardarDatos } = require('./index'); // Importar la función de guardar datos desde index.js
-// Función para guardar los datos automáticamente
-function actualizarDatos() {
-    // Guardar los datos en el archivo (usando la función importada desde index.js)
-    guardarDatos({ mensajesPorUsuario: global.mensajesPorUsuario });
-}
-
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
