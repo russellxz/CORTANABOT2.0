@@ -33,17 +33,11 @@ return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(tex
 //no tocar ariba
 // Ruta del archivo para guardar los datos
 const path = require('path');
-saveChatData(chatData);  // Asegúrate de que 'chatData' sea el objeto que deseas guardar
+
 // Ruta del archivo para guardar los datos
 const DATA_FILE = path.join(__dirname, 'datoschat.json');
 
 // Función para cargar los datos del archivo
-const loadChatData = () => {
-    if (fs.existsSync(DATA_FILE)) {
-        return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-    }
-    return {}; // Si no existe, retorna un objeto vacío
-};
 
 // Función para guardar los datos en el archivo
 
