@@ -317,7 +317,7 @@ try {
 const sender = participant || remoteJid;
 if (!sender) return;     
 
-let msg = this.serializeM(this.loadMessage(id))
+let msg = sock.serializeM(sock.loadMessage(id))
 let chat = global.db.data.chats[msg?.chat] || {}
 if (!chat?.delete) return 
 if (!msg) return 
