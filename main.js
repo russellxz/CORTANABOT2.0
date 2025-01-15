@@ -57,7 +57,24 @@ if (fs.existsSync(path2)) {
 }
 //modo owner
 // Cargar el estado de modoOwner
+// Para manejar el sistema de archivos
+const path = require('path'); // Para manejar rutas de archivos
 
+// Ruta al archivo de datos de los chats
+const DATA_FILE = path.join(__dirname, 'datoschat.json');
+
+// Función para cargar datos desde el archivo
+const loadChatData = () => {
+    if (fs.existsSync(DATA_FILE)) {
+        return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+    }
+    return {};
+};
+
+// Función para guardar datos en el archivo
+const saveChatData = (data) => {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
+};
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
@@ -818,29 +835,25 @@ if (!isCreator) return reply(info.owner)
 case '.listachat': {
     const fs = require('fs');
     const path = require('path');
-
-    // Ruta del archivo para guardar los datos
     const DATA_FILE = path.join(__dirname, 'datoschat.json');
 
-    // Función para cargar los datos del archivo
+    // Cargar los datos desde el archivo
     const loadChatData = () => {
         if (fs.existsSync(DATA_FILE)) {
             return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
         }
-        return {}; // Si no existe, retorna un objeto vacío
+        return {};
     };
 
-    // Cargar datos desde el archivo
     const chatData = loadChatData();
-    const groupId = m.key.remoteJid; // ID del grupo actual
+    const groupId = m.key.remoteJid;
 
-    // Verificar si hay datos para este grupo
     if (!chatData[groupId]) {
-        await sock.sendMessage(groupId, { text: 'Aún no hay datos de actividad en este grupo.' });
+        sock.sendMessage(groupId, { text: 'No hay datos aún en este grupo.' });
         break;
     }
 
-    // Ordenar usuarios por cantidad de mensajes
+    // Crear el ranking
     const ranking = Object.entries(chatData[groupId])
         .sort(([, a], [, b]) => b - a)
         .map(([user, count], index) => ({
@@ -849,14 +862,14 @@ case '.listachat': {
             count,
         }));
 
-    // Crear mensaje de ranking
+    // Crear el mensaje del ranking
     const rankingMessage = ranking
         .map(({ rank, user, count }) => `${rank}. @${user.split('@')[0]} - ${count} mensajes`)
         .join('\n');
 
-    // Enviar mensaje al grupo con el ranking
-    await sock.sendMessage(groupId, {
-        text: `📊 *Ranking de usuarios más activos en este grupo:*\n\n${rankingMessage}`,
+    // Enviar el mensaje al grupo
+    sock.sendMessage(groupId, {
+        text: `📊 *Ranking de usuarios más activos:*\n\n${rankingMessage}`,
         mentions: ranking.map(({ user }) => user),
     });
 
