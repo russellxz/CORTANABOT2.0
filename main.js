@@ -706,11 +706,6 @@ case 'guar':
 case 'g':
 const getKey = args.join(' '); // Palabra clave para recuperar
 
-if (command === getKey) {
-command = 'g';
-args.unshift(command); 
-}
-
     if (!getKey) {
         return conn.sendMessage(
             m.chat,
