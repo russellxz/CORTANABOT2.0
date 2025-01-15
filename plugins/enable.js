@@ -116,6 +116,21 @@ global.db.data.chats[m.chat].welcome = false
 m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
 }}
 
+if (command == 'delete' || command == 'antidelete') {
+if (!m.isGroup) return m.reply(info.group)
+if (!isGroupAdmins) return m.reply(info.admin)
+if (!text) return m.reply(`${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`) 
+//if (!text) return conn.sendButton(m.chat, `${lenguaje.enable.text}\n\n*• ${prefix + command} on*\n*• ${prefix + command} off*\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+if (args[0] === "on") {
+global.db.data.chats[m.chat].delete = true
+//conn.sendButton(m.chat, `✅ *${command}* ${lenguaje.enable.text1}\n`, botname, null, [['❌ Desactivar', `${prefix + command} off`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`✅ *${command}* ${lenguaje.enable.text1}`)
+} else if (args[0] === "off") {
+global.db.data.chats[m.chat].delete = false
+//conn.sendButton(m.chat, `🟢 *${command}* ${lenguaje.enable.text2}\n`, botname, null, [['✅ Activar', `${prefix + command} on`], ['🔰Menu', `.menu`]], null, null, m)
+m.reply(`❌ *${command}* ${lenguaje.enable.text2}`)
+}}
+
 if (command == 'antilink' || command == 'antienlace') {
 if (!m.isGroup) return m.reply(info.group)
 if (!isBotAdmins) return m.reply(info.botAdmin)
