@@ -31,25 +31,7 @@ const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
 //prueba
-const { datos, guardarDatos } = require('./main');	
-function actualizarDatos() {
-    const datos = {
-        grupoChat: global.grupoChat,
-        mensajesPorUsuario: global.mensajesPorUsuario,
-    };
-    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
-}
 
-function cargarDatos() {
-    if (fs.existsSync(datosPath)) {
-        return JSON.parse(fs.readFileSync(datosPath, 'utf-8'));
-    }
-    return { grupoChat: {}, mensajesPorUsuario: {} };
-}
-
-const datos = cargarDatos();
-global.grupoChat = datos.grupoChat || {};
-global.mensajesPorUsuario = datos.mensajesPorUsuario || {};	
 //notocar mas abajo
 //base de datos
 var low
@@ -288,31 +270,7 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 // Función que se ejecuta cuando llega un mensaje
-sock.ev.on('messages.upsert', async (chatUpdate) => {
-    const m = chatUpdate.messages[0];
-    if (!m || !m.key || !m.message || m.key.fromMe) return;
-
-    const groupId = m.key.remoteJid;
-    if (!groupId.endsWith('@g.us')) return; // Solo procesar mensajes en grupos
-
-    const userId = m.key.participant || m.key.remoteJid;
-
-    // Asegúrate de que el grupo esté inicializado en los datos
-    if (!datos.grupos[groupId]) {
-        datos.grupos[groupId] = {};
-    }
-
-    // Inicializar el conteo para el usuario si no existe
-    if (!datos.grupos[groupId][userId]) {
-        datos.grupos[groupId][userId] = 0;
-    }
-
-    // Incrementar el conteo de mensajes del usuario
-    datos.grupos[groupId][userId] += 1;
-
-    // Guardar los datos actualizados en datos.json
-    guardarDatos(datos);
-});	
+	
 
 // no tocar abajo
 	
