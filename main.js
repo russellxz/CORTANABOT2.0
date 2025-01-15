@@ -77,12 +77,18 @@ function actualizarDatos() {
     guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
 }
 
+// Crear el socket de WhatsApp
+const sock = makeWASocket({
+  printQRInTerminal: true, // Muestra el QR en la terminal para escanearlo
+  auth: { /* Autenticación si es necesario */ }
+});
+
 // Cargar el estado al iniciar el servidor
 const datos = cargarDatos();
 global.grupoChat = datos.grupoChat;
 global.mensajesPorUsuario = datos.mensajesPorUsuario;
 
-// Aquí abajo se encuentra el código del evento
+// Función que se ejecuta cuando llega un mensaje
 sock.ev.on('messages.upsert', async (chatUpdate) => {
     const m = chatUpdate.messages[0];
     if (!m || !m.key || !m.message || m.key.fromMe) return;
@@ -102,7 +108,7 @@ sock.ev.on('messages.upsert', async (chatUpdate) => {
     global.mensajesPorUsuario[groupId][userId] += 1;
 
     // Guarda los cambios automáticamente
-    actualizarDatos();  // Aquí se llama a la función
+    actualizarDatos();
 });
 
 
