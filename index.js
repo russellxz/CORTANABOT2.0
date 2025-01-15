@@ -49,6 +49,8 @@ const loadChatData = () => {
 const saveChatData = (data) => {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 };
+const main = require('./main.js');
+main.handleCommands(sock, message);
 //no tocar abajo	
 //base de datos
 var low
