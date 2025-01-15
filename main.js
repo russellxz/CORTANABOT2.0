@@ -57,6 +57,35 @@ if (fs.existsSync(path2)) {
 // Cargar el estado de modoOwner
 global.grupoChat = {};
 global.mensajesPorUsuario = {};
+
+const fs = require('fs');
+const path = require('path');
+
+// Ruta del archivo datos.json
+const datosPath = path.join(__dirname, 'datos.json');
+
+// Función para cargar datos desde datos.json
+function cargarDatos() {
+    if (fs.existsSync(datosPath)) {
+        return JSON.parse(fs.readFileSync(datosPath, 'utf-8'));
+    }
+    return { grupos: {} };
+}
+
+// Función para guardar datos en datos.json
+function guardarDatos(datos) {
+    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
+}
+
+// Inicializar datos al cargar el programa
+const datos = cargarDatos();
+
+// Exportar datos y funciones para usarlas en otros archivos
+module.exports = {
+    datos,
+    guardarDatos,
+};
+
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
