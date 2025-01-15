@@ -31,15 +31,6 @@ const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
 //prueba
-// index.js
-const datosPath = './datos.json'; // Asegúrate de que la ruta sea correcta
-
-// Función para guardar los datos
-function guardarDatos(datos) {
-    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
-}
-
-// Exporta la función para poder usarla en otros archivos
 module.exports = { guardarDatos };
 //notocar mas abajo
 //base de datos
