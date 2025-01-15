@@ -57,9 +57,11 @@ if (fs.existsSync(path2)) {
 // Cargar el estado de modoOwner
 global.grupoChat = {};
 global.mensajesPorUsuario = {};
-const datosPath = './datos.json';  // Define la ruta de tu archivo de datos
+const { makeWASocket } = require('@whiskeysockets/baileys');
+const fs = require('fs');
+const datosPath = './datos.json';  // Asegúrate de que esta sea la ruta correcta de tu archivo de datos
 
-// Función para cargar datos
+// Función para cargar los datos
 function cargarDatos() {
     if (fs.existsSync(datosPath)) {
         return JSON.parse(fs.readFileSync(datosPath, 'utf-8'));
@@ -67,7 +69,7 @@ function cargarDatos() {
     return { grupoChat: {}, mensajesPorUsuario: {} };
 }
 
-// Función para guardar datos
+// Función para guardar los datos
 function guardarDatos(datos) {
     fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
 }
@@ -77,24 +79,24 @@ function actualizarDatos() {
     guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
 }
 
-// Crear el socket de WhatsApp
-const sock = makeWASocket({
-  printQRInTerminal: true, // Muestra el QR en la terminal para escanearlo
-  auth: { /* Autenticación si es necesario */ }
-});
-
-// Cargar el estado al iniciar el servidor
+// Cargar los datos iniciales
 const datos = cargarDatos();
 global.grupoChat = datos.grupoChat;
 global.mensajesPorUsuario = datos.mensajesPorUsuario;
 
-// Función que se ejecuta cuando llega un mensaje
+// Crear el socket de WhatsApp
+const sock = makeWASocket({
+    printQRInTerminal: true, // Muestra el QR en la terminal para escanearlo
+    auth: { /* Aquí va la autenticación si es necesario, por ejemplo con cookies o session */ }
+});
+
+// Evento para cuando llega un mensaje
 sock.ev.on('messages.upsert', async (chatUpdate) => {
     const m = chatUpdate.messages[0];
     if (!m || !m.key || !m.message || m.key.fromMe) return;
 
     const groupId = m.key.remoteJid;
-    if (!groupId.endsWith('@g.us')) return; // Solo grupos
+    if (!groupId.endsWith('@g.us')) return; // Solo para grupos
 
     // Asegúrate de que el grupo esté inicializado
     if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
@@ -109,6 +111,13 @@ sock.ev.on('messages.upsert', async (chatUpdate) => {
 
     // Guarda los cambios automáticamente
     actualizarDatos();
+});
+
+// Inicia la conexión de WhatsApp
+sock.connect().then(() => {
+    console.log('Conectado a WhatsApp');
+}).catch(err => {
+    console.error('Error al conectar a WhatsApp:', err);
 });
 
 
