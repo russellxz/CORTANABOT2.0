@@ -272,22 +272,22 @@ sock.ev.on('messages.upsert', async (chatUpdate) => {
     const m = chatUpdate.messages[0];
     if (!m || !m.key || !m.message || m.key.fromMe) return;
 
-    const groupId = m.key.remoteJid; // ID del grupo o chat
-    if (!groupId.endsWith('@g.us')) return; // Solo permite grupos
+    const groupId = m.key.remoteJid;
+    if (!groupId.endsWith('@g.us')) return; // Solo grupos
 
-    // Verifica si el grupo tiene activado el conteo de mensajes
-    if (global.grupoChat[groupId]) {
-        const userId = m.key.participant || m.key.remoteJid; // ID del usuario
+    // Asegúrate de que el grupo esté inicializado
+    if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
 
-        // Inicializa el contador del grupo si no existe
-        if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
+    const userId = m.key.participant || m.key.remoteJid;
 
-        // Incrementa el contador de mensajes del usuario
-        if (!global.mensajesPorUsuario[groupId][userId]) {
-            global.mensajesPorUsuario[groupId][userId] = 0;
-        }
-        global.mensajesPorUsuario[groupId][userId] += 1;
+    // Suma los mensajes del usuario
+    if (!global.mensajesPorUsuario[groupId][userId]) {
+        global.mensajesPorUsuario[groupId][userId] = 0;
     }
+    global.mensajesPorUsuario[groupId][userId] += 1;
+
+    // Guarda los cambios automáticamente
+    actualizarDatos();
 });	
 
 // no tocar abajo
