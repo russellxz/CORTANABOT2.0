@@ -57,7 +57,6 @@ if (fs.existsSync(path2)) {
 // Cargar el estado de modoOwner
 global.grupoChat = {};
 global.mensajesPorUsuario = {};
-const fs = require('fs');
 const datosPath = './datos.json';  // Define la ruta de tu archivo de datos
 
 // Función para cargar datos
