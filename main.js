@@ -647,7 +647,6 @@ return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'}
 //prueba aqui 
 	
 //ARRANCA LA DIVERSIÓN 
-//comando sin necesidad de poner prefijo
 switch (command) { 
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
@@ -705,16 +704,13 @@ case 'guar':
     break;
 
 case 'g':
-let command = ''; 
-const args = m.text.trim().split(' '); 
+const getKey = args.join(' '); // Palabra clave para recuperar
 
-if (command === '') {
+if (command === getKey) {
 command = 'g';
 args.unshift(command); 
 }
 
-const getKey = args.slice(1).join(' '); 
-//const getKey = args.join(' '); // Palabra clave para recuperar
     if (!getKey) {
         return conn.sendMessage(
             m.chat,
