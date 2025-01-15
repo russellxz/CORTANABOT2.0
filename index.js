@@ -321,10 +321,8 @@ for (const update of updates) {
           return;
         }
 
-let msg = sock.serializeM(sock.loadMessage(id))
-let chat = global.db.data.chats[msg?.chat] || {}
+let chat = global.db.data.chats[m.chat] || {}
 if (!chat?.delete) return 
-if (!msg) return 
 const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
         await sock.sendMessage(remoteJid, {
           text: antideleteMessage,
