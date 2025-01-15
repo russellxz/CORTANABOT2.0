@@ -270,64 +270,7 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 // Función que se ejecuta cuando llega un mensaje
-// Importar módulos necesarios
-// Ruta donde se almacenarán los archivos de conteo
-const dataDir = path.join(__dirname, 'datosGrupos');
 
-// Asegúrate de que el directorio existe
-if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir);
-}
-
-// Función para cargar datos de un archivo
-function cargarDatos(groupId) {
-    const filePath = path.join(dataDir, `${groupId}.json`);
-    if (fs.existsSync(filePath)) {
-        return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-    }
-    return {}; // Si no existe, retornamos un objeto vacío
-}
-
-// Función para guardar datos en un archivo
-function guardarDatos(groupId, datos) {
-    const filePath = path.join(dataDir, `${groupId}.json`);
-    fs.writeFileSync(filePath, JSON.stringify(datos, null, 2));
-}
-
-// Función para eliminar el archivo de un grupo
-function eliminarDatos(groupId) {
-    const filePath = path.join(dataDir, `${groupId}.json`);
-    if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-    }
-}
-
-// Manejo de mensajes
-module.exports = (sock) => {
-    sock.ev.on('messages.upsert', async (chatUpdate) => {
-        const m = chatUpdate.messages[0];
-        if (!m || !m.key || !m.message || m.key.fromMe) return;
-
-        const groupId = m.key.remoteJid;
-        if (!groupId.endsWith('@g.us')) return; // Solo grupos
-
-        const userId = m.key.participant || m.key.remoteJid;
-
-        // Cargar los datos del grupo si existe
-        const datosGrupo = cargarDatos(groupId);
-
-        // Verificar si el grupo tiene activado el conteo
-        if (!datosGrupo.activado) return;
-
-        // Incrementar el conteo de mensajes
-        if (!datosGrupo.mensajesPorUsuario) datosGrupo.mensajesPorUsuario = {};
-        if (!datosGrupo.mensajesPorUsuario[userId]) datosGrupo.mensajesPorUsuario[userId] = 0;
-        datosGrupo.mensajesPorUsuario[userId] += 1;
-
-        // Guardar los datos actualizados
-        guardarDatos(groupId, datosGrupo);
-    });
-};
 // no tocar abajo
 	
 sock.ev.on('messages.upsert', async chatUpdate => {
