@@ -626,6 +626,10 @@ user.afkTime = -1
 user.afkReason = ''  
 }
 
+if (!global.db.data.users[m.sender]) global.db.data.users[m.sender] = {};
+if (!global.db.data.users[m.sender].mensajes) global.db.data.users[m.sender].mensajes = {};
+if (!global.db.data.users[m.sender].mensajes[m.chat]) global.db.data.users[m.sender].mensajes[m.chat] = 0;
+	
 if (m.mtype === 'interactiveResponseMessage') {   
 let msg = m.message[m.mtype]  || m.msg
 if (msg.nativeFlowResponseMessage && !m.isBot ) { 
@@ -647,7 +651,37 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 
-	
+case "totalmensaje": {
+function obtenerEstadisticasGrupo(chatId) {
+let stats = [];
+
+        for (const userId in global.db.data.users) {
+            const user = global.db.data.users[userId];
+            if (user.mensajes && user.mensajes[chatId]) {
+                stats.push({
+                    user: userId,
+                    count: user.mensajes[chatId],
+                });
+            }
+        }
+
+        stats.sort((a, b) => b.count - a.count);
+
+        return stats;
+    }
+
+    const estadisticas = obtenerEstadisticasGrupo(m.chat);
+
+    let respuesta = "📊 TOP USUARIOS MAS ACTIVOS :\n";
+    estadisticas.forEach((stat, i) => {
+        respuesta += `${i + 1}. @${stat.user.split('@')[0]}: ${stat.count} mensajes\n`;
+    });
+
+conn.sendTextWithMentions(m.chat, respuesta, m)
+//conn.sendMessage(m.chat, respuesta, { mentions: estadisticas.map(s => s.user) });
+}
+break;
+		
 case 'guar':
     if (!m.quoted || !m.quoted.mimetype) {
         return conn.sendMessage(
