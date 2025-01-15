@@ -324,11 +324,7 @@ for (const update of updates) {
 let chat = global.db.data.chats[m.chat] || {}
 if (!chat?.delete) return 
 const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
-        await sock.sendMessage(remoteJid, {
-          text: antideleteMessage,
-          mentions: [sender],
-          quoted: update.key, 
-        });
+await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender]}, { quoted: update.key });
 
         console.log("Mensaje anti-delete enviado:", antideleteMessage);
 
