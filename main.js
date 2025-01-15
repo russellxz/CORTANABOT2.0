@@ -60,28 +60,37 @@ global.mensajesPorUsuario = {};
 // Ruta al archivo de datos
 const datosPath = './datos.json';
 
-// Función para cargar datos desde el archivo
-function cargarDatos() {
-    if (fs.existsSync(datosPath)) {
-        return JSON.parse(fs.readFileSync(datosPath, 'utf-8'));
+const { guardarDatos } = require('./index'); // Importar la función de guardar datos desde index.js
+
+// Crear el socket de WhatsApp
+const sock = makeWASocket({
+    auth: {} // Asegúrate de incluir la autenticación si la tienes configurada
+});
+
+// Evento para manejar los mensajes en los grupos
+sock.ev.on('messages.upsert', async (chatUpdate) => {
+    const m = chatUpdate.messages[0];
+    if (!m || !m.key || !m.message || m.key.fromMe) return; // Ignorar si no es un mensaje o si lo envié yo mismo
+
+    const groupId = m.key.remoteJid;
+    if (!groupId.endsWith('@g.us')) return; // Solo procesar mensajes de grupos
+
+    // Asegúrate de que el grupo esté inicializado en los datos
+    if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
+
+    const userId = m.key.participant || m.key.remoteJid;
+
+    // Si no existe el contador de mensajes para ese usuario en el grupo, inicialízalo
+    if (!global.mensajesPorUsuario[groupId][userId]) {
+        global.mensajesPorUsuario[groupId][userId] = 0;
     }
-    return { grupoChat: {}, mensajesPorUsuario: {} }; // Valores por defecto si no existe el archivo
-}
 
-// Función para guardar los datos en el archivo
-function guardarDatos(datos) {
-    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2)); // Guardar con formato legible
-}
+    // Sumar el mensaje para el usuario
+    global.mensajesPorUsuario[groupId][userId] += 1;
 
-// Función para actualizar los datos automáticamente
-function actualizarDatos() {
-    guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
-}
-
-// Cargar los datos iniciales al arrancar el servidor
-const datos = cargarDatos();
-global.grupoChat = datos.grupoChat;
-global.mensajesPorUsuario = datos.mensajesPorUsuario;
+    // Guardar los datos automáticamente
+    guardarDatos({ mensajesPorUsuario: global.mensajesPorUsuario });
+});
 
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
