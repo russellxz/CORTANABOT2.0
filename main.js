@@ -55,9 +55,10 @@ if (fs.existsSync(path2)) {
 }
 //modo owner
 // Cargar el estado de modoOwner
-global.grupoChat = {};
-global.mensajesPorUsuario = {};
-const datosPath = './datos.json'; // Archivo para guardar los datos
+
+const fs = require('fs');
+const datosPath = './datos.json';  // Define la ruta de tu archivo de datos
+
 // Función para cargar datos
 function cargarDatos() {
     if (fs.existsSync(datosPath)) {
@@ -71,15 +72,38 @@ function guardarDatos(datos) {
     fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
 }
 
+// Función para guardar datos automáticamente en cada cambio
+function actualizarDatos() {
+    guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
+}
+
 // Cargar el estado al iniciar el servidor
 const datos = cargarDatos();
 global.grupoChat = datos.grupoChat;
 global.mensajesPorUsuario = datos.mensajesPorUsuario;
 
-// Función para guardar datos automáticamente en cada cambio
-function actualizarDatos() {
-    guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
-}
+// Aquí abajo se encuentra el código del evento
+sock.ev.on('messages.upsert', async (chatUpdate) => {
+    const m = chatUpdate.messages[0];
+    if (!m || !m.key || !m.message || m.key.fromMe) return;
+
+    const groupId = m.key.remoteJid;
+    if (!groupId.endsWith('@g.us')) return; // Solo grupos
+
+    // Asegúrate de que el grupo esté inicializado
+    if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
+
+    const userId = m.key.participant || m.key.remoteJid;
+
+    // Suma los mensajes del usuario
+    if (!global.mensajesPorUsuario[groupId][userId]) {
+        global.mensajesPorUsuario[groupId][userId] = 0;
+    }
+    global.mensajesPorUsuario[groupId][userId] += 1;
+
+    // Guarda los cambios automáticamente
+    actualizarDatos();  // Aquí se llama a la función
+});
 
 
 // no tocar abajo
