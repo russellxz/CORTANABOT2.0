@@ -610,7 +610,7 @@ if (!('rules' in chats)) chats.rules = ''
 antilink: false,  
 antiLink2: false, 
 AntiTwitter: false, 
-delete: true
+delete: true,
 AntiTiktok: false, 
 AntiTelegram: false, 
 AntiFacebook: false, 
