@@ -48,7 +48,12 @@ const {stickers} = require('./plugins/stickers.js')
 const {owner} = require('./plugins/propietario.js')  
 const {enable} = require('./plugins/enable.js')
 const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
+//manejo de mensaje
+const manejarMensajes = require('./index'); // Ajusta la ruta si es necesario
+manejarMensajes(sock); // Pasa tu instancia del socket
+const { guardarDatos, cargarDatos } = require('./index'); // Ajusta la ruta si es necesario
 
+//ok
 let multimediaStore = {};
 if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
@@ -884,69 +889,56 @@ case 'somecommand': {
 //contador de chat 
 
 // Comando .grupochat on / off
-case 'grupochat': {
-    if (!m.isGroup) {
-        return conn.sendMessage(m.chat, { text: 'Este comando solo puede usarse en grupos.' }, { quoted: m });
-    }
-    if (args[0] === 'on') {
-        global.grupoChat[m.chat] = true;
-        guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
-        conn.sendMessage(m.chat, { text: 'El conteo de mensajes ha sido activado en este grupo.' }, { quoted: m });
-    } else if (args[0] === 'off') {
-        global.grupoChat[m.chat] = false;
-        guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
-        conn.sendMessage(m.chat, { text: 'El conteo de mensajes ha sido desactivado en este grupo.' }, { quoted: m });
+case "grupochat": {
+    if (!m.isGroup) return m.reply('⚠️ Este comando solo puede ser usado en grupos.');
+
+    const subCommand = args[0]?.toLowerCase();
+    if (subCommand === "on") {
+        global.gruposActivados[m.chat] = true;
+        guardarDatos({
+            gruposActivados: global.gruposActivados,
+            mensajesPorUsuario: global.mensajesPorUsuario,
+        });
+        m.reply('✅ El conteo de mensajes ha sido activado en este grupo.');
+    } else if (subCommand === "off") {
+        delete global.gruposActivados[m.chat];
+        guardarDatos({
+            gruposActivados: global.gruposActivados,
+            mensajesPorUsuario: global.mensajesPorUsuario,
+        });
+        m.reply('❌ El conteo de mensajes ha sido desactivado en este grupo.');
     } else {
-        conn.sendMessage(m.chat, { text: 'Uso: .grupochat on / off' }, { quoted: m });
+        m.reply('⚠️ Uso incorrecto. Usa: grupochat on / grupochat off');
     }
     break;
-}		
+}
 
-// chatlist
+case "listachat": {
+    if (!m.isGroup) return m.reply('⚠️ Este comando solo puede ser usado en grupos.');
 
-case 'listachat': {
-    // Verifica si el conteo de mensajes está activo en el grupo
-    if (!global.grupoChat[m.chat]) {
-        return conn.sendMessage(m.chat, { text: '🌸 El conteo de mensajes no está activado en este grupo. Usa .grupochat on para activarlo. 🌸' }, { quoted: m });
-    }
-
-    // Obtiene el ranking de usuarios por número de mensajes
-    const groupId = m.chat;
-    const mensajes = global.mensajesPorUsuario[groupId];
-
-    // Si no hay usuarios con mensajes
+    const mensajes = global.mensajesPorUsuario[m.chat];
     if (!mensajes || Object.keys(mensajes).length === 0) {
-        return conn.sendMessage(m.chat, { text: '🌷 No hay usuarios con mensajes registrados en este grupo aún. 🌷' }, { quoted: m });
+        return m.reply('⚠️ No hay datos de mensajes en este grupo.');
     }
 
-    // Ordena los usuarios por la cantidad de mensajes
+    // Ordenar usuarios por cantidad de mensajes
     const ranking = Object.entries(mensajes)
         .map(([userId, count]) => ({ userId, count }))
         .sort((a, b) => b.count - a.count);
 
-    // Construye el mensaje de lista con menciones
+    // Construir el mensaje con diseño bonito
     let mentions = [];
-    let response = '🌸🌼 Ranking de usuarios con más mensajes 🌼🌸\n\n';
+    let response = '🌟 Ranking de usuarios 🌟\n\n';
     ranking.forEach((user, index) => {
-        response += `✨ ${index + 1}. @${user.userId.split('@')[0]} - ${user.count} mensajes 🌹\n`;
-        mentions.push(user.userId); // Agrega a la lista de menciones
+        response += `✨ ${index + 1}. @${user.userId.split('@')[0]} - ${user.count} mensajes\n`;
+        mentions.push(user.userId); // Agregar menciones
     });
+    response += '\n🌼 ¡Gracias por participar en el chat! 🌼';
 
-    // Agrega un mensaje bonito al final
-    response += `\n🌻 ¡Gracias a todos por participar! ¡Sigan chateando para subir en el ranking! 🌻`;
-
-    // Envía la lista con menciones
+    // Enviar el mensaje
     conn.sendMessage(m.chat, { text: response, mentions }, { quoted: m });
     break;
 }
-		
-case "inspect": {		
-const { getUrlFromDirectPath } = require("@whiskeysockets/baileys")
-const channelUrl = text?.match(/(?:https:\/\/)?(?:www\.)?(?:chat\.|wa\.)?whatsapp\.com\/(?:channel\/|joinchat\/)?([0-9A-Za-z]{22,24})/i)?.[1];
-if (!text) return await m.reply(`*⚠️ Ingrese un enlace de un grupo/comunidad/canal de WhatsApp para obtener información.*`)
-newsletterInfo.id ? conn.sendMessage(m.chat, { text: newsletterInfo.id }, { quoted: null }) : ''
-}
-break
 
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
