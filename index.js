@@ -270,27 +270,7 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 // Función que se ejecuta cuando llega un mensaje
-sock.ev.on('messages.upsert', async (chatUpdate) => {
-    const m = chatUpdate.messages[0];
-    if (!m || !m.key || !m.message || m.key.fromMe) return;
-
-    const groupId = m.key.remoteJid;
-    if (!groupId.endsWith('@g.us')) return; // Solo grupos
-
-    // Asegúrate de que el grupo esté inicializado
-    if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
-
-    const userId = m.key.participant || m.key.remoteJid;
-
-    // Suma los mensajes del usuario
-    if (!global.mensajesPorUsuario[groupId][userId]) {
-        global.mensajesPorUsuario[groupId][userId] = 0;
-    }
-    global.mensajesPorUsuario[groupId][userId] += 1;
-
-    // Guarda los cambios automáticamente
-    actualizarDatos();
-});	
+	
 
 // no tocar abajo
 	
