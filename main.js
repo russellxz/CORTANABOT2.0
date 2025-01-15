@@ -647,10 +647,42 @@ return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'}
 //prueba aqui 
 	
 //ARRANCA LA DIVERSIÓN 
-switch (command) { 
+switch (prefix && command) { 
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
+
+case "totalmensaje": {
+        function obtenerEstadisticasGrupo(chatId) {
+            let stats = [];
+
+            for (const userId in global.db.data.users) {
+                const user = global.db.data.users[userId];
+                if (user.mensajes && user.mensajes[chatId]) {
+                    stats.push({
+                        user: userId,
+                        count: user.mensajes[chatId],
+                    });
+                }
+            }
+
+            stats.sort((a, b) => b.count - a.count);
+
+            return stats;
+        }
+
+        const estadisticas = obtenerEstadisticasGrupo(m.chat);
+
+        // Generar respuesta del ranking
+        let respuesta = "📊 *TOP USUARIOS MÁS ACTIVOS*:\n\n";
+        estadisticas.forEach((stat, i) => {
+            respuesta += `${i + 1}. @${stat.user.split('@')[0]}: ${stat.count} mensajes\n`;
+        });
+
+        // Enviar el mensaje con menciones
+        conn.sendTextWithMentions(m.chat, respuesta, m);
+}
+break; 
 		
 case 'guar':
     if (!m.quoted || !m.quoted.mimetype) {
@@ -704,8 +736,7 @@ case 'guar':
     break;
 
 case 'g':
-const getKey = args.join(' '); // Palabra clave para recuperar
-
+    const getKey = args.join(' '); // Palabra clave para recuperar
     if (!getKey) {
         return conn.sendMessage(
             m.chat,
@@ -841,42 +872,12 @@ const responseMessage = `*🚩 𝐀𝐪𝐮𝐢 𝐭𝐢𝐞𝐧𝐞𝐬 𝐥�
 await conn.sendMessage(m.chat, {text: responseMessage, mentions: conn.parseMention(responseMessage)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 break
               
-case "totalmensaje": {
-function obtenerEstadisticasGrupo(chatId) {
-let stats = [];
-
-for (const userId in global.db.data.users) {
-const user = global.db.data.users[userId];
-if (user.mensajes && user.mensajes[chatId]) {
-stats.push({ user: userId,
-count: user.mensajes[chatId],
-});
-}}
-
-stats.sort((a, b) => b.count - a.count);
-return stats;
-}
-
-const estadisticas = obtenerEstadisticasGrupo(m.chat);
-let respuesta = "📊 *TOP USUARIOS MÁS ACTIVOS*:\n\n";
-estadisticas.forEach((stat, i) => {
-respuesta += `${i + 1}. @${stat.user.split('@')[0]}: ${stat.count} mensajes\n`;
-});
-conn.sendTextWithMentions(m.chat, respuesta, m);
-}
-break; 
-             
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
 case 'estado': case 'infobot': case 'owner': case 'creador': case 'contacto': case 'grupos': case 'grupoficiales': case 'instalarbot': case 'crearbot': case 'ping': case '5492266613038': case '447700179665': case '595975740803': case 'report': case 'sc': case 'donar': case 'solicitud': case 'cuenta': case 'cuentas': case 'cuentaoficiales': case 'cuentaofc': case 'cafirexos': case 'Cafirexos': case 'velocidad': case 'status': case 'speedtest': case 'speed': case 'host': case 'infohost': info(command, conn, m, speed, sender, fkontak, pickRandom, pushname, from, msg, text) 
 break      
-}
 
-//______________________________
-//comando con prefijo
-
-switch (prefix && command) { 
 case 'server': case 'p': {
 const os = require('os');
 const si = require('systeminformation');
@@ -976,7 +977,7 @@ function times(second) {
 break
      
 //activar/desactivar  
-case 'welcome': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'game2': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': case 'reacciónes': case 'reaccion': case 'antireac': case 'antireaciones': case 'desactivar': enable(m, command, isGroupAdmins, text, command, args, conn, isBotAdmins, isGroupAdmins, isCreator, conn) 
+case 'welcome': case 'antidelete': case 'delete': case 'bienvenida': case 'antilink': case 'antienlace': case 'antifake': case 'antiFake': case 'antiarabe': case 'antiArabe': case 'autodetect': case 'detect': case 'audios': case 'autosticker': case 'stickers': case 'modocaliente': case 'game2': case 'antinsfw': case 'modoadmin': case 'modoadmins': case 'soloadmin': case 'antiprivado': case 'antipv': case 'anticall': case 'antillamada': case 'modojadibot': case 'jadibot': case 'autoread': case 'autovisto': case 'antispam': case 'chatbot': case 'simsimi': case 'autolevelup': case 'autonivel': case 'antitoxic': case 'antilink2': case 'AntiTwiter': case 'antitwiter': case 'antitiktok': case 'AntiTikTok': case 'antitelegram': case 'AntiTelegram': case 'antifacebook': case 'AntiFb': case 'AntiFacebook': case 'antinstagram': case 'AntInstagram': case 'antiyoutube': case 'AntiYoutube': case 'AntiIg': case 'enable': case 'configuracion': case 'configurar': case 'antiviewonce': case 'reacciónes': case 'reaccion': case 'antireac': case 'antireaciones': case 'desactivar': enable(m, command, isGroupAdmins, text, command, args, conn, isBotAdmins, isGroupAdmins, isCreator, conn) 
 break
      
 //Grupos    
