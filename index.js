@@ -30,7 +30,30 @@ const {say} = cfonts;
 const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
+//prueba
 
+// Ruta del archivo donde se guardan los datos
+const datosPath = './datos.json';
+
+// Función para cargar los datos desde el archivo
+function cargarDatos() {
+    if (fs.existsSync(datosPath)) {
+        return JSON.parse(fs.readFileSync(datosPath, 'utf-8'));
+    }
+    return { mensajesPorUsuario: {} }; // Datos por defecto si no existe el archivo
+}
+
+// Función para guardar los datos en el archivo
+function guardarDatos(datos) {
+    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2)); // Guardar los datos en formato JSON legible
+}
+
+// Cargar los datos al iniciar el servidor
+const datos = cargarDatos();
+global.mensajesPorUsuario = datos.mensajesPorUsuario; // Cargar el estado de los mensajes
+
+module.exports = { guardarDatos }; // Exportar la función para que la use main.js
+//notocar mas abajo
 //base de datos
 var low
 try {
