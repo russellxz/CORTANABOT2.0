@@ -861,23 +861,25 @@ case 'somecommand': {
 
 // Comando .grupochat on / off
 case "grupochat": {
-    if (!m.isGroup) return m.reply('⚠️ Este comando solo puede ser usado en grupos.');
+    if (!m.isGroup) return m.reply('⚠️ Este comando solo puede usarse en grupos.');
 
+    const groupId = m.chat;
     const subCommand = args[0]?.toLowerCase();
+
     if (subCommand === "on") {
-        global.gruposActivados[m.chat] = true;
-        guardarDatos({
-            gruposActivados: global.gruposActivados,
-            mensajesPorUsuario: global.mensajesPorUsuario,
-        });
+        // Cargar o inicializar datos del grupo
+        let datosGrupo = cargarDatos(groupId);
+        datosGrupo.activado = true;
+        datosGrupo.mensajesPorUsuario = datosGrupo.mensajesPorUsuario || {};
+
+        // Guardar los datos del grupo
+        guardarDatos(groupId, datosGrupo);
+
         m.reply('✅ El conteo de mensajes ha sido activado en este grupo.');
     } else if (subCommand === "off") {
-        delete global.gruposActivados[m.chat];
-        guardarDatos({
-            gruposActivados: global.gruposActivados,
-            mensajesPorUsuario: global.mensajesPorUsuario,
-        });
-        m.reply('❌ El conteo de mensajes ha sido desactivado en este grupo.');
+        // Eliminar el archivo del grupo
+        eliminarDatos(groupId);
+        m.reply('❌ El conteo de mensajes ha sido desactivado y los datos del grupo han sido eliminados.');
     } else {
         m.reply('⚠️ Uso incorrecto. Usa: grupochat on / grupochat off');
     }
@@ -885,10 +887,20 @@ case "grupochat": {
 }
 
 case "listachat": {
-    if (!m.isGroup) return m.reply('⚠️ Este comando solo puede ser usado en grupos.');
+    if (!m.isGroup) return m.reply('⚠️ Este comando solo puede usarse en grupos.');
 
-    const mensajes = global.mensajesPorUsuario[m.chat];
-    if (!mensajes || Object.keys(mensajes).length === 0) {
+    const groupId = m.chat;
+
+    // Cargar los datos del grupo
+    const datosGrupo = cargarDatos(groupId);
+
+    // Verificar si el conteo está activado
+    if (!datosGrupo.activado) {
+        return m.reply('⚠️ El conteo de mensajes no está activado en este grupo.');
+    }
+
+    const mensajes = datosGrupo.mensajesPorUsuario || {};
+    if (Object.keys(mensajes).length === 0) {
         return m.reply('⚠️ No hay datos de mensajes en este grupo.');
     }
 
