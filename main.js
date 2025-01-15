@@ -646,10 +646,6 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
-case 'soyowner':
-    const isOwner = global.owner.some(([id]) => id === m.sender.split('@')[0]);
-    conn.sendMessage(m.chat, { text: isOwner ? 'Eres dueño del bot.' : 'No eres dueño del bot.' }, { quoted: m });
-    break;
 
 	
 case 'guar':
