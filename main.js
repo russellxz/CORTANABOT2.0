@@ -58,6 +58,7 @@ if (fs.existsSync(path2)) {
 //modo owner
 // Cargar el estado de modoOwner
 // Para manejar el sistema de archivos
+const fs = require('fs'); // Para manejar el sistema de archivos
 const path = require('path'); // Para manejar rutas de archivos
 
 // Ruta al archivo de datos de los chats
