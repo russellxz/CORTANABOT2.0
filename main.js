@@ -74,7 +74,7 @@ const loadChatData = () => {
 const saveChatData = (data) => {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
 };
-saveChatData(chatData);  // Llama a esta función después de actualizar los datos
+  // Llama a esta función después de actualizar los datos
 
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
