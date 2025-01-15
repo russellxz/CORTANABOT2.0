@@ -584,6 +584,7 @@ if (!('antiLink2' in chats)) chats.antiLink2 = false
 if (!('AntiTwitter' in chats)) chats.AntiTwitter = false
 if (!('AntiTiktok' in chats)) chats.AntiTiktok = false
 if (!('AntiTelegram' in chats)) chats.AntiTelegram = false
+if (!('delete' in chats)) chats.delete = true
 if (!('AntiFacebook' in chats)) chats.AntiFacebook = false
 if (!('AntInstagram' in chats)) chats.AntInstagram = false
 if (!('AntiYoutube' in chats)) chats.AntiYoutube = false
@@ -609,6 +610,7 @@ if (!('rules' in chats)) chats.rules = ''
 antilink: false,  
 antiLink2: false, 
 AntiTwitter: false, 
+delete: true
 AntiTiktok: false, 
 AntiTelegram: false, 
 AntiFacebook: false, 
