@@ -31,7 +31,7 @@ const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
 //prueba
-	
+const { datos, guardarDatos } = require('./main');	
 //notocar mas abajo
 //base de datos
 var low
@@ -270,29 +270,30 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 // Función que se ejecuta cuando llega un mensaje
-// Evento para manejar los mensajes en los grupos
 sock.ev.on('messages.upsert', async (chatUpdate) => {
     const m = chatUpdate.messages[0];
-    if (!m || !m.key || !m.message || m.key.fromMe) return; // Ignorar si no es un mensaje o si lo envié yo mismo
+    if (!m || !m.key || !m.message || m.key.fromMe) return;
 
     const groupId = m.key.remoteJid;
-    if (!groupId.endsWith('@g.us')) return; // Solo procesar mensajes de grupos
-
-    // Asegúrate de que el grupo esté inicializado en los datos
-    if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
+    if (!groupId.endsWith('@g.us')) return; // Solo procesar mensajes en grupos
 
     const userId = m.key.participant || m.key.remoteJid;
 
-    // Si no existe el contador de mensajes para ese usuario en el grupo, inicialízalo
-    if (!global.mensajesPorUsuario[groupId][userId]) {
-        global.mensajesPorUsuario[groupId][userId] = 0;
+    // Asegúrate de que el grupo esté inicializado en los datos
+    if (!datos.grupos[groupId]) {
+        datos.grupos[groupId] = {};
     }
 
-    // Sumar el mensaje para el usuario
-    global.mensajesPorUsuario[groupId][userId] += 1;
+    // Inicializar el conteo para el usuario si no existe
+    if (!datos.grupos[groupId][userId]) {
+        datos.grupos[groupId][userId] = 0;
+    }
 
-    // Guardar los cambios automáticamente
-    actualizarDatos(); // Aquí se llama la función para guardar los datos actualizados
+    // Incrementar el conteo de mensajes del usuario
+    datos.grupos[groupId][userId] += 1;
+
+    // Guardar los datos actualizados en datos.json
+    guardarDatos(datos);
 });	
 
 // no tocar abajo
