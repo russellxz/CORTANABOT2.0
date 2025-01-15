@@ -56,10 +56,8 @@ if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
 //modo owner
-// Cargar el estado de modoOwner
-// Para manejar el sistema de archivos
-// Para manejar el sistema de archivos
-// Para manejar rutas de archivos
+const fs = require('fs'); // Para manejar el sistema de archivos
+const path = require('path'); // Para manejar rutas de archivos
 
 // Ruta al archivo de datos de los chats
 const DATA_FILE = path.join(__dirname, 'datoschat.json');
