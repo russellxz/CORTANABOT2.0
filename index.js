@@ -309,7 +309,6 @@ sock.ev.on("messages.upsert", async (message) => {
 
 sock.ev.on("messages.update", async (updates) => {
 console.log("Event triggered: messages.update");
-if (global.db.data.chats[m.chat].delete) return;
 
 for (const update of updates) {
     if (update.update.message === null && update.key.fromMe === false) {
@@ -322,7 +321,11 @@ for (const update of updates) {
           return;
         }
 
-        const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
+let msg = sock.serializeM(sock.loadMessage(id))
+let chat = global.db.data.chats[msg?.chat] || {}
+if (!chat?.delete) return 
+if (!msg) return 
+const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
         await sock.sendMessage(remoteJid, {
           text: antideleteMessage,
           mentions: [sender],
