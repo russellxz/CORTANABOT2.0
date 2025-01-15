@@ -292,39 +292,38 @@ console.log(err)
 }})
 
 sock.ev.on("messages.update", async (updates) => {
-console.log("Event triggered: messages.update");
-console.log(updates);
+  console.log("Event triggered: messages.update");
+  console.log(updates);
 
   for (const update of updates) {
-    if (update.update === "message-revoke") {
+    if (update.update.message === null && update.key.fromMe === false) { // Revisa si el mensaje es un delete
       const { remoteJid, id, participant } = update.key;
-
       try {
-        // Cargar metadatos del mensaje
-        const metadata = await sock.loadMessage(remoteJid, id);
+        const sender = participant || remoteJid; // Asegúrate de obtener el participante o el jid remoto
 
-        // Verificar si es un mensaje REVOKE (protocolo de eliminación)
-        if (metadata && metadata.message.protocolMessage) {
-          const protoType = metadata.message.protocolMessage.type;
-          if (protoType === 0) {
-            const sender = participant || remoteJid;
-
-            // Mensaje anti-delete
-            const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
-            await sock.sendMessage(remoteJid, { 
-              text: antideleteMessage, 
-              mentions: [sender],
-            });
-
-            console.log("Mensaje eliminado detectado:", metadata);
-          }
+        // Verificar si hay un participante
+        if (!sender) {
+          console.error("No se pudo obtener el remitente");
+          return;
         }
+
+        // Construir el mensaje anti-delete
+        const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
+
+        // Enviar el mensaje al grupo/chat correspondiente
+        await sock.sendMessage(remoteJid, { 
+          text: antideleteMessage,
+          mentions: [sender],
+        });
+
+        console.log("Mensaje eliminado detectado y enviado al chat:", antideleteMessage);
       } catch (error) {
-        console.error("Error detectando mensaje eliminado:", error);
+        console.error("Error detectando o enviando mensaje eliminado:", error);
       }
     }
   }
 });
+
 
 /*sock.ev.on('messages.update', async chatUpdate => {
 for(const { key, update } of chatUpdate) {
