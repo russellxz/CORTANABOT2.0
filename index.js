@@ -220,7 +220,7 @@ mobile: MethodMobile,
 browser: opcion == '1' ? ['CortanaBot-MD', 'Safari', '1.0.0'] : methodCodeQR ? ['CortanaBot-MD', 'Safari', '1.0.0'] : ["Ubuntu", "Chrome", "20.0.04"],
 markOnlineOnConnect: true, 
 generateHighQualityLinkPreview: true, 
-syncFullHistory: true,
+syncFullHistory: false,
 getMessage: async (key) => {
 let jid = jidNormalizedUser(key.remoteJid)
 let msg = await store.loadMessage(jid, key.id)
@@ -292,6 +292,9 @@ console.log(err)
 }})
 
 sock.ev.on("messages.update", async (updates) => {
+console.log("Event triggered: messages.update");
+console.log(updates);
+
   for (const update of updates) {
     if (update.update === "message-revoke") {
       const { remoteJid, id, participant } = update.key;
@@ -322,7 +325,6 @@ sock.ev.on("messages.update", async (updates) => {
     }
   }
 });
-
 
 /*sock.ev.on('messages.update', async chatUpdate => {
 for(const { key, update } of chatUpdate) {
