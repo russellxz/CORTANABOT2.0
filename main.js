@@ -647,7 +647,8 @@ return conn.ev.emit('messages.upsert', { messages : [ emit ] ,  type : 'notify'}
 //prueba aqui 
 	
 //ARRANCA LA DIVERSIÓN 
-switch (prefix && command) { 
+//comando sin necesidad de poner prefijo
+switch (command) { 
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
@@ -704,7 +705,16 @@ case 'guar':
     break;
 
 case 'g':
-    const getKey = args.join(' '); // Palabra clave para recuperar
+let command = ''; 
+const args = m.text.trim().split(' '); 
+
+if (command === '') {
+command = 'g';
+args.unshift(command); 
+}
+
+const getKey = args.slice(1).join(' '); 
+//const getKey = args.join(' '); // Palabra clave para recuperar
     if (!getKey) {
         return conn.sendMessage(
             m.chat,
@@ -870,7 +880,12 @@ case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': cas
 break        
 case 'estado': case 'infobot': case 'owner': case 'creador': case 'contacto': case 'grupos': case 'grupoficiales': case 'instalarbot': case 'crearbot': case 'ping': case '5492266613038': case '447700179665': case '595975740803': case 'report': case 'sc': case 'donar': case 'solicitud': case 'cuenta': case 'cuentas': case 'cuentaoficiales': case 'cuentaofc': case 'cafirexos': case 'Cafirexos': case 'velocidad': case 'status': case 'speedtest': case 'speed': case 'host': case 'infohost': info(command, conn, m, speed, sender, fkontak, pickRandom, pushname, from, msg, text) 
 break      
+}
 
+//______________________________
+//comando con prefijo
+
+switch (prefix && command) { 
 case 'server': case 'p': {
 const os = require('os');
 const si = require('systeminformation');
