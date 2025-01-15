@@ -320,7 +320,7 @@ if (!sender) return;
 let chat = global.db.data.chats[m.chat] || {}
 if (!chat?.delete) return 
 const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
-await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender], quoted: remoteJid });
+await sock.sendMessage(remoteJid, {text: antideleteMessage, mentions: [sender]}, {quoted: remoteJid})
 
         const deletedMessage = messageStore[id];
         if (deletedMessage) {
