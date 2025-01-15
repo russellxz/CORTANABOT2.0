@@ -834,8 +834,8 @@ if (!isCreator) return reply(info.owner)
 
 //contador de chat 
 case 'listachat': {
-    const fs = require('fs');
-    const path = require('path');
+
+
     const DATA_FILE = path.join(__dirname, 'datoschat.json');
 
     // Cargar los datos desde el archivo
