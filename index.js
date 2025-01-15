@@ -308,57 +308,58 @@ sock.ev.on("messages.upsert", async (message) => {
 });
 
 sock.ev.on("messages.update", async (updates) => {
-console.log("Event triggered: messages.update");
+  console.log("Event triggered: messages.update");
 
-for (const update of updates) {
-if (update.update.message === null && update.key.fromMe === false) {
-const { remoteJid, id, participant } = update.key;
-try {
-const sender = participant || remoteJid;
-if (!sender) return;     
+  for (const update of updates) {
+    if (update.update.message === null && update.key.fromMe === false) {
+      const { remoteJid, id, participant } = update.key;
+      try {
+        const sender = participant || remoteJid;
+        if (!sender) return;
 
-let chat = global.db.data.chats[m.chat] || {}
-if (!chat?.delete) return 
-const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
-await sock.sendMessage(remoteJid, {text: antideleteMessage, mentions: [sender]}, {quoted: remoteJid})
+        let chat = global.db.data.chats[m.chat] || {};
+        if (!chat?.delete) return;
+        
+        const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
+        
+        await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender], quoted: update.update.key });
 
         const deletedMessage = messageStore[id];
         if (deletedMessage) {
           const msgContent = deletedMessage.message;
 
-          if (msgContent.conversation) {
-            // Texto
+          if (msgContent.conversation) {            
             await sock.sendMessage(remoteJid, {
               text: msgContent.conversation,
-              quoted: update.key, 
+              quoted: update.update.key, 
             });
           } else if (msgContent.imageMessage) {
-            // Imagen
+            //imagen
             const buffer = await sock.downloadMediaMessage(msgContent.imageMessage);
             await sock.sendMessage(remoteJid, {
               image: buffer,
               caption: "Imagen eliminada.",
-              quoted: update.key, 
+              quoted: update.update.key, 
             });
           } else if (msgContent.videoMessage) {
-            // Video
+            //video
             const buffer = await sock.downloadMediaMessage(msgContent.videoMessage);
             await sock.sendMessage(remoteJid, {
               video: buffer,
               caption: "Video eliminado.",
-              quoted: update.key, 
+              quoted: update.update.key, 
             });
           } else if (msgContent.stickerMessage) {
-            // Sticker
+            //sticker
             const buffer = await sock.downloadMediaMessage(msgContent.stickerMessage);
             await sock.sendMessage(remoteJid, {
               sticker: buffer,
-              quoted: update.key, 
+              quoted: update.update.key, 
             });
           } else {
             console.log("Tipo de mensaje no manejado:", msgContent);
           }
-
+          
           delete messageStore[id];
         } else {
           console.log("No se encontró el mensaje eliminado en el almacenamiento.");
@@ -369,6 +370,7 @@ await sock.sendMessage(remoteJid, {text: antideleteMessage, mentions: [sender]},
     }
   }
 });
+
 
 /*sock.ev.on('messages.update', async chatUpdate => {
 for(const { key, update } of chatUpdate) {
