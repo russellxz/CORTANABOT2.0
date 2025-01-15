@@ -292,36 +292,39 @@ console.log(err)
 }})
 
 sock.ev.on("messages.update", async (updates) => {
-  console.log("Event triggered: messages.update");
+console.log("Event triggered: messages.update");
   console.log(updates);
+  
+for (const update of updates) {
+if (update.update === "message-revoke") {
+const { remoteJid, id, participant } = update.key;
 
-  for (const update of updates) {
-    if (update.update.message === null && update.key.fromMe === false) { // Revisa si el mensaje es un delete
-      const { remoteJid, id, participant } = update.key;
-      try {
-        const sender = participant || remoteJid; // Asegúrate de obtener el participante o el jid remoto
+try {
+const metadata = await sock.loadMessage(remoteJid, id);
+if (metadata) {
+const { message } = metadata;
+const sender = participant || remoteJid;
+                                           
+const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje`.trim();
+await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender] });
 
-        // Verificar si hay un participante
-        if (!sender) {
-          console.error("No se pudo obtener el remitente");
-          return;
-        }
+if (message.conversation || message.extendedTextMessage) {
+const text = message.conversation || message.extendedTextMessage.text;
 
-        // Construir el mensaje anti-delete
-        const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
+await sock.sendMessage(remoteJid, { text: `Mensaje eliminado:\n\n${text}`, mentions: [sender],
+});
+} else if (message.imageMessage || message.videoMessage || message.stickerMessage || message.documentMessage) {
+const mediaType = message.imageMessage ? "image" : message.videoMessage ? "video" : message.stickerMessage ? "sticker" : "document";
 
-        // Enviar el mensaje al grupo/chat correspondiente
-        await sock.sendMessage(remoteJid, { 
-          text: antideleteMessage,
-          mentions: [sender],
-        });
-
-        console.log("Mensaje eliminado detectado y enviado al chat:", antideleteMessage);
-      } catch (error) {
-        console.error("Error detectando o enviando mensaje eliminado:", error);
-      }
-    }
-  }
+const buffer = await downloadMediaMessage(message, "buffer", {});
+await sock.sendMessage(remoteJid, { [mediaType]: buffer, caption: `Mensaje eliminado: @${sender.split`@`[0]}`, mentions: [sender],
+});
+} else {
+console.log("Tipo de mensaje no compatible.");
+}}
+} catch (error) {
+console.error("Error procesando anti-delete:", error);
+}}}
 });
 
 
