@@ -291,16 +291,14 @@ console.log(e)
 console.log(err)
 }})
 
-// Objeto para almacenar temporalmente mensajes recibidos
+
 const messageStore = {};
 
-// Escuchar nuevos mensajes y almacenarlos
 sock.ev.on("messages.upsert", async (message) => {
   const msg = message.messages[0];
   const key = msg.key;
   if (!key.fromMe && msg.message) {
     const messageId = key.id;
-    // Almacena el mensaje usando el ID
     messageStore[messageId] = {
       remoteJid: key.remoteJid,
       participant: key.participant || key.remoteJid,
@@ -309,7 +307,6 @@ sock.ev.on("messages.upsert", async (message) => {
   }
 });
 
-// Detectar eliminaciones de mensajes
 sock.ev.on("messages.update", async (updates) => {
   console.log("Event triggered: messages.update");
 
@@ -324,22 +321,19 @@ sock.ev.on("messages.update", async (updates) => {
           return;
         }
 
-        // Mensaje anti-delete
         const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
         await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender] });
 
         console.log("Mensaje anti-delete enviado:", antideleteMessage);
 
-        // Verificar si el mensaje eliminado está almacenado
         const deletedMessage = messageStore[id];
         if (deletedMessage) {
-          // Manejo del contenido del mensaje
           const msgContent = deletedMessage.message;
 
           if (msgContent.conversation) {
             // Texto
             await sock.sendMessage(remoteJid, {
-              text: `Mensaje eliminado: ${msgContent.conversation}`,
+              text: `${msgContent.conversation}`,
             });
           } else if (msgContent.imageMessage) {
             // Imagen
@@ -357,7 +351,6 @@ sock.ev.on("messages.update", async (updates) => {
             console.log("Tipo de mensaje no manejado:", msgContent);
           }
 
-          // Elimina el mensaje del almacenamiento temporal
           delete messageStore[id];
         } else {
           console.log("No se encontró el mensaje eliminado en el almacenamiento.");
