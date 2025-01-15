@@ -32,6 +32,15 @@ return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(tex
 }
 //prueba
 const { datos, guardarDatos } = require('./main');	
+function actualizarDatos() {
+    const datos = {
+        grupoChat: global.grupoChat,
+        mensajesPorUsuario: global.mensajesPorUsuario,
+    };
+    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
+}
+
+	
 //notocar mas abajo
 //base de datos
 var low
