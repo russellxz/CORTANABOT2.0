@@ -75,8 +75,11 @@ const saveChatData = (data) => {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
 };
   // Llama a esta función después de actualizar los datos
+module.exports = { saveChatData, loadChatData };
+saveChatData(chatData);  // Llama a esta función después de actualizar los datos
 
 // no tocar abajo
+
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
 let tekateki = global.db.data.game.tekateki = []
