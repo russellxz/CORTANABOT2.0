@@ -883,14 +883,13 @@ case 'grupochat': {
     if (!m.isGroup) {
         return conn.sendMessage(m.chat, { text: 'Este comando solo puede usarse en grupos.' }, { quoted: m });
     }
-
     if (args[0] === 'on') {
-        // Activa el conteo de mensajes en el grupo
         global.grupoChat[m.chat] = true;
+        guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
         conn.sendMessage(m.chat, { text: 'El conteo de mensajes ha sido activado en este grupo.' }, { quoted: m });
     } else if (args[0] === 'off') {
-        // Desactiva el conteo de mensajes en el grupo
         global.grupoChat[m.chat] = false;
+        guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
         conn.sendMessage(m.chat, { text: 'El conteo de mensajes ha sido desactivado en este grupo.' }, { quoted: m });
     } else {
         conn.sendMessage(m.chat, { text: 'Uso: .grupochat on / off' }, { quoted: m });
