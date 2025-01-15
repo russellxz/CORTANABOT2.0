@@ -30,6 +30,10 @@ const {say} = cfonts;
 const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
+//no tocar ariba
+// Ruta del archivo para guardar los datos
+const fs = require('fs');
+const path = require('path');
 
 // Ruta del archivo para guardar los datos
 const DATA_FILE = path.join(__dirname, 'datoschat.json');
