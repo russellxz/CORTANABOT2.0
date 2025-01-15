@@ -75,7 +75,7 @@ const saveChatData = (data) => {
 };
   // Llama a esta función después de actualizar los datos
 module.exports = { saveChatData, loadChatData };
-saveChatData(chatData);  // Llama a esta función después de actualizar los datos
+// Llama a esta función después de actualizar los datos
 
 // no tocar abajo
 
