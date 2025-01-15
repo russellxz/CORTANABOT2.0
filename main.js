@@ -629,6 +629,7 @@ user.afkReason = ''
 if (!global.db.data.users[m.sender]) global.db.data.users[m.sender] = {};
 if (!global.db.data.users[m.sender].mensajes) global.db.data.users[m.sender].mensajes = {};
 if (!global.db.data.users[m.sender].mensajes[m.chat]) global.db.data.users[m.sender].mensajes[m.chat] = 0;
+global.db.data.users[m.sender].mensajes[m.chat]++;
 	
 if (m.mtype === 'interactiveResponseMessage') {   
 let msg = m.message[m.mtype]  || m.msg
@@ -652,35 +653,36 @@ break
 // prueba desde aqui ok
 
 case "totalmensaje": {
-function obtenerEstadisticasGrupo(chatId) {
-let stats = [];
+        function obtenerEstadisticasGrupo(chatId) {
+            let stats = [];
 
-        for (const userId in global.db.data.users) {
-            const user = global.db.data.users[userId];
-            if (user.mensajes && user.mensajes[chatId]) {
-                stats.push({
-                    user: userId,
-                    count: user.mensajes[chatId],
-                });
+            for (const userId in global.db.data.users) {
+                const user = global.db.data.users[userId];
+                if (user.mensajes && user.mensajes[chatId]) {
+                    stats.push({
+                        user: userId,
+                        count: user.mensajes[chatId],
+                    });
+                }
             }
+
+            stats.sort((a, b) => b.count - a.count);
+
+            return stats;
         }
 
-        stats.sort((a, b) => b.count - a.count);
+        const estadisticas = obtenerEstadisticasGrupo(m.chat);
 
-        return stats;
-    }
+        // Generar respuesta del ranking
+        let respuesta = "📊 *TOP USUARIOS MÁS ACTIVOS*:\n\n";
+        estadisticas.forEach((stat, i) => {
+            respuesta += `${i + 1}. @${stat.user.split('@')[0]}: ${stat.count} mensajes\n`;
+        });
 
-    const estadisticas = obtenerEstadisticasGrupo(m.chat);
-
-    let respuesta = "📊 TOP USUARIOS MAS ACTIVOS :\n";
-    estadisticas.forEach((stat, i) => {
-        respuesta += `${i + 1}. @${stat.user.split('@')[0]}: ${stat.count} mensajes\n`;
-    });
-
-conn.sendTextWithMentions(m.chat, respuesta, m)
-//conn.sendMessage(m.chat, respuesta, { mentions: estadisticas.map(s => s.user) });
+        // Enviar el mensaje con menciones
+        conn.sendTextWithMentions(m.chat, respuesta, m);
 }
-break;
+break; 
 		
 case 'guar':
     if (!m.quoted || !m.quoted.mimetype) {
