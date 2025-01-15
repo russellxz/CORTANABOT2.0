@@ -57,7 +57,7 @@ if (fs.existsSync(path2)) {
 }
 //modo owner
 // Cargar el estado de modoOwner
-
+global.antieliminar = {}; // Aquí se guardará el estado de los grupos
 
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
@@ -860,7 +860,32 @@ case 'somecommand': {
 
 //antielimimar
 
-		
+case 'antieliminar on': {
+    if (!m.isGroup) return m.reply('⚠️ Este comando solo funciona en grupos.');
+    const groupId = m.chat;
+
+    // Activar el sistema
+    if (!global.antieliminar) global.antieliminar = {};
+    global.antieliminar[groupId] = true;
+
+    m.reply('✅ *Antieliminar activado.* Ahora los mensajes eliminados serán visibles.');
+    break;
+}
+
+case 'antieliminar off': {
+    if (!m.isGroup) return m.reply('⚠️ Este comando solo funciona en grupos.');
+    const groupId = m.chat;
+
+    // Desactivar el sistema
+    if (global.antieliminar) global.antieliminar[groupId] = false;
+
+    // Eliminar los datos del grupo
+    const { eliminarMensajes } = require('./antieliminar');
+    eliminarMensajes(groupId);
+
+    m.reply('❌ *Antieliminar desactivado.* Los mensajes eliminados ya no serán visibles.');
+    break;
+}		
 
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
