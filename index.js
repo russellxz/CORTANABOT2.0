@@ -31,7 +31,6 @@ const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
 //prueba
-
 //notocar mas abajo
 //base de datos
 var low
@@ -270,7 +269,6 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 // Función que se ejecuta cuando llega un mensaje
-
 // no tocar abajo
 	
 sock.ev.on('messages.upsert', async chatUpdate => {
