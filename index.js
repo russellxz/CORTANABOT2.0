@@ -30,8 +30,7 @@ const {say} = cfonts;
 const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
-//prueba
-//notocar mas abajo
+
 //base de datos
 var low
 try {
@@ -209,7 +208,7 @@ if (!/^[1-2]$/.test(opcion)) {
 console.log(chalk.bold.redBright(`NO SE PERMITE NÚMEROS QUE NO SEAN ${chalk.bold.greenBright("1")} O ${chalk.bold.greenBright("2")}, TAMPOCO LETRAS O SÍMBOLOS ESPECIALES.\n${chalk.bold.yellowBright("CONSEJO: COPIE EL NÚMERO DE LA OPCIÓN Y PÉGUELO EN LA CONSOLA.")}`))
 }} while (opcion !== '1' && opcion !== '2' || fs.existsSync(`./sessions/creds.json`))
 }
-	
+    
 async function startBot() {
 
 //console.info = () => {}
@@ -261,10 +260,14 @@ console.log(chalk.bold.white(chalk.bgMagenta(`CÓDIGO DE VINCULACIÓN:`)), chalk
 }}}
 }
 
+async function getMessage(key) {
+if (store) {
+const msg = store.loadMessage(key.remoteJid, key.id)
+return msg.message
+} return {
+conversation: 'SimpleBot',
+}}
 
-// Función que se ejecuta cuando llega un mensaje
-// no tocar abajo
-	
 sock.ev.on('messages.upsert', async chatUpdate => {
 //console.log(JSON.stringify(chatUpdate, undefined, 2))
 try {
@@ -287,7 +290,7 @@ console.log(e)
 } catch (err) {
 console.log(err)
 }})
-	
+
 sock.ev.on('messages.update', async chatUpdate => {
 for(const { key, update } of chatUpdate) {
 if (update.pollUpdates && key.fromMe) {
@@ -728,6 +731,7 @@ process.on('uncaughtException', console.log)
 process.on('unhandledRejection', console.log)
 process.on('RefenceError', console.log)
 }
+
 
 startBot()
 
