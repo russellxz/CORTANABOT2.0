@@ -270,7 +270,59 @@ return msg.message
 conversation: 'SimpleBot',
 }}
 // Función que se ejecuta cuando llega un mensaje
-	
+// Importar módulos necesarios
+const fs = require('fs');
+const path = require('path');
+
+// Ruta del archivo datos.json
+const datosPath = path.join(__dirname, 'datos.json');
+
+// Función para cargar datos
+function cargarDatos() {
+    if (fs.existsSync(datosPath)) {
+        return JSON.parse(fs.readFileSync(datosPath, 'utf-8'));
+    }
+    return { gruposActivados: {}, mensajesPorUsuario: {} };
+}
+
+// Función para guardar datos
+function guardarDatos(datos) {
+    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
+}
+
+// Cargar datos iniciales
+const datos = cargarDatos();
+global.gruposActivados = datos.gruposActivados || {};
+global.mensajesPorUsuario = datos.mensajesPorUsuario || {};
+
+// Manejo del evento de mensajes
+module.exports = (sock) => {
+    sock.ev.on('messages.upsert', async (chatUpdate) => {
+        const m = chatUpdate.messages[0];
+        if (!m || !m.key || !m.message || m.key.fromMe) return;
+
+        const groupId = m.key.remoteJid;
+        if (!groupId.endsWith('@g.us')) return; // Solo cuenta en grupos
+
+        // Verifica si el grupo tiene activado el conteo
+        if (!global.gruposActivados[groupId]) return;
+
+        const userId = m.key.participant || m.key.remoteJid;
+
+        // Inicializar datos del grupo y usuario si no existen
+        if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
+        if (!global.mensajesPorUsuario[groupId][userId]) global.mensajesPorUsuario[groupId][userId] = 0;
+
+        // Incrementar el conteo de mensajes
+        global.mensajesPorUsuario[groupId][userId] += 1;
+
+        // Guardar datos en datos.json
+        guardarDatos({
+            gruposActivados: global.gruposActivados,
+            mensajesPorUsuario: global.mensajesPorUsuario,
+        });
+    });
+};	
 
 // no tocar abajo
 	
