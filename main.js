@@ -57,69 +57,31 @@ if (fs.existsSync(path2)) {
 // Cargar el estado de modoOwner
 global.grupoChat = {};
 global.mensajesPorUsuario = {};
-const { makeWASocket } = require('@whiskeysockets/baileys');
-const fs = require('fs');
-const datosPath = './datos.json';  // Asegúrate de que esta sea la ruta correcta de tu archivo de datos
+// Ruta al archivo de datos
+const datosPath = './datos.json';
 
-// Función para cargar los datos
+// Función para cargar datos desde el archivo
 function cargarDatos() {
     if (fs.existsSync(datosPath)) {
         return JSON.parse(fs.readFileSync(datosPath, 'utf-8'));
     }
-    return { grupoChat: {}, mensajesPorUsuario: {} };
+    return { grupoChat: {}, mensajesPorUsuario: {} }; // Valores por defecto si no existe el archivo
 }
 
-// Función para guardar los datos
+// Función para guardar los datos en el archivo
 function guardarDatos(datos) {
-    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
+    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2)); // Guardar con formato legible
 }
 
-// Función para guardar datos automáticamente en cada cambio
+// Función para actualizar los datos automáticamente
 function actualizarDatos() {
     guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
 }
 
-// Cargar los datos iniciales
+// Cargar los datos iniciales al arrancar el servidor
 const datos = cargarDatos();
 global.grupoChat = datos.grupoChat;
 global.mensajesPorUsuario = datos.mensajesPorUsuario;
-
-// Crear el socket de WhatsApp
-const sock = makeWASocket({
-    printQRInTerminal: true, // Muestra el QR en la terminal para escanearlo
-    auth: { /* Aquí va la autenticación si es necesario, por ejemplo con cookies o session */ }
-});
-
-// Evento para cuando llega un mensaje
-sock.ev.on('messages.upsert', async (chatUpdate) => {
-    const m = chatUpdate.messages[0];
-    if (!m || !m.key || !m.message || m.key.fromMe) return;
-
-    const groupId = m.key.remoteJid;
-    if (!groupId.endsWith('@g.us')) return; // Solo para grupos
-
-    // Asegúrate de que el grupo esté inicializado
-    if (!global.mensajesPorUsuario[groupId]) global.mensajesPorUsuario[groupId] = {};
-
-    const userId = m.key.participant || m.key.remoteJid;
-
-    // Suma los mensajes del usuario
-    if (!global.mensajesPorUsuario[groupId][userId]) {
-        global.mensajesPorUsuario[groupId][userId] = 0;
-    }
-    global.mensajesPorUsuario[groupId][userId] += 1;
-
-    // Guarda los cambios automáticamente
-    actualizarDatos();
-});
-
-// Inicia la conexión de WhatsApp
-sock.connect().then(() => {
-    console.log('Conectado a WhatsApp');
-}).catch(err => {
-    console.error('Error al conectar a WhatsApp:', err);
-});
-
 
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
