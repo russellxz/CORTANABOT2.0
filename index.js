@@ -317,15 +317,10 @@ try {
 const sender = participant || remoteJid;
 if (!sender) return;     
 
-let msg = sock.serializeM(sock.loadMessage(id))
-let chat = global.db.data.chats[msg?.chat] || {}
+let chat = global.db.data.chats[m.chat] || {}
 if (!chat?.delete) return 
-if (!msg) return 
-
-//let chat = global.db.data.chats[m.chat] || {}
-//if (!chat?.delete) return 
 const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
-await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender], quoted: update.key });
+await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender], quoted: remoteJid });
 
         const deletedMessage = messageStore[id];
         if (deletedMessage) {
