@@ -31,7 +31,7 @@ const color = (text, color) => {
 return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(text) : chalk.keyword(color)(text)
 }
 //prueba
-module.exports = { guardarDatos };
+	
 //notocar mas abajo
 //base de datos
 var low
