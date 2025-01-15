@@ -261,13 +261,7 @@ console.log(chalk.bold.white(chalk.bgMagenta(`CÓDIGO DE VINCULACIÓN:`)), chalk
 }}}
 }
 
-async function getMessage(key) {
-if (store) {
-const msg = store.loadMessage(key.remoteJid, key.id)
-return msg.message
-} return {
-conversation: 'SimpleBot',
-}}
+
 // Función que se ejecuta cuando llega un mensaje
 // no tocar abajo
 	
