@@ -651,38 +651,6 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
-
-case "totalmensaje": {
-        function obtenerEstadisticasGrupo(chatId) {
-            let stats = [];
-
-            for (const userId in global.db.data.users) {
-                const user = global.db.data.users[userId];
-                if (user.mensajes && user.mensajes[chatId]) {
-                    stats.push({
-                        user: userId,
-                        count: user.mensajes[chatId],
-                    });
-                }
-            }
-
-            stats.sort((a, b) => b.count - a.count);
-
-            return stats;
-        }
-
-        const estadisticas = obtenerEstadisticasGrupo(m.chat);
-
-        // Generar respuesta del ranking
-        let respuesta = "📊 *TOP USUARIOS MÁS ACTIVOS*:\n\n";
-        estadisticas.forEach((stat, i) => {
-            respuesta += `${i + 1}. @${stat.user.split('@')[0]}: ${stat.count} mensajes\n`;
-        });
-
-        // Enviar el mensaje con menciones
-        conn.sendTextWithMentions(m.chat, respuesta, m);
-}
-break; 
 		
 case 'guar':
     if (!m.quoted || !m.quoted.mimetype) {
@@ -872,6 +840,31 @@ const responseMessage = `*🚩 𝐀𝐪𝐮𝐢 𝐭𝐢𝐞𝐧𝐞𝐬 𝐥�
 await conn.sendMessage(m.chat, {text: responseMessage, mentions: conn.parseMention(responseMessage)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
 break
               
+case "totalmensaje": {
+function obtenerEstadisticasGrupo(chatId) {
+let stats = [];
+
+for (const userId in global.db.data.users) {
+const user = global.db.data.users[userId];
+if (user.mensajes && user.mensajes[chatId]) {
+stats.push({ user: userId,
+count: user.mensajes[chatId],
+});
+}}
+
+stats.sort((a, b) => b.count - a.count);
+return stats;
+}
+
+const estadisticas = obtenerEstadisticasGrupo(m.chat);
+let respuesta = "📊 *TOP USUARIOS MÁS ACTIVOS*:\n\n";
+estadisticas.forEach((stat, i) => {
+respuesta += `${i + 1}. @${stat.user.split('@')[0]}: ${stat.count} mensajes\n`;
+});
+conn.sendTextWithMentions(m.chat, respuesta, m);
+}
+break; 
+             
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
