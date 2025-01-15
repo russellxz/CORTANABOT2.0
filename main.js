@@ -57,6 +57,30 @@ if (fs.existsSync(path2)) {
 // Cargar el estado de modoOwner
 global.grupoChat = {};
 global.mensajesPorUsuario = {};
+const datosPath = './datos.json'; // Archivo para guardar los datos
+// Función para cargar datos
+function cargarDatos() {
+    if (fs.existsSync(datosPath)) {
+        return JSON.parse(fs.readFileSync(datosPath, 'utf-8'));
+    }
+    return { grupoChat: {}, mensajesPorUsuario: {} };
+}
+
+// Función para guardar datos
+function guardarDatos(datos) {
+    fs.writeFileSync(datosPath, JSON.stringify(datos, null, 2));
+}
+
+// Cargar el estado al iniciar el servidor
+const datos = cargarDatos();
+global.grupoChat = datos.grupoChat;
+global.mensajesPorUsuario = datos.mensajesPorUsuario;
+
+// Función para guardar datos automáticamente en cada cambio
+function actualizarDatos() {
+    guardarDatos({ grupoChat: global.grupoChat, mensajesPorUsuario: global.mensajesPorUsuario });
+}
+
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
