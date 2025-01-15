@@ -32,7 +32,7 @@ return !color ? chalk.green(text) : color.startsWith('#') ? chalk.hex(color)(tex
 }
 //no tocar ariba
 // Ruta del archivo para guardar los datos
-
+const path = require('path');
 
 // Ruta del archivo para guardar los datos
 const DATA_FILE = path.join(__dirname, 'datoschat.json');
@@ -46,11 +46,7 @@ const loadChatData = () => {
 };
 
 // Función para guardar los datos en el archivo
-const saveChatData = (data) => {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-};
-const main = require('./main.js');
-main.handleCommands(sock, message);
+
 //no tocar abajo	
 //base de datos
 var low
