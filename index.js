@@ -319,47 +319,51 @@ sock.ev.on("messages.update", async (updates) => {
 
         let chat = global.db.data.chats[m.chat] || {};
         if (!chat?.delete) return;
-        
+
         const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
-        
-        await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender], quoted: update.update.key });
+        await sock.sendMessage(remoteJid, {
+          text: antideleteMessage,
+          mentions: [sender],
+        });
+
 
         const deletedMessage = messageStore[id];
         if (deletedMessage) {
           const msgContent = deletedMessage.message;
 
-          if (msgContent.conversation) {            
+          if (msgContent.conversation) {
+            //texto
             await sock.sendMessage(remoteJid, {
               text: msgContent.conversation,
-              quoted: update.update.key, 
+              quoted: deletedMessage.key,  
             });
           } else if (msgContent.imageMessage) {
-            //imagen
+            // Imagen
             const buffer = await sock.downloadMediaMessage(msgContent.imageMessage);
             await sock.sendMessage(remoteJid, {
               image: buffer,
               caption: "Imagen eliminada.",
-              quoted: update.update.key, 
+              quoted: deletedMessage.key,  
             });
           } else if (msgContent.videoMessage) {
-            //video
+            // Video
             const buffer = await sock.downloadMediaMessage(msgContent.videoMessage);
             await sock.sendMessage(remoteJid, {
               video: buffer,
               caption: "Video eliminado.",
-              quoted: update.update.key, 
+              quoted: deletedMessage.key,  
             });
           } else if (msgContent.stickerMessage) {
-            //sticker
+            // Sticker
             const buffer = await sock.downloadMediaMessage(msgContent.stickerMessage);
             await sock.sendMessage(remoteJid, {
               sticker: buffer,
-              quoted: update.update.key, 
+              quoted: deletedMessage.key,  
             });
           } else {
             console.log("Tipo de mensaje no manejado:", msgContent);
           }
-          
+
           delete messageStore[id];
         } else {
           console.log("No se encontró el mensaje eliminado en el almacenamiento.");
@@ -370,7 +374,6 @@ sock.ev.on("messages.update", async (updates) => {
     }
   }
 });
-
 
 /*sock.ev.on('messages.update', async chatUpdate => {
 for(const { key, update } of chatUpdate) {
