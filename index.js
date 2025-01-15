@@ -297,57 +297,32 @@ sock.ev.on("messages.update", async (updates) => {
       const { remoteJid, id, participant } = update.key;
 
       try {
-        // Carga los datos del mensaje eliminado
+        // Cargar metadatos del mensaje
         const metadata = await sock.loadMessage(remoteJid, id);
 
-        if (metadata && metadata.message) {
-          const { message } = metadata;
-          const sender = participant || remoteJid;
+        // Verificar si es un mensaje REVOKE (protocolo de eliminación)
+        if (metadata && metadata.message.protocolMessage) {
+          const protoType = metadata.message.protocolMessage.type;
+          if (protoType === 0) {
+            const sender = participant || remoteJid;
 
-          const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje`.trim();
-          await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender] });
-
-          // Tipo de mensaje: texto o extendido
-          if (message.conversation || message.extendedTextMessage) {
-            const text = message.conversation || message.extendedTextMessage.text;
+            // Mensaje anti-delete
+            const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
             await sock.sendMessage(remoteJid, { 
-              text: `Mensaje eliminado:\n\n${text}`, 
+              text: antideleteMessage, 
               mentions: [sender],
             });
-          }
-          // Tipo de mensaje: multimedia
-          else if (
-            message.imageMessage || 
-            message.videoMessage || 
-            message.stickerMessage || 
-            message.documentMessage
-          ) {
-            const mediaType = message.imageMessage
-              ? "image"
-              : message.videoMessage
-              ? "video"
-              : message.stickerMessage
-              ? "sticker"
-              : "document";
 
-            const buffer = await downloadMediaMessage(message, "buffer", {});
-            await sock.sendMessage(remoteJid, { 
-              [mediaType]: buffer, 
-              caption: `Mensaje eliminado: @${sender.split`@`[0]}`, 
-              mentions: [sender],
-            });
-          } else {
-            console.log("Tipo de mensaje no compatible.");
+            console.log("Mensaje eliminado detectado:", metadata);
           }
-        } else {
-          console.log("No se pudo cargar el mensaje eliminado.");
         }
       } catch (error) {
-        console.error("Error procesando anti-delete:", error);
+        console.error("Error detectando mensaje eliminado:", error);
       }
     }
   }
 });
+
 
 /*sock.ev.on('messages.update', async chatUpdate => {
 for(const { key, update } of chatUpdate) {
