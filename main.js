@@ -986,6 +986,20 @@ case 'ban': {
             return m.reply(`❌ *La página ingresada no existe. Hay un total de ${totalPages} páginas.*`);
         }
 
+        // Generar la lista de navegación
+        let navigationList = "📖 *Lista de Navegación de Palabras Clave:*\n\n";
+        for (let i = 0; i < totalPages; i++) {
+            const start = i * 3;
+            const end = start + 3;
+            const pageKeys = keys.slice(start, end);
+
+            navigationList += `📄 *Página ${i + 1}:*\n`;
+            pageKeys.forEach((key) => {
+                navigationList += `- 🔑 ${key}\n`;
+            });
+            navigationList += "\n";
+        }
+
         // Calcular los elementos de la página solicitada
         const start = (page - 1) * 3;
         const end = start + 3;
@@ -1002,17 +1016,19 @@ case 'ban': {
             type: 1,
         }));
 
-        // Enviar el menú con los botones
+        // Enviar el menú con los botones y lista de navegación
         await conn.sendMessage(
             m.chat,
             {
                 image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
-                caption: `╭───≪~*MULTIMEDIA ELIMINAR*~*
+                caption: `╭───≪~*ELIMINAR MULTIMEDIA*~*
 │✨ Selecciona una palabra clave para eliminar el archivo asociado:
 │
 │📁 Archivos en esta página: ${currentPageKeys.length}
 │📄 Página: ${page} de ${totalPages}
-╰─•┈┈••✦✦••┈┈•─╯`,
+╰─•┈┈••✦✦••┈┈•─╯
+
+${navigationList}`,
                 footer: "CORTANA 2.0",
                 buttons: botones,
                 viewOnce: true,
