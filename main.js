@@ -915,19 +915,22 @@ case 'encuesta': {
     try {
         await conn.sendMessage(m.chat, {
             text: text,
-            footer: 'Selecciona una opción:',
-            title: 'Encuesta',
-            buttonText: 'Responder',
-            sections: [
+            footer: "Selecciona una opción:",
+            buttons: [
                 {
-                    title: 'Opciones',
-                    rows: [
-                        { title: 'Sí', rowId: 'opcion_si' },
-                        { title: 'No', rowId: 'opcion_no' }
-                    ]
-                }
-            ]
-        });
+                    buttonId: 'encuesta_si',
+                    buttonText: { displayText: "✅ Sí" },
+                    type: 1,
+                },
+                {
+                    buttonId: 'encuesta_no',
+                    buttonText: { displayText: "❌ No" },
+                    type: 1,
+                },
+            ],
+            headerType: 1, // Usar 1 para texto sin imágenes
+        }, { quoted: m });
+
         console.log('✅ Encuesta enviada correctamente.');
     } catch (error) {
         console.error('Error enviando la encuesta:', error);
