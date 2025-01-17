@@ -912,21 +912,26 @@ case 'encuesta': {
         return m.reply('❌ *Debes escribir el encabezado de la encuesta junto al comando.*\nEjemplo: `encuesta ¿Te gusta este bot?`');
     }
 
-    const buttonMessage = {
+    const listMessage = {
         text: text,
-        footer: 'Responde usando los botones',
-        buttons: [
-            { buttonId: 'si', buttonText: { displayText: 'Sí' }, type: 1 },
-            { buttonId: 'no', buttonText: { displayText: 'No' }, type: 1 }
-        ],
-        headerType: 1
+        title: 'Encuesta',
+        buttonText: 'Responder',
+        sections: [
+            {
+                title: 'Opciones',
+                rows: [
+                    { title: 'Sí', rowId: 'si' },
+                    { title: 'No', rowId: 'no' }
+                ]
+            }
+        ]
     };
 
     try {
-        await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
+        await conn.sendMessage(m.chat, listMessage, { quoted: m });
         m.reply('✅ *Encuesta enviada correctamente.*');
     } catch (error) {
-        console.error('Error enviando el mensaje:', error);
+        console.error('Error enviando el mensaje interactivo:', error);
         m.reply('❌ *Ocurrió un error al intentar enviar la encuesta.*');
     }
 }
