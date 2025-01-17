@@ -854,6 +854,7 @@ if (!isCreator) return reply(info.owner)
     break;
 
 //comando lista 2 
+
 case 'clavelista2': {
     try {
         if (Object.keys(multimediaStore).length === 0) {
@@ -886,17 +887,17 @@ case 'clavelista2': {
         const end = start + pageSize;
         const currentPageKeys = keys.slice(start, end);
 
-        // Crear botones dinámicos con las palabras clave
+        // Crear botones dinámicos con las palabras clave y comando `.g`
         const botones = currentPageKeys.map((key) => ({
-            buttonId: `enviarmedia_${key}`,
-            buttonText: { displayText: key },
+            buttonId: `.g ${key}`, // Botón que envía el comando `.g <palabra_clave>`
+            buttonText: { displayText: key }, // Texto del botón
             type: 1,
         }));
 
         // Botón para retroceder página (posición 9)
         if (page > 1) {
             botones.push({
-                buttonId: `clavelista2_${page - 1}`,
+                buttonId: `clavelista2 ${page - 1}`,
                 buttonText: { displayText: "⬅️ Atrás" },
                 type: 1,
             });
@@ -905,7 +906,7 @@ case 'clavelista2': {
         // Botón para avanzar página (posición 10)
         if (page < totalPages) {
             botones.push({
-                buttonId: `clavelista2_${page + 1}`,
+                buttonId: `clavelista2 ${page + 1}`,
                 buttonText: { displayText: "➡️ Siguiente" },
                 type: 1,
             });
@@ -915,9 +916,9 @@ case 'clavelista2': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' },
+                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
                 caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│✨ Selecciona una palabra clave para recibir el archivo asociado:
+│✨ Selecciona una palabra clave para obtener el comando:
 │
 │📁 Archivos en esta página: ${currentPageKeys.length}
 │📄 Página: ${page} de ${totalPages}
@@ -925,7 +926,7 @@ case 'clavelista2': {
                 footer: "CORTANA 2.0",
                 buttons: botones,
                 viewOnce: true,
-                headerType: 4,
+                headerType: 4, // Encabezado con imagen
                 mentions: [m.sender],
             },
             { quoted: m }
@@ -937,9 +938,9 @@ case 'clavelista2': {
 }
 break;
 
-case 'enviarmedia': {
+case 'g': {
     try {
-        const keyword = command.split('_')[1]; // Extraer la palabra clave del botón
+        const keyword = args[0]; // Extraer la palabra clave después de `.g`
         if (!keyword || !multimediaStore[keyword]) {
             return conn.sendMessage(
                 m.chat,
@@ -980,7 +981,6 @@ case 'enviarmedia': {
     }
 }
 break;
-
 
 // Comando para iniciar la lista de archivos multimedia
 		
