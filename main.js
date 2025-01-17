@@ -852,17 +852,57 @@ if (!isCreator) return reply(info.owner)
         { quoted: m }
     );
     break;
-//modo owner	
-// Activar y desactivar el modo owner
-// Comando para activar y desactivar el Modo Owner
+//comando lista 2 
 
+case 'clavelista2': {
+    if (!Object.keys(multimediaStore).length) {
+        return m.reply('❌ *No hay archivos multimedia guardados.*');
+    }
 
-//contador de chat 
+    const opciones = Object.keys(multimediaStore).map((key) => ({
+        optionName: key, // Nombre de la opción
+    }));
 
-// Comando .grupochat on / off
+    const encuesta = {
+        pollCreationMessage: {
+            name: "📂 Lista de archivos multimedia",
+            options: opciones,
+            selectableOptionsCount: opciones.length > 10 ? 10 : opciones.length, // WhatsApp tiene un límite de 10 opciones
+        },
+    };
 
-//antielimimar
+    await conn.sendMessage(m.chat, encuesta, { quoted: m });
+}
+break;		
 
+//comando otro
+		
+case 'otro': {
+    if (!Object.keys(multimediaStore).length) {
+        return m.reply('❌ *No hay archivos multimedia guardados.*');
+    }
+
+    const opcionesRestantes = Object.keys(multimediaStore).slice(10); // Limitar opciones a las no mostradas
+    if (!opcionesRestantes.length) {
+        return m.reply('✅ *No hay más archivos por mostrar.*');
+    }
+
+    const opciones = opcionesRestantes.map((key) => ({
+        optionName: key, // Nombre de la opción
+    }));
+
+    const nuevaEncuesta = {
+        pollCreationMessage: {
+            name: "📂 Lista de archivos multimedia (Continuación)",
+            options: opciones,
+            selectableOptionsCount: opciones.length > 10 ? 10 : opciones.length, // WhatsApp tiene un límite de 10 opciones
+        },
+    };
+
+    await conn.sendMessage(m.chat, nuevaEncuesta, { quoted: m });
+}
+break;
+		
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
 jadibot(conn, m, command, text, args, sender)
