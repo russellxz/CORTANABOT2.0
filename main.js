@@ -866,7 +866,7 @@ case 'clavelista2': {
             );
         }
 
-        const pageSize = 10; // Número de palabras clave por página
+        const pageSize = 8; // Número de palabras clave por página (8 para dejar espacio a los botones de navegación)
         const page = parseInt(args[0]) || 1; // Página actual (por defecto la primera)
         const keys = Object.keys(multimediaStore);
         const totalPages = Math.ceil(keys.length / pageSize); // Total de páginas
@@ -893,16 +893,16 @@ case 'clavelista2': {
             type: 1,
         }));
 
-        // Botón para retroceder página (posición 11)
+        // Botón para retroceder página
         if (page > 1) {
-            botones.splice(10, 0, {
+            botones.push({
                 buttonId: `clavelista2_${page - 1}`,
                 buttonText: { displayText: "⬅️ Atrás" },
                 type: 1,
             });
         }
 
-        // Botón para avanzar página (posición 12)
+        // Botón para avanzar página
         if (page < totalPages) {
             botones.push({
                 buttonId: `clavelista2_${page + 1}`,
@@ -981,6 +981,7 @@ case 'enviarmedia': {
     }
 }
 break;
+
 // Comando para iniciar la lista de archivos multimedia
 		
 
