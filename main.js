@@ -970,7 +970,104 @@ case 'g': {
 }
 break;
         
+case 'ban': {
+    try {
+        await m.react('☠️'); // Agregar la reacción de X
 
+        const page = parseInt(args[0]); // Extrae el número de página del argumento
+        if (isNaN(page) || page < 1) {
+            return m.reply('❌ *Debes ingresar un número de página válido. Ejemplo: .ban 1*');
+        }
+
+        const keys = Object.keys(multimediaStore);
+        const totalPages = Math.ceil(keys.length / 3); // 3 palabras clave por página
+
+        if (page > totalPages) {
+            return m.reply(`❌ *La página ingresada no existe. Hay un total de ${totalPages} páginas.*`);
+        }
+
+        // Calcular los elementos de la página solicitada
+        const start = (page - 1) * 3;
+        const end = start + 3;
+        const currentPageKeys = keys.slice(start, end);
+
+        if (currentPageKeys.length === 0) {
+            return m.reply('❌ *No hay palabras clave en esta página.*');
+        }
+
+        // Crear los botones dinámicos para las palabras clave
+        const botones = currentPageKeys.map((key) => ({
+            buttonId: `.del ${key}`, // Botón que ejecuta el comando `.del`
+            buttonText: { displayText: key }, // Texto visible en el botón
+            type: 1,
+        }));
+
+        // Enviar el menú con los botones
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
+                caption: `╭───≪~*MULTIMEDIA ELIMINAR*~*
+│✨ Selecciona una palabra clave para eliminar el archivo asociado:
+│
+│📁 Archivos en esta página: ${currentPageKeys.length}
+│📄 Página: ${page} de ${totalPages}
+╰─•┈┈••✦✦••┈┈•─╯`,
+                footer: "CORTANA 2.0",
+                buttons: botones,
+                viewOnce: true,
+                headerType: 4,
+                mentions: [m.sender],
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error navegando páginas para eliminación:', error);
+        m.reply('❌ *Ocurrió un error al intentar cambiar de página.*');
+    }
+}
+break;
+
+case 'del': {
+    try {
+        const deleteKey = args[0]; // Palabra clave para eliminar
+        if (!isCreator) return m.reply('⚠️ *Solo el owner puede eliminar archivos.*');
+        if (!deleteKey) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "⚠️ *Aviso:* Escribe la palabra clave para borrar el multimedia guardado. 🗑️"
+                },
+                { quoted: m }
+            );
+        }
+
+        if (!multimediaStore[deleteKey]) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${deleteKey}"*. 🔍`
+                },
+                { quoted: m }
+            );
+        }
+
+        delete multimediaStore[deleteKey]; // Eliminar del almacenamiento
+        fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
+
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${deleteKey}"* ha sido eliminado. ✅`
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error eliminando multimedia:', error);
+        m.reply('❌ *Ocurrió un error al intentar eliminar el multimedia.*');
+    }
+}
+break;
 //prueba
 
 //Info  
