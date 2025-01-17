@@ -980,6 +980,7 @@ case 'ban': {
         const totalPages = Math.ceil(keys.length / 3); // 3 palabras clave por página
 
         if (keys.length === 0) {
+            m.react('📂'); // Reacción al comando sin resultados
             return conn.sendMessage(
                 m.chat,
                 {
@@ -1005,6 +1006,9 @@ case 'ban': {
             type: 1,
         }));
 
+        // Reacción al comando exitoso
+        m.react('✅');
+
         // Enviar el menú con los botones
         await conn.sendMessage(
             m.chat,
@@ -1026,6 +1030,7 @@ case 'ban': {
         );
     } catch (error) {
         console.error('❌ Error navegando entre páginas:', error);
+        m.react('❌');
         m.reply('❌ *Ocurrió un error al intentar mostrar el menú.*');
     }
 }
@@ -1037,6 +1042,7 @@ case 'delete': {
 
         const deleteKey = args[0]; // Palabra clave a eliminar
         if (!deleteKey || !multimediaStore[deleteKey]) {
+            m.react('❌');
             return conn.sendMessage(
                 m.chat,
                 {
@@ -1049,6 +1055,9 @@ case 'delete': {
         delete multimediaStore[deleteKey]; // Eliminar del almacenamiento
         fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
 
+        // Reacción al comando exitoso
+        m.react('🗑️');
+
         return conn.sendMessage(
             m.chat,
             {
@@ -1058,11 +1067,12 @@ case 'delete': {
         );
     } catch (error) {
         console.error('❌ Error eliminando multimedia:', error);
+        m.react('❌');
         m.reply('❌ *Ocurrió un error al intentar eliminar el multimedia.*');
     }
 }
 break;
-
+		
 //prueba
 
 //Info  
