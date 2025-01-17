@@ -724,12 +724,12 @@ case 'guar': {
         mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
     }
 
-    // Guardar multimedia con la palabra clave y la información del usuario
+    // Guardar multimedia con la palabra clave y el usuario que lo guardó
     multimediaStore[saveKey] = {
         buffer: mediaBuffer.toString('base64'), // Convertir a base64
         mimetype: mediaType,
         extension: mediaExt,
-        savedBy: m.sender // Usuario que guardó el archivo
+        savedBy: m.sender // Almacenar el usuario que guarda el archivo
     };
 
     fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Guardar en archivo
