@@ -852,75 +852,94 @@ if (!isCreator) return reply(info.owner)
         { quoted: m }
     );
     break;
+
 //comando lista 2 
+
 case 'clavelista2': {
-    if (Object.keys(multimediaStore).length === 0) {
-        return conn.sendMessage(
+    try {
+        if (Object.keys(multimediaStore).length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "📂 *Lista de Palabras Clave Guardadas:*\n\n⚠️ No hay multimedia guardado aún. Usa el comando `.guar` para guardar uno. 😉",
+                },
+                { quoted: m }
+            );
+        }
+
+        // Crear botones dinámicos con las palabras clave
+        const botones = Object.keys(multimediaStore).map((key) => ({
+            buttonId: `enviarmedia_${key}`, // Botón para enviar el multimedia
+            buttonText: { displayText: key }, // Texto del botón
+            type: 1,
+        }));
+
+        // Enviar el mensaje con botones
+        await conn.sendMessage(
             m.chat,
             {
-                text: "📂 *Lista de Palabras Clave Guardadas:*\n\n⚠️ No hay multimedia guardado aún. Usa el comando `.guar` para guardar uno. 😉"
+                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa (puedes cambiarla)
+                caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
+│◈ Selecciona una palabra clave para recibir el archivo asociado:
+│
+│✨ Archivos disponibles: ${Object.keys(multimediaStore).length}
+╰─•┈┈••✦✦••┈┈•─╯`,
+                footer: "CORTANA 2.0",
+                buttons: botones,
+                viewOnce: true,
+                headerType: 4, // Usamos el encabezado con imagen
+                mentions: [m.sender],
             },
             { quoted: m }
         );
+    } catch (error) {
+        console.error('❌ Error enviando botones:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
     }
-
-    // Crear botones con las palabras clave
-    const botones = Object.keys(multimediaStore).map((key) => ({
-        buttonId: `.enviarmedia ${key}`, // Comando para recuperar multimedia
-        buttonText: { displayText: key }, // Texto mostrado en el botón
-        type: 1,
-    }));
-
-    // Enviar mensaje con botones
-    await conn.sendMessage(
-        m.chat,
-        {
-            text: "📂 *Lista de Palabras Clave Guardadas:*\n\n✨ Selecciona una palabra clave para recibir el multimedia asociado:",
-            footer: "Cortana Bot 2.0",
-            buttons: botones,
-            headerType: 1,
-        },
-        { quoted: m }
-    );
 }
 break;
 
 case 'enviarmedia': {
-    const keyword = text.split(' ')[1]; // Obtener la palabra clave
-    if (!keyword || !multimediaStore[keyword]) {
-        return conn.sendMessage(
-            m.chat,
-            {
-                text: "⚠️ *No se encontró multimedia asociado a esa palabra clave.*\nVerifica e intenta de nuevo."
-            },
-            { quoted: m }
-        );
-    }
+    try {
+        const keyword = command.split('_')[1]; // Extraer la palabra clave del botón
+        if (!keyword || !multimediaStore[keyword]) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "⚠️ *No se encontró multimedia asociado a esa palabra clave.*\nVerifica e intenta de nuevo.",
+                },
+                { quoted: m }
+            );
+        }
 
-    // Recuperar multimedia y enviarlo según el tipo
-    const multimedia = multimediaStore[keyword];
-    const { mimetype, buffer } = multimedia;
+        // Recuperar multimedia y enviarlo según el tipo
+        const multimedia = multimediaStore[keyword];
+        const { mimetype, buffer } = multimedia;
 
-    switch (mimetype) {
-        case 'image/jpeg':
-        case 'image/png':
-            await conn.sendMessage(m.chat, { image: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
-            break;
-        case 'video/mp4':
-            await conn.sendMessage(m.chat, { video: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
-            break;
-        case 'audio/mpeg':
-            await conn.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
-            break;
-        case 'application/pdf':
-            await conn.sendMessage(m.chat, { document: buffer, mimetype: 'application/pdf', fileName: `${keyword}.pdf` }, { quoted: m });
-            break;
-        case 'image/webp':
-            await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m });
-            break;
-        default:
-            conn.sendMessage(m.chat, { text: "⚠️ *Tipo de multimedia no soportado.*" }, { quoted: m });
-            break;
+        switch (mimetype) {
+            case 'image/jpeg':
+            case 'image/png':
+                await conn.sendMessage(m.chat, { image: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
+                break;
+            case 'video/mp4':
+                await conn.sendMessage(m.chat, { video: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
+                break;
+            case 'audio/mpeg':
+                await conn.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
+                break;
+            case 'application/pdf':
+                await conn.sendMessage(m.chat, { document: buffer, mimetype: 'application/pdf', fileName: `${keyword}.pdf` }, { quoted: m });
+                break;
+            case 'image/webp':
+                await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m });
+                break;
+            default:
+                conn.sendMessage(m.chat, { text: "⚠️ *Tipo de multimedia no soportado.*" }, { quoted: m });
+                break;
+        }
+    } catch (error) {
+        console.error('❌ Error enviando multimedia:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar el multimedia.*');
     }
 }
 break;
