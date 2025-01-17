@@ -854,7 +854,6 @@ if (!isCreator) return reply(info.owner)
     break;
 
 //comando lista 2 
-
 case 'clavelista2': {
     try {
         if (Object.keys(multimediaStore).length === 0) {
@@ -867,27 +866,64 @@ case 'clavelista2': {
             );
         }
 
+        const pageSize = 5; // Tamaño de cada página
+        const page = parseInt(args[0]) || 1; // Página actual (por defecto la primera)
+        const keys = Object.keys(multimediaStore);
+        const totalPages = Math.ceil(keys.length / pageSize); // Total de páginas
+
+        if (page < 1 || page > totalPages) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: `⚠️ *Página inválida.* Elige un número entre 1 y ${totalPages}.`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // Obtener elementos para la página actual
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const currentPageKeys = keys.slice(start, end);
+
         // Crear botones dinámicos con las palabras clave
-        const botones = Object.keys(multimediaStore).map((key) => ({
+        const botones = currentPageKeys.map((key) => ({
             buttonId: `enviarmedia_${key}`, // Botón para enviar el multimedia
             buttonText: { displayText: key }, // Texto del botón
             type: 1,
         }));
 
+        // Botón de paginación
+        if (page > 1) {
+            botones.unshift({
+                buttonId: `clavelista2_${page - 1}`,
+                buttonText: { displayText: "⬅️ Página Anterior" },
+                type: 1,
+            });
+        }
+        if (page < totalPages) {
+            botones.push({
+                buttonId: `clavelista2_${page + 1}`,
+                buttonText: { displayText: "➡️ Página Siguiente" },
+                type: 1,
+            });
+        }
+
         // Enviar el mensaje con botones
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa (puedes cambiarla)
+                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
                 caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│◈ Selecciona una palabra clave para recibir el archivo asociado:
+│✨ Selecciona una palabra clave para recibir el archivo asociado:
 │
-│✨ Archivos disponibles: ${Object.keys(multimediaStore).length}
+│📁 Archivos en esta página: ${currentPageKeys.length}
+│📄 Página: ${page} de ${totalPages}
 ╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
                 buttons: botones,
                 viewOnce: true,
-                headerType: 4, // Usamos el encabezado con imagen
+                headerType: 4, // Encabezado con imagen
                 mentions: [m.sender],
             },
             { quoted: m }
@@ -943,6 +979,7 @@ case 'enviarmedia': {
     }
 }
 break;
+
 // Comando para iniciar la lista de archivos multimedia
 		
 
