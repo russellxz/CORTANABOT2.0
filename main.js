@@ -866,10 +866,10 @@ case 'clavelista2': {
             );
         }
 
-        const pageSize = 8; // Número de palabras clave por página (8 para dejar espacio a los botones de navegación)
+        const pageSize = 8; // 8 palabras clave por página
         const page = parseInt(args[0]) || 1; // Página actual (por defecto la primera)
         const keys = Object.keys(multimediaStore);
-        const totalPages = Math.ceil(keys.length / pageSize); // Total de páginas
+        const totalPages = Math.ceil(keys.length / pageSize);
 
         if (page < 1 || page > totalPages) {
             return conn.sendMessage(
@@ -888,12 +888,12 @@ case 'clavelista2': {
 
         // Crear botones dinámicos con las palabras clave
         const botones = currentPageKeys.map((key) => ({
-            buttonId: `enviarmedia_${key}`, // Botón para enviar el multimedia
-            buttonText: { displayText: key }, // Texto del botón
+            buttonId: `enviarmedia_${key}`,
+            buttonText: { displayText: key },
             type: 1,
         }));
 
-        // Botón para retroceder página
+        // Botón para retroceder página (posición 9)
         if (page > 1) {
             botones.push({
                 buttonId: `clavelista2_${page - 1}`,
@@ -902,7 +902,7 @@ case 'clavelista2': {
             });
         }
 
-        // Botón para avanzar página
+        // Botón para avanzar página (posición 10)
         if (page < totalPages) {
             botones.push({
                 buttonId: `clavelista2_${page + 1}`,
@@ -915,7 +915,7 @@ case 'clavelista2': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
+                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' },
                 caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
 │✨ Selecciona una palabra clave para recibir el archivo asociado:
 │
@@ -925,7 +925,7 @@ case 'clavelista2': {
                 footer: "CORTANA 2.0",
                 buttons: botones,
                 viewOnce: true,
-                headerType: 4, // Encabezado con imagen
+                headerType: 4,
                 mentions: [m.sender],
             },
             { quoted: m }
@@ -939,7 +939,7 @@ break;
 
 case 'enviarmedia': {
     try {
-        const keyword = command.split('_')[1]; // Extraer la palabra clave del botón
+        const keyword = command.split('_')[1];
         if (!keyword || !multimediaStore[keyword]) {
             return conn.sendMessage(
                 m.chat,
@@ -980,7 +980,7 @@ case 'enviarmedia': {
         m.reply('❌ *Ocurrió un error al intentar enviar el multimedia.*');
     }
 }
-break;
+break;        
 
 // Comando para iniciar la lista de archivos multimedia
 		
@@ -991,45 +991,6 @@ break;
 
 //prueba
 
-
-case 'probarbotones': {
-    try {
-        await conn.sendMessage(m.chat, {
-            image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // URL de una imagen de prueba
-            caption: `╭───≪~*PRUEBA DE BOTONES*~*
-│◈ Botón 1: Acción A
-│◈ Botón 2: Acción B
-│◈ Botón 3: Acción C
-╰─•┈┈••✦✦••┈┈•─╯`,
-            footer: "CORTANA 2.0",
-            buttons: [
-                {
-                    buttonId: 'accion_1',
-                    buttonText: { displayText: "🔘 Acción A" },
-                    type: 1,
-                },
-                {
-                    buttonId: 'accion_2',
-                    buttonText: { displayText: "🔘 Acción B" },
-                    type: 1,
-                },
-                {
-                    buttonId: 'accion_3',
-                    buttonText: { displayText: "🔘 Acción C" },
-                    type: 1,
-                },
-            ],
-            viewOnce: true,
-            headerType: 4, // Usamos el encabezado con imagen
-            mentions: [m.sender],
-        }, { quoted: m });
-        console.log('✅ Botones enviados correctamente.');
-    } catch (error) {
-        console.error('❌ Error enviando botones:', error);
-        m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
-    }
-}
-break;	
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
