@@ -874,8 +874,8 @@ case 'clavelista2': {
                 title: "🔑 Palabras Clave Guardadas",
                 rows: keys.map((key) => ({
                     title: key, // Nombre de la palabra clave
-                    rowId: `.g ${key}`, // Comando para ejecutar
-                    description: `Presiona para recibir el archivo asociado.`,
+                    rowId: `.g ${key}`, // Comando que se ejecutará al seleccionar
+                    description: `Presiona para recibir el archivo asociado.`, // Descripción opcional
                 })),
             },
         ];
