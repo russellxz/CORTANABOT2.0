@@ -913,16 +913,25 @@ case 'encuesta': {
     }
 
     try {
-        const buttons = [
-            { buttonId: 'encuesta_si', buttonText: { displayText: '✅ Sí' }, type: 1 },
-            { buttonId: 'encuesta_no', buttonText: { displayText: '❌ No' }, type: 1 }
-        ];
-
         const buttonMessage = {
-            text: text,
-            footer: 'Selecciona una opción:',
-            buttons: buttons,
-            headerType: 1, // Usar texto como encabezado
+            caption: `╭───≪~*╌◌ᰱ•••⃙❨͟͞${text}❩⃘•••ᰱ◌╌*~*
+│║◈ Encuesta rápida:
+│║◈ Opciones disponibles: Sí / No
+╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`,
+            footer: "𝙲𝙾𝚁𝚃𝙰𝙽𝙰 𝟸.𝟶",
+            buttons: [
+                {
+                    buttonId: `encuesta_si`,
+                    buttonText: { displayText: "✅ Sí" },
+                    type: 1,
+                },
+                {
+                    buttonId: `encuesta_no`,
+                    buttonText: { displayText: "❌ No" },
+                    type: 1,
+                },
+            ],
+            headerType: 1,
         };
 
         await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
