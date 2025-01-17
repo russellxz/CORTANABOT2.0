@@ -854,100 +854,41 @@ if (!isCreator) return reply(info.owner)
     break;
 
 //comando lista 2 
-
-
-case 'clavelista2': {
+case 'otra': {
     try {
-        m.react('⏳'); // Reacción al activar el comando
-
-        if (Object.keys(multimediaStore).length === 0) {
-            return conn.sendMessage(
-                m.chat,
-                {
-                    text: "📂 *Lista de Palabras Clave Guardadas:*\n\n⚠️ No hay multimedia guardado aún. Usa el comando `.guar` para guardar uno. 😉",
-                },
-                { quoted: m }
-            );
+        const page = parseInt(args[0]); // Extrae el número de página del argumento
+        if (isNaN(page) || page < 1) {
+            return m.reply('❌ *Debes ingresar un número de página válido. Ejemplo: .otra 1*');
         }
 
-        const pageSize = 3; // Mostrar 3 palabras clave por página
-        const page = 1; // Inicia en la página 1
         const keys = Object.keys(multimediaStore);
-        const totalPages = Math.ceil(keys.length / pageSize);
+        const totalPages = Math.ceil(keys.length / 3); // 3 palabras clave por página
 
-        // Obtener elementos para la página actual
-        const start = (page - 1) * pageSize;
-        const end = start + pageSize;
-        const currentPageKeys = keys.slice(start, end);
-
-        // Crear botones dinámicos con las palabras clave y comando `.g`
-        const botones = currentPageKeys.map((key) => ({
-            buttonId: `.g ${key}`, // Botón que envía el comando `.g <palabra_clave>`
-            buttonText: { displayText: key }, // Texto del botón
-            type: 1,
-        }));
-
-        // Enviar el mensaje con botones
-        await conn.sendMessage(
-            m.chat,
-            {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
-                caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│✨ Selecciona una palabra clave para obtener el comando:
-│
-│📁 Archivos en esta página: ${currentPageKeys.length}
-│📄 Página: 1 de ${totalPages}
-╰─•┈┈••✦✦••┈┈•─╯`,
-                footer: "CORTANA 2.0",
-                buttons: botones,
-                viewOnce: true,
-                headerType: 4, // Encabezado con imagen
-                mentions: [m.sender],
-            },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error('❌ Error enviando botones:', error);
-        m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
-    }
-}
-break;
-
-case 'otro': {
-    try {
-        const repliedMessage = m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-        if (!repliedMessage || !repliedMessage.caption) {
-            return m.reply('❌ *Debes responder al menú anterior para cambiar de página.*');
+        if (page > totalPages) {
+            return m.reply(`❌ *La página ingresada no existe. Hay un total de ${totalPages} páginas.*`);
         }
 
-        const match = repliedMessage.caption.match(/Página: (\d+)/);
-        if (!match) {
-            return m.reply('❌ *No se pudo determinar la página actual. Asegúrate de responder a un mensaje de menú válido.*');
-        }
-
-        const currentPage = parseInt(match[1]);
-        const keys = Object.keys(multimediaStore);
-        const totalPages = Math.ceil(keys.length / 3);
-
-        if (currentPage >= totalPages) {
-            return m.reply('❌ *No hay más páginas disponibles.*');
-        }
-
-        const page = currentPage + 1;
+        // Calcular los elementos de la página solicitada
         const start = (page - 1) * 3;
         const end = start + 3;
         const currentPageKeys = keys.slice(start, end);
 
+        if (currentPageKeys.length === 0) {
+            return m.reply('❌ *No hay palabras clave en esta página.*');
+        }
+
+        // Crear los botones dinámicos para las palabras clave
         const botones = currentPageKeys.map((key) => ({
-            buttonId: `.g ${key}`,
-            buttonText: { displayText: key },
+            buttonId: `.g ${key}`, // Botón que ejecuta el comando `.g`
+            buttonText: { displayText: key }, // Texto visible en el botón
             type: 1,
         }));
 
+        // Enviar el menú con los botones
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' },
+                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
                 caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
 │✨ Selecciona una palabra clave para obtener el comando:
 │
@@ -969,63 +910,50 @@ case 'otro': {
 }
 break;
 
-case 'atras': {
+case 'g': {
     try {
-        const repliedMessage = m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-        if (!repliedMessage || !repliedMessage.caption) {
-            return m.reply('❌ *Debes responder al menú anterior para cambiar de página.*');
+        const keyword = args[0]; // Extraer la palabra clave después de `.g`
+        if (!keyword || !multimediaStore[keyword]) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "⚠️ *No se encontró multimedia asociado a esa palabra clave.*\nVerifica e intenta de nuevo.",
+                },
+                { quoted: m }
+            );
         }
 
-        const match = repliedMessage.caption.match(/Página: (\d+)/);
-        if (!match) {
-            return m.reply('❌ *No se pudo determinar la página actual. Asegúrate de responder a un mensaje de menú válido.*');
+        // Recuperar multimedia y enviarlo según el tipo
+        const multimedia = multimediaStore[keyword];
+        const { mimetype, buffer } = multimedia;
+
+        switch (true) {
+            case mimetype.startsWith('image/'):
+                await conn.sendMessage(m.chat, { image: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
+                break;
+            case mimetype.startsWith('video/'):
+                await conn.sendMessage(m.chat, { video: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
+                break;
+            case mimetype.startsWith('audio/'):
+                await conn.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
+                break;
+            case mimetype === 'application/pdf':
+                await conn.sendMessage(m.chat, { document: buffer, mimetype: 'application/pdf', fileName: `${keyword}.pdf` }, { quoted: m });
+                break;
+            case mimetype === 'image/webp':
+                await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m });
+                break;
+            default:
+                conn.sendMessage(m.chat, { text: "⚠️ *Tipo de multimedia no soportado.*" }, { quoted: m });
+                break;
         }
-
-        const currentPage = parseInt(match[1]);
-        if (currentPage <= 1) {
-            return m.reply('❌ *Estás en la primera página.*');
-        }
-
-        const page = currentPage - 1;
-        const keys = Object.keys(multimediaStore);
-        const totalPages = Math.ceil(keys.length / 3);
-        const start = (page - 1) * 3;
-        const end = start + 3;
-        const currentPageKeys = keys.slice(start, end);
-
-        const botones = currentPageKeys.map((key) => ({
-            buttonId: `.g ${key}`,
-            buttonText: { displayText: key },
-            type: 1,
-        }));
-
-        await conn.sendMessage(
-            m.chat,
-            {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' },
-                caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│✨ Selecciona una palabra clave para obtener el comando:
-│
-│📁 Archivos en esta página: ${currentPageKeys.length}
-│📄 Página: ${page} de ${totalPages}
-╰─•┈┈••✦✦••┈┈•─╯`,
-                footer: "CORTANA 2.0",
-                buttons: botones,
-                viewOnce: true,
-                headerType: 4,
-                mentions: [m.sender],
-            },
-            { quoted: m }
-        );
     } catch (error) {
-        console.error('❌ Error retrocediendo página:', error);
-        m.reply('❌ *Ocurrió un error al intentar retroceder de página.*');
+        console.error('❌ Error enviando multimedia:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar el multimedia.*');
     }
 }
 break;
 
-
-		
 // Comando para mostrar más archivos
 
 //prueba
