@@ -970,10 +970,9 @@ case 'g': {
 }
 break;
 // eliminar con botones
-	
 case 'ban': {
     try {
-        await m.react('❌'); // Agregar la reacción de X
+        await m.react('☠️'); // Agregar la reacción de X
 
         const page = parseInt(args[0]); // Extrae el número de página del argumento
         if (isNaN(page) || page < 1) {
@@ -998,24 +997,10 @@ case 'ban': {
 
         // Crear los botones dinámicos para las palabras clave
         const botones = currentPageKeys.map((key) => ({
-            buttonId: `delete_${key}`, // Botón que ejecuta el comando para eliminar
-            buttonText: { displayText: key }, // Texto visible en el botón
+            buttonId: `kill_${key}`, // Botón que ejecuta el comando `kill`
+            buttonText: { displayText: `🗑️ ${key}` }, // Texto visible en el botón
             type: 1,
         }));
-
-        // Generar lista de navegación
-        let navigationList = "📖 *Lista de Navegación de Palabras Clave:*\n\n";
-        for (let i = 0; i < totalPages; i++) {
-            const start = i * 3;
-            const end = start + 3;
-            const pageKeys = keys.slice(start, end);
-
-            navigationList += `📄 *Página ${i + 1}:*\n`;
-            pageKeys.forEach((key) => {
-                navigationList += `- 🔑 ${key}\n`;
-            });
-            navigationList += "\n";
-        }
 
         // Enviar el menú con los botones
         await conn.sendMessage(
@@ -1027,9 +1012,7 @@ case 'ban': {
 │
 │📁 Archivos en esta página: ${currentPageKeys.length}
 │📄 Página: ${page} de ${totalPages}
-╰─•┈┈••✦✦••┈┈•─╯
-
-${navigationList}`,
+╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
                 buttons: botones,
                 viewOnce: true,
@@ -1045,7 +1028,7 @@ ${navigationList}`,
 }
 break;
 
-case 'delete': {
+case 'kill': {
     try {
         const deleteKey = command.split('_')[1]; // Extraer la palabra clave desde el botón
         if (!isCreator) return m.reply('⚠️ *Solo el owner puede eliminar archivos.*');
@@ -1075,7 +1058,9 @@ case 'delete': {
         m.reply('❌ *Ocurrió un error al intentar eliminar el multimedia.*');
     }
 }
-break;       
+break;	
+
+
 
 //prueba
 
