@@ -854,12 +854,13 @@ if (!isCreator) return reply(info.owner)
     break;
 //comando lista 2 
 
+// Comando para iniciar la lista de archivos multimedia
 case 'clavelista2': {
     if (!Object.keys(multimediaStore).length) {
         return m.reply('❌ *No hay archivos multimedia guardados.*');
     }
 
-    const opciones = Object.keys(multimediaStore).map((key) => ({
+    const opciones = Object.keys(multimediaStore).slice(0, 10).map((key) => ({
         optionName: key, // Nombre de la opción
     }));
 
@@ -867,7 +868,7 @@ case 'clavelista2': {
         pollCreationMessage: {
             name: "📂 Lista de archivos multimedia",
             options: opciones,
-            selectableOptionsCount: opciones.length > 10 ? 10 : opciones.length, // WhatsApp tiene un límite de 10 opciones
+            selectableOptionsCount: opciones.length,
         },
     };
 
@@ -877,12 +878,15 @@ break;
 
 //comando otro
 		
+// Comando para mostrar más archivos
 case 'otro': {
     if (!Object.keys(multimediaStore).length) {
         return m.reply('❌ *No hay archivos multimedia guardados.*');
     }
 
-    const opcionesRestantes = Object.keys(multimediaStore).slice(10); // Limitar opciones a las no mostradas
+    const enviados = Object.keys(multimediaStore).filter((key) => multimediaStore[key].enviado);
+    const opcionesRestantes = Object.keys(multimediaStore).filter((key) => !enviados.includes(key)).slice(0, 10);
+
     if (!opcionesRestantes.length) {
         return m.reply('✅ *No hay más archivos por mostrar.*');
     }
@@ -895,7 +899,7 @@ case 'otro': {
         pollCreationMessage: {
             name: "📂 Lista de archivos multimedia (Continuación)",
             options: opciones,
-            selectableOptionsCount: opciones.length > 10 ? 10 : opciones.length, // WhatsApp tiene un límite de 10 opciones
+            selectableOptionsCount: opciones.length,
         },
     };
 
