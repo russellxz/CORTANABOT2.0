@@ -307,101 +307,111 @@ sock.ev.on("messages.upsert", async (message) => {
   }
 });
 //nuevo evento equetas
-sock.ev.on('messages.update', async (updates) => {
-    for (const update of updates) {
-        if (update.update.pollUpdates && !update.key.fromMe) {
-            const { selectedOptionId } = update.update.pollUpdates[0]; // Opción seleccionada
-            const archivo = multimediaStore[selectedOptionId];
-
-            if (!archivo) {
-                return conn.sendMessage(update.key.remoteJid, { text: '❌ *Archivo no encontrado.*' });
-            }
-
-            // Detectar el tipo de archivo
-            const { type, buffer } = archivo;
-            switch (type) {
-                case 'image':
-                    conn.sendMessage(update.key.remoteJid, { image: buffer }, { quoted: m });
-                    break;
-                case 'video':
-                    conn.sendMessage(update.key.remoteJid, { video: buffer }, { quoted: m });
-                    break;
-                case 'audio':
-                    conn.sendMessage(update.key.remoteJid, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
-                    break;
-                case 'sticker':
-                    conn.sendMessage(update.key.remoteJid, { sticker: buffer }, { quoted: m });
-                    break;
-                default:
-                    conn.sendMessage(update.key.remoteJid, { text: '⚠️ Tipo de archivo no soportado.' });
-                    break;
-            }
-        }
-    }
-});	
-
-	    
 sock.ev.on("messages.update", async (updates) => {
-console.log("Event triggered: messages.update");
+    console.log("Event triggered: messages.update");
 
-for (const update of updates) {
-if (update.update.message === null && update.key.fromMe === false) {
-const { remoteJid, id, participant } = update.key;
-try {
-const sender = participant || remoteJid;
-if (!sender) return;     
+    for (const update of updates) {
+        // Manejo de mensajes eliminados
+        if (update.update.message === null && update.key.fromMe === false) {
+            const { remoteJid, id, participant } = update.key;
+            try {
+                const sender = participant || remoteJid;
+                if (!sender) return;
 
-let chat = global.db.data.chats[m.chat] || {}
-if (!chat?.delete) return 
-const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
-await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender], quoted: update.key });
+                let chat = global.db.data.chats[m.chat] || {};
+                if (!chat?.delete) return;
 
-        const deletedMessage = messageStore[id];
-        if (deletedMessage) {
-          const msgContent = deletedMessage.message;
+                const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
+                await sock.sendMessage(remoteJid, { text: antideleteMessage, mentions: [sender], quoted: update.key });
 
-          if (msgContent.conversation) {
-            // Texto
-            await sock.sendMessage(remoteJid, {
-              text: msgContent.conversation,
-              quoted: update.key, 
-            });
-          } else if (msgContent.imageMessage) {
-            // Imagen
-            const buffer = await sock.downloadMediaMessage(msgContent.imageMessage);
-            await sock.sendMessage(remoteJid, {
-              image: buffer,
-              caption: msgContent.conversation,
-              quoted: update.key, 
-            });
-          } else if (msgContent.videoMessage) {
-            // Video
-            const buffer = await sock.downloadMediaMessage(msgContent.videoMessage);
-            await sock.sendMessage(remoteJid, {
-              video: buffer,
-              caption: msgContent.conversation,
-              quoted: update.key, 
-            });
-          } else if (msgContent.stickerMessage) {
-            // Sticker
-            const buffer = await sock.downloadMediaMessage(msgContent.stickerMessage);
-            await sock.sendMessage(remoteJid, {
-              sticker: buffer,
-              quoted: update.key, 
-            });
-          } else {
-            console.log("Tipo de mensaje no manejado:", msgContent);
-          }
+                const deletedMessage = messageStore[id];
+                if (deletedMessage) {
+                    const msgContent = deletedMessage.message;
 
-          delete messageStore[id];
-        } else {
-          console.log("No se encontró el mensaje eliminado en el almacenamiento.");
+                    if (msgContent.conversation) {
+                        // Texto
+                        await sock.sendMessage(remoteJid, {
+                            text: msgContent.conversation,
+                            quoted: update.key,
+                        });
+                    } else if (msgContent.imageMessage) {
+                        // Imagen
+                        const buffer = await sock.downloadMediaMessage(msgContent.imageMessage);
+                        await sock.sendMessage(remoteJid, {
+                            image: buffer,
+                            caption: msgContent.conversation,
+                            quoted: update.key,
+                        });
+                    } else if (msgContent.videoMessage) {
+                        // Video
+                        const buffer = await sock.downloadMediaMessage(msgContent.videoMessage);
+                        await sock.sendMessage(remoteJid, {
+                            video: buffer,
+                            caption: msgContent.conversation,
+                            quoted: update.key,
+                        });
+                    } else if (msgContent.stickerMessage) {
+                        // Sticker
+                        const buffer = await sock.downloadMediaMessage(msgContent.stickerMessage);
+                        await sock.sendMessage(remoteJid, {
+                            sticker: buffer,
+                            quoted: update.key,
+                        });
+                    } else {
+                        console.log("Tipo de mensaje no manejado:", msgContent);
+                    }
+
+                    delete messageStore[id];
+                } else {
+                    console.log("No se encontró el mensaje eliminado en el almacenamiento.");
+                }
+            } catch (error) {
+                console.error("Error detectando o manejando mensaje eliminado:", error);
+            }
         }
-      } catch (error) {
-        console.error("Error detectando o manejando mensaje eliminado:", error);
-      }
+
+        // Manejo de encuestas (pollUpdates)
+        if (update.update.pollUpdates && !update.key.fromMe) {
+            console.log("Encuesta detectada: pollUpdates");
+
+            try {
+                const { selectedOptionId } = update.update.pollUpdates[0]; // Opción seleccionada
+                const archivo = multimediaStore[selectedOptionId];
+
+                if (!archivo) {
+                    return sock.sendMessage(update.key.remoteJid, { text: '❌ *Archivo no encontrado.*' });
+                }
+
+                // Evitar respuestas repetidas
+                if (archivo.enviado) {
+                    return sock.sendMessage(update.key.remoteJid, { text: '⚠️ *El archivo ya fue enviado previamente.*' });
+                }
+
+                // Detectar el tipo de archivo
+                const { type, buffer } = archivo;
+                archivo.enviado = true; // Marcar como enviado
+                switch (type) {
+                    case 'image':
+                        await sock.sendMessage(update.key.remoteJid, { image: buffer }, { quoted: update });
+                        break;
+                    case 'video':
+                        await sock.sendMessage(update.key.remoteJid, { video: buffer }, { quoted: update });
+                        break;
+                    case 'audio':
+                        await sock.sendMessage(update.key.remoteJid, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: update });
+                        break;
+                    case 'sticker':
+                        await sock.sendMessage(update.key.remoteJid, { sticker: buffer }, { quoted: update });
+                        break;
+                    default:
+                        await sock.sendMessage(update.key.remoteJid, { text: '⚠️ Tipo de archivo no soportado.' });
+                        break;
+                }
+            } catch (error) {
+                console.error("Error manejando encuesta:", error);
+            }
+        }
     }
-  }
 });
 
 /*sock.ev.on('messages.update', async chatUpdate => {
