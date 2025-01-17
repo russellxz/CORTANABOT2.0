@@ -856,6 +856,7 @@ if (!isCreator) return reply(info.owner)
 //comando lista 2 
 case 'otra': {
     try {
+        m.react('⏳'); // Reacción de reloj
         const page = parseInt(args[0]); // Extrae el número de página del argumento
         if (isNaN(page) || page < 1) {
             return m.reply('❌ *Debes ingresar un número de página válido. Ejemplo: .otra 1*');
@@ -884,7 +885,19 @@ case 'otra': {
             type: 1,
         }));
 
-        // Enviar el menú con los botones
+        // Crear el índice general
+        let indice = '📋 *Índice de Palabras Clave por Página:*\n';
+        for (let i = 0; i < totalPages; i++) {
+            const startIdx = i * 3;
+            const endIdx = startIdx + 3;
+            const pageKeys = keys.slice(startIdx, endIdx);
+            indice += `\n📄 *Página ${i + 1}:*\n`;
+            pageKeys.forEach((key) => {
+                indice += `- 🌟 ${key}\n`;
+            });
+        }
+
+        // Enviar el menú con los botones y el índice
         await conn.sendMessage(
             m.chat,
             {
@@ -894,6 +907,9 @@ case 'otra': {
 │
 │📁 Archivos en esta página: ${currentPageKeys.length}
 │📄 Página: ${page} de ${totalPages}
+│
+│📋 *Índice General:*
+${indice}
 ╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
                 buttons: botones,
@@ -953,8 +969,7 @@ case 'g': {
     }
 }
 break;
-
-// Comando para mostrar más archivos
+        
 
 //prueba
 
