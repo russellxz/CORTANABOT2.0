@@ -867,73 +867,38 @@ case 'clavelista2': {
             );
         }
 
-        const pageSize = 8; // 8 palabras clave por página
-        const page = parseInt(args[0]) || 1; // Página actual (por defecto la primera)
         const keys = Object.keys(multimediaStore);
-        const totalPages = Math.ceil(keys.length / pageSize);
 
-        if (page < 1 || page > totalPages) {
-            return conn.sendMessage(
-                m.chat,
-                {
-                    text: `⚠️ *Página inválida.* Elige un número entre 1 y ${totalPages}.`,
-                },
-                { quoted: m }
-            );
-        }
+        // Crear lista de selección
+        const sections = [
+            {
+                title: "🔑 Palabras Clave Guardadas",
+                rows: keys.map((key) => ({
+                    title: key,
+                    rowId: `.g ${key}`,
+                    description: `Pulsa para recibir el multimedia asociado a la clave: "${key}"`,
+                })),
+            },
+        ];
 
-        // Obtener elementos para la página actual
-        const start = (page - 1) * pageSize;
-        const end = start + pageSize;
-        const currentPageKeys = keys.slice(start, end);
-
-        // Crear botones dinámicos con las palabras clave y comando `.g`
-        const botones = currentPageKeys.map((key) => ({
-            buttonId: `.g ${key}`, // Botón que envía el comando `.g <palabra_clave>`
-            buttonText: { displayText: key }, // Texto del botón
-            type: 1,
-        }));
-
-        // Botón para retroceder página (posición 9)
-        if (page > 1) {
-            botones.push({
-                buttonId: `clavelista2 ${page - 1}`,
-                buttonText: { displayText: "⬅️ Atrás" },
-                type: 1,
-            });
-        }
-
-        // Botón para avanzar página (posición 10)
-        if (page < totalPages) {
-            botones.push({
-                buttonId: `clavelista2 ${page + 1}`,
-                buttonText: { displayText: "➡️ Siguiente" },
-                type: 1,
-            });
-        }
-
-        // Enviar el mensaje con botones
+        // Enviar el mensaje con la lista de selección
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
-                caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│✨ Selecciona una palabra clave para obtener el comando:
-│
-│📁 Archivos en esta página: ${currentPageKeys.length}
-│📄 Página: ${page} de ${totalPages}
+                text: `╭───≪~*MULTIMEDIA GUARDADO*~*
+│✨ Selecciona una palabra clave para recibir el archivo asociado.
+│📁 Archivos disponibles: ${keys.length}
 ╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
-                buttons: botones,
-                viewOnce: true,
-                headerType: 4, // Encabezado con imagen
-                mentions: [m.sender],
+                title: "📂 Lista de Palabras Clave",
+                buttonText: "Seleccionar Palabra Clave",
+                sections: sections,
             },
             { quoted: m }
         );
     } catch (error) {
-        console.error('❌ Error enviando botones:', error);
-        m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
+        console.error('❌ Error enviando la lista:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar la lista.*');
     }
 }
 break;
