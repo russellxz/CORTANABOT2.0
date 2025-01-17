@@ -943,35 +943,33 @@ case 'encuesta': {
 }
 break;
 
-case 'botones': {
+case 'probarbotones': {
     try {
-        const buttonMessage = {
+        await conn.sendMessage(m.chat, {
             text: "📋 *Prueba de botones*",
             footer: "CORTANA 2.0",
             buttons: [
                 {
-                    buttonId: 'boton_1',
-                    buttonText: { displayText: "🔘 Botón 1" },
+                    buttonId: 'opcion_1',
+                    buttonText: { displayText: "🔘 Opción 1" },
                     type: 1,
                 },
                 {
-                    buttonId: 'boton_2',
-                    buttonText: { displayText: "🔘 Botón 2" },
+                    buttonId: 'opcion_2',
+                    buttonText: { displayText: "🔘 Opción 2" },
                     type: 1,
                 },
                 {
-                    buttonId: 'boton_3',
-                    buttonText: { displayText: "🔘 Botón 3" },
+                    buttonId: 'opcion_3',
+                    buttonText: { displayText: "🔘 Opción 3" },
                     type: 1,
                 },
             ],
-            headerType: 4,
-        };
-
-        await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
+            headerType: 1, // Usa 1 para mensajes simples sin multimedia
+        }, { quoted: m });
         console.log('✅ Botones enviados correctamente.');
     } catch (error) {
-        console.error('Error enviando botones:', error);
+        console.error('❌ Error enviando botones:', error);
         m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
     }
 }
