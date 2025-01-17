@@ -841,11 +841,13 @@ case 'clavelista': {
 
     let listMessage = "📂 *Lista de Palabras Clave Guardadas:*\n\n";
     let index = 1;
+    const mentions = []; // Lista para guardar usuarios mencionados
 
     for (const key in multimediaStore) {
         const item = multimediaStore[key];
         const savedBy = item.savedBy ? `@${item.savedBy.split('@')[0]}` : "Desconocido";
         listMessage += `*${index}.* 🔑 *${key}*\n📎 Tipo: _${item.mimetype}_\n👤 Guardado por: ${savedBy}\n\n`;
+        if (item.savedBy) mentions.push(item.savedBy); // Agregar usuario a menciones
         index++;
     }
 
@@ -853,7 +855,7 @@ case 'clavelista': {
 
     return conn.sendMessage(
         m.chat,
-        { text: listMessage, mentions: Object.values(multimediaStore).map((item) => item.savedBy) },
+        { text: listMessage, mentions }, // Enviar con menciones
         { quoted: m }
     );
 }
