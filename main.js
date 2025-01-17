@@ -939,7 +939,7 @@ break;
 
 case 'enviarmedia': {
     try {
-        const keyword = command.split('_')[1];
+        const keyword = command.split('_')[1]; // Extraer la palabra clave del botón
         if (!keyword || !multimediaStore[keyword]) {
             return conn.sendMessage(
                 m.chat,
@@ -954,21 +954,20 @@ case 'enviarmedia': {
         const multimedia = multimediaStore[keyword];
         const { mimetype, buffer } = multimedia;
 
-        switch (mimetype) {
-            case 'image/jpeg':
-            case 'image/png':
+        switch (true) {
+            case mimetype.startsWith('image/'):
                 await conn.sendMessage(m.chat, { image: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
                 break;
-            case 'video/mp4':
+            case mimetype.startsWith('video/'):
                 await conn.sendMessage(m.chat, { video: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
                 break;
-            case 'audio/mpeg':
+            case mimetype.startsWith('audio/'):
                 await conn.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
                 break;
-            case 'application/pdf':
+            case mimetype === 'application/pdf':
                 await conn.sendMessage(m.chat, { document: buffer, mimetype: 'application/pdf', fileName: `${keyword}.pdf` }, { quoted: m });
                 break;
-            case 'image/webp':
+            case mimetype === 'image/webp':
                 await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m });
                 break;
             default:
@@ -980,7 +979,8 @@ case 'enviarmedia': {
         m.reply('❌ *Ocurrió un error al intentar enviar el multimedia.*');
     }
 }
-break;        
+break;
+
 
 // Comando para iniciar la lista de archivos multimedia
 		
