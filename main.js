@@ -853,95 +853,86 @@ if (!isCreator) return reply(info.owner)
     );
     break;
 //comando lista 2 
-
-// Comando para iniciar la lista de archivos multimedia
 case 'clavelista2': {
-    if (!Object.keys(multimediaStore).length) {
-        return m.reply('❌ *No hay archivos multimedia guardados.*');
+    if (Object.keys(multimediaStore).length === 0) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "📂 *Lista de Palabras Clave Guardadas:*\n\n⚠️ No hay multimedia guardado aún. Usa el comando `.guar` para guardar uno. 😉"
+            },
+            { quoted: m }
+        );
     }
 
-    const opciones = Object.keys(multimediaStore).slice(0, 10).map((key) => ({
-        optionName: key, // Nombre de la opción
+    // Crear botones con las palabras clave
+    const botones = Object.keys(multimediaStore).map((key) => ({
+        buttonId: `.enviarmedia ${key}`, // Comando para recuperar multimedia
+        buttonText: { displayText: key }, // Texto mostrado en el botón
+        type: 1,
     }));
 
-    const encuesta = {
-        pollCreationMessage: {
-            name: "📂 Lista de archivos multimedia",
-            options: opciones,
-            selectableOptionsCount: opciones.length,
+    // Enviar mensaje con botones
+    await conn.sendMessage(
+        m.chat,
+        {
+            text: "📂 *Lista de Palabras Clave Guardadas:*\n\n✨ Selecciona una palabra clave para recibir el multimedia asociado:",
+            footer: "Cortana Bot 2.0",
+            buttons: botones,
+            headerType: 1,
         },
-    };
-
-    await conn.sendMessage(m.chat, encuesta, { quoted: m });
+        { quoted: m }
+    );
 }
-break;		
+break;
+
+case 'enviarmedia': {
+    const keyword = text.split(' ')[1]; // Obtener la palabra clave
+    if (!keyword || !multimediaStore[keyword]) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *No se encontró multimedia asociado a esa palabra clave.*\nVerifica e intenta de nuevo."
+            },
+            { quoted: m }
+        );
+    }
+
+    // Recuperar multimedia y enviarlo según el tipo
+    const multimedia = multimediaStore[keyword];
+    const { mimetype, buffer } = multimedia;
+
+    switch (mimetype) {
+        case 'image/jpeg':
+        case 'image/png':
+            await conn.sendMessage(m.chat, { image: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
+            break;
+        case 'video/mp4':
+            await conn.sendMessage(m.chat, { video: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
+            break;
+        case 'audio/mpeg':
+            await conn.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
+            break;
+        case 'application/pdf':
+            await conn.sendMessage(m.chat, { document: buffer, mimetype: 'application/pdf', fileName: `${keyword}.pdf` }, { quoted: m });
+            break;
+        case 'image/webp':
+            await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m });
+            break;
+        default:
+            conn.sendMessage(m.chat, { text: "⚠️ *Tipo de multimedia no soportado.*" }, { quoted: m });
+            break;
+    }
+}
+break;
+// Comando para iniciar la lista de archivos multimedia
+		
 
 //comando otro
 		
 // Comando para mostrar más archivos
-case 'otro': {
-    if (!Object.keys(multimediaStore).length) {
-        return m.reply('❌ *No hay archivos multimedia guardados.*');
-    }
 
-    const enviados = Object.keys(multimediaStore).filter((key) => multimediaStore[key].enviado);
-    const opcionesRestantes = Object.keys(multimediaStore).filter((key) => !enviados.includes(key)).slice(0, 10);
-
-    if (!opcionesRestantes.length) {
-        return m.reply('✅ *No hay más archivos por mostrar.*');
-    }
-
-    const opciones = opcionesRestantes.map((key) => ({
-        optionName: key, // Nombre de la opción
-    }));
-
-    const nuevaEncuesta = {
-        pollCreationMessage: {
-            name: "📂 Lista de archivos multimedia (Continuación)",
-            options: opciones,
-            selectableOptionsCount: opciones.length,
-        },
-    };
-
-    await conn.sendMessage(m.chat, nuevaEncuesta, { quoted: m });
-}
-break;
 //prueba
-case 'encuesta': {
-    if (!text) {
-        return m.reply('❌ *Debes escribir el encabezado de la encuesta junto al comando.*\nEjemplo: `encuesta ¿Te gusta este bot?`');
-    }
 
-    try {
-        const buttonMessage = {
-            caption: `╭───≪~*╌◌ᰱ•••⃙❨͟͞${text}❩⃘•••ᰱ◌╌*~*
-│║◈ Encuesta rápida:
-│║◈ Opciones disponibles: Sí / No
-╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`,
-            footer: "𝙲𝙾𝚁𝚃𝙰𝙽𝙰 𝟸.𝟶",
-            buttons: [
-                {
-                    buttonId: `encuesta_si`,
-                    buttonText: { displayText: "✅ Sí" },
-                    type: 1,
-                },
-                {
-                    buttonId: `encuesta_no`,
-                    buttonText: { displayText: "❌ No" },
-                    type: 1,
-                },
-            ],
-            headerType: 1,
-        };
-
-        await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
-        console.log('✅ Encuesta enviada correctamente.');
-    } catch (error) {
-        console.error('Error enviando la encuesta:', error);
-        m.reply('❌ *Ocurrió un error al intentar enviar la encuesta.*');
-    }
-}
-break;
 
 case 'probarbotones': {
     try {
