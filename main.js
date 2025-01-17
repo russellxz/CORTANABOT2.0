@@ -913,24 +913,19 @@ case 'encuesta': {
     }
 
     try {
-        await conn.sendMessage(m.chat, {
-            text: text,
-            footer: "Selecciona una opción:",
-            buttons: [
-                {
-                    buttonId: 'encuesta_si',
-                    buttonText: { displayText: "✅ Sí" },
-                    type: 1,
-                },
-                {
-                    buttonId: 'encuesta_no',
-                    buttonText: { displayText: "❌ No" },
-                    type: 1,
-                },
-            ],
-            headerType: 1, // Usar 1 para texto sin imágenes
-        }, { quoted: m });
+        const buttons = [
+            { buttonId: 'encuesta_si', buttonText: { displayText: '✅ Sí' }, type: 1 },
+            { buttonId: 'encuesta_no', buttonText: { displayText: '❌ No' }, type: 1 }
+        ];
 
+        const buttonMessage = {
+            text: text,
+            footer: 'Selecciona una opción:',
+            buttons: buttons,
+            headerType: 1, // Usar texto como encabezado
+        };
+
+        await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
         console.log('✅ Encuesta enviada correctamente.');
     } catch (error) {
         console.error('Error enviando la encuesta:', error);
