@@ -306,7 +306,41 @@ sock.ev.on("messages.upsert", async (message) => {
     };
   }
 });
+//nuevo evento equetas
+sock.ev.on('messages.update', async (updates) => {
+    for (const update of updates) {
+        if (update.update.pollUpdates && !update.key.fromMe) {
+            const { selectedOptionId } = update.update.pollUpdates[0]; // Opción seleccionada
+            const archivo = multimediaStore[selectedOptionId];
 
+            if (!archivo) {
+                return conn.sendMessage(update.key.remoteJid, { text: '❌ *Archivo no encontrado.*' });
+            }
+
+            // Detectar el tipo de archivo
+            const { type, buffer } = archivo;
+            switch (type) {
+                case 'image':
+                    conn.sendMessage(update.key.remoteJid, { image: buffer }, { quoted: m });
+                    break;
+                case 'video':
+                    conn.sendMessage(update.key.remoteJid, { video: buffer }, { quoted: m });
+                    break;
+                case 'audio':
+                    conn.sendMessage(update.key.remoteJid, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
+                    break;
+                case 'sticker':
+                    conn.sendMessage(update.key.remoteJid, { sticker: buffer }, { quoted: m });
+                    break;
+                default:
+                    conn.sendMessage(update.key.remoteJid, { text: '⚠️ Tipo de archivo no soportado.' });
+                    break;
+            }
+        }
+    }
+});	
+
+	    
 sock.ev.on("messages.update", async (updates) => {
 console.log("Event triggered: messages.update");
 
