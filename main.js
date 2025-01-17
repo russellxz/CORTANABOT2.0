@@ -854,7 +854,6 @@ if (!isCreator) return reply(info.owner)
     break;
 
 //comando lista 2 
-
 case 'clavelista2': {
     try {
         if (Object.keys(multimediaStore).length === 0) {
@@ -869,14 +868,14 @@ case 'clavelista2': {
 
         const keys = Object.keys(multimediaStore);
 
-        // Crear lista de selección
+        // Crear la lista de selección con las palabras clave
         const sections = [
             {
                 title: "🔑 Palabras Clave Guardadas",
                 rows: keys.map((key) => ({
-                    title: key,
-                    rowId: `.g ${key}`,
-                    description: `Pulsa para recibir el multimedia asociado a la clave: "${key}"`,
+                    title: key, // Nombre de la palabra clave
+                    rowId: `.g ${key}`, // Comando para ejecutar
+                    description: `Presiona para recibir el archivo asociado.`,
                 })),
             },
         ];
@@ -886,18 +885,20 @@ case 'clavelista2': {
             m.chat,
             {
                 text: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│✨ Selecciona una palabra clave para recibir el archivo asociado.
+│✨ Selecciona una palabra clave para recibir el archivo asociado:
 │📁 Archivos disponibles: ${keys.length}
 ╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
                 title: "📂 Lista de Palabras Clave",
-                buttonText: "Seleccionar Palabra Clave",
+                buttonText: "Seleccionar Palabra Clave", // Texto del botón que abre la lista
                 sections: sections,
             },
             { quoted: m }
         );
+
+        console.log('✅ Lista de selección enviada correctamente.');
     } catch (error) {
-        console.error('❌ Error enviando la lista:', error);
+        console.error('❌ Error enviando la lista de selección:', error);
         m.reply('❌ *Ocurrió un error al intentar enviar la lista.*');
     }
 }
@@ -946,6 +947,9 @@ case 'g': {
     }
 }
 break;
+
+
+        // Recuperar multimedia y enviarlo según el tipo
 
 // Comando para iniciar la lista de archivos multimedia
 		
