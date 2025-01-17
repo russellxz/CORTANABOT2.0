@@ -866,7 +866,7 @@ case 'clavelista2': {
             );
         }
 
-        const pageSize = 8; // Número de palabras clave por página
+        const pageSize = 3; // 3 palabras clave por página
         const page = parseInt(args[0]) || 1; // Página actual (por defecto la primera)
         const keys = Object.keys(multimediaStore);
         const totalPages = Math.ceil(keys.length / pageSize); // Total de páginas
@@ -902,9 +902,9 @@ case 'clavelista2': {
 │✨ Selecciona una palabra clave para obtener el comando:
 │
 │📁 Archivos en esta página: ${currentPageKeys.length}
-│📄 Página: ${page} de ${totalPages}
+│📄 Página actual: ${page} de ${totalPages}
 │
-│📝 Para cambiar de página, responde este mensaje con el número de la página.
+│📝 Para cambiar de página, responde este mensaje con el número de la página deseada.
 ╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
                 buttons: botones,
@@ -914,6 +914,9 @@ case 'clavelista2': {
             },
             { quoted: m }
         );
+
+        // Confirmar en qué página estás
+        m.reply(`✅ *Estás viendo la página ${page} de ${totalPages}.*`);
     } catch (error) {
         console.error('❌ Error enviando botones:', error);
         m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
@@ -964,6 +967,7 @@ case 'g': {
     }
 }
 break;
+        
 
 
         // Recuperar multimedia y enviarlo según el tipo
