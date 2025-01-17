@@ -946,26 +946,33 @@ break;
 case 'probarbotones': {
     try {
         await conn.sendMessage(m.chat, {
-            text: "📋 *Prueba de botones*",
+            image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // URL de una imagen de prueba
+            caption: `╭───≪~*PRUEBA DE BOTONES*~*
+│◈ Botón 1: Acción A
+│◈ Botón 2: Acción B
+│◈ Botón 3: Acción C
+╰─•┈┈••✦✦••┈┈•─╯`,
             footer: "CORTANA 2.0",
             buttons: [
                 {
-                    buttonId: 'opcion_1',
-                    buttonText: { displayText: "🔘 Opción 1" },
+                    buttonId: 'accion_1',
+                    buttonText: { displayText: "🔘 Acción A" },
                     type: 1,
                 },
                 {
-                    buttonId: 'opcion_2',
-                    buttonText: { displayText: "🔘 Opción 2" },
+                    buttonId: 'accion_2',
+                    buttonText: { displayText: "🔘 Acción B" },
                     type: 1,
                 },
                 {
-                    buttonId: 'opcion_3',
-                    buttonText: { displayText: "🔘 Opción 3" },
+                    buttonId: 'accion_3',
+                    buttonText: { displayText: "🔘 Acción C" },
                     type: 1,
                 },
             ],
-            headerType: 1, // Usa 1 para mensajes simples sin multimedia
+            viewOnce: true,
+            headerType: 4, // Usamos el encabezado con imagen
+            mentions: [m.sender],
         }, { quoted: m });
         console.log('✅ Botones enviados correctamente.');
     } catch (error) {
@@ -973,7 +980,7 @@ case 'probarbotones': {
         m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
     }
 }
-break;		
+break;	
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
