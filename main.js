@@ -915,12 +915,17 @@ break;
 
 case 'otro': {
     try {
-        const repliedMessage = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
-        if (!repliedMessage) {
+        const repliedMessage = m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        if (!repliedMessage || !repliedMessage.caption) {
             return m.reply('❌ *Debes responder al menú anterior para cambiar de página.*');
         }
 
-        const currentPage = parseInt(repliedMessage.caption.match(/Página: (\d+)/)?.[1]) || 1;
+        const match = repliedMessage.caption.match(/Página: (\d+)/);
+        if (!match) {
+            return m.reply('❌ *No se pudo determinar la página actual. Asegúrate de responder a un mensaje de menú válido.*');
+        }
+
+        const currentPage = parseInt(match[1]);
         const keys = Object.keys(multimediaStore);
         const totalPages = Math.ceil(keys.length / 3);
 
@@ -966,12 +971,17 @@ break;
 
 case 'atras': {
     try {
-        const repliedMessage = m.message.extendedTextMessage?.contextInfo?.quotedMessage;
-        if (!repliedMessage) {
+        const repliedMessage = m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        if (!repliedMessage || !repliedMessage.caption) {
             return m.reply('❌ *Debes responder al menú anterior para cambiar de página.*');
         }
 
-        const currentPage = parseInt(repliedMessage.caption.match(/Página: (\d+)/)?.[1]) || 1;
+        const match = repliedMessage.caption.match(/Página: (\d+)/);
+        if (!match) {
+            return m.reply('❌ *No se pudo determinar la página actual. Asegúrate de responder a un mensaje de menú válido.*');
+        }
+
+        const currentPage = parseInt(match[1]);
         if (currentPage <= 1) {
             return m.reply('❌ *Estás en la primera página.*');
         }
@@ -1013,6 +1023,8 @@ case 'atras': {
     }
 }
 break;
+
+
 		
 // Comando para mostrar más archivos
 
