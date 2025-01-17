@@ -854,6 +854,7 @@ if (!isCreator) return reply(info.owner)
     break;
 
 //comando lista 2 
+
 case 'clavelista2': {
     try {
         if (Object.keys(multimediaStore).length === 0) {
@@ -924,50 +925,34 @@ case 'clavelista2': {
 }
 break;
 
-case 'g': {
+// Detectar la respuesta para cambiar de página
+sock.ev.on('messages.upsert', async (chatUpdate) => {
     try {
-        const keyword = args[0]; // Extraer la palabra clave después de `.g`
-        if (!keyword || !multimediaStore[keyword]) {
+        const msg = chatUpdate.messages[0];
+        if (!msg.message || !msg.message.conversation || msg.key.fromMe) return;
+
+        const response = msg.message.conversation.trim();
+        const page = parseInt(response);
+
+        if (isNaN(page)) return; // Si la respuesta no es un número, ignorar
+
+        const totalPages = Math.ceil(Object.keys(multimediaStore).length / 3); // Total de páginas
+        if (page < 1 || page > totalPages) {
             return conn.sendMessage(
-                m.chat,
-                {
-                    text: "⚠️ *No se encontró multimedia asociado a esa palabra clave.*\nVerifica e intenta de nuevo.",
-                },
-                { quoted: m }
+                msg.key.remoteJid,
+                { text: `⚠️ *Página inválida.* Elige un número entre 1 y ${totalPages}.` },
+                { quoted: msg }
             );
         }
 
-        // Recuperar multimedia y enviarlo según el tipo
-        const multimedia = multimediaStore[keyword];
-        const { mimetype, buffer } = multimedia;
-
-        switch (true) {
-            case mimetype.startsWith('image/'):
-                await conn.sendMessage(m.chat, { image: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
-                break;
-            case mimetype.startsWith('video/'):
-                await conn.sendMessage(m.chat, { video: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
-                break;
-            case mimetype.startsWith('audio/'):
-                await conn.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
-                break;
-            case mimetype === 'application/pdf':
-                await conn.sendMessage(m.chat, { document: buffer, mimetype: 'application/pdf', fileName: `${keyword}.pdf` }, { quoted: m });
-                break;
-            case mimetype === 'image/webp':
-                await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m });
-                break;
-            default:
-                conn.sendMessage(m.chat, { text: "⚠️ *Tipo de multimedia no soportado.*" }, { quoted: m });
-                break;
-        }
+        // Reutilizar el comando 'clavelista2' para cambiar de página
+        const newArgs = [`${page}`];
+        global.conn.commands.get('clavelista2').run(conn, { ...msg, args: newArgs });
     } catch (error) {
-        console.error('❌ Error enviando multimedia:', error);
-        m.reply('❌ *Ocurrió un error al intentar enviar el multimedia.*');
+        console.error('❌ Error cambiando de página:', error);
     }
-}
-break;
-        
+});
+
 
 
         // Recuperar multimedia y enviarlo según el tipo
