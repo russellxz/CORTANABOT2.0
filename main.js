@@ -854,6 +854,7 @@ if (!isCreator) return reply(info.owner)
     break;
 
 //comando lista 2 
+
 case 'otra': {
     try {
         m.react('⏳'); // Reacción de reloj
@@ -878,10 +879,10 @@ case 'otra': {
             return m.reply('❌ *No hay palabras clave en esta página.*');
         }
 
-        // Crear los botones dinámicos para las palabras clave
+        // Crear los botones dinámicos para las palabras clave con emojis
         const botones = currentPageKeys.map((key) => ({
             buttonId: `.g ${key}`, // Botón que ejecuta el comando `.g`
-            buttonText: { displayText: key }, // Texto visible en el botón
+            buttonText: { displayText: `📥 ${key} 📥` }, // Texto visible en el botón con emojis
             type: 1,
         }));
 
@@ -969,6 +970,7 @@ case 'g': {
     }
 }
 break;
+		
 // eliminar con botones
 case 'ban': {
     try {
