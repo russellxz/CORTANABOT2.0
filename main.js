@@ -854,9 +854,9 @@ if (!isCreator) return reply(info.owner)
     break;
 
 //comando lista 2 
+
 case 'clavelista2': {
     try {
-        // Verificar si hay palabras clave guardadas
         if (Object.keys(multimediaStore).length === 0) {
             return conn.sendMessage(
                 m.chat,
@@ -867,39 +867,30 @@ case 'clavelista2': {
             );
         }
 
-        const keys = Object.keys(multimediaStore); // Palabras clave almacenadas
-        const pageSize = 10; // Máximo de palabras clave por sección
-        const totalPages = Math.ceil(keys.length / pageSize); // Calcular total de páginas
+        let saludos = `~ Hola @${m.sender.split("@")[0]} 👋😄\n\n`;
+        let menu = `╔─━━━━━░★░━━━━━─╗
+║📡 ʙɪᴇɴᴠᴇɴɪᴅᴏ ᴀʟ ᴍᴇɴᴜ ʟɪsᴛᴀ
+║★━━━━━━✩━━━━━━★
+║ Total Palabras Clave: ${Object.keys(multimediaStore).length}
+╚─━━━━━░★░━━━━━─╝`;
 
-        // Generar secciones dinámicas para la lista
-        const listSections = [];
-        for (let i = 0; i < totalPages; i++) {
-            const start = i * pageSize;
-            const end = start + pageSize;
-            const pageKeys = keys.slice(start, end);
+        let listSections = [];
+        listSections.push({
+            title: '📂 Lista de Palabras Clave',
+            rows: Object.keys(multimediaStore).map((key) => ({
+                title: key,
+                description: "Selecciona para obtener el multimedia asociado.",
+                rowId: `.g ${key}`, // Comando para enviar el multimedia
+            })),
+        });
 
-            listSections.push({
-                title: `📄 Página ${i + 1} de ${totalPages}`,
-                rows: pageKeys.map((key) => ({
-                    title: key, // Palabra clave
-                    description: "Selecciona para recibir el archivo asociado.",
-                    rowId: `.g ${key}`, // Comando que ejecuta el envío del multimedia
-                })),
-            });
-        }
-
-        // Enviar lista de selección
+        // Enviar la lista de selección
         await conn.sendMessage(
             m.chat,
             {
-                text: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│✨ Selecciona una palabra clave para obtener el archivo asociado:
-│
-│📁 Total de archivos: ${keys.length}
-│📄 Páginas disponibles: ${totalPages}
-╰─•┈┈••✦✦••┈┈•─╯`,
+                text: `${saludos}${menu}`,
                 footer: "CORTANA 2.0",
-                title: "📂 Lista de Selección",
+                title: "📂 Lista de Multimedia",
                 buttonText: "Seleccionar",
                 sections: listSections,
             },
