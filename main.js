@@ -857,6 +857,8 @@ if (!isCreator) return reply(info.owner)
 
 case 'clavelista2': {
     try {
+        m.react('⏳'); // Reacción de reloj al activar el comando
+
         if (Object.keys(multimediaStore).length === 0) {
             return conn.sendMessage(
                 m.chat,
@@ -867,40 +869,66 @@ case 'clavelista2': {
             );
         }
 
-        let saludos = `~ Hola @${m.sender.split("@")[0]} 👋😄\n\n`;
-        let menu = `╔─━━━━━░★░━━━━━─╗
-║📡 ʙɪᴇɴᴠᴇɴɪᴅᴏ ᴀʟ ᴍᴇɴᴜ ʟɪsᴛᴀ
-║★━━━━━━✩━━━━━━★
-║ Total Palabras Clave: ${Object.keys(multimediaStore).length}
-╚─━━━━━░★░━━━━━─╝`;
+        // Número de palabras clave por página
+        const pageSize = 2; 
+        // Página actual (por defecto la primera)
+        const page = parseInt(args[0]) || 1;
+        const keys = Object.keys(multimediaStore);
+        const totalPages = Math.ceil(keys.length / pageSize);
 
-        let listSections = [];
-        listSections.push({
-            title: '📂 Lista de Palabras Clave',
-            rows: Object.keys(multimediaStore).map((key) => ({
-                title: key,
-                description: "Selecciona para obtener el multimedia asociado.",
-                rowId: `.g ${key}`, // Comando para enviar el multimedia
-            })),
-        });
+        if (page < 1 || page > totalPages) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: `⚠️ *Página inválida.* Elige un número entre 1 y ${totalPages}.`,
+                },
+                { quoted: m }
+            );
+        }
 
-        // Enviar la lista de selección
+        // Obtener elementos para la página actual
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const currentPageKeys = keys.slice(start, end);
+
+        // Crear botones dinámicos con las palabras clave y comando `.g`
+        const botones = currentPageKeys.map((key) => ({
+            buttonId: `.g ${key}`, // Botón que envía el comando `.g <palabra_clave>`
+            buttonText: { displayText: key }, // Texto del botón
+            type: 1,
+        }));
+
+        // Botón para avanzar página
+        if (page < totalPages) {
+            botones.push({
+                buttonId: `clavelista2 ${page + 1}`,
+                buttonText: { displayText: "➡️ Siguiente" },
+                type: 1,
+            });
+        }
+
+        // Enviar el mensaje con botones
         await conn.sendMessage(
             m.chat,
             {
-                text: `${saludos}${menu}`,
+                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
+                caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
+│✨ Selecciona una palabra clave para obtener el comando:
+│
+│📁 Archivos en esta página: ${currentPageKeys.length}
+│📄 Página: ${page} de ${totalPages}
+╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
-                title: "📂 Lista de Multimedia",
-                buttonText: "Seleccionar",
-                sections: listSections,
+                buttons: botones,
+                viewOnce: true,
+                headerType: 4, // Encabezado con imagen
+                mentions: [m.sender],
             },
             { quoted: m }
         );
-
-        console.log("✅ Lista de selección enviada.");
     } catch (error) {
-        console.error('❌ Error enviando lista de selección:', error);
-        m.reply('❌ *Ocurrió un error al intentar enviar la lista de selección.*');
+        console.error('❌ Error enviando botones:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
     }
 }
 break;
@@ -948,12 +976,7 @@ case 'g': {
     }
 }
 break;
-        // Recuperar multimedia y enviarlo según el tipo
 
-// Comando para iniciar la lista de archivos multimedia
-		
-
-//comando otro
 		
 // Comando para mostrar más archivos
 
