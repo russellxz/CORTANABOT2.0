@@ -691,7 +691,7 @@ case "totalmensaje": {
 }
 break; 
 		
-case 'guar':
+case 'guar': {
     if (!m.quoted || !m.quoted.mimetype) {
         return conn.sendMessage(
             m.chat,
@@ -724,11 +724,12 @@ case 'guar':
         mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
     }
 
-    // Guardar multimedia con la palabra clave
+    // Guardar multimedia con la palabra clave y la información del usuario
     multimediaStore[saveKey] = {
         buffer: mediaBuffer.toString('base64'), // Convertir a base64
         mimetype: mediaType,
-        extension: mediaExt
+        extension: mediaExt,
+        savedBy: m.sender // Usuario que guardó el archivo
     };
 
     fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Guardar en archivo
@@ -740,7 +741,8 @@ case 'guar':
         },
         { quoted: m }
     );
-    break;
+}
+break;
 
 case 'g':
     const getKey = args.join(' '); // Palabra clave para recuperar
@@ -824,7 +826,9 @@ if (!isCreator) return reply(info.owner)
         { quoted: m }
     );}
     break;
- case 'clavelista':
+//clavelista
+
+case 'clavelista': {
     if (Object.keys(multimediaStore).length === 0) {
         return conn.sendMessage(
             m.chat,
@@ -840,7 +844,8 @@ if (!isCreator) return reply(info.owner)
 
     for (const key in multimediaStore) {
         const item = multimediaStore[key];
-        listMessage += `*${index}.* 🔑 *${key}*\n📎 Tipo: _${item.mimetype}_\n\n`;
+        const savedBy = item.savedBy ? `@${item.savedBy.split('@')[0]}` : "Desconocido";
+        listMessage += `*${index}.* 🔑 *${key}*\n📎 Tipo: _${item.mimetype}_\n👤 Guardado por: ${savedBy}\n\n`;
         index++;
     }
 
@@ -848,10 +853,11 @@ if (!isCreator) return reply(info.owner)
 
     return conn.sendMessage(
         m.chat,
-        { text: listMessage },
+        { text: listMessage, mentions: Object.values(multimediaStore).map((item) => item.savedBy) },
         { quoted: m }
     );
-    break;
+}
+break;
 
 //comando lista 2 
 
