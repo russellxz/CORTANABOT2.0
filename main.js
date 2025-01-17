@@ -973,18 +973,24 @@ break;
 
 case 'ban': {
     try {
-        await m.react('❌'); // Reacción de X para el comando
+        if (!isCreator) return m.reply("⚠️ *Solo el owner puede usar este comando.*");
 
-        const page = parseInt(args[0]); // Extrae el número de página del argumento
-        if (isNaN(page) || page < 1) {
-            return m.reply('❌ *Debes ingresar un número de página válido. Ejemplo: .ban 1*');
-        }
-
+        const page = parseInt(args[0]) || 1; // Página actual
         const keys = Object.keys(multimediaStore);
         const totalPages = Math.ceil(keys.length / 3); // 3 palabras clave por página
 
-        if (page > totalPages) {
-            return m.reply(`❌ *La página ingresada no existe. Hay un total de ${totalPages} páginas.*`);
+        if (keys.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "📂 *Lista de Palabras Clave Guardadas:*\n\n⚠️ No hay multimedia guardado aún. Usa el comando `.guar` para guardar uno. 😉",
+                },
+                { quoted: m }
+            );
+        }
+
+        if (page > totalPages || page < 1) {
+            return m.reply(`❌ *Página inválida.* Elige un número entre 1 y ${totalPages}.`);
         }
 
         // Calcular los elementos de la página solicitada
@@ -992,30 +998,14 @@ case 'ban': {
         const end = start + 3;
         const currentPageKeys = keys.slice(start, end);
 
-        if (currentPageKeys.length === 0) {
-            return m.reply('❌ *No hay palabras clave en esta página.*');
-        }
-
-        // Crear los botones dinámicos para las palabras clave con íconos
+        // Crear los botones dinámicos para las palabras clave
         const botones = currentPageKeys.map((key) => ({
-            buttonId: `kill_${key}`, // Botón que ejecuta el comando `kill`
-            buttonText: { displayText: `🗑️ ${key} 🗑️` }, // Texto con íconos de canasto de basura
+            buttonId: `.delete ${key}`, // Botón que ejecuta el comando `.delete`
+            buttonText: { displayText: `Eliminar: ${key}` }, // Texto visible en el botón
             type: 1,
         }));
 
-        // Crear el índice general
-        let indice = '📋 *Índice de Palabras Clave por Página:*\n';
-        for (let i = 0; i < totalPages; i++) {
-            const startIdx = i * 3;
-            const endIdx = startIdx + 3;
-            const pageKeys = keys.slice(startIdx, endIdx);
-            indice += `\n📄 *Página ${i + 1}:*\n`;
-            pageKeys.forEach((key) => {
-                indice += `- 🌟 ${key}\n`;
-            });
-        }
-
-        // Enviar el menú con los botones y el índice
+        // Enviar el menú con los botones
         await conn.sendMessage(
             m.chat,
             {
@@ -1025,9 +1015,6 @@ case 'ban': {
 │
 │📁 Archivos en esta página: ${currentPageKeys.length}
 │📄 Página: ${page} de ${totalPages}
-│
-│📋 *Índice General:*
-${indice}
 ╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
                 buttons: botones,
@@ -1038,34 +1025,34 @@ ${indice}
             { quoted: m }
         );
     } catch (error) {
-        console.error('❌ Error cambiando de página para eliminar:', error);
-        m.reply('❌ *Ocurrió un error al intentar cambiar de página.*');
+        console.error('❌ Error navegando entre páginas:', error);
+        m.reply('❌ *Ocurrió un error al intentar mostrar el menú.*');
     }
 }
 break;
 
-case 'kill': {
+case 'delete': {
     try {
-        const deleteKey = command.split('_')[1]; // Extraer la palabra clave desde el botón
-        if (!isCreator) return m.reply('⚠️ *Solo el owner puede eliminar archivos.*');
+        if (!isCreator) return m.reply("⚠️ *Solo el owner puede usar este comando.*");
+
+        const deleteKey = args[0]; // Palabra clave a eliminar
         if (!deleteKey || !multimediaStore[deleteKey]) {
             return conn.sendMessage(
                 m.chat,
                 {
-                    text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${deleteKey}"*. 🔍`
+                    text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${deleteKey}"*.`,
                 },
                 { quoted: m }
             );
         }
 
-        // Eliminar el archivo multimedia
         delete multimediaStore[deleteKey]; // Eliminar del almacenamiento
         fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
 
         return conn.sendMessage(
             m.chat,
             {
-                text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${deleteKey}"* ha sido eliminado. ✅`
+                text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${deleteKey}"* ha sido eliminado.`,
             },
             { quoted: m }
         );
@@ -1074,7 +1061,8 @@ case 'kill': {
         m.reply('❌ *Ocurrió un error al intentar eliminar el multimedia.*');
     }
 }
-break;		
+break;
+
 //prueba
 
 //Info  
