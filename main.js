@@ -970,9 +970,10 @@ case 'g': {
 }
 break;
 // eliminar con botones
+
 case 'ban': {
     try {
-        await m.react('☠️'); // Agregar la reacción de X
+        await m.react('❌'); // Reacción de X para el comando
 
         const page = parseInt(args[0]); // Extrae el número de página del argumento
         if (isNaN(page) || page < 1) {
@@ -995,14 +996,26 @@ case 'ban': {
             return m.reply('❌ *No hay palabras clave en esta página.*');
         }
 
-        // Crear los botones dinámicos para las palabras clave
+        // Crear los botones dinámicos para las palabras clave con íconos
         const botones = currentPageKeys.map((key) => ({
             buttonId: `kill_${key}`, // Botón que ejecuta el comando `kill`
-            buttonText: { displayText: `🗑️ ${key}` }, // Texto visible en el botón
+            buttonText: { displayText: `🗑️ ${key} 🗑️` }, // Texto con íconos de canasto de basura
             type: 1,
         }));
 
-        // Enviar el menú con los botones
+        // Crear el índice general
+        let indice = '📋 *Índice de Palabras Clave por Página:*\n';
+        for (let i = 0; i < totalPages; i++) {
+            const startIdx = i * 3;
+            const endIdx = startIdx + 3;
+            const pageKeys = keys.slice(startIdx, endIdx);
+            indice += `\n📄 *Página ${i + 1}:*\n`;
+            pageKeys.forEach((key) => {
+                indice += `- 🌟 ${key}\n`;
+            });
+        }
+
+        // Enviar el menú con los botones y el índice
         await conn.sendMessage(
             m.chat,
             {
@@ -1012,6 +1025,9 @@ case 'ban': {
 │
 │📁 Archivos en esta página: ${currentPageKeys.length}
 │📄 Página: ${page} de ${totalPages}
+│
+│📋 *Índice General:*
+${indice}
 ╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
                 buttons: botones,
@@ -1022,7 +1038,7 @@ case 'ban': {
             { quoted: m }
         );
     } catch (error) {
-        console.error('❌ Error navegando páginas para eliminación:', error);
+        console.error('❌ Error cambiando de página para eliminar:', error);
         m.reply('❌ *Ocurrió un error al intentar cambiar de página.*');
     }
 }
@@ -1058,10 +1074,7 @@ case 'kill': {
         m.reply('❌ *Ocurrió un error al intentar eliminar el multimedia.*');
     }
 }
-break;	
-
-
-
+break;		
 //prueba
 
 //Info  
