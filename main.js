@@ -969,10 +969,11 @@ case 'g': {
     }
 }
 break;
-        
+// eliminar con botones
+	
 case 'ban': {
     try {
-        await m.react('☠️'); // Agregar la reacción de X
+        await m.react('❌'); // Agregar la reacción de X
 
         const page = parseInt(args[0]); // Extrae el número de página del argumento
         if (isNaN(page) || page < 1) {
@@ -986,7 +987,23 @@ case 'ban': {
             return m.reply(`❌ *La página ingresada no existe. Hay un total de ${totalPages} páginas.*`);
         }
 
-        // Generar la lista de navegación
+        // Calcular los elementos de la página solicitada
+        const start = (page - 1) * 3;
+        const end = start + 3;
+        const currentPageKeys = keys.slice(start, end);
+
+        if (currentPageKeys.length === 0) {
+            return m.reply('❌ *No hay palabras clave en esta página.*');
+        }
+
+        // Crear los botones dinámicos para las palabras clave
+        const botones = currentPageKeys.map((key) => ({
+            buttonId: `delete_${key}`, // Botón que ejecuta el comando para eliminar
+            buttonText: { displayText: key }, // Texto visible en el botón
+            type: 1,
+        }));
+
+        // Generar lista de navegación
         let navigationList = "📖 *Lista de Navegación de Palabras Clave:*\n\n";
         for (let i = 0; i < totalPages; i++) {
             const start = i * 3;
@@ -1000,23 +1017,7 @@ case 'ban': {
             navigationList += "\n";
         }
 
-        // Calcular los elementos de la página solicitada
-        const start = (page - 1) * 3;
-        const end = start + 3;
-        const currentPageKeys = keys.slice(start, end);
-
-        if (currentPageKeys.length === 0) {
-            return m.reply('❌ *No hay palabras clave en esta página.*');
-        }
-
-        // Crear los botones dinámicos para las palabras clave
-        const botones = currentPageKeys.map((key) => ({
-            buttonId: `.del ${key}`, // Botón que ejecuta el comando `.del`
-            buttonText: { displayText: key }, // Texto visible en el botón
-            type: 1,
-        }));
-
-        // Enviar el menú con los botones y lista de navegación
+        // Enviar el menú con los botones
         await conn.sendMessage(
             m.chat,
             {
@@ -1044,21 +1045,11 @@ ${navigationList}`,
 }
 break;
 
-case 'del': {
+case 'delete': {
     try {
-        const deleteKey = args[0]; // Palabra clave para eliminar
+        const deleteKey = command.split('_')[1]; // Extraer la palabra clave desde el botón
         if (!isCreator) return m.reply('⚠️ *Solo el owner puede eliminar archivos.*');
-        if (!deleteKey) {
-            return conn.sendMessage(
-                m.chat,
-                {
-                    text: "⚠️ *Aviso:* Escribe la palabra clave para borrar el multimedia guardado. 🗑️"
-                },
-                { quoted: m }
-            );
-        }
-
-        if (!multimediaStore[deleteKey]) {
+        if (!deleteKey || !multimediaStore[deleteKey]) {
             return conn.sendMessage(
                 m.chat,
                 {
@@ -1068,6 +1059,7 @@ case 'del': {
             );
         }
 
+        // Eliminar el archivo multimedia
         delete multimediaStore[deleteKey]; // Eliminar del almacenamiento
         fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
 
@@ -1083,7 +1075,8 @@ case 'del': {
         m.reply('❌ *Ocurrió un error al intentar eliminar el multimedia.*');
     }
 }
-break;
+break;       
+
 //prueba
 
 //Info  
