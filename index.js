@@ -311,7 +311,6 @@ sock.ev.on("messages.update", async (updates) => {
     console.log("Event triggered: messages.update");
 
     for (const update of updates) {
-        // Manejo de mensajes eliminados
         if (update.update.message === null && update.key.fromMe === false) {
             const { remoteJid, id, participant } = update.key;
             try {
@@ -370,7 +369,7 @@ sock.ev.on("messages.update", async (updates) => {
             }
         }
 
-        // Manejo de encuestas (pollUpdates)
+        // **NUEVA FUNCIÓN: Manejo de Encuestas**
         if (update.update.pollUpdates && !update.key.fromMe) {
             console.log("Encuesta detectada: pollUpdates");
 
@@ -382,14 +381,19 @@ sock.ev.on("messages.update", async (updates) => {
                     return sock.sendMessage(update.key.remoteJid, { text: '❌ *Archivo no encontrado.*' });
                 }
 
-                // Evitar respuestas repetidas
+                // Evitar respuestas duplicadas
                 if (archivo.enviado) {
-                    return sock.sendMessage(update.key.remoteJid, { text: '⚠️ *El archivo ya fue enviado previamente.*' });
+                    return sock.sendMessage(update.key.remoteJid, { text: '⚠️ *El archivo ya fue enviado anteriormente.*' });
                 }
 
-                // Detectar el tipo de archivo
                 const { type, buffer } = archivo;
-                archivo.enviado = true; // Marcar como enviado
+
+                // Validar el buffer
+                if (!buffer || buffer.length === 0) {
+                    return sock.sendMessage(update.key.remoteJid, { text: '❌ *El archivo está vacío o no es válido.*' });
+                }
+
+                archivo.enviado = true; // Marcar archivo como enviado
                 switch (type) {
                     case 'image':
                         await sock.sendMessage(update.key.remoteJid, { image: buffer }, { quoted: update });
