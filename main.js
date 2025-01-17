@@ -854,9 +854,10 @@ if (!isCreator) return reply(info.owner)
     break;
 
 //comando lista 2 
-
 case 'clavelista2': {
     try {
+        m.react('🕐'); // Reacción al ejecutar el comando (puedes cambiar el emoji)
+
         if (Object.keys(multimediaStore).length === 0) {
             return conn.sendMessage(
                 m.chat,
@@ -867,91 +868,86 @@ case 'clavelista2': {
             );
         }
 
-        const pageSize = 3; // 3 palabras clave por página
-        const page = parseInt(args[0]) || 1; // Página actual (por defecto la primera)
-        const keys = Object.keys(multimediaStore);
-        const totalPages = Math.ceil(keys.length / pageSize); // Total de páginas
+        // Crear elementos de la lista de selección dinámicamente
+        const sections = [
+            {
+                title: "📂 Palabras Clave Guardadas",
+                rows: Object.keys(multimediaStore).map((key) => ({
+                    title: key,
+                    description: `Haz clic para obtener el multimedia asociado.`,
+                    rowId: `.g ${key}`, // Comando que se ejecutará al seleccionar
+                })),
+            },
+        ];
 
-        if (page < 1 || page > totalPages) {
+        // Enviar la lista de selección con las palabras clave
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: `╭───≪~*MULTIMEDIA GUARDADO*~*
+│✨ Selecciona una palabra clave para obtener el multimedia asociado:
+│
+│📁 Total de archivos: ${Object.keys(multimediaStore).length}
+╰─•┈┈••✦✦••┈┈•─╯`,
+                footer: "CORTANA 2.0",
+                title: "📂 Lista de Selección",
+                buttonText: "Seleccionar", // Botón para abrir la lista
+                sections,
+            },
+            { quoted: m }
+        );
+
+        console.log('✅ Lista de selección enviada correctamente.');
+    } catch (error) {
+        console.error('❌ Error enviando lista de selección:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar la lista de selección.*');
+    }
+}
+break;
+
+case 'g': {
+    try {
+        const keyword = args[0]; // Extraer la palabra clave después de `.g`
+        if (!keyword || !multimediaStore[keyword]) {
             return conn.sendMessage(
                 m.chat,
                 {
-                    text: `⚠️ *Página inválida.* Elige un número entre 1 y ${totalPages}.`,
+                    text: "⚠️ *No se encontró multimedia asociado a esa palabra clave.*\nVerifica e intenta de nuevo.",
                 },
                 { quoted: m }
             );
         }
 
-        // Obtener elementos para la página actual
-        const start = (page - 1) * pageSize;
-        const end = start + pageSize;
-        const currentPageKeys = keys.slice(start, end);
+        // Recuperar multimedia y enviarlo según el tipo
+        const multimedia = multimediaStore[keyword];
+        const { mimetype, buffer } = multimedia;
 
-        // Crear botones dinámicos con las palabras clave y comando `.g`
-        const botones = currentPageKeys.map((key) => ({
-            buttonId: `.g ${key}`, // Botón que envía el comando `.g <palabra_clave>`
-            buttonText: { displayText: key }, // Texto del botón
-            type: 1,
-        }));
-
-        // Enviar el mensaje con botones
-        await conn.sendMessage(
-            m.chat,
-            {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
-                caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│✨ Selecciona una palabra clave para obtener el comando:
-│
-│📁 Archivos en esta página: ${currentPageKeys.length}
-│📄 Página actual: ${page} de ${totalPages}
-│
-│📝 Para cambiar de página, responde este mensaje con el número de la página deseada.
-╰─•┈┈••✦✦••┈┈•─╯`,
-                footer: "CORTANA 2.0",
-                buttons: botones,
-                viewOnce: true,
-                headerType: 4, // Encabezado con imagen
-                mentions: [m.sender],
-            },
-            { quoted: m }
-        );
-
-        // Confirmar en qué página estás
-        m.reply(`✅ *Estás viendo la página ${page} de ${totalPages}.*`);
+        switch (true) {
+            case mimetype.startsWith('image/'):
+                await conn.sendMessage(m.chat, { image: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
+                break;
+            case mimetype.startsWith('video/'):
+                await conn.sendMessage(m.chat, { video: buffer, caption: `🔑 *Palabra clave:* ${keyword}` }, { quoted: m });
+                break;
+            case mimetype.startsWith('audio/'):
+                await conn.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: m });
+                break;
+            case mimetype === 'application/pdf':
+                await conn.sendMessage(m.chat, { document: buffer, mimetype: 'application/pdf', fileName: `${keyword}.pdf` }, { quoted: m });
+                break;
+            case mimetype === 'image/webp':
+                await conn.sendMessage(m.chat, { sticker: buffer }, { quoted: m });
+                break;
+            default:
+                conn.sendMessage(m.chat, { text: "⚠️ *Tipo de multimedia no soportado.*" }, { quoted: m });
+                break;
+        }
     } catch (error) {
-        console.error('❌ Error enviando botones:', error);
-        m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
+        console.error('❌ Error enviando multimedia:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar el multimedia.*');
     }
 }
 break;
-
-// Detectar la respuesta para cambiar de página
-sock.ev.on('messages.upsert', async (chatUpdate) => {
-    try {
-        const msg = chatUpdate.messages[0];
-        if (!msg.message || !msg.message.conversation || msg.key.fromMe) return;
-
-        const response = msg.message.conversation.trim();
-        const page = parseInt(response);
-
-        if (isNaN(page)) return; // Si la respuesta no es un número, ignorar
-
-        const totalPages = Math.ceil(Object.keys(multimediaStore).length / 3); // Total de páginas
-        if (page < 1 || page > totalPages) {
-            return conn.sendMessage(
-                msg.key.remoteJid,
-                { text: `⚠️ *Página inválida.* Elige un número entre 1 y ${totalPages}.` },
-                { quoted: msg }
-            );
-        }
-
-        // Reutilizar el comando 'clavelista2' para cambiar de página
-        const newArgs = [`${page}`];
-        global.conn.commands.get('clavelista2').run(conn, { ...msg, args: newArgs });
-    } catch (error) {
-        console.error('❌ Error cambiando de página:', error);
-    }
-});
 
 
 
