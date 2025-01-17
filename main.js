@@ -942,7 +942,40 @@ case 'encuesta': {
     }
 }
 break;
-              
+
+case 'botones': {
+    try {
+        const buttonMessage = {
+            text: "📋 *Prueba de botones*",
+            footer: "CORTANA 2.0",
+            buttons: [
+                {
+                    buttonId: 'boton_1',
+                    buttonText: { displayText: "🔘 Botón 1" },
+                    type: 1,
+                },
+                {
+                    buttonId: 'boton_2',
+                    buttonText: { displayText: "🔘 Botón 2" },
+                    type: 1,
+                },
+                {
+                    buttonId: 'boton_3',
+                    buttonText: { displayText: "🔘 Botón 3" },
+                    type: 1,
+                },
+            ],
+            headerType: 4,
+        };
+
+        await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
+        console.log('✅ Botones enviados correctamente.');
+    } catch (error) {
+        console.error('Error enviando botones:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
+    }
+}
+break;		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
