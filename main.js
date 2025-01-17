@@ -856,8 +856,7 @@ if (!isCreator) return reply(info.owner)
 //comando lista 2 
 case 'clavelista2': {
     try {
-        m.react('🕐'); // Reacción al ejecutar el comando (puedes cambiar el emoji)
-
+        // Verificar si hay palabras clave guardadas
         if (Object.keys(multimediaStore).length === 0) {
             return conn.sendMessage(
                 m.chat,
@@ -868,36 +867,46 @@ case 'clavelista2': {
             );
         }
 
-        // Crear elementos de la lista de selección dinámicamente
-        const sections = [
-            {
-                title: "📂 Palabras Clave Guardadas",
-                rows: Object.keys(multimediaStore).map((key) => ({
-                    title: key,
-                    description: `Haz clic para obtener el multimedia asociado.`,
-                    rowId: `.g ${key}`, // Comando que se ejecutará al seleccionar
-                })),
-            },
-        ];
+        const keys = Object.keys(multimediaStore); // Palabras clave almacenadas
+        const pageSize = 10; // Máximo de palabras clave por sección
+        const totalPages = Math.ceil(keys.length / pageSize); // Calcular total de páginas
 
-        // Enviar la lista de selección con las palabras clave
+        // Generar secciones dinámicas para la lista
+        const listSections = [];
+        for (let i = 0; i < totalPages; i++) {
+            const start = i * pageSize;
+            const end = start + pageSize;
+            const pageKeys = keys.slice(start, end);
+
+            listSections.push({
+                title: `📄 Página ${i + 1} de ${totalPages}`,
+                rows: pageKeys.map((key) => ({
+                    title: key, // Palabra clave
+                    description: "Selecciona para recibir el archivo asociado.",
+                    rowId: `.g ${key}`, // Comando que ejecuta el envío del multimedia
+                })),
+            });
+        }
+
+        // Enviar lista de selección
         await conn.sendMessage(
             m.chat,
             {
                 text: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│✨ Selecciona una palabra clave para obtener el multimedia asociado:
+│✨ Selecciona una palabra clave para obtener el archivo asociado:
 │
-│📁 Total de archivos: ${Object.keys(multimediaStore).length}
+│📁 Total de archivos: ${keys.length}
+│📄 Páginas disponibles: ${totalPages}
 ╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
                 title: "📂 Lista de Selección",
-                buttonText: "Seleccionar", // Botón para abrir la lista
-                sections,
+                buttonText: "Seleccionar",
+                sections: listSections,
             },
             { quoted: m }
         );
 
-        console.log('✅ Lista de selección enviada correctamente.');
+        console.log("✅ Lista de selección enviada.");
     } catch (error) {
         console.error('❌ Error enviando lista de selección:', error);
         m.reply('❌ *Ocurrió un error al intentar enviar la lista de selección.*');
@@ -948,9 +957,6 @@ case 'g': {
     }
 }
 break;
-
-
-
         // Recuperar multimedia y enviarlo según el tipo
 
 // Comando para iniciar la lista de archivos multimedia
