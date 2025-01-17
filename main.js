@@ -866,40 +866,57 @@ case 'clavelista2': {
             );
         }
 
+        const pageSize = 8; // Número de palabras clave por página
+        const page = parseInt(args[0]) || 1; // Página actual (por defecto la primera)
         const keys = Object.keys(multimediaStore);
+        const totalPages = Math.ceil(keys.length / pageSize); // Total de páginas
 
-        // Crear la lista de selección con las palabras clave
-        const sections = [
-            {
-                title: "🔑 Palabras Clave Guardadas",
-                rows: keys.map((key) => ({
-                    title: key, // Nombre de la palabra clave
-                    rowId: `.g ${key}`, // Comando que se ejecutará al seleccionar
-                    description: `Presiona para recibir el archivo asociado.`, // Descripción opcional
-                })),
-            },
-        ];
+        if (page < 1 || page > totalPages) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: `⚠️ *Página inválida.* Elige un número entre 1 y ${totalPages}.`,
+                },
+                { quoted: m }
+            );
+        }
 
-        // Enviar el mensaje con la lista de selección
+        // Obtener elementos para la página actual
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const currentPageKeys = keys.slice(start, end);
+
+        // Crear botones dinámicos con las palabras clave y comando `.g`
+        const botones = currentPageKeys.map((key) => ({
+            buttonId: `.g ${key}`, // Botón que envía el comando `.g <palabra_clave>`
+            buttonText: { displayText: key }, // Texto del botón
+            type: 1,
+        }));
+
+        // Enviar el mensaje con botones
         await conn.sendMessage(
             m.chat,
             {
-                text: `╭───≪~*MULTIMEDIA GUARDADO*~*
-│✨ Selecciona una palabra clave para recibir el archivo asociado:
-│📁 Archivos disponibles: ${keys.length}
+                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
+                caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
+│✨ Selecciona una palabra clave para obtener el comando:
+│
+│📁 Archivos en esta página: ${currentPageKeys.length}
+│📄 Página: ${page} de ${totalPages}
+│
+│📝 Para cambiar de página, responde este mensaje con el número de la página.
 ╰─•┈┈••✦✦••┈┈•─╯`,
                 footer: "CORTANA 2.0",
-                title: "📂 Lista de Palabras Clave",
-                buttonText: "Seleccionar Palabra Clave", // Texto del botón que abre la lista
-                sections: sections,
+                buttons: botones,
+                viewOnce: true,
+                headerType: 4, // Encabezado con imagen
+                mentions: [m.sender],
             },
             { quoted: m }
         );
-
-        console.log('✅ Lista de selección enviada correctamente.');
     } catch (error) {
-        console.error('❌ Error enviando la lista de selección:', error);
-        m.reply('❌ *Ocurrió un error al intentar enviar la lista.*');
+        console.error('❌ Error enviando botones:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar los botones.*');
     }
 }
 break;
