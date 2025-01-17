@@ -906,6 +906,34 @@ case 'otro': {
     await conn.sendMessage(m.chat, nuevaEncuesta, { quoted: m });
 }
 break;
+//prueba
+case 'encuesta': {
+    if (!text) {
+        return m.reply('❌ *Debes escribir el encabezado de la encuesta junto al comando.*\nEjemplo: `encuesta ¿Te gusta este bot?`');
+    }
+
+    // Crear la encuesta
+    const encuesta = {
+        pollCreationMessage: {
+            name: text, // Encabezado de la encuesta
+            options: [
+                { optionName: 'Sí' }, // Primera opción
+                { optionName: 'No' }  // Segunda opción
+            ],
+            selectableOptionsCount: 1 // Solo se puede seleccionar una opción
+        }
+    };
+
+    try {
+        // Enviar la encuesta
+        await conn.sendMessage(m.chat, encuesta, { quoted: m });
+        m.reply('✅ *Encuesta enviada correctamente.*');
+    } catch (error) {
+        console.error('Error enviando la encuesta:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar la encuesta.*');
+    }
+}
+break;
 		
 //=£₡÷ serbot 2
 case 'serbot': case 'jadibot': case 'qr':
