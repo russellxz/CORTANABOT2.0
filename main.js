@@ -912,18 +912,22 @@ case 'encuesta': {
         return m.reply('❌ *Debes escribir el encabezado de la encuesta junto al comando.*\nEjemplo: `encuesta ¿Te gusta este bot?`');
     }
 
-    const buttonMessage = {
-        text: text,
-        footer: 'Elige una opción:',
-        buttons: [
-            { buttonId: 'opcion_si', buttonText: { displayText: 'Sí' }, type: 1 },
-            { buttonId: 'opcion_no', buttonText: { displayText: 'No' }, type: 1 }
-        ],
-        headerType: 1
-    };
-
     try {
-        await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
+        await conn.sendMessage(m.chat, {
+            text: text,
+            footer: 'Selecciona una opción:',
+            title: 'Encuesta',
+            buttonText: 'Responder',
+            sections: [
+                {
+                    title: 'Opciones',
+                    rows: [
+                        { title: 'Sí', rowId: 'opcion_si' },
+                        { title: 'No', rowId: 'opcion_no' }
+                    ]
+                }
+            ]
+        });
         console.log('✅ Encuesta enviada correctamente.');
     } catch (error) {
         console.error('Error enviando la encuesta:', error);
@@ -931,22 +935,6 @@ case 'encuesta': {
     }
 }
 break;
-		
-//=£₡÷ serbot 2
-case 'serbot': case 'jadibot': case 'qr':
-jadibot(conn, m, command, text, args, sender)
-break  
-case 'deljadibot': case 'stop': 
-killJadibot(conn, m, prefix, command, sender)
-break 
-case 'bots': case 'listbots':  
-const user = [...new Set([...global.listJadibot.filter((conn) => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED).map((conn) => conn)])];
-const message = user.map((v, index) => `[${index + 1}] ${v.user.name || '•'}\nwa.me/${v.user.jid.replace(/[^0-9]/g, '')}?text=${prefix}estado`).join('\n\n');
-const replyMessage = message.length === 0 ? '' : message;
-const totalUsers = user.length;
-const responseMessage = `*🚩 𝐀𝐪𝐮𝐢 𝐭𝐢𝐞𝐧𝐞𝐬 𝐥𝐚 𝐥𝐢𝐬𝐭𝐚𝐬 𝐝𝐞 𝐒𝐮𝐛𝐁𝐨𝐭𝐬 𝐀𝐜𝐭𝐢𝐯𝐨𝐬 🤖️*\n\n*• 𝐏𝐮𝐞𝐝𝐞𝐬 𝐜𝐨𝐧𝐭𝐚𝐜𝐭𝐚𝐫𝐥𝐨𝐬 𝐩𝐚𝐫𝐚 𝐩𝐞𝐝𝐢𝐫 𝐪𝐮𝐞 𝐬𝐞 𝐮𝐧𝐚𝐧 𝐚 𝐭𝐮 𝐠𝐫𝐮𝐩𝐨, 𝐬𝐞𝐫 𝐫𝐞𝐬𝐩𝐞𝐭𝐮𝐨𝐬𝐨!!*\n\n*⚠️ ${wm} 𝐒𝐞 𝐝𝐞𝐬𝐥𝐢𝐧𝐝𝐚 𝐝𝐞 𝐭𝐨𝐝𝐚𝐬 𝐫𝐞𝐬𝐩𝐨𝐧𝐬𝐚𝐛𝐢𝐥𝐢𝐝𝐚𝐝 𝐨 𝐬𝐮𝐜𝐞𝐬𝐨 𝐨𝐜𝐮𝐫𝐫𝐢𝐝𝐨 𝐜𝐨𝐧 𝐫𝐞𝐬𝐩𝐞𝐜𝐭𝐨 𝐚𝐥 𝐛𝐨𝐭 𝐨 𝐒𝐮𝐛𝐁𝐨𝐭𝐬*\n\n🟢 ${lenguaje.jadibot.text18} ${totalUsers || '0'}\n\n${replyMessage.trim()}`.trim();
-await conn.sendMessage(m.chat, {text: responseMessage, mentions: conn.parseMention(responseMessage)}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100});
-break
               
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
