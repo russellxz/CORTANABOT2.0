@@ -1134,24 +1134,83 @@ break;
 		
 //comando para ver mensaje de una vista
 case 'ver': {
-if (!m.isGroup && !isOwner && !isWhite) return;
-if (!m.quoted) return client.reply(m.from, functions.texted('bold', `${SetEmoji} Responde a un mensaje de una vista junto al mismo comando.`), m);
-if (m.quoted?.fakeObj?.message[m.quoted.type]?.viewOnce || m.quoted?.fakeObj?.message?.[m.quoted.type]?.message?.[Object.keys(m.quoted.fakeObj.message[m.quoted.type].message)[0]]?.viewOnce) {
-let q = m.quoted.fakeObj;
-q.message?.[m.quoted.type]?.viewOnce && delete q.message[m.quoted.type].viewOnce;
-q.message?.[m.quoted.type]?.message?.[Object.keys(q.message[m.quoted.type].message)[0]]?.viewOnce && delete q.message[m.quoted.type].message[Object.keys(q.message[m.quoted.type].message)[0]].viewOnce;
-var caption = m.quoted?.caption || q.message?.[m.quoted.type]?.message?.[Object.keys(q.message[m.quoted.type].message)[0]]?.caption;
-let contextInfo = { isForwarded: false };
-if (caption) {
-contextInfo.mentionedJid = functions.mention(caption);
-}
-return client.sendMessage(m.from, { forward: q, contextInfo: contextInfo }, { quoted: m });
-} else {
-return client.reply(m.from, functions.texted('bold', `${SetEmoji} Este no es un mensaje de una vista.`), m);
-}
+    try {
+        // Verificar si el usuario es owner o admin en un grupo
+        const isOwner = global.owner.some(([number]) => `${number}@s.whatsapp.net` === m.sender);
+        let isAdmin = false;
+
+        if (m.isGroup) {
+            const groupMetadata = await conn.groupMetadata(m.chat);
+            isAdmin = groupMetadata.participants.some(participant => participant.id === m.sender && participant.admin);
+        }
+
+        if (!isOwner && (!m.isGroup || !isAdmin)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *Acceso denegado:* Solo los administradores del grupo o el propietario pueden usar este comando." },
+                { quoted: m }
+            );
+        }
+
+        // Verifica si se responde a un mensaje
+        if (!m.quoted) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *Error:* Responde a un mensaje con el comando `.ver` para desactivar la vista única." },
+                { quoted: m }
+            );
+        }
+
+        // Comprueba si el mensaje tiene el atributo `viewOnce`
+        if (
+            m.quoted?.message?.viewOnceMessage?.message ||
+            m.quoted?.message?.[m.quoted.type]?.viewOnce ||
+            m.quoted?.message?.[m.quoted.type]?.message?.[Object.keys(m.quoted.message[m.quoted.type].message)[0]]?.viewOnce
+        ) {
+            let q = m.quoted;
+            // Elimina el atributo `viewOnce`
+            if (q.message?.viewOnceMessage?.message) {
+                delete q.message.viewOnceMessage.viewOnce;
+            }
+            if (q.message?.[m.quoted.type]?.viewOnce) {
+                delete q.message[m.quoted.type].viewOnce;
+            }
+            if (q.message?.[m.quoted.type]?.message?.[Object.keys(q.message[m.quoted.type].message)[0]]?.viewOnce) {
+                delete q.message[m.quoted.type].message[Object.keys(q.message[m.quoted.type].message)[0]].viewOnce;
+            }
+
+            // Obtén el contenido y el contexto del mensaje
+            let caption = m.quoted.caption || q.message?.[m.quoted.type]?.message?.[Object.keys(q.message[m.quoted.type].message)[0]]?.caption || "";
+            let contextInfo = { isForwarded: false };
+            if (caption) {
+                contextInfo.mentionedJid = conn.parseMention(caption);
+            }
+
+            // Reenvía el mensaje desactivando la vista única
+            await conn.sendMessage(m.chat, { forward: q.message, contextInfo }, { quoted: m });
+            return conn.sendMessage(
+                m.chat,
+                { text: "✅ *Mensaje reenviado con vista única desactivada.*" },
+                { quoted: m }
+            );
+        } else {
+            // Si el mensaje no es de vista única
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Aviso:* Este mensaje no tiene la característica de vista única." },
+                { quoted: m }
+            );
+        }
+    } catch (error) {
+        console.error('❌ Error procesando el comando "ver":', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error:* Ocurrió un problema al intentar procesar el mensaje. Intenta nuevamente." },
+            { quoted: m }
+        );
+    }
 }
 break;
-
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
