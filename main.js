@@ -1297,51 +1297,42 @@ case 'k': {
 break;
 // para agregar comando a stikerz
 case 'comando': {
-    if (!m.isGroup) {
-        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
-    }
-
-    if (!m.quoted || !m.quoted.stickerMessage) {
-        return m.reply('❌ *Responde a un sticker con el comando que deseas asociar.*');
+    if (!m.quoted?.stickerMessage) {
+        return m.reply('⚠️ Responde a un sticker con el comando que deseas asociar.');
     }
 
     const stickerId = m.quoted.stickerMessage.fileSha256.toString('base64');
-    const commandToAdd = args.join(' ');
+    const commandText = args.join(' ');
 
-    if (!commandToAdd) {
-        return m.reply('❌ *Debes especificar el comando a asociar al sticker.*');
+    if (!commandText) {
+        return m.reply('⚠️ Especifica el comando que deseas asociar al sticker.');
     }
 
-    global.stickerCommands[stickerId] = commandToAdd; // Asocia el comando al sticker
-    global.saveStickerCommands(); // Guarda los cambios en el archivo
+    global.stickerCommands[stickerId] = commandText;
+    saveStickerCommands();
 
-    m.reply(`✅ *El comando* "${commandToAdd}" *ha sido asociado con éxito al sticker.*`);
+    m.reply(`✅ Comando "${commandText}" agregado al sticker.`);
+    break;
 }
-break;
 
-		
-// para quitar
+// Comando para eliminar comandos de stickers
 case 'z': {
-    if (!m.isGroup) {
-        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
-    }
-
-    if (!m.quoted || !m.quoted.stickerMessage) {
-        return m.reply('❌ *Responde a un sticker para eliminar el comando asociado.*');
+    if (!m.quoted?.stickerMessage) {
+        return m.reply('⚠️ Responde a un sticker para eliminar el comando asociado.');
     }
 
     const stickerId = m.quoted.stickerMessage.fileSha256.toString('base64');
 
     if (!global.stickerCommands[stickerId]) {
-        return m.reply('⚠️ *No hay ningún comando asociado a este sticker.*');
+        return m.reply('⚠️ Este sticker no tiene un comando asociado.');
     }
 
-    delete global.stickerCommands[stickerId]; // Elimina el comando asociado
-    global.saveStickerCommands(); // Guarda los cambios en el archivo
+    delete global.stickerCommands[stickerId];
+    saveStickerCommands();
 
-    m.reply('✅ *Comando eliminado del sticker.*');
+    m.reply('✅ Comando eliminado del sticker.');
+    break;
 }
-break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
