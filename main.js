@@ -1137,71 +1137,86 @@ break;
 
 // Comando para mutear
 case 'mute': {
-    if (!m.isGroup) return m.reply("❌ Este comando solo puede usarse en grupos.");
-
-    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : null; // Referencia explícita a sock
-    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
-    const isAdmin = groupAdmins.includes(m.sender);
-    const isOwner = global.owner.some(([owner]) => `${owner}@s.whatsapp.net` === m.sender);
-
     if (!isAdmin && !isOwner) {
-        return m.reply("❌ Solo los administradores o el propietario pueden usar este comando.");
+        return conn.sendMessage(m.chat, {
+            text: "⚠️ *No tienes permiso para usar este comando.*"
+        }, { quoted: m });
     }
 
-    const mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : null);
-    if (!mentionedUser) {
-        return m.reply("❌ Por favor, menciona a un usuario o responde a su mensaje para mutearlo.");
+    // Verificar si se menciona un usuario
+    const targetUser = m.mentionedJid ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : null;
+    if (!targetUser) {
+        return conn.sendMessage(m.chat, {
+            text: "❌ *Debes mencionar a un usuario o responder a su mensaje para mutearlo.*"
+        }, { quoted: m });
     }
 
-    const duration = parseInt(args[1]) || 0;
+    // Tiempo opcional
+    const timeMatch = args.join(" ").match(/(\d+)\s?(minutos?|horas?|días?)/i);
+    let muteTime = null;
+    if (timeMatch) {
+        const duration = parseInt(timeMatch[1]);
+        if (timeMatch[2].startsWith("minuto")) {
+            muteTime = Date.now() + duration * 60 * 1000;
+        } else if (timeMatch[2].startsWith("hora")) {
+            muteTime = Date.now() + duration * 60 * 60 * 1000;
+        } else if (timeMatch[2].startsWith("día")) {
+            muteTime = Date.now() + duration * 24 * 60 * 60 * 1000;
+        }
+    }
 
+    // Agregar al usuario a la lista de muteados
     if (!mutedUsers[m.chat]) mutedUsers[m.chat] = {};
-    mutedUsers[m.chat][mentionedUser] = { messageCount: 0, timeout: null };
+    mutedUsers[m.chat][targetUser] = { mutedUntil: muteTime, messageCount: 0 };
 
-    if (duration > 0) {
-        mutedUsers[m.chat][mentionedUser].timeout = setTimeout(() => {
-            delete mutedUsers[m.chat][mentionedUser];
-            sock.sendMessage(m.chat, { // Uso explícito de sock
-                text: `✅ *${mentionedUser.split('@')[0]}* ha sido desmuteado automáticamente después de ${duration} minutos.`,
-                mentions: [mentionedUser],
-            });
-        }, duration * 60 * 1000);
-        m.reply(`✅ *${mentionedUser.split('@')[0]}* ha sido muteado por ${duration} minuto(s).`);
-    } else {
-        m.reply(`✅ *${mentionedUser.split('@')[0]}* ha sido muteado indefinidamente.`);
+    // Confirmación del mute
+    let muteMsg = `✅ *Usuario @${targetUser.split('@')[0]} ha sido muteado.*`;
+    if (muteTime) {
+        const durationString = timeMatch[0];
+        muteMsg += `\n📌 *Duración:* ${durationString}`;
     }
+    muteMsg += "\n\n⚠️ *El usuario no podrá enviar mensajes mientras esté muteado.*";
+
+    await conn.sendMessage(m.chat, {
+        text: muteMsg,
+        mentions: [targetUser]
+    }, { quoted: m });
+    break;
 }
-break;
 
 case 'unmute': {
-    if (!m.isGroup) return m.reply("❌ Este comando solo puede usarse en grupos.");
-
-    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : null; // Referencia explícita a sock
-    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
-    const isAdmin = groupAdmins.includes(m.sender);
-    const isOwner = global.owner.some(([owner]) => `${owner}@s.whatsapp.net` === m.sender);
-
     if (!isAdmin && !isOwner) {
-        return m.reply("❌ Solo los administradores o el propietario pueden usar este comando.");
+        return conn.sendMessage(m.chat, {
+            text: "⚠️ *No tienes permiso para usar este comando.*"
+        }, { quoted: m });
     }
 
-    const mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : null);
-    if (!mentionedUser) {
-        return m.reply("❌ Por favor, menciona a un usuario o responde a su mensaje para desmutearlo.");
+    // Verificar si se menciona un usuario
+    const targetUser = m.mentionedJid ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : null;
+    if (!targetUser) {
+        return conn.sendMessage(m.chat, {
+            text: "❌ *Debes mencionar a un usuario o responder a su mensaje para desmutearlo.*"
+        }, { quoted: m });
     }
 
-    if (!mutedUsers[m.chat] || !mutedUsers[m.chat][mentionedUser]) {
-        return m.reply(`❌ *${mentionedUser.split('@')[0]}* no está muteado.`);
+    // Verificar si el usuario está muteado
+    if (!mutedUsers[m.chat] || !mutedUsers[m.chat][targetUser]) {
+        return conn.sendMessage(m.chat, {
+            text: `❌ *El usuario @${targetUser.split('@')[0]} no está muteado.*`,
+            mentions: [targetUser]
+        }, { quoted: m });
     }
 
-    if (mutedUsers[m.chat][mentionedUser].timeout) {
-        clearTimeout(mutedUsers[m.chat][mentionedUser].timeout);
-    }
-    delete mutedUsers[m.chat][mentionedUser];
+    // Eliminar al usuario de la lista de muteados
+    delete mutedUsers[m.chat][targetUser];
 
-    m.reply(`✅ *${mentionedUser.split('@')[0]}* ha sido desmuteado.`);
+    // Confirmación del unmute
+    await conn.sendMessage(m.chat, {
+        text: `✅ *El usuario @${targetUser.split('@')[0]} ha sido desmuteado.*`,
+        mentions: [targetUser]
+    }, { quoted: m });
+    break;
 }
-break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
