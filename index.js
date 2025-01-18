@@ -328,13 +328,11 @@ sock.ev.on("messages.update", async (updates) => {
                     const msgContent = deletedMessage.message;
 
                     if (msgContent.conversation) {
-                        // Texto
                         await sock.sendMessage(remoteJid, {
                             text: msgContent.conversation,
                             quoted: update.key,
                         });
                     } else if (msgContent.imageMessage) {
-                        // Imagen
                         const buffer = await sock.downloadMediaMessage(msgContent.imageMessage);
                         await sock.sendMessage(remoteJid, {
                             image: buffer,
@@ -342,7 +340,6 @@ sock.ev.on("messages.update", async (updates) => {
                             quoted: update.key,
                         });
                     } else if (msgContent.videoMessage) {
-                        // Video
                         const buffer = await sock.downloadMediaMessage(msgContent.videoMessage);
                         await sock.sendMessage(remoteJid, {
                             video: buffer,
@@ -350,7 +347,6 @@ sock.ev.on("messages.update", async (updates) => {
                             quoted: update.key,
                         });
                     } else if (msgContent.stickerMessage) {
-                        // Sticker
                         const buffer = await sock.downloadMediaMessage(msgContent.stickerMessage);
                         await sock.sendMessage(remoteJid, {
                             sticker: buffer,
@@ -415,7 +411,6 @@ sock.ev.on("messages.update", async (updates) => {
         }
 
         // **Manejo de usuarios muteados**
-        for (const update of updates) {
         if (update.update.message && !update.key.fromMe) {
             const { remoteJid, participant } = update.key;
             const sender = participant || remoteJid;
@@ -455,6 +450,9 @@ sock.ev.on("messages.update", async (updates) => {
         }
     }
 });
+        
+
+        
 
         
 /*sock.ev.on('messages.update', async chatUpdate => {
