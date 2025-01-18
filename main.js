@@ -50,7 +50,6 @@ const {enable} = require('./plugins/enable.js')
 const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 //manejo de mensaje
 // Objeto para almacenar usuarios muteados
-const mutedUsers = {}; // Estructura: { chatId: { userId: { messageCount: 0, timeout: null } } }
 //ok ok
 let multimediaStore = {};
 if (fs.existsSync(path2)) {
