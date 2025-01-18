@@ -1297,42 +1297,79 @@ case 'k': {
 break;
 // para agregar comando a stikerz
 case 'comando': {
-    if (!m.quoted?.stickerMessage) {
-        return m.reply('⚠️ Responde a un sticker con el comando que deseas asociar.');
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
     }
 
-    const stickerId = m.quoted.stickerMessage.fileSha256.toString('base64');
-    const commandText = args.join(' ');
+    // Verificar si el usuario es administrador
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants
+        .filter(p => p.admin === 'admin' || p.admin === 'superadmin')
+        .map(a => a.id);
+    const isAdmin = groupAdmins.includes(m.sender);
 
-    if (!commandText) {
-        return m.reply('⚠️ Especifica el comando que deseas asociar al sticker.');
+    if (!isAdmin) {
+        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
     }
 
-    global.stickerCommands[stickerId] = commandText;
-    saveStickerCommands();
+    // Verificar que se esté respondiendo a un sticker
+    if (!m.quoted || m.quoted.mimetype !== 'image/webp') {
+        return m.reply('⚠️ *Responde a un sticker para agregarle un comando.*');
+    }
 
-    m.reply(`✅ Comando "${commandText}" agregado al sticker.`);
-    break;
+    const commandToAdd = args[0];
+    if (!commandToAdd || !['.abrir', '.cerrar', '.k'].includes(commandToAdd)) {
+        return m.reply('⚠️ *Comando inválido. Usa uno de los siguientes: .abrir, .cerrar, .k.*');
+    }
+
+    try {
+        if (!global.stickerCommands) global.stickerCommands = {};
+        const stickerId = m.quoted.fileSha256.toString('base64'); // Obtener ID único del sticker
+        global.stickerCommands[stickerId] = commandToAdd; // Asociar el comando al ID del sticker
+        m.reply(`✅ *Comando "${commandToAdd}" agregado al sticker.*`);
+    } catch (error) {
+        console.error('Error al agregar el comando al sticker:', error);
+        m.reply('❌ *Hubo un error al intentar agregar el comando al sticker.*');
+    }
 }
+break;
 
-// Comando para eliminar comandos de stickers
 case 'z': {
-    if (!m.quoted?.stickerMessage) {
-        return m.reply('⚠️ Responde a un sticker para eliminar el comando asociado.');
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
     }
 
-    const stickerId = m.quoted.stickerMessage.fileSha256.toString('base64');
+    // Verificar si el usuario es administrador
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants
+        .filter(p => p.admin === 'admin' || p.admin === 'superadmin')
+        .map(a => a.id);
+    const isAdmin = groupAdmins.includes(m.sender);
 
-    if (!global.stickerCommands[stickerId]) {
-        return m.reply('⚠️ Este sticker no tiene un comando asociado.');
+    if (!isAdmin) {
+        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
     }
 
-    delete global.stickerCommands[stickerId];
-    saveStickerCommands();
+    // Verificar que se esté respondiendo a un sticker
+    if (!m.quoted || m.quoted.mimetype !== 'image/webp') {
+        return m.reply('⚠️ *Responde a un sticker para eliminar el comando asociado.*');
+    }
 
-    m.reply('✅ Comando eliminado del sticker.');
-    break;
+    try {
+        const stickerId = m.quoted.fileSha256.toString('base64'); // Obtener ID único del sticker
+
+        if (!global.stickerCommands || !global.stickerCommands[stickerId]) {
+            return m.reply('⚠️ *Este sticker no tiene un comando asociado.*');
+        }
+
+        delete global.stickerCommands[stickerId]; // Eliminar el comando asociado
+        m.reply('✅ *Comando eliminado del sticker.*');
+    } catch (error) {
+        console.error('Error al eliminar el comando del sticker:', error);
+        m.reply('❌ *Hubo un error al intentar eliminar el comando del sticker.*');
+    }
 }
+break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
