@@ -1138,8 +1138,10 @@ case "mute": {
     try {
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Verificar si el usuario que ejecuta el comando es administrador o el creador
-        if (!m.isAdmin && !m.isCreator) {
+        // Verificar si el usuario que ejecuta el comando es administrador
+        const groupMetadata = await sock.groupMetadata(m.chat);
+        const admins = groupMetadata.participants.filter((p) => p.admin === "admin" || p.admin === "superadmin").map((p) => p.id);
+        if (!admins.includes(m.sender)) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
@@ -1189,8 +1191,10 @@ case "unmute": {
     try {
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Verificar si el usuario que ejecuta el comando es administrador o el creador
-        if (!m.isAdmin && !m.isCreator) {
+        // Verificar si el usuario que ejecuta el comando es administrador
+        const groupMetadata = await sock.groupMetadata(m.chat);
+        const admins = groupMetadata.participants.filter((p) => p.admin === "admin" || p.admin === "superadmin").map((p) => p.id);
+        if (!admins.includes(m.sender)) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
