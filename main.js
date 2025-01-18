@@ -1134,18 +1134,16 @@ case 'ban_eliminar': {
 break;
 		
 //comando para mutear
-
 case "mute": {
     try {
-        // Verificar si se ejecuta en un grupo
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Verificar si el usuario que ejecuta el comando es administrador
+        // Verificar si el usuario que ejecuta el comando es administrador o el creador
         if (!m.isAdmin && !m.isCreator) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
-        // Obtener usuario a mutear
+        // Obtener el usuario a mutear (mencionado o citado)
         const mentionedUser = m.mentionedJid?.[0] || m.quoted?.sender;
         if (!mentionedUser) return m.reply("⚠️ *Debes mencionar o responder al usuario que quieres mutear.*");
 
@@ -1168,7 +1166,7 @@ case "mute": {
             }
         }
 
-        // Agregar usuario a la lista de muteados
+        // Agregar el usuario a la lista de muteados
         if (!mutedUsers[m.chat]) mutedUsers[m.chat] = {};
         mutedUsers[m.chat][mentionedUser] = {
             until: muteTime ? Date.now() + muteTime : null,
@@ -1189,26 +1187,26 @@ break;
 
 case "unmute": {
     try {
-        // Verificar si se ejecuta en un grupo
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Verificar si el usuario que ejecuta el comando es administrador
+        // Verificar si el usuario que ejecuta el comando es administrador o el creador
         if (!m.isAdmin && !m.isCreator) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
-        // Obtener usuario a desmutear
+        // Obtener el usuario a desmutear
         const mentionedUser = m.mentionedJid?.[0] || m.quoted?.sender;
         if (!mentionedUser) return m.reply("⚠️ *Debes mencionar o responder al usuario que quieres desmutear.*");
 
         // Verificar si el usuario está muteado
-        if (!mutedUsers[m.chat] || !mutedUsers[m.chat][mentionedUser]) {
-            return m.reply("⚠️ *El usuario no está muteado.*");
+        if (!mutedUsers[m.chat]?.[mentionedUser]) {
+            return m.reply(`⚠️ *El usuario @${mentionedUser.split("@")[0]} no está muteado.*`, { mentions: [mentionedUser] });
         }
 
-        // Eliminar usuario de la lista de muteados
+        // Quitar el usuario de la lista de muteados
         delete mutedUsers[m.chat][mentionedUser];
-        m.reply(`🔊 *El usuario @${mentionedUser.split("@")[0]} ha sido desmuteado.*`, { mentions: [mentionedUser] });
+
+        m.reply(`🔓 *El usuario @${mentionedUser.split("@")[0]} ha sido desmuteado.*`, { mentions: [mentionedUser] });
     } catch (error) {
         console.error("❌ Error al ejecutar el comando unmute:", error);
         m.reply("❌ *Ocurrió un error al intentar desmutear al usuario.*");
