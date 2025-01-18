@@ -692,55 +692,79 @@ case "totalmensaje": {
 break; 
 		
 case 'guar': {
-    if (!m.quoted || !m.quoted.mimetype) {
+    try {
+        if (!m.quoted || !m.quoted.mimetype) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) con una palabra clave para guardarlo. 📂",
+                },
+                { quoted: m }
+            );
+        }
+
+        const saveKey = args.join(' '); // Palabra clave para guardar
+        if (!saveKey) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "⚠️ *Aviso:* Escribe una palabra clave para guardar este multimedia. 📝",
+                },
+                { quoted: m }
+            );
+        }
+
+        // Descargar el multimedia
+        const mediaType = m.quoted.mimetype;
+        const mediaExt = mediaType.split('/')[1]; // Ejemplo: "jpg", "mp4", etc.
+        const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
+
+        // Convertir el stream en un buffer
+        let mediaBuffer = Buffer.alloc(0);
+        for await (const chunk of mediaStream) {
+            mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+        }
+
+        // Verificar si la palabra clave ya existe
+        if (multimediaStore[saveKey]) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: `⚠️ *Aviso:* Ya existe un archivo guardado con la palabra clave: *"${saveKey}"*. Usa otra palabra clave.`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // Guardar multimedia con la palabra clave, usuario que lo guardó, y un indicador si es del owner
+        multimediaStore[saveKey] = {
+            buffer: mediaBuffer.toString('base64'), // Convertir a base64
+            mimetype: mediaType,
+            extension: mediaExt,
+            addedBy: m.sender, // Usuario que lo guardó
+            isOwner: m.sender === global.numOwner, // Indicar si lo guardó el owner
+        };
+
+        // Guardar cambios en el archivo
+        fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2));
+
         return conn.sendMessage(
             m.chat,
             {
-                text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) con una palabra clave para guardarlo. 📂"
+                text: `✅ *Listo:* El multimedia se ha guardado con la palabra clave: *"${saveKey}"*. 🎉`,
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error guardando multimedia:', error);
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Ocurrió un error al intentar guardar el multimedia.*",
             },
             { quoted: m }
         );
     }
-
-    const saveKey = args.join(' '); // Palabra clave para guardar
-    if (!saveKey) {
-        return conn.sendMessage(
-            m.chat,
-            {
-                text: "⚠️ *Aviso:* Escribe una palabra clave para guardar este multimedia. 📝"
-            },
-            { quoted: m }
-        );
-    }
-
-    // Descargar el multimedia
-    const mediaType = m.quoted.mimetype;
-    const mediaExt = mediaType.split('/')[1]; // Ejemplo: "jpg", "mp4", etc.
-    const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
-
-    // Convertir el stream en un buffer
-    let mediaBuffer = Buffer.alloc(0);
-    for await (const chunk of mediaStream) {
-        mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
-    }
-
-    // Guardar multimedia con la palabra clave y el usuario que lo guardó
-    multimediaStore[saveKey] = {
-        buffer: mediaBuffer.toString('base64'), // Convertir a base64
-        mimetype: mediaType,
-        extension: mediaExt,
-        savedBy: m.sender // Almacenar el usuario que guarda el archivo
-    };
-
-    fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Guardar en archivo
-
-    return conn.sendMessage(
-        m.chat,
-        {
-            text: `✅ *Listo:* El multimedia se ha guardado con la palabra clave: *"${saveKey}"*. 🎉`
-        },
-        { quoted: m }
-    );
 }
 break;
 
