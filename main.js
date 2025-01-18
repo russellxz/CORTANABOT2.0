@@ -1132,7 +1132,25 @@ case 'ban_eliminar': {
 }
 break;
 		
-//prueba
+//comando para ver mensaje de una vista
+case 'ver': {
+if (!m.isGroup && !isOwner && !isWhite) return;
+if (!m.quoted) return client.reply(m.from, functions.texted('bold', `${SetEmoji} Responde a un mensaje de una vista junto al mismo comando.`), m);
+if (m.quoted?.fakeObj?.message[m.quoted.type]?.viewOnce || m.quoted?.fakeObj?.message?.[m.quoted.type]?.message?.[Object.keys(m.quoted.fakeObj.message[m.quoted.type].message)[0]]?.viewOnce) {
+let q = m.quoted.fakeObj;
+q.message?.[m.quoted.type]?.viewOnce && delete q.message[m.quoted.type].viewOnce;
+q.message?.[m.quoted.type]?.message?.[Object.keys(q.message[m.quoted.type].message)[0]]?.viewOnce && delete q.message[m.quoted.type].message[Object.keys(q.message[m.quoted.type].message)[0]].viewOnce;
+var caption = m.quoted?.caption || q.message?.[m.quoted.type]?.message?.[Object.keys(q.message[m.quoted.type].message)[0]]?.caption;
+let contextInfo = { isForwarded: false };
+if (caption) {
+contextInfo.mentionedJid = functions.mention(caption);
+}
+return client.sendMessage(m.from, { forward: q, contextInfo: contextInfo }, { quoted: m });
+} else {
+return client.reply(m.from, functions.texted('bold', `${SetEmoji} Este no es un mensaje de una vista.`), m);
+}
+}
+break;
 
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
