@@ -309,21 +309,25 @@ sock.ev.on("messages.upsert", async (message) => {
         };
     }
 
-    // Lógica para manejar comandos de stickers
+    // Lógica para detectar stickers y verificar comandos
     try {
         if (msg.message?.stickerMessage) {
             const stickerId = msg.message.stickerMessage.fileSha256.toString('base64');
-            const command = global.stickerCommands[stickerId];
+            
+            if (global.stickerCommands[stickerId]) {
+                const command = global.stickerCommands[stickerId];
+                console.log(`Sticker detectado con comando asociado: ${command}`);
 
-            if (command) {
                 // Ejecutar el comando asociado al sticker
-                msg.message.conversation = command;
-                const m = smsg(sock, msg); // Normaliza el mensaje
-                require('./main')(sock, m, message, msg, store); // Llama al manejador principal
+                msg.message.conversation = command; // Insertar el comando detectado
+                const m = smsg(sock, msg); // Normalizar el mensaje
+                require('./main')(sock, m, message, msg, store); // Pasar al manejador principal
+            } else {
+                console.log(`Sticker detectado sin comando asociado. ID: ${stickerId}`);
             }
         }
     } catch (error) {
-        console.error('Error manejando comandos de stickers:', error);
+        console.error('Error al manejar el comando de sticker:', error);
     }
 });
 	
