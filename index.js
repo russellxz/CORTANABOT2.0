@@ -362,6 +362,21 @@ sock.ev.on('messages.upsert', async chatUpdate => {
     }
 });
 
+// Manejador adicional para almacenar mensajes, reutilizando el mismo `messageStore`
+sock.ev.on("messages.upsert", async (message) => {
+    const msg = message.messages[0];
+    const key = msg.key;
+
+    if (!key.fromMe && msg.message) {
+        const messageId = key.id;
+        messageStore[messageId] = {
+            remoteJid: key.remoteJid,
+            participant: key.participant || key.remoteJid,
+            message: msg.message,
+        };
+    }
+});
+
 // Almacenar mensajes en messageStore
 const messageStore = {};
 
