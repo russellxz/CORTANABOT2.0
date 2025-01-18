@@ -317,7 +317,7 @@ sock.ev.on("messages.update", async (updates) => {
                 const sender = participant || remoteJid;
                 if (!sender) return;
 
-                let chat = global.db.data.chats[m.chat] || {};
+                let chat = global.db.data.chats[remoteJid] || {};
                 if (!chat?.delete) return;
 
                 const antideleteMessage = `*Anti-Delete* 🚫\nUsuario @${sender.split`@`[0]} eliminó un mensaje.`;
@@ -369,31 +369,29 @@ sock.ev.on("messages.update", async (updates) => {
             }
         }
 
-        // **NUEVA FUNCIÓN: Manejo de Encuestas**
+        // **Manejo de Encuestas**
         if (update.update.pollUpdates && !update.key.fromMe) {
             console.log("Encuesta detectada: pollUpdates");
 
             try {
-                const { selectedOptionId } = update.update.pollUpdates[0]; // Opción seleccionada
+                const { selectedOptionId } = update.update.pollUpdates[0];
                 const archivo = multimediaStore[selectedOptionId];
 
                 if (!archivo) {
                     return sock.sendMessage(update.key.remoteJid, { text: '❌ *Archivo no encontrado.*' });
                 }
 
-                // Evitar respuestas duplicadas
                 if (archivo.enviado) {
                     return sock.sendMessage(update.key.remoteJid, { text: '⚠️ *El archivo ya fue enviado anteriormente.*' });
                 }
 
                 const { type, buffer } = archivo;
 
-                // Validar el buffer
                 if (!buffer || buffer.length === 0) {
                     return sock.sendMessage(update.key.remoteJid, { text: '❌ *El archivo está vacío o no es válido.*' });
                 }
 
-                archivo.enviado = true; // Marcar archivo como enviado
+                archivo.enviado = true;
                 switch (type) {
                     case 'image':
                         await sock.sendMessage(update.key.remoteJid, { image: buffer }, { quoted: update });
@@ -416,45 +414,43 @@ sock.ev.on("messages.update", async (updates) => {
             }
         }
 
-        // **NUEVA FUNCIÓN: Manejo de usuarios muteados**
+        // **Manejo de usuarios muteados**
         if (update.update.message && !update.key.fromMe) {
-    const { remoteJid, participant } = update.key;
-    const sender = participant || remoteJid;
+            const { remoteJid, participant } = update.key;
+            const sender = participant || remoteJid;
 
-    // Verificar si el usuario está muteado
-    if (mutedUsers[remoteJid]?.[sender]) {
-        const userMuteInfo = mutedUsers[remoteJid][sender];
+            if (mutedUsers[remoteJid]?.[sender]) {
+                const userMuteInfo = mutedUsers[remoteJid][sender];
 
-        try {
-            // Eliminar el mensaje enviado por el usuario muteado
-            await sock.sendMessage(remoteJid, {
-                delete: {
-                    remoteJid,
-                    id: update.update.message.key.id,
-                    fromMe: false,
-                },
-            });
+                try {
+                    await sock.sendMessage(remoteJid, {
+                        delete: {
+                            remoteJid,
+                            id: update.update.message.key.id,
+                            fromMe: false,
+                        },
+                    });
 
-            // Incrementar contador de mensajes enviados mientras está muteado
-            userMuteInfo.messageCount++;
+                    userMuteInfo.messageCount++;
 
-            // Eliminar del grupo si excede los 10 mensajes
-            if (userMuteInfo.messageCount > 10) {
-                await sock.groupParticipantsUpdate(remoteJid, [sender], "remove");
-                delete mutedUsers[remoteJid][sender];
-            } else {
-                // Enviar advertencia si está muteado
-                await sock.sendMessage(remoteJid, {
-                    text: `⚠️ *Estás muteado.* No puedes enviar mensajes. Si envías más de 10 mensajes, serás eliminado del grupo. (Mensaje ${userMuteInfo.messageCount}/10)`,
-                    mentions: [sender],
-                });
+                    if (userMuteInfo.messageCount > 10) {
+                        await sock.groupParticipantsUpdate(remoteJid, [sender], "remove");
+                        delete mutedUsers[remoteJid][sender];
+                    } else {
+                        await sock.sendMessage(remoteJid, {
+                            text: `⚠️ *Estás muteado.* No puedes enviar mensajes. Si envías más de 10 mensajes, serás eliminado del grupo. (Mensaje ${userMuteInfo.messageCount}/10)`,
+                            mentions: [sender],
+                        });
+                    }
+                } catch (error) {
+                    console.error("❌ Error al manejar mensaje de usuario muteado:", error);
+                }
             }
-        } catch (error) {
-            console.error("❌ Error al manejar mensaje de usuario muteado:", error);
         }
     }
-}
+});
 
+        
 /*sock.ev.on('messages.update', async chatUpdate => {
 for(const { key, update } of chatUpdate) {
 if (update.pollUpdates && key.fromMe) {
