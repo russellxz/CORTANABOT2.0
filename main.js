@@ -1134,93 +1134,65 @@ case 'ban_eliminar': {
 break;
 		
 //comando para mutear
+// Comando `.mute`
+case 'mute': {
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
+    }
 
-case "mute": {
-    try {
-        if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
+    const isAdmin = groupAdmins.includes(m.sender);
 
-        // Verificar si el remitente es administrador
-        const isAdmin = m.groupMetadata.participants.some(
-            (p) => p.id === m.sender && (p.admin === "admin" || p.admin === "superadmin")
-        );
-        if (!isAdmin) {
-            return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
-        }
+    if (!isAdmin) {
+        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
+    }
 
-        // Obtener el usuario a mutear
-        const mentionedUser = m.mentionedJid?.[0] || m.quoted?.sender;
-        if (!mentionedUser) return m.reply("⚠️ *Debes mencionar o responder al usuario que quieres mutear.*");
+    if (!m.quoted && !args[0]) {
+        return m.reply('❌ *Debes responder a un mensaje o mencionar al usuario que deseas mutear.*');
+    }
 
-        // Calcular el tiempo de mute
-        const argsTime = args[1];
-        let muteTime = null;
+    const target = m.quoted ? m.quoted.sender : args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
 
-        if (argsTime) {
-            const timeUnit = argsTime.match(/\d+/)?.[0];
-            const unit = argsTime.match(/[a-zA-Z]+/)?.[0]?.toLowerCase();
-
-            if (!timeUnit || !unit) return m.reply("⚠️ *Formato de tiempo inválido. Ejemplo: .mute 10m, .mute 1h.*");
-
-            switch (unit) {
-                case "s": muteTime = parseInt(timeUnit) * 1000; break;
-                case "m": muteTime = parseInt(timeUnit) * 60 * 1000; break;
-                case "h": muteTime = parseInt(timeUnit) * 60 * 60 * 1000; break;
-                case "d": muteTime = parseInt(timeUnit) * 24 * 60 * 60 * 1000; break;
-                default: return m.reply("⚠️ *Unidad de tiempo inválida. Usa s (segundos), m (minutos), h (horas) o d (días).*");
-            }
-        }
-
-        // Agregar el usuario a la lista de muteados
+    if (!groupAdmins.includes(target)) {
         if (!mutedUsers[m.chat]) mutedUsers[m.chat] = {};
-        mutedUsers[m.chat][mentionedUser] = {
-            until: muteTime ? Date.now() + muteTime : null,
-            messageCount: 0,
-        };
+        mutedUsers[m.chat][target] = { messageCount: 0 };
 
-        const muteMessage = muteTime
-            ? `🔇 *El usuario @${mentionedUser.split("@")[0]} ha sido muteado por ${argsTime}.*`
-            : `🔇 *El usuario @${mentionedUser.split("@")[0]} ha sido muteado indefinidamente.*`;
-
-        m.reply(muteMessage, { mentions: [mentionedUser] });
-    } catch (error) {
-        console.error("❌ Error al ejecutar el comando mute:", error);
-        m.reply("❌ *Ocurrió un error al intentar mutear al usuario.*");
+        m.reply(`✅ *El usuario @${target.split('@')[0]} ha sido muteado.*`, null, { mentions: [target] });
+    } else {
+        m.reply('❌ *No puedes mutear a otro administrador.*');
     }
 }
 break;
 
-case "unmute": {
-    try {
-        if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
+// Comando `.unmute`
+case 'unmute': {
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
+    }
 
-        // Verificar si el remitente es administrador
-        const isAdmin = m.groupMetadata.participants.some(
-            (p) => p.id === m.sender && (p.admin === "admin" || p.admin === "superadmin")
-        );
-        if (!isAdmin) {
-            return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
-        }
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
+    const isAdmin = groupAdmins.includes(m.sender);
 
-        // Obtener el usuario a desmutear
-        const mentionedUser = m.mentionedJid?.[0] || m.quoted?.sender;
-        if (!mentionedUser) return m.reply("⚠️ *Debes mencionar o responder al usuario que quieres desmutear.*");
+    if (!isAdmin) {
+        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
+    }
 
-        // Verificar si el usuario está muteado
-        if (!mutedUsers[m.chat]?.[mentionedUser]) {
-            return m.reply(`⚠️ *El usuario @${mentionedUser.split("@")[0]} no está muteado.*`, { mentions: [mentionedUser] });
-        }
+    if (!m.quoted && !args[0]) {
+        return m.reply('❌ *Debes responder a un mensaje o mencionar al usuario que deseas desmutear.*');
+    }
 
-        // Quitar el usuario de la lista de muteados
-        delete mutedUsers[m.chat][mentionedUser];
+    const target = m.quoted ? m.quoted.sender : args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
 
-        m.reply(`🔓 *El usuario @${mentionedUser.split("@")[0]} ha sido desmuteado.*`, { mentions: [mentionedUser] });
-    } catch (error) {
-        console.error("❌ Error al ejecutar el comando unmute:", error);
-        m.reply("❌ *Ocurrió un error al intentar desmutear al usuario.*");
+    if (mutedUsers[m.chat]?.[target]) {
+        delete mutedUsers[m.chat][target];
+        m.reply(`✅ *El usuario @${target.split('@')[0]} ha sido desmuteado.*`, null, { mentions: [target] });
+    } else {
+        m.reply('❌ *El usuario no está muteado.*');
     }
 }
 break;
-		
 // Comando para mutear
 case 'abrir': {
     if (!m.isGroup) {
