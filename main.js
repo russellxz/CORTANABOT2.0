@@ -51,7 +51,7 @@ const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 //manejo de mensaje
 // Objeto para almacenar usuarios muteados
 const mutedUsers = {}; // Estructura: { chatId: { userId: { messageCount: 0, timeout: null } } }
-//ok
+//ok ok
 let multimediaStore = {};
 if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
