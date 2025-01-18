@@ -1134,9 +1134,74 @@ case 'ban_eliminar': {
 break;
 		
 //comando para mute
+case "mute": {
+    try {
+        // Verificar si es admin
+        if (!isAdmin && !m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado por administradores en grupos.*");
 
+        const mentionedUser = m.mentionedJid?.[0] || m.quoted?.sender;
+        if (!mentionedUser) return m.reply("⚠️ *Debes mencionar o responder al usuario que quieres mutear.*");
+
+        const argsTime = args[1]; // Argumento de tiempo
+        let muteTime = null; // Tiempo de mute en milisegundos
+
+        if (argsTime) {
+            const timeUnit = argsTime.match(/\d+/)?.[0];
+            const unit = argsTime.match(/[a-zA-Z]+/)?.[0]?.toLowerCase();
+
+            if (!timeUnit || !unit) return m.reply("⚠️ *Formato de tiempo inválido. Ejemplo: .mute 10m, .mute 1h.*");
+
+            switch (unit) {
+                case "s": muteTime = parseInt(timeUnit) * 1000; break;
+                case "m": muteTime = parseInt(timeUnit) * 60 * 1000; break;
+                case "h": muteTime = parseInt(timeUnit) * 60 * 60 * 1000; break;
+                case "d": muteTime = parseInt(timeUnit) * 24 * 60 * 60 * 1000; break;
+                default: return m.reply("⚠️ *Unidad de tiempo inválida. Usa s (segundos), m (minutos), h (horas) o d (días).*");
+            }
+        }
+
+        if (!mutedUsers[m.chat]) mutedUsers[m.chat] = {};
+        mutedUsers[m.chat][mentionedUser] = {
+            until: muteTime ? Date.now() + muteTime : null,
+            messageCount: 0,
+        };
+
+        const muteMessage = muteTime
+            ? `🔇 *El usuario @${mentionedUser.split("@")[0]} ha sido muteado por ${argsTime}.*`
+            : `🔇 *El usuario @${mentionedUser.split("@")[0]} ha sido muteado indefinidamente.*`;
+
+        await sock.sendMessage(m.chat, { text: muteMessage, mentions: [mentionedUser] });
+    } catch (error) {
+        console.error("❌ Error al ejecutar el comando mute:", error);
+        m.reply("❌ *Ocurrió un error al intentar mutear al usuario.*");
+    }
+}
+break;
+		
 // Comando para mutear
+case "unmute": {
+    try {
+        // Verificar si es admin
+        if (!isAdmin && !m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado por administradores en grupos.*");
 
+        const mentionedUser = m.mentionedJid?.[0] || m.quoted?.sender;
+        if (!mentionedUser) return m.reply("⚠️ *Debes mencionar o responder al usuario que quieres desmutear.*");
+
+        if (!mutedUsers[m.chat] || !mutedUsers[m.chat][mentionedUser]) {
+            return m.reply("⚠️ *El usuario no está muteado.*");
+        }
+
+        delete mutedUsers[m.chat][mentionedUser];
+        await sock.sendMessage(m.chat, {
+            text: `🔊 *El usuario @${mentionedUser.split("@")[0]} ha sido desmuteado.*`,
+            mentions: [mentionedUser],
+        });
+    } catch (error) {
+        console.error("❌ Error al ejecutar el comando unmute:", error);
+        m.reply("❌ *Ocurrió un error al intentar desmutear al usuario.*");
+    }
+}
+break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
