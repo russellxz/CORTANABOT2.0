@@ -844,7 +844,7 @@ case 'g':
             return conn.sendMessage(
                 m.chat,
                 {
-                    text: "🚫 *No tienes permisos para eliminar este archivo. solo el usuario que lo agrego puede👀*",
+                    text: "🚫 *No tienes permisos para eliminar este archivo. solo el usuario que lo agrego puede o un admins del grupo👀*",
                 },
                 { quoted: m }
             );
