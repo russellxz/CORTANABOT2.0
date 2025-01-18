@@ -415,14 +415,17 @@ sock.ev.on("messages.update", async (updates) => {
         }
 
         // **Manejo de usuarios muteados**
+        for (const update of updates) {
         if (update.update.message && !update.key.fromMe) {
             const { remoteJid, participant } = update.key;
             const sender = participant || remoteJid;
 
+            // Verificar si el usuario está muteado
             if (mutedUsers[remoteJid]?.[sender]) {
                 const userMuteInfo = mutedUsers[remoteJid][sender];
 
                 try {
+                    // Eliminar el mensaje enviado por el usuario muteado
                     await sock.sendMessage(remoteJid, {
                         delete: {
                             remoteJid,
@@ -431,12 +434,15 @@ sock.ev.on("messages.update", async (updates) => {
                         },
                     });
 
+                    // Incrementar contador de mensajes enviados mientras está muteado
                     userMuteInfo.messageCount++;
 
+                    // Eliminar del grupo si excede los 10 mensajes
                     if (userMuteInfo.messageCount > 10) {
                         await sock.groupParticipantsUpdate(remoteJid, [sender], "remove");
                         delete mutedUsers[remoteJid][sender];
                     } else {
+                        // Enviar advertencia si está muteado
                         await sock.sendMessage(remoteJid, {
                             text: `⚠️ *Estás muteado.* No puedes enviar mensajes. Si envías más de 10 mensajes, serás eliminado del grupo. (Mensaje ${userMuteInfo.messageCount}/10)`,
                             mentions: [sender],
