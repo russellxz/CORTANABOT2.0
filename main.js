@@ -56,6 +56,13 @@ if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
 //modo owner
+const path = './cajafuertem.json';
+
+// Verificar y cargar el archivo de datos
+if (!fs.existsSync(path)) {
+    fs.writeFileSync(path, JSON.stringify({}));
+}
+const cajasFuertes = JSON.parse(fs.readFileSync(path));
 // Cargar el estado de modoOwner
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
@@ -1169,7 +1176,28 @@ case '🚮': {
 }
 break;
 // para agregar comando a stikerz
+// Comando para crear caja fuerte
+case 'cajafuerte': {
+    if (!cajasFuertes[m.sender]) {
+        // Enviar mensaje solicitando contraseña
+        const promptMessage = await conn.sendMessage(
+            m.chat,
+            { text: '🔒 No tienes una caja fuerte creada. Responde a este mensaje con una contraseña para crearla.' },
+            { quoted: m }
+        );
 
+        // Guardar estado temporal para identificar la respuesta del usuario
+        global.tempCaja = global.tempCaja || {};
+        global.tempCaja[m.sender] = promptMessage.key.id; // Asociar mensaje de prompt con el usuario
+    } else {
+        conn.sendMessage(
+            m.chat,
+            { text: '✅ Ya tienes una caja fuerte creada. Usa tus comandos para gestionarla.' },
+            { quoted: m }
+        );
+    }
+    break;
+}
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
