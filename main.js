@@ -1134,65 +1134,72 @@ case 'ban_eliminar': {
 break;
 		
 //comando para mutear
-// Comando `.mute`
+
 case 'mute': {
-    if (!m.isGroup) {
-        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
-    }
+    try {
+        if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede usarse en grupos.*");
+        const groupMetadata = await conn.groupMetadata(m.chat);
+        const participants = groupMetadata.participants;
+        const admins = participants.filter((p) => p.admin === "admin" || p.admin === "superadmin").map((p) => p.id);
 
-    const groupMetadata = await conn.groupMetadata(m.chat);
-    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
-    const isAdmin = groupAdmins.includes(m.sender);
+        if (!admins.includes(m.sender)) return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
 
-    if (!isAdmin) {
-        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
-    }
+        const target = m.quoted ? m.quoted.sender : args[0]?.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
 
-    if (!m.quoted && !args[0]) {
-        return m.reply('❌ *Debes responder a un mensaje o mencionar al usuario que deseas mutear.*');
-    }
+        if (!target) return m.reply("⚠️ *Debes mencionar o responder al mensaje del usuario que deseas mutear.*");
 
-    const target = m.quoted ? m.quoted.sender : args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
+        // Verificar si ya está muteado
+        if (mutedUsers[m.chat]?.[target]) {
+            return m.reply(`⚠️ *El usuario ya está muteado.*`);
+        }
 
-    if (!groupAdmins.includes(target)) {
+        // Crear la lista de usuarios muteados si no existe
         if (!mutedUsers[m.chat]) mutedUsers[m.chat] = {};
-        mutedUsers[m.chat][target] = { messageCount: 0 };
 
-        m.reply(`✅ *El usuario @${target.split('@')[0]} ha sido muteado.*`, null, { mentions: [target] });
-    } else {
-        m.reply('❌ *No puedes mutear a otro administrador.*');
+        // Agregar al usuario a la lista de muteados
+        mutedUsers[m.chat][target] = {
+            messageCount: 0,
+            mutedBy: m.sender,
+        };
+
+        m.reply(`✅ *Usuario @${target.split("@")[0]} ha sido muteado.*`, null, { mentions: [target] });
+
+    } catch (error) {
+        console.error("❌ Error al ejecutar el comando mute:", error);
+        m.reply("❌ *Ocurrió un error al intentar mutear al usuario.*");
     }
 }
 break;
 
-// Comando `.unmute`
 case 'unmute': {
-    if (!m.isGroup) {
-        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
-    }
+    try {
+        if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede usarse en grupos.*");
+        const groupMetadata = await conn.groupMetadata(m.chat);
+        const participants = groupMetadata.participants;
+        const admins = participants.filter((p) => p.admin === "admin" || p.admin === "superadmin").map((p) => p.id);
 
-    const groupMetadata = await conn.groupMetadata(m.chat);
-    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
-    const isAdmin = groupAdmins.includes(m.sender);
+        if (!admins.includes(m.sender)) return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
 
-    if (!isAdmin) {
-        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
-    }
+        const target = m.quoted ? m.quoted.sender : args[0]?.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
 
-    if (!m.quoted && !args[0]) {
-        return m.reply('❌ *Debes responder a un mensaje o mencionar al usuario que deseas desmutear.*');
-    }
+        if (!target) return m.reply("⚠️ *Debes mencionar o responder al mensaje del usuario que deseas desmutear.*");
 
-    const target = m.quoted ? m.quoted.sender : args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net';
+        // Verificar si está muteado
+        if (!mutedUsers[m.chat]?.[target]) {
+            return m.reply(`⚠️ *El usuario no está muteado.*`);
+        }
 
-    if (mutedUsers[m.chat]?.[target]) {
+        // Remover al usuario de la lista de muteados
         delete mutedUsers[m.chat][target];
-        m.reply(`✅ *El usuario @${target.split('@')[0]} ha sido desmuteado.*`, null, { mentions: [target] });
-    } else {
-        m.reply('❌ *El usuario no está muteado.*');
+        m.reply(`✅ *Usuario @${target.split("@")[0]} ha sido desmuteado.*`, null, { mentions: [target] });
+
+    } catch (error) {
+        console.error("❌ Error al ejecutar el comando unmute:", error);
+        m.reply("❌ *Ocurrió un error al intentar desmutear al usuario.*");
     }
 }
 break;
+		
 // Comando para mutear
 case 'abrir': {
     if (!m.isGroup) {
