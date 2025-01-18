@@ -1137,9 +1137,22 @@ break;
 
 // Comando para mutear
 case 'mute': {
+    // Verificar si el comando se ejecuta en un grupo
+    if (!m.isGroup) {
+        return conn.sendMessage(m.chat, {
+            text: "⚠️ *Este comando solo funciona en grupos.*"
+        }, { quoted: m });
+    }
+
+    // Obtener información del grupo
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
+
+    // Verificar si el usuario que ejecuta el comando es administrador o owner
+    const isAdmin = groupAdmins.includes(m.sender);
     if (!isAdmin && !isOwner) {
         return conn.sendMessage(m.chat, {
-            text: "⚠️ *No tienes permiso para usar este comando.*"
+            text: "⚠️ *Solo los administradores o el propietario pueden usar este comando.*"
         }, { quoted: m });
     }
 
@@ -1185,9 +1198,22 @@ case 'mute': {
 }
 
 case 'unmute': {
+    // Verificar si el comando se ejecuta en un grupo
+    if (!m.isGroup) {
+        return conn.sendMessage(m.chat, {
+            text: "⚠️ *Este comando solo funciona en grupos.*"
+        }, { quoted: m });
+    }
+
+    // Obtener información del grupo
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
+
+    // Verificar si el usuario que ejecuta el comando es administrador o owner
+    const isAdmin = groupAdmins.includes(m.sender);
     if (!isAdmin && !isOwner) {
         return conn.sendMessage(m.chat, {
-            text: "⚠️ *No tienes permiso para usar este comando.*"
+            text: "⚠️ *Solo los administradores o el propietario pueden usar este comando.*"
         }, { quoted: m });
     }
 
