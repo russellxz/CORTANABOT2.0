@@ -29,6 +29,7 @@ global.owner = [
 ["573012482694"], 
 ['584125778026']]
 
+global.stickerCommands = {};
 global.mods = []
 global.premium = []  
 global.blockList = []  
