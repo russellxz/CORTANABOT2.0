@@ -1134,28 +1134,27 @@ case 'ban_eliminar': {
 break;
 		
 //comando para mutear
+
 case "mute": {
     try {
-        if (!sock) throw new Error("Sock no está definido.");
-
-        // Validar si el comando se ejecuta en un grupo
+        // Verificar si se ejecuta en un grupo
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Obtener lista de administradores del grupo
+        // Verificar si el bot tiene acceso al grupo
         const groupMetadata = await sock.groupMetadata(m.chat);
         const admins = groupMetadata.participants.filter((p) => p.admin).map((p) => p.id);
 
-        // Verificar si el usuario es administrador
+        // Verificar si el usuario que ejecuta el comando es administrador
         const isAdmin = admins.includes(m.sender);
         if (!isAdmin) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
-        // Obtener el usuario mencionado o citado
+        // Obtener usuario a mutear
         const mentionedUser = m.mentionedJid?.[0] || m.quoted?.sender;
         if (!mentionedUser) return m.reply("⚠️ *Debes mencionar o responder al usuario que quieres mutear.*");
 
-        // Determinar tiempo de mute
+        // Calcular el tiempo de mute
         const argsTime = args[1];
         let muteTime = null;
 
@@ -1174,7 +1173,7 @@ case "mute": {
             }
         }
 
-        // Guardar al usuario en la lista de muteados
+        // Agregar usuario a la lista de muteados
         if (!mutedUsers[m.chat]) mutedUsers[m.chat] = {};
         mutedUsers[m.chat][mentionedUser] = {
             until: muteTime ? Date.now() + muteTime : null,
@@ -1195,22 +1194,20 @@ break;
 
 case "unmute": {
     try {
-        if (!sock) throw new Error("Sock no está definido.");
-
-        // Validar si el comando se ejecuta en un grupo
+        // Verificar si se ejecuta en un grupo
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Obtener lista de administradores del grupo
+        // Verificar si el bot tiene acceso al grupo
         const groupMetadata = await sock.groupMetadata(m.chat);
         const admins = groupMetadata.participants.filter((p) => p.admin).map((p) => p.id);
 
-        // Verificar si el usuario es administrador
+        // Verificar si el usuario que ejecuta el comando es administrador
         const isAdmin = admins.includes(m.sender);
         if (!isAdmin) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
-        // Obtener el usuario mencionado o citado
+        // Obtener usuario a desmutear
         const mentionedUser = m.mentionedJid?.[0] || m.quoted?.sender;
         if (!mentionedUser) return m.reply("⚠️ *Debes mencionar o responder al usuario que quieres desmutear.*");
 
@@ -1219,7 +1216,7 @@ case "unmute": {
             return m.reply("⚠️ *El usuario no está muteado.*");
         }
 
-        // Eliminar al usuario de la lista de muteados
+        // Eliminar usuario de la lista de muteados
         delete mutedUsers[m.chat][mentionedUser];
         await sock.sendMessage(m.chat, {
             text: `🔊 *El usuario @${mentionedUser.split("@")[0]} ha sido desmuteado.*`,
