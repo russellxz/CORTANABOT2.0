@@ -1139,13 +1139,15 @@ case "mute": {
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
         // Verificar si el usuario que ejecuta el comando es administrador
-        const groupMetadata = await sock.groupMetadata(m.chat);
-        const admins = groupMetadata.participants.filter((p) => p.admin === "admin" || p.admin === "superadmin").map((p) => p.id);
-        if (!admins.includes(m.sender)) {
+        const groupAdmins = m.groupMetadata.participants
+            .filter((p) => p.admin === "admin" || p.admin === "superadmin")
+            .map((p) => p.id);
+
+        if (!groupAdmins.includes(m.sender)) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
-        // Obtener el usuario a mutear (mencionado o citado)
+        // Obtener el usuario a mutear
         const mentionedUser = m.mentionedJid?.[0] || m.quoted?.sender;
         if (!mentionedUser) return m.reply("⚠️ *Debes mencionar o responder al usuario que quieres mutear.*");
 
@@ -1192,9 +1194,11 @@ case "unmute": {
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
         // Verificar si el usuario que ejecuta el comando es administrador
-        const groupMetadata = await sock.groupMetadata(m.chat);
-        const admins = groupMetadata.participants.filter((p) => p.admin === "admin" || p.admin === "superadmin").map((p) => p.id);
-        if (!admins.includes(m.sender)) {
+        const groupAdmins = m.groupMetadata.participants
+            .filter((p) => p.admin === "admin" || p.admin === "superadmin")
+            .map((p) => p.id);
+
+        if (!groupAdmins.includes(m.sender)) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
