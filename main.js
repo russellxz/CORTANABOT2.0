@@ -58,8 +58,7 @@ if (fs.existsSync(path2)) {
 }
 //modo owner
 // Cargar el estado de modoOwner
-module.exports = async (sock, m, chatUpdate) => {
-    const mutedUsers = {}; // Asegúrate de que esta variable esté definida globalmente o en el archivo correcto
+
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
