@@ -1136,6 +1136,8 @@ break;
 //comando para mutear
 case "mute": {
     try {
+        if (!sock) throw new Error("Sock no está definido.");
+
         // Validar si el comando se ejecuta en un grupo
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
@@ -1143,9 +1145,9 @@ case "mute": {
         const groupMetadata = await sock.groupMetadata(m.chat);
         const admins = groupMetadata.participants.filter((p) => p.admin).map((p) => p.id);
 
-        // Verificar si el usuario es administrador o owner
+        // Verificar si el usuario es administrador
         const isAdmin = admins.includes(m.sender);
-        if (!isAdmin && !isOwner(m.sender)) {
+        if (!isAdmin) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
@@ -1190,10 +1192,11 @@ case "mute": {
     }
 }
 break;
-		
-// Comando para mutear
+
 case "unmute": {
     try {
+        if (!sock) throw new Error("Sock no está definido.");
+
         // Validar si el comando se ejecuta en un grupo
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
@@ -1201,9 +1204,9 @@ case "unmute": {
         const groupMetadata = await sock.groupMetadata(m.chat);
         const admins = groupMetadata.participants.filter((p) => p.admin).map((p) => p.id);
 
-        // Verificar si el usuario es administrador o owner
+        // Verificar si el usuario es administrador
         const isAdmin = admins.includes(m.sender);
-        if (!isAdmin && !isOwner(m.sender)) {
+        if (!isAdmin) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
@@ -1229,6 +1232,8 @@ case "unmute": {
 }
 break;
 		
+// Comando para mutear
+
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
