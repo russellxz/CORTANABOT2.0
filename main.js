@@ -1137,23 +1137,31 @@ break;
 
 // Comando para mutear
 case 'mute': {
-    if (!m.isGroup && !isOwner) return m.reply("❌ Este comando solo puede usarse en grupos.");
-    if (!isAdmin && !isOwner) return m.reply("❌ Solo los administradores pueden usar este comando.");
+    if (!m.isGroup) return m.reply("❌ Este comando solo puede usarse en grupos.");
 
-    const mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : null); // Usuario mencionado o respondido
-    const duration = parseInt(args[1]) || 0; // Duración en minutos
+    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : null;
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+    const isOwner = global.owner.some(([owner]) => `${owner}@s.whatsapp.net` === m.sender);
 
-    if (!mentionedUser) return m.reply("❌ Por favor, menciona a un usuario o responde a su mensaje para mutearlo.");
-    if (isOwner && mentionedUser === m.sender) return m.reply("❌ No puedes mutearte a ti mismo.");
+    if (!isAdmin && !isOwner) {
+        return m.reply("❌ Solo los administradores o el propietario pueden usar este comando.");
+    }
+
+    const mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : null);
+    if (!mentionedUser) {
+        return m.reply("❌ Por favor, menciona a un usuario o responde a su mensaje para mutearlo.");
+    }
+
+    const duration = parseInt(args[1]) || 0;
 
     if (!mutedUsers[m.chat]) mutedUsers[m.chat] = {};
     mutedUsers[m.chat][mentionedUser] = { messageCount: 0, timeout: null };
 
-    // Configurar muteo por tiempo si se especifica duración
     if (duration > 0) {
         mutedUsers[m.chat][mentionedUser].timeout = setTimeout(() => {
             delete mutedUsers[m.chat][mentionedUser];
-            conn.sendMessage(m.chat, {
+            sock.sendMessage(m.chat, {
                 text: `✅ *${mentionedUser.split('@')[0]}* ha sido desmuteado automáticamente después de ${duration} minutos.`,
                 mentions: [mentionedUser],
             });
@@ -1165,21 +1173,29 @@ case 'mute': {
 }
 break;
 
-// Comando para desmutear
 case 'unmute': {
-    if (!m.isGroup && !isOwner) return m.reply("❌ Este comando solo puede usarse en grupos.");
-    if (!isAdmin && !isOwner) return m.reply("❌ Solo los administradores pueden usar este comando.");
+    if (!m.isGroup) return m.reply("❌ Este comando solo puede usarse en grupos.");
 
-    const mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : null); // Usuario mencionado o respondido
-    if (!mentionedUser) return m.reply("❌ Por favor, menciona a un usuario o responde a su mensaje para desmutearlo.");
+    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : null;
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+    const isOwner = global.owner.some(([owner]) => `${owner}@s.whatsapp.net` === m.sender);
+
+    if (!isAdmin && !isOwner) {
+        return m.reply("❌ Solo los administradores o el propietario pueden usar este comando.");
+    }
+
+    const mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : null);
+    if (!mentionedUser) {
+        return m.reply("❌ Por favor, menciona a un usuario o responde a su mensaje para desmutearlo.");
+    }
 
     if (!mutedUsers[m.chat] || !mutedUsers[m.chat][mentionedUser]) {
         return m.reply(`❌ *${mentionedUser.split('@')[0]}* no está muteado.`);
     }
 
-    // Eliminar muteo
     if (mutedUsers[m.chat][mentionedUser].timeout) {
-        clearTimeout(mutedUsers[m.chat][mentionedUser].timeout); // Limpiar tiempo si es necesario
+        clearTimeout(mutedUsers[m.chat][mentionedUser].timeout);
     }
     delete mutedUsers[m.chat][mentionedUser];
 
