@@ -819,6 +819,12 @@ case 'g':
 //para borrar
 	case 'kill': {
     try {
+        // Verificar si es grupo y obtener metadata
+        const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : null;
+        const isAdmin = groupMetadata
+            ? groupMetadata.participants.some((participant) => participant.id === m.sender && participant.admin)
+            : false;
+
         const deleteKey = args.join(' '); // Palabra clave para eliminar
         if (!deleteKey) {
             return conn.sendMessage(
@@ -840,32 +846,33 @@ case 'g':
             );
         }
 
-        const media = multimediaStore[deleteKey];
-        const isAdmin = m.isGroup && m.groupMetadata.participants.some(p => p.id === m.sender && p.admin === 'admin');
-        const isOwnerMedia = media.addedBy === global.numOwner; // Número del owner principal
+        const multimediaItem = multimediaStore[deleteKey];
 
-        // Verificar permisos
-        if (isOwnerMedia && !isCreator) {
+        // Verificar permisos para eliminar
+        const isOwnerFile = multimediaItem.savedBy === global.numOwner;
+        const isUserFile = multimediaItem.savedBy === m.sender;
+
+        if (isOwnerFile && m.sender !== global.numOwner) {
             return conn.sendMessage(
                 m.chat,
                 {
-                    text: `❌ *Error:* No puedes eliminar este multimedia, fue agregado por el owner. 🛑`,
+                    text: "🚫 *No puedes eliminar este archivo. Lo agregó el Owner.*",
                 },
                 { quoted: m }
             );
         }
 
-        if (media.addedBy !== m.sender && !isAdmin && !isCreator) {
+        if (!isUserFile && !isAdmin && m.sender !== global.numOwner) {
             return conn.sendMessage(
                 m.chat,
                 {
-                    text: `❌ *Error:* Solo los administradores o el owner pueden eliminar multimedia guardado por otros usuarios. 🛡️`,
+                    text: "🚫 *No tienes permisos para eliminar este archivo.*",
                 },
                 { quoted: m }
             );
         }
 
-        // Eliminar el multimedia
+        // Eliminar del almacenamiento
         delete multimediaStore[deleteKey];
         fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Guardar cambios
 
@@ -878,7 +885,13 @@ case 'g':
         );
     } catch (error) {
         console.error('❌ Error eliminando multimedia:', error);
-        m.reply('❌ *Ocurrió un error al intentar eliminar el multimedia.*');
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Ocurrió un error al intentar eliminar el multimedia.*",
+            },
+            { quoted: m }
+        );
     }
 }
 break;
