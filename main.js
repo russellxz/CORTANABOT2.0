@@ -1133,6 +1133,7 @@ case 'ban_eliminar': {
 break;
 		
 //comando para ver mensaje de una vista
+
 case 'ver': {
     try {
         // Verificar si el usuario es owner o admin en un grupo
@@ -1161,33 +1162,15 @@ case 'ver': {
             );
         }
 
-        // Comprueba si el mensaje tiene el atributo `viewOnce`
-        if (
-            m.quoted?.message?.viewOnceMessage?.message ||
-            m.quoted?.message?.[m.quoted.type]?.viewOnce ||
-            m.quoted?.message?.[m.quoted.type]?.message?.[Object.keys(m.quoted.message[m.quoted.type].message)[0]]?.viewOnce
-        ) {
-            let q = m.quoted;
-            // Elimina el atributo `viewOnce`
-            if (q.message?.viewOnceMessage?.message) {
-                delete q.message.viewOnceMessage.viewOnce;
-            }
-            if (q.message?.[m.quoted.type]?.viewOnce) {
-                delete q.message[m.quoted.type].viewOnce;
-            }
-            if (q.message?.[m.quoted.type]?.message?.[Object.keys(q.message[m.quoted.type].message)[0]]?.viewOnce) {
-                delete q.message[m.quoted.type].message[Object.keys(q.message[m.quoted.type].message)[0]].viewOnce;
-            }
+        // Comprueba si el mensaje tiene el atributo `viewOnceMessage`
+        if (m.quoted.message?.viewOnceMessage) {
+            // Extraer el mensaje de vista única
+            const viewOnceMsg = m.quoted.message.viewOnceMessage.message;
+            const msgType = Object.keys(viewOnceMsg)[0]; // Tipo del mensaje (imageMessage, videoMessage, etc.)
 
-            // Obtén el contenido y el contexto del mensaje
-            let caption = m.quoted.caption || q.message?.[m.quoted.type]?.message?.[Object.keys(q.message[m.quoted.type].message)[0]]?.caption || "";
-            let contextInfo = { isForwarded: false };
-            if (caption) {
-                contextInfo.mentionedJid = conn.parseMention(caption);
-            }
+            // Reenviar el contenido del mensaje de vista única
+            await conn.sendMessage(m.chat, { [msgType]: viewOnceMsg[msgType] }, { quoted: m });
 
-            // Reenvía el mensaje desactivando la vista única
-            await conn.sendMessage(m.chat, { forward: q.message, contextInfo }, { quoted: m });
             return conn.sendMessage(
                 m.chat,
                 { text: "✅ *Mensaje reenviado con vista única desactivada.*" },
@@ -1211,6 +1194,7 @@ case 'ver': {
     }
 }
 break;
+		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
