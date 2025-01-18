@@ -58,7 +58,8 @@ if (fs.existsSync(path2)) {
 }
 //modo owner
 // Cargar el estado de modoOwner
-
+module.exports = async (sock, m, chatUpdate) => {
+    const mutedUsers = {}; // Asegúrate de que esta variable esté definida globalmente o en el archivo correcto
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
@@ -1136,102 +1137,73 @@ break;
 //comando para mute
 
 // Comando para mutear
+
 case 'mute': {
-    if (!m.isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
+            if (!m.isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
 
-    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : {};
-    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+            const groupMetadata = await sock.groupMetadata(m.chat);
+            const groupAdmins = groupMetadata.participants
+                .filter(p => p.admin === 'admin' || p.admin === 'superadmin')
+                .map(p => p.id);
 
-    const isAdmin = groupAdmins.includes(m.sender);
-    if (!isAdmin) return m.reply('⚠️ Solo los administradores del grupo pueden usar este comando.');
+            const isAdmin = groupAdmins.includes(m.sender);
+            if (!isAdmin) return m.reply('⚠️ Solo los administradores del grupo pueden usar este comando.');
 
-    const mentionedJid = m.mentionedJid[0]; // Obtener el usuario mencionado
-    const duration = parseInt(args[1]); // Duración del mute en minutos
+            const mentionedJid = m.mentionedJid[0];
+            const duration = parseInt(m.args[0]);
 
-    if (!mentionedJid) {
-        return m.reply('⚠️ Menciona a un usuario para mutearlo.');
-    }
+            if (!mentionedJid) {
+                return m.reply('⚠️ Menciona a un usuario para mutearlo.');
+            }
 
-    if (!mutedUsers[m.chat]) {
-        mutedUsers[m.chat] = {};
-    }
+            if (!mutedUsers[m.chat]) {
+                mutedUsers[m.chat] = {};
+            }
 
-    mutedUsers[m.chat][mentionedJid] = {
-        until: duration ? Date.now() + duration * 60 * 1000 : null,
-        messageCount: 0,
-    };
+            mutedUsers[m.chat][mentionedJid] = {
+                until: duration ? Date.now() + duration * 60 * 1000 : null,
+                messageCount: 0,
+            };
 
-    const muteMessage = duration
-        ? `✅ El usuario @${mentionedJid.split('@')[0]} ha sido muteado por ${duration} minuto(s).`
-        : `✅ El usuario @${mentionedJid.split('@')[0]} ha sido muteado indefinidamente.`;
+            const muteMessage = duration
+                ? `✅ El usuario @${mentionedJid.split('@')[0]} ha sido muteado por ${duration} minuto(s).`
+                : `✅ El usuario @${mentionedJid.split('@')[0]} ha sido muteado indefinidamente.`;
 
-    await sock.sendMessage(m.chat, {
-        text: muteMessage,
-        mentions: [mentionedJid],
-    });
+            await sock.sendMessage(m.chat, {
+                text: muteMessage,
+                mentions: [mentionedJid],
+            });
+        }
+        break;
 
-    sock.ev.on("messages.upsert", async (messages) => {
-        const msg = messages.messages[0];
-        const sender = msg.key.participant || msg.key.remoteJid;
+        case 'unmute': {
+            if (!m.isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
 
-        if (
-            mutedUsers[m.chat] &&
-            mutedUsers[m.chat][sender] &&
-            (!mutedUsers[m.chat][sender].until || mutedUsers[m.chat][sender].until > Date.now())
-        ) {
-            try {
-                await sock.sendMessage(m.chat, {
-                    delete: {
-                        remoteJid: m.chat,
-                        id: msg.key.id,
-                        fromMe: false,
-                    },
+            const groupMetadata = await sock.groupMetadata(m.chat);
+            const groupAdmins = groupMetadata.participants
+                .filter(p => p.admin === 'admin' || p.admin === 'superadmin')
+                .map(p => p.id);
+
+            const isAdmin = groupAdmins.includes(m.sender);
+            if (!isAdmin) return m.reply('⚠️ Solo los administradores del grupo pueden usar este comando.');
+
+            const mentionedJid = m.mentionedJid[0];
+
+            if (!mentionedJid) {
+                return m.reply('⚠️ Menciona a un usuario para desmutearlo.');
+            }
+
+            if (mutedUsers[m.chat]?.[mentionedJid]) {
+                delete mutedUsers[m.chat][mentionedJid];
+                return m.reply(`✅ El usuario @${mentionedJid.split('@')[0]} ha sido desmuteado.`, null, {
+                    mentions: [mentionedJid],
                 });
-
-                mutedUsers[m.chat][sender].messageCount++;
-
-                if (mutedUsers[m.chat][sender].messageCount > 10) {
-                    await sock.groupParticipantsUpdate(m.chat, [sender], "remove");
-                    delete mutedUsers[m.chat][sender];
-                } else {
-                    await sock.sendMessage(m.chat, {
-                        text: `⚠️ *Estás muteado.* No puedes enviar mensajes. Si envías más de 10 mensajes, serás eliminado del grupo. (Mensaje ${mutedUsers[m.chat][sender].messageCount}/10)`,
-                        mentions: [sender],
-                    });
-                }
-            } catch (error) {
-                console.error("❌ Error al eliminar mensaje de usuario muteado:", error);
+            } else {
+                return m.reply('⚠️ Este usuario no está muteado.');
             }
         }
-    });
-}
-break;
-
-case 'unmute': {
-    if (!m.isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
-
-    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : {};
-    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
-
-    const isAdmin = groupAdmins.includes(m.sender);
-    if (!isAdmin) return m.reply('⚠️ Solo los administradores del grupo pueden usar este comando.');
-
-    const mentionedJid = m.mentionedJid[0]; // Obtener el usuario mencionado
-
-    if (!mentionedJid) {
-        return m.reply('⚠️ Menciona a un usuario para desmutearlo.');
-    }
-
-    if (mutedUsers[m.chat]?.[mentionedJid]) {
-        delete mutedUsers[m.chat][mentionedJid];
-        return m.reply(`✅ El usuario @${mentionedJid.split('@')[0]} ha sido desmuteado.`, null, {
-            mentions: [mentionedJid],
-        });
-    } else {
-        return m.reply('⚠️ Este usuario no está muteado.');
-    }
-}
-break;       
+        break;
+    }		
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
