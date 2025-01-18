@@ -741,7 +741,7 @@ case 'guar': {
             buffer: mediaBuffer.toString('base64'), // Convertir a base64
             mimetype: mediaType,
             extension: mediaExt,
-            addedBy: m.sender, // Usuario que lo guardó
+            savedBy: m.sender, // Usuario que lo guardó
             isOwner: m.sender === global.numOwner, // Indicar si lo guardó el owner
         };
 
@@ -767,7 +767,7 @@ case 'guar': {
     }
 }
 break;
-
+//recupera multimedia
 case 'g':
     const getKey = args.join(' '); // Palabra clave para recuperar
     if (!getKey) {
@@ -889,7 +889,7 @@ case 'clavelista': {
         return conn.sendMessage(
             m.chat,
             {
-                text: "📂 *Lista de Palabras Clave Guardadas:*\n\n⚠️ No hay multimedia guardado aún. Usa el comando `.guar` para guardar uno. 😉"
+                text: "📂 *Lista de Palabras Clave Guardadas:*\n\n⚠️ No hay multimedia guardado aún. Usa el comando `.guar` para guardar uno. 😉",
             },
             { quoted: m }
         );
