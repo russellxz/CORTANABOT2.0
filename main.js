@@ -1282,7 +1282,74 @@ case 'k': {
     }
 }
 break;
+// para agregar comando a stikerz
+case 'comando': {
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
+    }
 
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+
+    if (!isAdmin) {
+        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
+    }
+
+    if (!m.quoted || m.quoted.mimetype !== 'image/webp') {
+        return m.reply('⚠️ *Responde a un sticker para agregarle un comando.*');
+    }
+
+    const commandToAdd = args[0];
+    if (!commandToAdd || !['.abrir', '.cerrar', '.k'].includes(commandToAdd)) {
+        return m.reply('⚠️ *Comando inválido. Usa uno de los siguientes: .abrir, .cerrar, .k.*');
+    }
+
+    try {
+        if (!global.stickerCommands) global.stickerCommands = {};
+        global.stickerCommands[m.quoted.key.id] = commandToAdd; // Asocia el comando al ID del sticker
+        m.reply(`✅ *Comando "${commandToAdd}" agregado al sticker.*`);
+    } catch (error) {
+        console.error('Error al agregar el comando al sticker:', error);
+        m.reply('❌ *Hubo un error al intentar agregar el comando al sticker.*');
+    }
+}
+break;
+// para quitar
+
+case 'z': {
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
+    }
+
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+
+    if (!isAdmin) {
+        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
+    }
+
+    if (!m.quoted || m.quoted.mimetype !== 'image/webp') {
+        return m.reply('⚠️ *Responde a un sticker para eliminarle el comando.*');
+    }
+
+    try {
+        if (!global.stickerCommands) global.stickerCommands = {};
+        const stickerId = m.quoted.key.id;
+
+        if (!global.stickerCommands[stickerId]) {
+            return m.reply('⚠️ *Este sticker no tiene un comando asignado.*');
+        }
+
+        delete global.stickerCommands[stickerId]; // Elimina el comando asociado al sticker
+        m.reply(`✅ *Comando eliminado del sticker.*`);
+    } catch (error) {
+        console.error('Error al eliminar el comando del sticker:', error);
+        m.reply('❌ *Hubo un error al intentar eliminar el comando del sticker.*');
+    }
+}
+break;		
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
