@@ -1222,7 +1222,51 @@ case "unmute": {
 break;
 		
 // Comando para mutear
+case 'abrir': {
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
+    }
 
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+
+    if (!isAdmin) {
+        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
+    }
+
+    try {
+        await conn.groupSettingUpdate(m.chat, 'not_announcement'); // Cambiar a no anuncio (abrir el grupo)
+        m.reply('✅ *El grupo ahora está abierto. Todos los participantes pueden enviar mensajes.*');
+    } catch (error) {
+        console.error('Error al abrir el grupo:', error);
+        m.reply('❌ *Hubo un error al intentar abrir el grupo.*');
+    }
+}
+break;
+
+case 'cerrar': {
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
+    }
+
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+
+    if (!isAdmin) {
+        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
+    }
+
+    try {
+        await conn.groupSettingUpdate(m.chat, 'announcement'); // Cambiar a anuncio (cerrar el grupo)
+        m.reply('✅ *El grupo ahora está cerrado. Solo los administradores pueden enviar mensajes.*');
+    } catch (error) {
+        console.error('Error al cerrar el grupo:', error);
+        m.reply('❌ *Hubo un error al intentar cerrar el grupo.*');
+    }
+}
+break;
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
