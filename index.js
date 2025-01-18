@@ -49,6 +49,8 @@ new cloudDBAdapter(opts['db']) : /mongodb/.test(opts['db']) ?
 new mongoDB(opts['db']) :
 new JSONFile(`./database.json`)
 )
+
+global.mutedUsers = {};
 global.DATABASE = global.db // Backwards Compatibility
 global.loadDatabase = async function loadDatabase() {
 if (global.db.READ) return new Promise((resolve) => setInterval(function () { (!global.db.READ ? (clearInterval(this), resolve(global.db.data == null ? global.loadDatabase() : global.db.data)) : null) }, 1 * 1000))
