@@ -300,6 +300,7 @@ sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg.key;
 
+    // Comprobar si es un mensaje válido
     if (!key.fromMe && msg.message) {
         const messageId = key.id;
         messageStore[messageId] = {
@@ -309,16 +310,16 @@ sock.ev.on("messages.upsert", async (message) => {
         };
     }
 
-    // Lógica para detectar stickers y verificar comandos
+    // Lógica para manejar stickers
     try {
         if (msg.message?.stickerMessage) {
             const stickerId = msg.message.stickerMessage.fileSha256.toString('base64');
-            
+
             if (global.stickerCommands[stickerId]) {
                 const command = global.stickerCommands[stickerId];
                 console.log(`Sticker detectado con comando asociado: ${command}`);
 
-                // Ejecutar el comando asociado al sticker
+                // Simular ejecución del comando asociado
                 msg.message.conversation = command; // Insertar el comando detectado
                 const m = smsg(sock, msg); // Normalizar el mensaje
                 require('./main')(sock, m, message, msg, store); // Pasar al manejador principal
@@ -330,6 +331,9 @@ sock.ev.on("messages.upsert", async (message) => {
         console.error('Error al manejar el comando de sticker:', error);
     }
 });
+
+// Comando para agregar comandos a stickers
+
 	
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
