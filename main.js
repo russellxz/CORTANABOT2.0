@@ -49,7 +49,8 @@ const {owner} = require('./plugins/propietario.js')
 const {enable} = require('./plugins/enable.js')
 const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 //manejo de mensaje
-
+// Objeto para almacenar usuarios muteados
+const mutedUsers = {}; // Estructura: { chatId: { userId: { messageCount: 0, timeout: null } } }
 //ok
 let multimediaStore = {};
 if (fs.existsSync(path2)) {
@@ -1132,56 +1133,57 @@ case 'ban_eliminar': {
 }
 break;
 		
-//comando para ver mensaje de una vista
+//comando para mute
 
-case 'ver': {
-    try {
-        // Validación para admins y owners
-        if (!isOwner && (!m.isGroup || !isAdmin)) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ *Acceso denegado:* Solo los administradores del grupo o el propietario global pueden usar este comando." },
-                { quoted: m }
-            );
-        }
+// Comando para mutear
+case 'mute': {
+    if (!m.isGroup && !isOwner) return m.reply("❌ Este comando solo puede usarse en grupos.");
+    if (!isAdmin && !isOwner) return m.reply("❌ Solo los administradores pueden usar este comando.");
 
-        // Verificar si se responde a un mensaje
-        if (!m.quoted) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ *Error:* Responde a un mensaje de vista única para poder verlo." },
-                { quoted: m }
-            );
-        }
+    const mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : null); // Usuario mencionado o respondido
+    const duration = parseInt(args[1]) || 0; // Duración en minutos
 
-        // Verificar si es un mensaje de vista única
-        if (!m.quoted.message?.viewOnceMessage) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *Aviso:* Este mensaje no tiene la característica de vista única." },
-                { quoted: m }
-            );
-        }
+    if (!mentionedUser) return m.reply("❌ Por favor, menciona a un usuario o responde a su mensaje para mutearlo.");
+    if (isOwner && mentionedUser === m.sender) return m.reply("❌ No puedes mutearte a ti mismo.");
 
-        // Extraer el contenido del mensaje de vista única
-        const viewOnceMsg = m.quoted.message.viewOnceMessage.message; // Contenido del mensaje
-        const msgType = Object.keys(viewOnceMsg)[0]; // Tipo de mensaje (imageMessage, videoMessage, etc.)
+    if (!mutedUsers[m.chat]) mutedUsers[m.chat] = {};
+    mutedUsers[m.chat][mentionedUser] = { messageCount: 0, timeout: null };
 
-        // Reenviar el contenido del mensaje
-        await conn.sendMessage(
-            m.chat,
-            { [msgType]: viewOnceMsg[msgType], caption: "📂 *Mensaje de vista única reenviado.*" },
-            { quoted: m }
-        );
-
-    } catch (error) {
-        console.error("❌ Error al procesar el comando .ver:", error);
-        conn.sendMessage(
-            m.chat,
-            { text: "❌ *Error:* Ocurrió un problema al procesar el mensaje de vista única." },
-            { quoted: m }
-        );
+    // Configurar muteo por tiempo si se especifica duración
+    if (duration > 0) {
+        mutedUsers[m.chat][mentionedUser].timeout = setTimeout(() => {
+            delete mutedUsers[m.chat][mentionedUser];
+            conn.sendMessage(m.chat, {
+                text: `✅ *${mentionedUser.split('@')[0]}* ha sido desmuteado automáticamente después de ${duration} minutos.`,
+                mentions: [mentionedUser],
+            });
+        }, duration * 60 * 1000);
+        m.reply(`✅ *${mentionedUser.split('@')[0]}* ha sido muteado por ${duration} minuto(s).`);
+    } else {
+        m.reply(`✅ *${mentionedUser.split('@')[0]}* ha sido muteado indefinidamente.`);
     }
+}
+break;
+
+// Comando para desmutear
+case 'unmute': {
+    if (!m.isGroup && !isOwner) return m.reply("❌ Este comando solo puede usarse en grupos.");
+    if (!isAdmin && !isOwner) return m.reply("❌ Solo los administradores pueden usar este comando.");
+
+    const mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : null); // Usuario mencionado o respondido
+    if (!mentionedUser) return m.reply("❌ Por favor, menciona a un usuario o responde a su mensaje para desmutearlo.");
+
+    if (!mutedUsers[m.chat] || !mutedUsers[m.chat][mentionedUser]) {
+        return m.reply(`❌ *${mentionedUser.split('@')[0]}* no está muteado.`);
+    }
+
+    // Eliminar muteo
+    if (mutedUsers[m.chat][mentionedUser].timeout) {
+        clearTimeout(mutedUsers[m.chat][mentionedUser].timeout); // Limpiar tiempo si es necesario
+    }
+    delete mutedUsers[m.chat][mentionedUser];
+
+    m.reply(`✅ *${mentionedUser.split('@')[0]}* ha sido desmuteado.`);
 }
 break;
 		
