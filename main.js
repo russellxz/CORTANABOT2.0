@@ -796,7 +796,6 @@ case 'g':
 //para borrar
 	case 'kill': {
     try {
-        // Obtener metadata si es grupo
         const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : null;
         const isAdmin = groupMetadata
             ? groupMetadata.participants.some((participant) => participant.id === m.sender && participant.admin)
@@ -826,10 +825,7 @@ case 'g':
         const multimediaItem = multimediaStore[deleteKey];
 
         // Verificar si el archivo fue guardado por el Owner
-        const isOwnerFile = multimediaItem.savedBy === global.numOwner;
-        const isUserFile = multimediaItem.savedBy === m.sender;
-
-        if (isOwnerFile && m.sender !== global.numOwner) {
+        if (multimediaItem.isOwner && m.sender !== global.numOwner) {
             return conn.sendMessage(
                 m.chat,
                 {
@@ -840,7 +836,7 @@ case 'g':
         }
 
         // Verificar si el usuario tiene permisos para eliminar
-        if (!isUserFile && !isAdmin && m.sender !== global.numOwner) {
+        if (multimediaItem.savedBy !== m.sender && !isAdmin && m.sender !== global.numOwner) {
             return conn.sendMessage(
                 m.chat,
                 {
