@@ -297,6 +297,8 @@ const messageStore = {};
 sock.ev.on("messages.upsert", async (message) => {
   const msg = message.messages[0];
   const key = msg.key;
+
+  // Almacenar el mensaje en el messageStore
   if (!key.fromMe && msg.message) {
     const messageId = key.id;
     messageStore[messageId] = {
@@ -304,6 +306,45 @@ sock.ev.on("messages.upsert", async (message) => {
       participant: key.participant || key.remoteJid,
       message: msg.message,
     };
+  }
+
+  // Lógica para manejar mensajes de usuarios muteados
+  if (!key.fromMe && msg.message) {
+    const { remoteJid, participant } = key;
+    const sender = participant || remoteJid;
+
+    // Verificar si el usuario está muteado
+    if (mutedUsers[remoteJid]?.[sender]) {
+      const userMuteInfo = mutedUsers[remoteJid][sender];
+
+      try {
+        // Eliminar el mensaje enviado por el usuario muteado
+        await conn.sendMessage(remoteJid, {
+          delete: {
+            remoteJid,
+            id: key.id,
+            fromMe: false,
+          },
+        });
+
+        // Incrementar el contador de mensajes
+        userMuteInfo.messageCount++;
+
+        // Expulsar al usuario si envía más de 10 mensajes
+        if (userMuteInfo.messageCount > 10) {
+          await conn.groupParticipantsUpdate(remoteJid, [sender], "remove");
+          delete mutedUsers[remoteJid][sender];
+        } else {
+          // Advertir al usuario muteado
+          await conn.sendMessage(remoteJid, {
+            text: `⚠️ *Estás muteado.* No puedes enviar mensajes. Si envías más de 10 mensajes, serás eliminado del grupo. (Mensaje ${userMuteInfo.messageCount}/10)`,
+            mentions: [sender],
+          });
+        }
+      } catch (error) {
+        console.error("❌ Error al manejar mensajes de usuarios muteados:", error);
+      }
+    }
   }
 });
 //nuevo evento equetas
