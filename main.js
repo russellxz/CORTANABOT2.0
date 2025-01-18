@@ -57,20 +57,6 @@ if (fs.existsSync(path2)) {
 }
 //modo owner
 // Cargar el estado de modoOwner
-const stickerCommandsPath = './stickerCommands.json';
-
-// Cargar los comandos de stickers al iniciar
-if (fs.existsSync(stickerCommandsPath)) {
-    global.stickerCommands = JSON.parse(fs.readFileSync(stickerCommandsPath, 'utf-8'));
-} else {
-    global.stickerCommands = {};
-    fs.writeFileSync(stickerCommandsPath, JSON.stringify(global.stickerCommands, null, 2));
-}
-
-// Función para guardar cambios en stickerCommands.json
-global.saveStickerCommands = () => {
-    fs.writeFileSync(stickerCommandsPath, JSON.stringify(global.stickerCommands, null, 2));
-};
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
