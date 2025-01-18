@@ -1137,12 +1137,11 @@ break;
 
 // Comando para mutear
 case 'mute': {
-    // Verificar si el comando viene de un grupo
     const isGroup = m.isGroup;
     if (!isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
 
-    const isAdmin = m.key.fromMe || (m.isGroup && m.sender && groupAdmins.includes(m.sender)); // Asegúrate de que `groupAdmins` esté definido
-    if (!isAdmin && !isOwner) return m.reply('⚠️ Solo los administradores o el propietario del bot pueden usar este comando.');
+    const isAdmin = m.key.fromMe || (m.isGroup && m.sender && groupAdmins.includes(m.sender));
+    if (!isAdmin && !isOwner(m.sender)) return m.reply('⚠️ Solo los administradores o el propietario del bot pueden usar este comando.');
 
     const mentionedJid = m.mentionedJid[0]; // Obtener el usuario mencionado
     const duration = parseInt(args[1]); // Duración del mute en minutos
@@ -1173,19 +1172,16 @@ case 'mute': {
         mentions: [mentionedJid],
     });
 
-    // Iniciar eliminación de mensajes en tiempo real
     sock.ev.on("messages.upsert", async (messages) => {
         const msg = messages.messages[0];
         const sender = msg.key.participant || msg.key.remoteJid;
 
-        // Verificar si el mensaje proviene de un usuario muteado
         if (
             mutedUsers[m.chat] &&
             mutedUsers[m.chat][sender] &&
             (!mutedUsers[m.chat][sender].until || mutedUsers[m.chat][sender].until > Date.now())
         ) {
             try {
-                // Eliminar mensaje
                 await sock.sendMessage(m.chat, {
                     delete: {
                         remoteJid: m.chat,
@@ -1194,15 +1190,12 @@ case 'mute': {
                     },
                 });
 
-                // Incrementar contador de mensajes mientras está muteado
                 mutedUsers[m.chat][sender].messageCount++;
 
                 if (mutedUsers[m.chat][sender].messageCount > 10) {
-                    // Expulsar al usuario si excede el límite de mensajes
                     await sock.groupParticipantsUpdate(m.chat, [sender], "remove");
                     delete mutedUsers[m.chat][sender];
                 } else {
-                    // Advertir al usuario
                     await sock.sendMessage(m.chat, {
                         text: `⚠️ *Estás muteado.* No puedes enviar mensajes. Si envías más de 10 mensajes, serás eliminado del grupo. (Mensaje ${mutedUsers[m.chat][sender].messageCount}/10)`,
                         mentions: [sender],
@@ -1217,12 +1210,11 @@ case 'mute': {
 break;
 
 case 'unmute': {
-    // Verificar si el comando viene de un grupo
     const isGroup = m.isGroup;
     if (!isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
 
-    const isAdmin = m.key.fromMe || (m.isGroup && m.sender && groupAdmins.includes(m.sender)); // Asegúrate de que `groupAdmins` esté definido
-    if (!isAdmin && !isOwner) return m.reply('⚠️ Solo los administradores o el propietario del bot pueden usar este comando.');
+    const isAdmin = m.key.fromMe || (m.isGroup && m.sender && groupAdmins.includes(m.sender));
+    if (!isAdmin && !isOwner(m.sender)) return m.reply('⚠️ Solo los administradores o el propietario del bot pueden usar este comando.');
 
     const mentionedJid = m.mentionedJid[0]; // Obtener el usuario mencionado
 
