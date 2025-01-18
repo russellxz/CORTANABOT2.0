@@ -297,47 +297,34 @@ console.log(err)
 const messageStore = {};
 //mute 
 sock.ev.on("messages.upsert", async (message) => {
-  const msg = message.messages[0];
-  const key = msg.key;
+    const msg = message.messages[0];
+    const key = msg.key;
 
-  // Almacenar mensaje en messageStore
-  if (!key.fromMe && msg.message) {
-    const messageId = key.id;
-    messageStore[messageId] = {
-      remoteJid: key.remoteJid,
-      participant: key.participant || key.remoteJid,
-      message: msg.message,
-    };
-  }
-
-  // Lógica para manejar comandos asociados a stickers
-  if (msg.message?.stickerMessage) {
-    try {
-      const stickerId = msg.message.stickerMessage.fileSha256.toString("base64");
-      const stickerCommands = global.stickerCommands || {};
-
-      // Verificar si el sticker tiene un comando asociado
-      if (stickerCommands[stickerId]) {
-        const commandToExecute = stickerCommands[stickerId];
-        console.log(`Ejecutando comando asociado: ${commandToExecute}`);
-
-        if (commandToExecute === ".abrir") {
-          await conn.groupSettingUpdate(key.remoteJid, "not_announcement");
-          await conn.sendMessage(key.remoteJid, { text: "✅ *El grupo ahora está abierto.*" });
-        } else if (commandToExecute === ".cerrar") {
-          await conn.groupSettingUpdate(key.remoteJid, "announcement");
-          await conn.sendMessage(key.remoteJid, { text: "✅ *El grupo ahora está cerrado.*" });
-        } else if (commandToExecute === ".k") {
-          const participantToRemove = msg.key.participant || msg.participant;
-          if (participantToRemove) {
-            await conn.groupParticipantsUpdate(key.remoteJid, [participantToRemove], "remove");
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Error al manejar sticker con comando:", error);
+    if (!key.fromMe && msg.message) {
+        const messageId = key.id;
+        messageStore[messageId] = {
+            remoteJid: key.remoteJid,
+            participant: key.participant || key.remoteJid,
+            message: msg.message,
+        };
     }
-  }
+
+    // Lógica para manejar comandos de stickers
+    try {
+        if (msg.message?.stickerMessage) {
+            const stickerId = msg.message.stickerMessage.fileSha256.toString('base64');
+            const command = global.stickerCommands[stickerId];
+
+            if (command) {
+                // Ejecutar el comando asociado al sticker
+                msg.message.conversation = command;
+                const m = smsg(sock, msg); // Normaliza el mensaje
+                require('./main')(sock, m, message, msg, store); // Llama al manejador principal
+            }
+        }
+    } catch (error) {
+        console.error('Error manejando comandos de stickers:', error);
+    }
 });
 	
 //nuevo evento equetas
