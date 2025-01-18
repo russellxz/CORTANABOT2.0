@@ -369,11 +369,13 @@ sock.ev.on("messages.update", async (updates) => {
                     const msgContent = deletedMessage.message;
 
                     if (msgContent.conversation) {
+                        // Texto
                         await sock.sendMessage(remoteJid, {
                             text: msgContent.conversation,
                             quoted: update.key,
                         });
                     } else if (msgContent.imageMessage) {
+                        // Imagen
                         const buffer = await sock.downloadMediaMessage(msgContent.imageMessage);
                         await sock.sendMessage(remoteJid, {
                             image: buffer,
@@ -381,6 +383,7 @@ sock.ev.on("messages.update", async (updates) => {
                             quoted: update.key,
                         });
                     } else if (msgContent.videoMessage) {
+                        // Video
                         const buffer = await sock.downloadMediaMessage(msgContent.videoMessage);
                         await sock.sendMessage(remoteJid, {
                             video: buffer,
@@ -388,6 +391,7 @@ sock.ev.on("messages.update", async (updates) => {
                             quoted: update.key,
                         });
                     } else if (msgContent.stickerMessage) {
+                        // Sticker
                         const buffer = await sock.downloadMediaMessage(msgContent.stickerMessage);
                         await sock.sendMessage(remoteJid, {
                             sticker: buffer,
@@ -405,92 +409,10 @@ sock.ev.on("messages.update", async (updates) => {
                 console.error("Error detectando o manejando mensaje eliminado:", error);
             }
         }
-
-        // **Manejo de Encuestas**
-        if (update.update.pollUpdates && !update.key.fromMe) {
-            console.log("Encuesta detectada: pollUpdates");
-
-            try {
-                const { selectedOptionId } = update.update.pollUpdates[0];
-                const archivo = multimediaStore[selectedOptionId];
-
-                if (!archivo) {
-                    return sock.sendMessage(update.key.remoteJid, { text: '❌ *Archivo no encontrado.*' });
-                }
-
-                if (archivo.enviado) {
-                    return sock.sendMessage(update.key.remoteJid, { text: '⚠️ *El archivo ya fue enviado anteriormente.*' });
-                }
-
-                const { type, buffer } = archivo;
-
-                if (!buffer || buffer.length === 0) {
-                    return sock.sendMessage(update.key.remoteJid, { text: '❌ *El archivo está vacío o no es válido.*' });
-                }
-
-                archivo.enviado = true;
-                switch (type) {
-                    case 'image':
-                        await sock.sendMessage(update.key.remoteJid, { image: buffer }, { quoted: update });
-                        break;
-                    case 'video':
-                        await sock.sendMessage(update.key.remoteJid, { video: buffer }, { quoted: update });
-                        break;
-                    case 'audio':
-                        await sock.sendMessage(update.key.remoteJid, { audio: buffer, mimetype: 'audio/mpeg' }, { quoted: update });
-                        break;
-                    case 'sticker':
-                        await sock.sendMessage(update.key.remoteJid, { sticker: buffer }, { quoted: update });
-                        break;
-                    default:
-                        await sock.sendMessage(update.key.remoteJid, { text: '⚠️ Tipo de archivo no soportado.' });
-                        break;
-                }
-            } catch (error) {
-                console.error("Error manejando encuesta:", error);
-            }
-        }
-
-        // **Manejo de usuarios muteados**
-        if (update.update.message && !update.key.fromMe) {
-            const { remoteJid, participant } = update.key;
-            const sender = participant || remoteJid;
-
-            // Verificar si el usuario está muteado
-            if (mutedUsers[remoteJid]?.[sender]) {
-                const userMuteInfo = mutedUsers[remoteJid][sender];
-
-                try {
-                    // Eliminar el mensaje enviado por el usuario muteado
-                    await sock.sendMessage(remoteJid, {
-                        delete: {
-                            remoteJid,
-                            id: update.update.message.key.id,
-                            fromMe: false,
-                        },
-                    });
-
-                    // Incrementar contador de mensajes enviados mientras está muteado
-                    userMuteInfo.messageCount++;
-
-                    // Eliminar del grupo si excede los 10 mensajes
-                    if (userMuteInfo.messageCount > 10) {
-                        await sock.groupParticipantsUpdate(remoteJid, [sender], "remove");
-                        delete mutedUsers[remoteJid][sender];
-                    } else {
-                        // Enviar advertencia si está muteado
-                        await sock.sendMessage(remoteJid, {
-                            text: `⚠️ *Estás muteado.* No puedes enviar mensajes. Si envías más de 10 mensajes, serás eliminado del grupo. (Mensaje ${userMuteInfo.messageCount}/10)`,
-                            mentions: [sender],
-                        });
-                    }
-                } catch (error) {
-                    console.error("❌ Error al manejar mensaje de usuario muteado:", error);
-                }
-            }
-        }
     }
 });
+
+        
                
         
 /*sock.ev.on('messages.update', async chatUpdate => {
