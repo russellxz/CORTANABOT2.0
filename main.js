@@ -1139,7 +1139,7 @@ break;
 case 'mute': {
     if (!m.isGroup) return m.reply("❌ Este comando solo puede usarse en grupos.");
 
-    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : null;
+    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : null; // Referencia explícita a sock
     const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
     const isAdmin = groupAdmins.includes(m.sender);
     const isOwner = global.owner.some(([owner]) => `${owner}@s.whatsapp.net` === m.sender);
@@ -1161,7 +1161,7 @@ case 'mute': {
     if (duration > 0) {
         mutedUsers[m.chat][mentionedUser].timeout = setTimeout(() => {
             delete mutedUsers[m.chat][mentionedUser];
-            sock.sendMessage(m.chat, {
+            sock.sendMessage(m.chat, { // Uso explícito de sock
                 text: `✅ *${mentionedUser.split('@')[0]}* ha sido desmuteado automáticamente después de ${duration} minutos.`,
                 mentions: [mentionedUser],
             });
@@ -1176,7 +1176,7 @@ break;
 case 'unmute': {
     if (!m.isGroup) return m.reply("❌ Este comando solo puede usarse en grupos.");
 
-    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : null;
+    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : null; // Referencia explícita a sock
     const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
     const isAdmin = groupAdmins.includes(m.sender);
     const isOwner = global.owner.some(([owner]) => `${owner}@s.whatsapp.net` === m.sender);
