@@ -310,8 +310,56 @@ sock.ev.on("messages.upsert", async (message) => {
     }
 
     try {
-        // Aquí puedes agregar cualquier otra lógica que necesites manejar
-        console.log("Nuevo mensaje procesado:", msg);
+        // Lógica para manejar la creación de la caja fuerte
+        if (
+            global.tempCaja &&
+            global.tempCaja[key.remoteJid] &&
+            msg.message &&
+            msg.message.conversation &&
+            global.tempCaja[key.remoteJid] === key.id
+        ) {
+            const password = msg.message.conversation.trim();
+
+            if (!password || password.length < 4) {
+                await sock.sendMessage(
+                    key.remoteJid,
+                    { text: "⚠️ La contraseña debe tener al menos 4 caracteres. Responde con una contraseña válida." },
+                    { quoted: msg }
+                );
+                return;
+            }
+
+            if (!cajasFuertes[key.remoteJid]) {
+                cajasFuertes[key.remoteJid] = {
+                    password,
+                    multimedia: {},
+                    isOpen: false,
+                };
+                fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+
+                await sock.sendMessage(
+                    key.remoteJid,
+                    { text: "🔐 ¡Tu caja fuerte ha sido creada con éxito!" },
+                    { quoted: msg }
+                );
+
+                // Avisar al privado si se creó en un grupo
+                if (key.remoteJid.endsWith("@g.us")) {
+                    await sock.sendMessage(
+                        msg.participant,
+                        { text: "⚠️ Por seguridad, considera cambiar tu contraseña en privado." }
+                    );
+                }
+            } else {
+                await sock.sendMessage(
+                    key.remoteJid,
+                    { text: "✅ Ya tienes una caja fuerte creada. Usa tus comandos para gestionarla." },
+                    { quoted: msg }
+                );
+            }
+
+            delete global.tempCaja[key.remoteJid];
+        }
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
