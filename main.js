@@ -1140,13 +1140,8 @@ case "mute": {
         // Verificar si se ejecuta en un grupo
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Verificar si el bot tiene acceso al grupo
-        const groupMetadata = await sock.groupMetadata(m.chat);
-        const admins = groupMetadata.participants.filter((p) => p.admin).map((p) => p.id);
-
         // Verificar si el usuario que ejecuta el comando es administrador
-        const isAdmin = admins.includes(m.sender);
-        if (!isAdmin) {
+        if (!m.isAdmin && !m.isCreator) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
@@ -1184,7 +1179,7 @@ case "mute": {
             ? `🔇 *El usuario @${mentionedUser.split("@")[0]} ha sido muteado por ${argsTime}.*`
             : `🔇 *El usuario @${mentionedUser.split("@")[0]} ha sido muteado indefinidamente.*`;
 
-        await sock.sendMessage(m.chat, { text: muteMessage, mentions: [mentionedUser] });
+        m.reply(muteMessage, { mentions: [mentionedUser] });
     } catch (error) {
         console.error("❌ Error al ejecutar el comando mute:", error);
         m.reply("❌ *Ocurrió un error al intentar mutear al usuario.*");
@@ -1197,13 +1192,8 @@ case "unmute": {
         // Verificar si se ejecuta en un grupo
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Verificar si el bot tiene acceso al grupo
-        const groupMetadata = await sock.groupMetadata(m.chat);
-        const admins = groupMetadata.participants.filter((p) => p.admin).map((p) => p.id);
-
         // Verificar si el usuario que ejecuta el comando es administrador
-        const isAdmin = admins.includes(m.sender);
-        if (!isAdmin) {
+        if (!m.isAdmin && !m.isCreator) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
@@ -1218,10 +1208,7 @@ case "unmute": {
 
         // Eliminar usuario de la lista de muteados
         delete mutedUsers[m.chat][mentionedUser];
-        await sock.sendMessage(m.chat, {
-            text: `🔊 *El usuario @${mentionedUser.split("@")[0]} ha sido desmuteado.*`,
-            mentions: [mentionedUser],
-        });
+        m.reply(`🔊 *El usuario @${mentionedUser.split("@")[0]} ha sido desmuteado.*`, { mentions: [mentionedUser] });
     } catch (error) {
         console.error("❌ Error al ejecutar el comando unmute:", error);
         m.reply("❌ *Ocurrió un error al intentar desmutear al usuario.*");
