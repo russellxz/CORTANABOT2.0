@@ -1134,16 +1134,16 @@ case 'ban_eliminar': {
 break;
 		
 //comando para mutear
+
 case "mute": {
     try {
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Verificar si el usuario que ejecuta el comando es administrador
-        const groupAdmins = m.groupMetadata.participants
-            .filter((p) => p.admin === "admin" || p.admin === "superadmin")
-            .map((p) => p.id);
-
-        if (!groupAdmins.includes(m.sender)) {
+        // Verificar si el remitente es administrador
+        const isAdmin = m.groupMetadata.participants.some(
+            (p) => p.id === m.sender && (p.admin === "admin" || p.admin === "superadmin")
+        );
+        if (!isAdmin) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
@@ -1193,12 +1193,11 @@ case "unmute": {
     try {
         if (!m.isGroup) return m.reply("⚠️ *Este comando solo puede ser usado en grupos.*");
 
-        // Verificar si el usuario que ejecuta el comando es administrador
-        const groupAdmins = m.groupMetadata.participants
-            .filter((p) => p.admin === "admin" || p.admin === "superadmin")
-            .map((p) => p.id);
-
-        if (!groupAdmins.includes(m.sender)) {
+        // Verificar si el remitente es administrador
+        const isAdmin = m.groupMetadata.participants.some(
+            (p) => p.id === m.sender && (p.admin === "admin" || p.admin === "superadmin")
+        );
+        if (!isAdmin) {
             return m.reply("⚠️ *Solo los administradores del grupo pueden usar este comando.*");
         }
 
