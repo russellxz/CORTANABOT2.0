@@ -1136,9 +1136,12 @@ break;
 //comando para mute
 
 // Comando para mutear
-
 case 'mute': {
+    // Verificar si el comando viene de un grupo
+    const isGroup = m.isGroup;
     if (!isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
+
+    const isAdmin = m.key.fromMe || (m.isGroup && m.sender && groupAdmins.includes(m.sender)); // Asegúrate de que `groupAdmins` esté definido
     if (!isAdmin && !isOwner) return m.reply('⚠️ Solo los administradores o el propietario del bot pueden usar este comando.');
 
     const mentionedJid = m.mentionedJid[0]; // Obtener el usuario mencionado
@@ -1214,7 +1217,11 @@ case 'mute': {
 break;
 
 case 'unmute': {
+    // Verificar si el comando viene de un grupo
+    const isGroup = m.isGroup;
     if (!isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
+
+    const isAdmin = m.key.fromMe || (m.isGroup && m.sender && groupAdmins.includes(m.sender)); // Asegúrate de que `groupAdmins` esté definido
     if (!isAdmin && !isOwner) return m.reply('⚠️ Solo los administradores o el propietario del bot pueden usar este comando.');
 
     const mentionedJid = m.mentionedJid[0]; // Obtener el usuario mencionado
@@ -1233,7 +1240,6 @@ case 'unmute': {
     }
 }
 break;
-
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
