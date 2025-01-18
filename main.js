@@ -1296,7 +1296,7 @@ case 'comando': {
         return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
     }
 
-    if (!m.quoted || m.quoted.mimetype !== 'image/webp') {
+    if (!m.quoted || !m.quoted.key || m.quoted.mimetype !== 'image/webp') {
         return m.reply('⚠️ *Responde a un sticker para agregarle un comando.*');
     }
 
@@ -1307,7 +1307,13 @@ case 'comando': {
 
     try {
         if (!global.stickerCommands) global.stickerCommands = {};
-        global.stickerCommands[m.quoted.key.id] = commandToAdd; // Asocia el comando al ID del sticker
+        const stickerId = m.quoted.key.id;
+
+        if (!stickerId) {
+            return m.reply('⚠️ *No se pudo obtener el ID del sticker. Intenta de nuevo.*');
+        }
+
+        global.stickerCommands[stickerId] = commandToAdd; // Asocia el comando al ID del sticker
         m.reply(`✅ *Comando "${commandToAdd}" agregado al sticker.*`);
     } catch (error) {
         console.error('Error al agregar el comando al sticker:', error);
@@ -1330,13 +1336,17 @@ case 'z': {
         return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
     }
 
-    if (!m.quoted || m.quoted.mimetype !== 'image/webp') {
+    if (!m.quoted || !m.quoted.key || m.quoted.mimetype !== 'image/webp') {
         return m.reply('⚠️ *Responde a un sticker para eliminarle el comando.*');
     }
 
     try {
         if (!global.stickerCommands) global.stickerCommands = {};
         const stickerId = m.quoted.key.id;
+
+        if (!stickerId) {
+            return m.reply('⚠️ *No se pudo obtener el ID del sticker. Intenta de nuevo.*');
+        }
 
         if (!global.stickerCommands[stickerId]) {
             return m.reply('⚠️ *Este sticker no tiene un comando asignado.*');
