@@ -724,13 +724,16 @@ case 'guar': {
         mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
     }
 
-    // Guardar multimedia con la palabra clave y el usuario que lo guardó
+    // Detectar si es Owner
+    const isOwner = global.owner.some(([id]) => id === m.sender.replace('@s.whatsapp.net', ''));
+
+    // Guardar multimedia con la palabra clave, usuario y estado de Owner
     multimediaStore[saveKey] = {
         buffer: mediaBuffer.toString('base64'), // Convertir a base64
         mimetype: mediaType,
         extension: mediaExt,
         savedBy: m.sender, // Número del usuario que guarda el archivo
-        isOwner: m.sender === global.numOwner, // Indicar si fue guardado por el Owner
+        isOwner, // Indicar si fue guardado por el Owner
     };
 
     fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Guardar en archivo
@@ -796,6 +799,7 @@ case 'g':
 //para borrar
 	case 'kill': {
     try {
+        const isOwner = global.owner.some(([id]) => id === m.sender.replace('@s.whatsapp.net', ''));
         const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : null;
         const isAdmin = groupMetadata
             ? groupMetadata.participants.some((participant) => participant.id === m.sender && participant.admin)
@@ -825,7 +829,7 @@ case 'g':
         const multimediaItem = multimediaStore[deleteKey];
 
         // Verificar si el archivo fue guardado por el Owner
-        if (multimediaItem.isOwner && m.sender !== global.numOwner) {
+        if (multimediaItem.isOwner && !isOwner) {
             return conn.sendMessage(
                 m.chat,
                 {
@@ -836,7 +840,7 @@ case 'g':
         }
 
         // Verificar si el usuario tiene permisos para eliminar
-        if (multimediaItem.savedBy !== m.sender && !isAdmin && m.sender !== global.numOwner) {
+        if (multimediaItem.savedBy !== m.sender && !isAdmin && !isOwner) {
             return conn.sendMessage(
                 m.chat,
                 {
