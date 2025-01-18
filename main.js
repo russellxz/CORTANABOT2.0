@@ -57,7 +57,20 @@ if (fs.existsSync(path2)) {
 }
 //modo owner
 // Cargar el estado de modoOwner
+const stickerCommandsPath = './stickerCommands.json';
 
+// Verifica si el archivo existe y carga los datos
+if (fs.existsSync(stickerCommandsPath)) {
+    global.stickerCommands = JSON.parse(fs.readFileSync(stickerCommandsPath, 'utf-8'));
+} else {
+    global.stickerCommands = {};
+    fs.writeFileSync(stickerCommandsPath, JSON.stringify(global.stickerCommands, null, 2));
+}
+
+// Función para guardar cambios en el archivo
+global.saveStickerCommands = () => {
+    fs.writeFileSync(stickerCommandsPath, JSON.stringify(global.stickerCommands, null, 2));
+};
 // no tocar abajo
 let tebaklagu = global.db.data.game.tebaklagu = []
 let kuismath = global.db.data.game.math = []
@@ -1283,41 +1296,29 @@ case 'k': {
 }
 break;
 // para agregar comando a stikerz
-
 case 'comando': {
     if (!m.isGroup) {
         return m.reply('❌ *Este comando solo puede usarse en grupos.*');
     }
 
-    const groupMetadata = await conn.groupMetadata(m.chat);
-    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
-    const isAdmin = groupAdmins.includes(m.sender);
-
-    if (!isAdmin) {
-        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
+    if (!m.quoted || !m.quoted.stickerMessage) {
+        return m.reply('❌ *Responde a un sticker con el comando que deseas asociar.*');
     }
 
-    if (!m.quoted || !m.quoted.message?.stickerMessage) {
-        return m.reply('⚠️ *Responde a un sticker para agregarle un comando.*');
+    const stickerId = m.quoted.stickerMessage.fileSha256.toString('base64');
+    const commandToAdd = args.join(' ');
+
+    if (!commandToAdd) {
+        return m.reply('❌ *Debes especificar el comando a asociar al sticker.*');
     }
 
-    const commandToAdd = args[0];
-    if (!commandToAdd || !['.abrir', '.cerrar', '.k'].includes(commandToAdd)) {
-        return m.reply('⚠️ *Comando inválido. Usa uno de los siguientes: .abrir, .cerrar, .k.*');
-    }
+    global.stickerCommands[stickerId] = commandToAdd; // Asocia el comando al sticker
+    global.saveStickerCommands(); // Guarda los cambios en el archivo
 
-    try {
-        if (!global.stickerCommands) global.stickerCommands = {};
-        const stickerId = m.quoted.message.stickerMessage.fileSha256.toString('base64');
-
-        global.stickerCommands[stickerId] = commandToAdd; // Asocia el comando al sticker
-        m.reply(`✅ *Comando "${commandToAdd}" agregado al sticker.*`);
-    } catch (error) {
-        console.error('Error al agregar el comando al sticker:', error);
-        m.reply('❌ *Hubo un error al intentar agregar el comando al sticker.*');
-    }
+    m.reply(`✅ *El comando* "${commandToAdd}" *ha sido asociado con éxito al sticker.*`);
 }
 break;
+
 		
 // para quitar
 case 'z': {
@@ -1325,32 +1326,20 @@ case 'z': {
         return m.reply('❌ *Este comando solo puede usarse en grupos.*');
     }
 
-    const groupMetadata = await conn.groupMetadata(m.chat);
-    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
-    const isAdmin = groupAdmins.includes(m.sender);
-
-    if (!isAdmin) {
-        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
+    if (!m.quoted || !m.quoted.stickerMessage) {
+        return m.reply('❌ *Responde a un sticker para eliminar el comando asociado.*');
     }
 
-    if (!m.quoted || !m.quoted.message?.stickerMessage) {
-        return m.reply('⚠️ *Responde a un sticker para eliminar su comando.*');
+    const stickerId = m.quoted.stickerMessage.fileSha256.toString('base64');
+
+    if (!global.stickerCommands[stickerId]) {
+        return m.reply('⚠️ *No hay ningún comando asociado a este sticker.*');
     }
 
-    try {
-        if (!global.stickerCommands) global.stickerCommands = {};
-        const stickerId = m.quoted.message.stickerMessage.fileSha256.toString('base64');
+    delete global.stickerCommands[stickerId]; // Elimina el comando asociado
+    global.saveStickerCommands(); // Guarda los cambios en el archivo
 
-        if (!global.stickerCommands[stickerId]) {
-            return m.reply('⚠️ *Este sticker no tiene un comando asignado.*');
-        }
-
-        delete global.stickerCommands[stickerId]; // Elimina el comando del sticker
-        m.reply(`✅ *Comando eliminado del sticker.*`);
-    } catch (error) {
-        console.error('Error al eliminar el comando del sticker:', error);
-        m.reply('❌ *Hubo un error al intentar eliminar el comando del sticker.*');
-    }
+    m.reply('✅ *Comando eliminado del sticker.*');
 }
 break;
 		
