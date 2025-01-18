@@ -792,40 +792,72 @@ case 'g':
         { quoted: m }
     );
     break
-    case 'kill': {
-if (!isCreator) return reply(info.owner)
-    const deleteKey = args.join(' '); // Palabra clave para eliminar
-    if (!deleteKey) {
+//para borrar
+	case 'kill': {
+    try {
+        const deleteKey = args.join(' '); // Palabra clave para eliminar
+        if (!deleteKey) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "⚠️ *Aviso:* Escribe la palabra clave para borrar el multimedia guardado. 🗑️",
+                },
+                { quoted: m }
+            );
+        }
+
+        if (!multimediaStore[deleteKey]) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${deleteKey}"*. 🔍`,
+                },
+                { quoted: m }
+            );
+        }
+
+        const media = multimediaStore[deleteKey];
+        const isAdmin = m.isGroup && m.groupMetadata.participants.some(p => p.id === m.sender && p.admin === 'admin');
+        const isOwnerMedia = media.addedBy === global.numOwner; // Número del owner principal
+
+        // Verificar permisos
+        if (isOwnerMedia && !isCreator) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: `❌ *Error:* No puedes eliminar este multimedia, fue agregado por el owner. 🛑`,
+                },
+                { quoted: m }
+            );
+        }
+
+        if (media.addedBy !== m.sender && !isAdmin && !isCreator) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: `❌ *Error:* Solo los administradores o el owner pueden eliminar multimedia guardado por otros usuarios. 🛡️`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // Eliminar el multimedia
+        delete multimediaStore[deleteKey];
+        fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Guardar cambios
+
         return conn.sendMessage(
             m.chat,
             {
-                text: "⚠️ *Aviso:* Escribe la palabra clave para borrar el multimedia guardado. 🗑️"
+                text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${deleteKey}"* ha sido eliminado. ✅`,
             },
             { quoted: m }
         );
+    } catch (error) {
+        console.error('❌ Error eliminando multimedia:', error);
+        m.reply('❌ *Ocurrió un error al intentar eliminar el multimedia.*');
     }
-
-    if (!multimediaStore[deleteKey]) {
-        return conn.sendMessage(
-            m.chat,
-            {
-                text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${deleteKey}"*. 🔍`
-            },
-            { quoted: m }
-        );
-    }
-
-    delete multimediaStore[deleteKey]; // Eliminar del almacenamiento
-    fs.writeFileSync(path2, JSON.stringify(multimediaStore, null, 2)); // Actualizar el archivo
-
-    return conn.sendMessage(
-        m.chat,
-        {
-            text: `🗑️ *Listo:* El multimedia guardado con la palabra clave *"${deleteKey}"* ha sido eliminado. ✅`
-        },
-        { quoted: m }
-    );}
-    break;
+}
+break;
 //clavelista
 
 case 'clavelista': {
