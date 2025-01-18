@@ -1137,21 +1137,19 @@ break;
 
 // Comando para mutear
 case 'mute': {
-    const isGroup = m.isGroup;
-    if (!isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
+    if (!m.isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
 
-    const isAdmin = m.key.fromMe || (m.isGroup && m.sender && groupAdmins.includes(m.sender));
-    if (!isAdmin && !isOwner(m.sender)) return m.reply('⚠️ Solo los administradores o el propietario del bot pueden usar este comando.');
+    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : {};
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+
+    const isAdmin = groupAdmins.includes(m.sender);
+    if (!isAdmin) return m.reply('⚠️ Solo los administradores del grupo pueden usar este comando.');
 
     const mentionedJid = m.mentionedJid[0]; // Obtener el usuario mencionado
     const duration = parseInt(args[1]); // Duración del mute en minutos
 
     if (!mentionedJid) {
         return m.reply('⚠️ Menciona a un usuario para mutearlo.');
-    }
-
-    if (isOwner(mentionedJid)) {
-        return m.reply('⚠️ No puedes mutear al propietario.');
     }
 
     if (!mutedUsers[m.chat]) {
@@ -1210,11 +1208,13 @@ case 'mute': {
 break;
 
 case 'unmute': {
-    const isGroup = m.isGroup;
-    if (!isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
+    if (!m.isGroup) return m.reply('⚠️ Este comando solo se puede usar en grupos.');
 
-    const isAdmin = m.key.fromMe || (m.isGroup && m.sender && groupAdmins.includes(m.sender));
-    if (!isAdmin && !isOwner(m.sender)) return m.reply('⚠️ Solo los administradores o el propietario del bot pueden usar este comando.');
+    const groupMetadata = m.isGroup ? await sock.groupMetadata(m.chat) : {};
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+
+    const isAdmin = groupAdmins.includes(m.sender);
+    if (!isAdmin) return m.reply('⚠️ Solo los administradores del grupo pueden usar este comando.');
 
     const mentionedJid = m.mentionedJid[0]; // Obtener el usuario mencionado
 
@@ -1231,7 +1231,7 @@ case 'unmute': {
         return m.reply('⚠️ Este usuario no está muteado.');
     }
 }
-break;
+break;       
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
