@@ -1136,15 +1136,7 @@ break;
 
 case 'ver': {
     try {
-        // Verificar si el usuario es owner global o admin en un grupo
-        const isOwner = global.owner.some(([number]) => `${number}@s.whatsapp.net` === m.sender);
-        let isAdmin = false;
-
-        if (m.isGroup) {
-            const groupMetadata = await conn.groupMetadata(m.chat);
-            isAdmin = groupMetadata.participants.some(participant => participant.id === m.sender && participant.admin);
-        }
-
+        // Validación para admins y owners
         if (!isOwner && (!m.isGroup || !isAdmin)) {
             return conn.sendMessage(
                 m.chat,
@@ -1153,41 +1145,40 @@ case 'ver': {
             );
         }
 
-        // Verificar si el mensaje es una respuesta a otro mensaje
+        // Verificar si se responde a un mensaje
         if (!m.quoted) {
             return conn.sendMessage(
                 m.chat,
-                { text: "❌ *Error:* Responde a un mensaje de 'vista única' con este comando para desactivarla." },
+                { text: "❌ *Error:* Responde a un mensaje de vista única para poder verlo." },
                 { quoted: m }
             );
         }
 
-        // Detectar si el mensaje tiene la característica 'vista única'
-        if (m.quoted.message?.viewOnceMessage) {
-            // Extraer y reenviar el contenido del mensaje
-            const viewOnceMsg = m.quoted.message.viewOnceMessage.message;
-            const msgType = Object.keys(viewOnceMsg)[0]; // Tipo de mensaje (imageMessage, videoMessage, etc.)
-
-            await conn.sendMessage(m.chat, { [msgType]: viewOnceMsg[msgType] }, { quoted: m });
-
-            return conn.sendMessage(
-                m.chat,
-                { text: "✅ *Mensaje reenviado con vista única desactivada.*" },
-                { quoted: m }
-            );
-        } else {
-            // Si el mensaje no tiene la característica 'vista única'
+        // Verificar si es un mensaje de vista única
+        if (!m.quoted.message?.viewOnceMessage) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *Aviso:* Este mensaje no tiene la característica de vista única." },
                 { quoted: m }
             );
         }
-    } catch (error) {
-        console.error('❌ Error en el comando "ver":', error);
-        return conn.sendMessage(
+
+        // Extraer el contenido del mensaje de vista única
+        const viewOnceMsg = m.quoted.message.viewOnceMessage.message; // Contenido del mensaje
+        const msgType = Object.keys(viewOnceMsg)[0]; // Tipo de mensaje (imageMessage, videoMessage, etc.)
+
+        // Reenviar el contenido del mensaje
+        await conn.sendMessage(
             m.chat,
-            { text: "❌ *Error:* Ocurrió un problema al procesar este comando. Intenta de nuevo." },
+            { [msgType]: viewOnceMsg[msgType], caption: "📂 *Mensaje de vista única reenviado.*" },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error("❌ Error al procesar el comando .ver:", error);
+        conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error:* Ocurrió un problema al procesar el mensaje de vista única." },
             { quoted: m }
         );
     }
