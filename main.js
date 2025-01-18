@@ -1247,45 +1247,43 @@ case 'cerrar': {
 break;
 //eliminar del grupo 
 case 'k': {
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
+    }
+
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+
+    if (!isAdmin) {
+        return m.reply('⚠️ *Solo los administradores pueden usar este comando.*');
+    }
+
+    if (!m.quoted) {
+        return m.reply('⚠️ *Debes responder al mensaje del usuario que deseas eliminar.*');
+    }
+
+    const target = m.quoted.sender; // Usuario al que se le respondió
+    const isTargetAdmin = groupAdmins.includes(target);
+
+    if (isTargetAdmin) {
+        return m.reply('⚠️ *No puedes eliminar a otro administrador del grupo.*');
+    }
+
     try {
-        if (!m.isGroup) {
-            return m.reply('❌ *Este comando solo puede ser usado en grupos.*');
-        }
-
-        const isBotAdmin = m.isGroup && m.groupMetadata.participants.find(p => p.id === sock.user.id)?.admin;
-        const isUserAdmin = m.isGroup && m.groupMetadata.participants.find(p => p.id === m.sender)?.admin;
-
-        if (!isUserAdmin) {
-            return m.reply('⚠️ *Solo los administradores del grupo pueden usar este comando.*');
-        }
-
-        if (!isBotAdmin) {
-            return m.reply('⚠️ *Necesito ser administrador para ejecutar este comando.*');
-        }
-
-        if (!m.quoted) {
-            return m.reply('⚠️ *Debes responder al mensaje del usuario que deseas eliminar.*');
-        }
-
-        const target = m.quoted.sender; // ID del usuario al que se le respondió
-        const isTargetAdmin = m.groupMetadata.participants.find(p => p.id === target)?.admin;
-
-        if (isTargetAdmin) {
-            return m.reply('⚠️ *No puedes eliminar a otro administrador del grupo.*');
-        }
-
         // Expulsar al usuario del grupo
-        await sock.groupParticipantsUpdate(m.chat, [target], 'remove');
+        await conn.groupParticipantsUpdate(m.chat, [target], 'remove');
         m.reply(`✅ *Usuario eliminado del grupo:* @${target.split('@')[0]}`, null, {
             mentions: [target],
         });
     } catch (error) {
-        console.error('❌ Error ejecutando el comando .k:', error);
-        m.reply('❌ *Ocurrió un error al intentar eliminar al usuario. Inténtalo nuevamente.*');
+        console.error('Error al eliminar al usuario:', error);
+        m.reply('❌ *Hubo un error al intentar eliminar al usuario.*');
     }
-    break;
-}		
+}
+break;
 
+		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
