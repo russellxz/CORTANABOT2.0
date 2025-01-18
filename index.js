@@ -451,7 +451,50 @@ sock.ev.on("messages.update", async (updates) => {
     }
 });
         
+sock.ev.on("messages.upsert", async (chatUpdate) => {
+    console.log("Event triggered: messages.upsert");
 
+    for (const msg of chatUpdate.messages) {
+        try {
+            const { remoteJid, participant } = msg.key;
+            const sender = participant || remoteJid;
+
+            // Verificar si el usuario está muteado
+            if (
+                mutedUsers[remoteJid]?.[sender] &&
+                (!mutedUsers[remoteJid][sender].until || mutedUsers[remoteJid][sender].until > Date.now())
+            ) {
+                const userMuteInfo = mutedUsers[remoteJid][sender];
+
+                // Eliminar mensaje enviado por el usuario muteado
+                await sock.sendMessage(remoteJid, {
+                    delete: {
+                        remoteJid,
+                        id: msg.key.id,
+                        fromMe: false,
+                    },
+                });
+
+                // Incrementar contador de mensajes enviados mientras está muteado
+                userMuteInfo.messageCount++;
+
+                // Eliminar del grupo si excede los 10 mensajes
+                if (userMuteInfo.messageCount > 10) {
+                    await sock.groupParticipantsUpdate(remoteJid, [sender], "remove");
+                    delete mutedUsers[remoteJid][sender];
+                } else {
+                    // Enviar advertencia si está muteado
+                    await sock.sendMessage(remoteJid, {
+                        text: `⚠️ *Estás muteado.* No puedes enviar mensajes. Si envías más de 10 mensajes, serás eliminado del grupo. (Mensaje ${userMuteInfo.messageCount}/10)`,
+                        mentions: [sender],
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("❌ Error manejando mensajes de usuario muteado:", error);
+        }
+    }
+});
         
 
         
