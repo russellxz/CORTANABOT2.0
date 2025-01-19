@@ -310,7 +310,7 @@ sock.ev.on("messages.upsert", async (message) => {
             };
         }
 
-        // Lógica para manejar la creación de la caja fuerte
+        // Lógica para manejar la creación de la caja fuerte con prefijo `.`
         const remoteJid = key?.remoteJid;
         const participant = msg?.participant || remoteJid;
 
@@ -320,12 +320,25 @@ sock.ev.on("messages.upsert", async (message) => {
             msg?.message?.conversation &&
             global.tempCaja[remoteJid] === key?.id
         ) {
-            const password = msg.message.conversation.trim();
+            const input = msg.message.conversation.trim();
+
+            // Verificar si la respuesta tiene el prefijo `.`
+            if (!input.startsWith(".")) {
+                await sock.sendMessage(
+                    remoteJid,
+                    { text: "⚠️ Responde con un formato válido. Ejemplo: `.miContraseña123`" },
+                    { quoted: msg }
+                );
+                return;
+            }
+
+            // Extraer la contraseña eliminando el prefijo `.`
+            const password = input.slice(1).trim();
 
             if (!password || password.length < 4) {
                 await sock.sendMessage(
                     remoteJid,
-                    { text: "⚠️ La contraseña debe tener al menos 4 caracteres. Responde con una contraseña válida." },
+                    { text: "⚠️ La contraseña debe tener al menos 4 caracteres. Responde nuevamente con un formato válido." },
                     { quoted: msg }
                 );
                 return;
