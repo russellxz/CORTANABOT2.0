@@ -1541,7 +1541,7 @@ case 'fallo': {
         return conn.sendMessage(
             m.chat,
             {
-                text: "⚠️ *Uso del comando:* `.fallo on` para activar el fallo de seguridad o `.fallo off` para desactivarlo. 🔐",
+                text: "⚠️ *Uso del comando:* `.fallo on` para activar el fallo de seguridad o `.fallo off` para desactivarlo en este grupo. 🔐",
             },
             { quoted: m }
         );
@@ -1563,26 +1563,28 @@ case 'fallo': {
     }
 
     if (subCommand === 'on') {
-        global.falloSeguridad = true;
+        global.falloSeguridad[m.chat] = true;
         return conn.sendMessage(
             m.chat,
-            { text: "✅ *Modo fallo de seguridad activado.* Ahora todos los usuarios pueden acceder a cajas fuertes ajenas sin contraseña. Usa el comando `.otracaja @usuario` para acceder. 🔓" },
+            { text: "✅ *Modo fallo de seguridad activado en este grupo.* Ahora todos los usuarios pueden acceder a cajas fuertes ajenas sin contraseña en este grupo. Usa el comando `.otracaja @usuario` para acceder. 🔓" },
             { quoted: m }
         );
     }
 
     if (subCommand === 'off') {
-        global.falloSeguridad = false;
+        global.falloSeguridad[m.chat] = false;
 
-        // Cerrar todas las cajas fuertes al desactivar el fallo de seguridad
-        Object.values(cajasFuertes).forEach((caja) => {
-            caja.isOpen = false;
+        // Cerrar todas las cajas fuertes del grupo al desactivar el fallo de seguridad
+        Object.keys(cajasFuertes).forEach(user => {
+            if (user.endsWith(m.chat)) {
+                cajasFuertes[user].isOpen = false;
+            }
         });
 
         fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
         return conn.sendMessage(
             m.chat,
-            { text: "✅ *Modo fallo de seguridad desactivado.* Todas las cajas fuertes se han cerrado automáticamente. 🔒" },
+            { text: "✅ *Modo fallo de seguridad desactivado en este grupo.* Todas las cajas fuertes del grupo se han cerrado automáticamente. 🔒" },
             { quoted: m }
         );
     }
