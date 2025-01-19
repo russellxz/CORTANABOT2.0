@@ -1177,10 +1177,6 @@ break;
 // para agregar comando a stikerz
 // Comando para crear caja fuerte
 case 'cajafuerte': {
-    if (!m.isGroup) {
-        return m.reply('❌ Este comando solo puede usarse en grupos.');
-    }
-
     const userId = m.sender;
 
     if (!cajasFuertes[userId]) {
@@ -1188,7 +1184,7 @@ case 'cajafuerte': {
         if (!global.tempCaja) global.tempCaja = {};
         global.tempCaja[m.chat] = m.key.id;
 
-        await m.reply('🔐 No tienes una caja fuerte creada. Responde a este mensaje con una contraseña para crearla.');
+        await m.reply('🔐 No tienes una caja fuerte creada. Responde a este mensaje con una contraseña válida. Ejemplo: `.miContraseña123`');
     } else {
         await m.reply('✅ Ya tienes una caja fuerte creada. Usa los comandos correspondientes para gestionarla.');
     }
