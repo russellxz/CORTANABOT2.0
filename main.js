@@ -1590,75 +1590,36 @@ case 'fallo': {
 break;
 //otra caja		
 case 'otracaja': {
-    if (!isGroup) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Este comando solo puede usarse en grupos.*" },
-            { quoted: m }
-        );
+    if (!m.isGroup) {
+        return m.reply('❌ *Este comando solo puede usarse en grupos.*');
     }
 
-    const mentionedUser = m.mentionedJid && m.mentionedJid[0];
+    const mentionedUser = m.mentionedJid[0];
     if (!mentionedUser) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *Menciona al usuario cuya caja fuerte deseas acceder.*" },
-            { quoted: m }
-        );
+        return m.reply('⚠️ *Debes mencionar al usuario cuya caja fuerte deseas consultar.*');
     }
 
+    // Verificar si el modo de fallo de seguridad está activo
     if (!global.falloSeguridad) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *El modo de fallo de seguridad no está activado.*" },
-            { quoted: m }
-        );
+        return m.reply('⚠️ *El modo de fallo de seguridad no está activo. No puedes acceder a la caja fuerte de otros usuarios.*');
     }
 
-    const cajaFuerte = cajasFuertes[mentionedUser];
-    if (!cajaFuerte) {
-        return conn.sendMessage(
-            m.chat,
-            {
-                text: `❌ *El usuario mencionado no tiene una caja fuerte creada.*`,
-            },
-            { quoted: m }
-        );
+    const cajaFuerte = global.cajasFuertes[mentionedUser];
+    if (!cajaFuerte || !cajaFuerte.multimedia || Object.keys(cajaFuerte.multimedia).length === 0) {
+        return m.reply(`📂 *El usuario @${mentionedUser.split('@')[0]} no tiene multimedia guardado en su caja fuerte.*`, { mentions: [mentionedUser] });
     }
 
-    const multimediaKeys = Object.keys(cajaFuerte.multimedia);
-    if (multimediaKeys.length === 0) {
-        return conn.sendMessage(
-            m.chat,
-            {
-                text: `⚠️ *La caja fuerte de ${mentionedUser.split('@')[0]} está vacía.*`,
-            },
-            { quoted: m }
-        );
-    }
+    const listaPalabrasClave = Object.keys(cajaFuerte.multimedia).join('\n- ');
+    const mensaje = `🔓 *Caja fuerte de @${mentionedUser.split('@')[0]}*\n\n📋 *Palabras clave guardadas:*\n- ${listaPalabrasClave}`;
 
-    const menuList = multimediaKeys
-        .map((key, index) => `🔑 *${index + 1}.* ${key}`)
-        .join("\n");
+    // Enviar mensaje de notificación al propietario
+    await conn.sendMessage(mentionedUser, {
+        text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte durante el modo de fallo de seguridad.*`,
+        mentions: [m.sender],
+    });
 
-    await conn.sendMessage(
-        m.chat,
-        {
-            text: `🔓 *Caja fuerte de ${mentionedUser.split('@')[0]}:*\n\n${menuList}\n\nPara sacar un archivo, usa el comando:\n*.sacar2 <palabra clave>*`,
-        },
-        { quoted: m }
-    );
-
-    // Informar al propietario de la caja fuerte
-    await conn.sendMessage(
-        mentionedUser,
-        {
-            text: `⚠️ *Alerta:* ${m.sender.split('@')[0]} ha accedido a tu caja fuerte en el grupo *${groupMetadata.subject}*.`,
-        },
-        { quoted: m }
-    );
+    return conn.sendMessage(m.chat, { text: mensaje, mentions: [mentionedUser] }, { quoted: m });
 }
-break;
 //sacar de otra caja		
 case 'sacar2': {
     if (!global.falloSeguridad) {
