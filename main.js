@@ -1533,7 +1533,155 @@ case 'del': {
     );
 }
 break;
+//fallo 
+case 'fallo': {
+    const subCommand = args[0]?.toLowerCase(); // Comando adicional: on/off
+
+    if (!['on', 'off'].includes(subCommand)) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *Uso del comando:* `.fallo on` para activar el fallo de seguridad o `.fallo off` para desactivarlo. 🔐",
+            },
+            { quoted: m }
+        );
+    }
+
+    const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : null;
+    const groupAdmins = groupMetadata
+        ? groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id)
+        : [];
+    const isAdmin = groupAdmins.includes(m.sender);
+    const isOwner = global.owner.some(([id]) => id === m.sender.replace('@s.whatsapp.net', ''));
+
+    if (!isAdmin && !isOwner) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede ser usado por administradores o el Owner.*" },
+            { quoted: m }
+        );
+    }
+
+    if (subCommand === 'on') {
+        global.falloSeguridad = true;
+        return conn.sendMessage(
+            m.chat,
+            { text: "✅ *Modo fallo de seguridad activado.* Ahora todos los usuarios pueden acceder a cajas fuertes ajenas sin contraseña. Usa el comando `.otracaja @usuario` para acceder. 🔓" },
+            { quoted: m }
+        );
+    }
+
+    if (subCommand === 'off') {
+        global.falloSeguridad = false;
+
+        // Cerrar todas las cajas fuertes al desactivar el fallo de seguridad
+        Object.values(cajasFuertes).forEach((caja) => {
+            caja.isOpen = false;
+        });
+
+        fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+        return conn.sendMessage(
+            m.chat,
+            { text: "✅ *Modo fallo de seguridad desactivado.* Todas las cajas fuertes se han cerrado automáticamente. 🔒" },
+            { quoted: m }
+        );
+    }
+}
+break;
 		
+case 'otracaja': {
+    if (!global.falloSeguridad) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *El modo fallo de seguridad está desactivado. No puedes acceder a cajas fuertes ajenas.*" },
+            { quoted: m }
+        );
+    }
+
+    if (!m.mentionedJid?.length) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Debes mencionar a un usuario para acceder a su caja fuerte.* Usa el comando `.otracaja @usuario`. 📂" },
+            { quoted: m }
+        );
+    }
+
+    const target = m.mentionedJid[0];
+    if (!cajasFuertes[target]) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *El usuario mencionado no tiene una caja fuerte creada.*" },
+            { quoted: m }
+        );
+    }
+
+    // Notificar al dueño de la caja fuerte
+    await conn.sendMessage(
+        target,
+        { text: `⚠️ *El usuario @${m.sender.split("@")[0]} ha accedido a tu caja fuerte debido al fallo de seguridad.*` },
+        { mentions: [m.sender] }
+    );
+
+    return conn.sendMessage(
+        m.chat,
+        {
+            text: `✅ *Has accedido a la caja fuerte de @${target.split("@")[0]}.* Usa el comando \`.sacar2 palabra_clave\` para extraer archivos.`,
+            mentions: [target],
+        },
+        { quoted: m }
+    );
+}
+break;
+
+case 'sacar2': {
+    const keyword = args.join(' ').trim(); // Palabra clave
+
+    if (!keyword) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *Uso del comando:* `.sacar2 palabra_clave` para extraer un archivo de la caja fuerte. 📂",
+            },
+            { quoted: m }
+        );
+    }
+
+    const target = m.mentionedJid?.[0];
+    if (!target || !cajasFuertes[target]) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *El usuario mencionado no tiene una caja fuerte creada.*" },
+            { quoted: m }
+        );
+    }
+
+    const multimedia = cajasFuertes[target].multimedia[keyword];
+    if (!multimedia) {
+        return conn.sendMessage(
+            m.chat,
+            { text: `❌ *No se encontró ningún multimedia con la palabra clave:* *"${keyword}"*. 📂` },
+            { quoted: m }
+        );
+    }
+
+    const buffer = Buffer.from(multimedia.buffer, "base64");
+    await conn.sendMessage(
+        m.chat,
+        {
+            document: buffer,
+            mimetype: multimedia.mimetype,
+            fileName: `Archivo-${keyword}.${multimedia.extension}`,
+        },
+        { quoted: m }
+    );
+
+    return conn.sendMessage(
+        m.chat,
+        { text: `✅ *Archivo extraído de la caja fuerte de @${target.split("@")[0]} con éxito.*`, mentions: [target] },
+        { quoted: m }
+    );
+}
+break;		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
