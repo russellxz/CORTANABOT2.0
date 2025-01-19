@@ -37,6 +37,8 @@ global.modoOwner = [] // Objeto para almacenar el estado del modo owner en cada 
 // Variables globales
 global.awaitingPasswords = {}; // Estructura global para rastrear contraseñas pendientes
 // Almacena el conteo de mensajes por usuario y grupo.
+// Modo de fallo de seguridad (inicialmente desactivado)
+global.falloSeguridad = false;
 global.tempCaja = {};
 global.mensajesPorUsuario = {};  // Usamos un objeto en lugar de un array para asociar usuarios y grupos
 global.antieliminar = {}; // Aquí se guardará el estado de los grupo
