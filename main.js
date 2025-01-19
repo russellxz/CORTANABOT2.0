@@ -1138,7 +1138,7 @@ case 'ban_eliminar': {
 break;
 		
 //eliminar del grupo 
-case '🚮': {
+case 'culiar': {
     if (!m.isGroup) {
         return m.reply('❌ *Este comando solo puede usarse en grupos.*');
     }
@@ -1177,19 +1177,23 @@ break;
 // para agregar comando a stikerz
 // Comando para crear caja fuerte
 case 'cajafuerte': {
-    if (global.cajasFuertes[m.sender]) {
-        return m.reply('⚠️ Ya tienes una caja fuerte creada. Usa otro comando para administrarla.');
+    if (!m.isGroup) {
+        return m.reply('❌ Este comando solo puede usarse en grupos.');
     }
 
-    const promptMessage = await conn.sendMessage(m.chat, { text: '🔐 Responde a este mensaje con tu contraseña para crear tu caja fuerte.' });
-    
-    // Guardar en awaitingPasswords
-    global.awaitingPasswords[m.sender] = {
-        messageId: promptMessage.key.id,
-        timestamp: Date.now(),
-    };
+    const userId = m.sender;
+
+    if (!cajasFuertes[userId]) {
+        // Crear un registro temporal para la creación de la caja fuerte
+        if (!global.tempCaja) global.tempCaja = {};
+        global.tempCaja[m.chat] = m.key.id;
+
+        await m.reply('🔐 No tienes una caja fuerte creada. Responde a este mensaje con una contraseña para crearla.');
+    } else {
+        await m.reply('✅ Ya tienes una caja fuerte creada. Usa los comandos correspondientes para gestionarla.');
+    }
+    break;
 }
-break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
