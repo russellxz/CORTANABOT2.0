@@ -1608,7 +1608,7 @@ case 'otracaja': {
         );
     }
 
-    const userCaja = global.cajasFuertes[mentionedUser];
+    const userCaja = cajasFuertes[mentionedUser];
     if (!userCaja || !userCaja.multimedia || Object.keys(userCaja.multimedia).length === 0) {
         return conn.sendMessage(
             m.chat,
@@ -1633,7 +1633,7 @@ case 'otracaja': {
         { quoted: m }
     );
 
-    // Informar al dueño de la caja fuerte que alguien accedió a su contenido
+    // Notificar al dueño de la caja fuerte
     conn.sendMessage(
         mentionedUser,
         {
