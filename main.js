@@ -1177,54 +1177,67 @@ break;
 // para agregar comando a stikerz
 // Comando para crear caja fuerte
 case 'cajafuerte': {
-    if (!cajasFuertes[m.sender]) {
-        // Verifica si el usuario ya tiene una caja fuerte
-        m.reply(
+    const password = args.join(' ').trim();
+
+    if (!password) {
+        return m.reply(
             "🔐 *No tienes una caja fuerte creada.*\n" +
-            "Usa el comando `.crear contraseña` para crearla.\n" +
-            "Ejemplo: `.crear miClave123`"
-        );
-    } else {
-        m.reply(
-            "✅ *Ya tienes una caja fuerte creada.*\n" +
-            "Usa tus comandos para gestionarla, como `.abrircaja` o `.cerrarcaja`."
+            "Usa el mismo comando seguido de tu contraseña para crearla.\n" +
+            "Ejemplo: `.cajafuerte elpepexds`"
         );
     }
-}
-break;
 
-case 'crear': {
-    const password = args[0]?.trim();
-
-    if (!password || password.length < 4) {
-        return m.reply(
-            "⚠️ *Debes proporcionar una contraseña válida para crear tu caja fuerte.*\n" +
-            "Ejemplo: `.crear miClave123`"
-        );
+    if (password.length < 4) {
+        return m.reply("⚠️ *La contraseña debe tener al menos 4 caracteres.*");
     }
 
     if (cajasFuertes[m.sender]) {
-        return m.reply("✅ *Ya tienes una caja fuerte creada.* Usa tus comandos para gestionarla.");
+        return m.reply("✅ *Ya tienes una caja fuerte creada.* Usa tus comandos para gestionarla, como `.abrircaja` o `.cerrarcaja`.");
     }
 
-    // Crear la caja fuerte
     cajasFuertes[m.sender] = {
         password,
         multimedia: {},
         isOpen: false,
     };
 
-    // Guardar en el archivo
     fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
 
-    // Confirmación
     m.reply("🔐 *Tu caja fuerte ha sido creada con éxito!*");
 
-    // Enviar mensaje al privado si el comando se ejecuta en un grupo
     if (m.isGroup) {
         await conn.sendMessage(
             m.sender,
-            { text: "⚠️ Por seguridad, considera cambiar tu contraseña en privado si alguien la vio en el grupo." }
+            { text: "⚠️ Por seguridad, considera cambiar tu contraseña en privado con el comando `.cambiar nuevaContraseña`." }
+        );
+    }
+}
+break;
+
+case 'cambiar': {
+    const newPassword = args.join(' ').trim(); // Obtener la nueva contraseña del comando
+
+    if (!newPassword || newPassword.length < 4) {
+        return m.reply("⚠️ *Debes proporcionar una nueva contraseña válida con al menos 4 caracteres.*\nEjemplo: `.cambiar nuevaContraseña123`");
+    }
+
+    if (!cajasFuertes[m.sender]) {
+        return m.reply("❌ *No tienes una caja fuerte creada.* Usa el comando `.cajafuerte` para crear una.");
+    }
+
+    // Cambiar la contraseña
+    cajasFuertes[m.sender].password = newPassword;
+
+    // Guardar los cambios en el archivo
+    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+
+    m.reply("🔐 *Tu contraseña ha sido cambiada con éxito.*");
+
+    // Avisar si el comando fue usado en un grupo
+    if (m.isGroup) {
+        await conn.sendMessage(
+            m.sender,
+            { text: "⚠️ Por seguridad, considera usar este comando en privado para evitar que otros vean tu nueva contraseña." }
         );
     }
 }
