@@ -1624,12 +1624,12 @@ case 'otracaja': {
         );
     }
 
-    // Verificar si el fallo de seguridad global o por grupo está activo
+    // Verificar si el fallo de seguridad está activo para este grupo
     const isFalloActivo = global.falloSeguridad || (global.fallo2?.[m.chat]?.activo);
     if (!isFalloActivo) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *El fallo de seguridad no está activo en este grupo. No puedes acceder a la caja fuerte de otros usuarios.*" },
+            { text: "⚠️ *El fallo de seguridad no está activo. No puedes acceder a la caja fuerte de otros usuarios.*" },
             { quoted: m }
         );
     }
@@ -1672,7 +1672,7 @@ case 'otracaja': {
     conn.sendMessage(
         mentionedUser,
         {
-            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte debido al fallo de seguridad activo en el grupo.*`,
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte debido al fallo de seguridad activo.*`,
             mentions: [m.sender],
         }
     );
