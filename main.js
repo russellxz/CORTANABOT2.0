@@ -1470,6 +1470,69 @@ case 'cajaguar': {
     );
 }
 break;
+//para eliminar multimedia de la cajafuerte
+case 'del': {
+    const keyword = args.join(' ').trim(); // Palabra clave del multimedia a eliminar
+
+    if (!keyword) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *Aviso:* Escribe una palabra clave para eliminar un multimedia de tu caja fuerte. 📝",
+            },
+            { quoted: m }
+        );
+    }
+
+    // Verificar si el usuario tiene una caja fuerte creada
+    if (!cajasFuertes[m.sender]) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* No tienes una caja fuerte creada. Usa el comando `.cajafuerte contraseña` para crearla primero. 🔐",
+            },
+            { quoted: m }
+        );
+    }
+
+    // Verificar si la caja fuerte está abierta
+    if (!cajasFuertes[m.sender].isOpen) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* Primero debes abrir tu caja fuerte con el comando `.abrircaja contraseña`. 🔓",
+            },
+            { quoted: m }
+        );
+    }
+
+    // Buscar el multimedia en la caja fuerte del usuario
+    const multimedia = cajasFuertes[m.sender].multimedia[keyword];
+    if (!multimedia) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: `❌ *Error:* No se encontró ningún multimedia con la palabra clave: *"${keyword}"*. 📂`,
+            },
+            { quoted: m }
+        );
+    }
+
+    // Eliminar el multimedia
+    delete cajasFuertes[m.sender].multimedia[keyword];
+
+    // Guardar los cambios en el archivo
+    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+
+    return conn.sendMessage(
+        m.chat,
+        {
+            text: `✅ *Listo:* El multimedia con la palabra clave *"${keyword}"* ha sido eliminado de tu caja fuerte. 🗑️`,
+        },
+        { quoted: m }
+    );
+}
+break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
