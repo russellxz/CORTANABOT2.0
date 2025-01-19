@@ -1312,48 +1312,86 @@ case 'cerrarcaja': {
 break;
 //para sacar multimedia
 case 'sacar': {
-    const keyword = args.join(' ').trim(); // Obtener la palabra clave
-
+    const keyword = args.join(' ').trim(); // Palabra clave para buscar el multimedia
     if (!keyword) {
-        return m.reply("❌ *Debes proporcionar una palabra clave para sacar un archivo.*\nEjemplo: `.sacar palabraClave`");
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *Aviso:* Escribe una palabra clave para sacar un multimedia de tu caja fuerte. 📝",
+            },
+            { quoted: m }
+        );
     }
 
+    // Verificar si el usuario tiene una caja fuerte creada
     if (!cajasFuertes[m.sender]) {
-        return m.reply("❌ *No tienes una caja fuerte creada.* Usa el comando `.cajafuerte` para crearla.");
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* No tienes una caja fuerte creada. Usa el comando `.cajafuerte contraseña` para crearla primero. 🔐",
+            },
+            { quoted: m }
+        );
     }
 
+    // Verificar si la caja fuerte está abierta
     if (!cajasFuertes[m.sender].isOpen) {
-        return m.reply("❌ *Debes abrir tu caja fuerte antes de usar este comando.* Usa `.abrircaja contraseña`.");
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* Primero debes abrir tu caja fuerte con el comando `.abrircaja contraseña`. 🔓",
+            },
+            { quoted: m }
+        );
     }
 
-    const multimedia = cajasFuertes[m.sender].multimedia;
-
-    if (!multimedia[keyword]) {
-        return m.reply("❌ *No se encontró ningún archivo con esa palabra clave.* Verifica la palabra clave o usa `.abrircaja` para ver la lista de archivos guardados.");
+    // Buscar el multimedia en la caja fuerte del usuario
+    const multimedia = cajasFuertes[m.sender].multimedia[keyword];
+    if (!multimedia) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: `❌ *Error:* No se encontró ningún multimedia con la palabra clave: *"${keyword}"*. 📂`,
+            },
+            { quoted: m }
+        );
     }
 
-    const { type, data } = multimedia[keyword];
-
+    // Enviar el multimedia basado en su tipo
     try {
-        switch (type) {
+        switch (multimedia.mimetype.split('/')[0]) {
             case 'image':
-                await conn.sendMessage(m.chat, { image: data }, { quoted: m });
+                await conn.sendMessage(m.chat, { image: multimedia.buffer }, { quoted: m });
                 break;
             case 'video':
-                await conn.sendMessage(m.chat, { video: data }, { quoted: m });
+                await conn.sendMessage(m.chat, { video: multimedia.buffer }, { quoted: m });
                 break;
             case 'audio':
-                await conn.sendMessage(m.chat, { audio: data, mimetype: 'audio/mpeg' }, { quoted: m });
+                await conn.sendMessage(m.chat, { audio: multimedia.buffer, mimetype: multimedia.mimetype }, { quoted: m });
+                break;
+            case 'application':
+                await conn.sendMessage(m.chat, { document: multimedia.buffer, mimetype: multimedia.mimetype, fileName: `archivo.${multimedia.extension}` }, { quoted: m });
                 break;
             case 'sticker':
-                await conn.sendMessage(m.chat, { sticker: data }, { quoted: m });
+                await conn.sendMessage(m.chat, { sticker: multimedia.buffer }, { quoted: m });
                 break;
             default:
-                await conn.sendMessage(m.chat, { text: "❌ *El tipo de archivo no es compatible para ser enviado.*" }, { quoted: m });
+                await conn.sendMessage(
+                    m.chat,
+                    { text: `❌ *Error:* El tipo de archivo no es compatible para ser enviado.` },
+                    { quoted: m }
+                );
+                break;
         }
     } catch (error) {
-        console.error("Error al enviar multimedia:", error);
-        m.reply("❌ *Hubo un error al intentar enviar el archivo. Intenta nuevamente.*");
+        console.error("Error al enviar el multimedia:", error);
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* No se pudo enviar el multimedia. Verifica que sea un archivo válido. 🚫",
+            },
+            { quoted: m }
+        );
     }
 }
 break;
@@ -1363,13 +1401,13 @@ case 'cajaguar': {
         return conn.sendMessage(
             m.chat,
             {
-                text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) con una palabra clave para guardarlo en tu caja fuerte. 📂",
+                text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, documento, etc.) con una palabra clave para guardarlo en tu caja fuerte. 📂",
             },
             { quoted: m }
         );
     }
 
-    const keyword = args.join(' '); // Palabra clave para guardar
+    const keyword = args.join(' ').trim(); // Palabra clave para guardar
     if (!keyword) {
         return conn.sendMessage(
             m.chat,
@@ -1392,9 +1430,9 @@ case 'cajaguar': {
     }
 
     // Descargar el multimedia
-    const mediaType = m.quoted.mimetype;
-    const mediaExt = mediaType.split('/')[1]; // Ejemplo: "jpg", "mp4", etc.
-    const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
+    const mediaType = m.quoted.mimetype.split('/')[0];
+    const mediaExt = m.quoted.mimetype.split('/')[1]; // Ejemplo: "jpg", "mp4", etc.
+    const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
 
     // Convertir el stream en un buffer
     let mediaBuffer = Buffer.alloc(0);
@@ -1415,8 +1453,8 @@ case 'cajaguar': {
 
     // Guardar el multimedia en la caja fuerte del usuario
     cajasFuertes[m.sender].multimedia[keyword] = {
-        buffer: mediaBuffer.toString('base64'), // Convertir a base64
-        mimetype: mediaType,
+        buffer: mediaBuffer, // Guardar el buffer directamente
+        mimetype: m.quoted.mimetype,
         extension: mediaExt,
     };
 
