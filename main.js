@@ -1265,30 +1265,30 @@ case 'abrircaja': {
     const multimedia = cajasFuertes[m.sender].multimedia;
     const multimediaKeys = Object.keys(multimedia);
 
+    let response = "🔓 *Tu Caja Fuerte* 🔓\n";
+
     if (multimediaKeys.length === 0) {
-        return m.reply(
+        response +=
             "📂 *Tu caja fuerte está vacía.*\n" +
             "Puedes guardar multimedia usando el comando:\n" +
-            "`.cajaguar palabraClave` (respondiendo a un archivo)."
-        );
+            "`.cajaguar palabraClave` (respondiendo a un archivo).\n";
+    } else {
+        response += "Aquí están las palabras clave de los archivos guardados:\n\n";
+        multimediaKeys.forEach((key, index) => {
+            response += `*${index + 1}.* ${key}\n`;
+        });
+        response += "\n✨ Usa el comando `.sacar palabraClave` para obtener el archivo.";
     }
-
-    // Crear un menú bonito con las palabras clave de la caja fuerte
-    let menu = "🔓 *Tu Caja Fuerte* 🔓\n";
-    menu += "Aquí están las palabras clave de los archivos guardados:\n\n";
-    multimediaKeys.forEach((key, index) => {
-        menu += `*${index + 1}.* ${key}\n`;
-    });
-    menu += "\n✨ Usa el comando `.sacar palabraClave` para obtener el archivo.";
 
     // Marcar la caja fuerte como abierta
     cajasFuertes[m.sender].isOpen = true;
     fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
 
-    // Enviar mensaje al usuario
-    m.reply(menu);
+    // Enviar el menú y recordatorio
+    response += "\n\n⚠️ *Recuerda cambiar tu contraseña si usaste este comando en un grupo.* Usa el comando `.cambiar nuevaContraseña` en privado.";
+    m.reply(response);
 
-    // Si el comando se ejecuta en un grupo, enviar advertencia al privado
+    // Si el comando se ejecuta en un grupo, enviar el recordatorio adicional al privado
     if (m.isGroup) {
         try {
             const privateJid = m.sender; // Enviar al privado del usuario
