@@ -1359,51 +1359,77 @@ case 'sacar': {
 break;
 //para guaedar en caja fuerte		
 case 'cajaguar': {
-    if (!m.quoted) {
-        return m.reply("❌ *Debes responder a un archivo (imagen, video, audio o sticker) con este comando y una palabra clave.*\nEjemplo: `.cajaguar vacaciones`");
+    if (!m.quoted || !m.quoted.mimetype) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) con una palabra clave para guardarlo en tu caja fuerte. 📂",
+            },
+            { quoted: m }
+        );
     }
 
-    const keyword = args.join(' ').trim(); // Obtener la palabra clave
-
+    const keyword = args.join(' '); // Palabra clave para guardar
     if (!keyword) {
-        return m.reply("❌ *Debes proporcionar una palabra clave para guardar el archivo.*\nEjemplo: `.cajaguar vacaciones`");
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *Aviso:* Escribe una palabra clave para guardar este multimedia en tu caja fuerte. 📝",
+            },
+            { quoted: m }
+        );
     }
 
+    // Verificar si el usuario tiene una caja fuerte creada
     if (!cajasFuertes[m.sender]) {
-        return m.reply("❌ *No tienes una caja fuerte creada.* Usa el comando `.cajafuerte contraseña` para crearla.");
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* No tienes una caja fuerte creada. Usa el comando `.cajafuerte contraseña` para crearla primero. 🔐",
+            },
+            { quoted: m }
+        );
     }
 
-    const messageType = Object.keys(m.quoted.message)[0]; // Tipo de mensaje (image, video, audio, sticker)
-    const validTypes = ['imageMessage', 'videoMessage', 'audioMessage', 'stickerMessage'];
+    // Descargar el multimedia
+    const mediaType = m.quoted.mimetype;
+    const mediaExt = mediaType.split('/')[1]; // Ejemplo: "jpg", "mp4", etc.
+    const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
 
-    if (!validTypes.includes(messageType)) {
-        return m.reply("❌ *Solo puedes guardar imágenes, videos, audios o stickers en tu caja fuerte.*");
+    // Convertir el stream en un buffer
+    let mediaBuffer = Buffer.alloc(0);
+    for await (const chunk of mediaStream) {
+        mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
     }
 
-    // Descargar el archivo multimedia
-    try {
-        const buffer = await m.quoted.download();
-        const type = messageType.replace('Message', '');
-
-        // Verificar si la palabra clave ya está en uso
-        if (cajasFuertes[m.sender].multimedia[keyword]) {
-            return m.reply("❌ *Ya tienes un archivo guardado con esta palabra clave. Usa una diferente.*");
-        }
-
-        // Guardar el archivo multimedia en la caja fuerte
-        cajasFuertes[m.sender].multimedia[keyword] = {
-            type,
-            data: buffer,
-        };
-
-        // Guardar cambios en el archivo
-        fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
-
-        m.reply(`✅ *El archivo ha sido guardado exitosamente en tu caja fuerte con la palabra clave:* "${keyword}"`);
-    } catch (error) {
-        console.error("Error al guardar el archivo en la caja fuerte:", error);
-        m.reply("❌ *Hubo un error al intentar guardar el archivo. Intenta nuevamente.*");
+    // Verificar si la palabra clave ya está en uso
+    if (cajasFuertes[m.sender].multimedia[keyword]) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: `❌ *Error:* Ya tienes un archivo guardado con la palabra clave: *"${keyword}"*. Usa una diferente. 🚫`,
+            },
+            { quoted: m }
+        );
     }
+
+    // Guardar el multimedia en la caja fuerte del usuario
+    cajasFuertes[m.sender].multimedia[keyword] = {
+        buffer: mediaBuffer.toString('base64'), // Convertir a base64
+        mimetype: mediaType,
+        extension: mediaExt,
+    };
+
+    // Guardar los cambios en el archivo
+    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+
+    return conn.sendMessage(
+        m.chat,
+        {
+            text: `✅ *Listo:* El multimedia se ha guardado en tu caja fuerte con la palabra clave: *"${keyword}"*. 🎉`,
+        },
+        { quoted: m }
+    );
 }
 break;
 		
