@@ -56,9 +56,8 @@ if (fs.existsSync(path2)) {
     multimediaStore = JSON.parse(fs.readFileSync(path2, 'utf-8'));
 }
 //modo owner
-const path = './cajafuertem.json';
+const path = "./cajafuertem.json";
 
-// Verificar y cargar el archivo de datos
 if (!fs.existsSync(path)) {
     fs.writeFileSync(path, JSON.stringify({}));
 }
