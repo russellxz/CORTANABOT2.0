@@ -1806,7 +1806,94 @@ case 'fallo2': {
     }
 }
 break;
-		
+//top caja fuerte		
+
+case 'topcaja': {
+    try {
+        // Verificar si hay cajas fuertes creadas
+        if (Object.keys(cajasFuertes).length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "⚠️ *No hay cajas fuertes creadas aún.*\nLos usuarios pueden crear una usando el comando `.cajafuerte contraseña`.",
+                },
+                { quoted: m }
+            );
+        }
+
+        // Crear un ranking basado en el número de archivos guardados
+        let ranking = Object.entries(cajasFuertes)
+            .map(([user, caja]) => {
+                return {
+                    user,
+                    count: Object.keys(caja.multimedia || {}).length, // Número de archivos guardados
+                };
+            })
+            .filter(entry => entry.count > 0) // Filtrar usuarios sin archivos guardados
+            .sort((a, b) => b.count - a.count); // Ordenar de mayor a menor
+
+        if (ranking.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "⚠️ *No hay usuarios con multimedia guardado en sus cajas fuertes.*",
+                },
+                { quoted: m }
+            );
+        }
+
+        // Generar el mensaje del ranking
+        let response = "📊 *Ranking de Usuarios con Más Multimedia Guardado en sus Cajas Fuertes:*\n\n";
+        ranking.forEach((entry, index) => {
+            const username = entry.user.split('@')[0];
+            response += `*${index + 1}.* @${username} - *${entry.count} archivo(s)*\n`;
+        });
+
+        response += "\n✨ *¿Quién tendrá la caja fuerte más grande?*\n";
+
+        // Enviar el mensaje con menciones
+        const mentions = ranking.map(entry => entry.user);
+        conn.sendMessage(
+            m.chat,
+            { text: response, mentions },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error("Error en el comando .topcaja:", error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Hubo un error al intentar generar el ranking. Inténtalo más tarde.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+//eliminar caja fuerte	
+
+case 'deletecaja': {
+    const password = args.join(' ').trim(); // Obtener la contraseña proporcionada
+
+    if (!password) {
+        return m.reply("❌ *Debes proporcionar la contraseña para eliminar tu caja fuerte.*\nEjemplo: `.deletecaja tuContraseña123`");
+    }
+
+    if (!cajasFuertes[m.sender]) {
+        return m.reply("❌ *No tienes una caja fuerte creada.* Usa el comando `.cajafuerte contraseña` para crearla.");
+    }
+
+    if (cajasFuertes[m.sender].password !== password) {
+        return m.reply("❌ *Contraseña incorrecta. Intenta nuevamente.*");
+    }
+
+    // Eliminar la caja fuerte
+    delete cajasFuertes[m.sender];
+    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2)); // Guardar cambios en el archivo
+
+    m.reply("✅ *Tu caja fuerte ha sido eliminada con éxito.*");
+
+    break;
+}		
+				
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
