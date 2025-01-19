@@ -1246,26 +1246,23 @@ break;
 case 'abrircaja': {
     const password = args.join(' ').trim(); // Obtener la contraseña proporcionada
 
-    // Verificar si se proporcionó una contraseña
     if (!password) {
         return m.reply("❌ *Debes proporcionar la contraseña para abrir tu caja fuerte.*\nEjemplo: `.abrircaja tuContraseña123`");
     }
 
-    // Verificar si el usuario tiene una caja fuerte creada
     if (!cajasFuertes[m.sender]) {
         return m.reply("❌ *No tienes una caja fuerte creada.* Usa el comando `.cajafuerte` para crearla.");
     }
 
-    // Verificar si la contraseña es correcta
     if (cajasFuertes[m.sender].password !== password) {
         return m.reply("❌ *Contraseña incorrecta. Intenta nuevamente.*");
     }
 
-    // Verificar si hay multimedia guardado en la caja fuerte
-    const multimedia = cajasFuertes[m.sender].multimedia;
-    const multimediaKeys = Object.keys(multimedia);
+    cajasFuertes[m.sender].isOpen = true; // Marcar la caja fuerte como abierta
+    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
 
-    let response = "🔓 *Tu Caja Fuerte* 🔓\n";
+    let response = "🔓 *Tu Caja Fuerte se ha abierto* 🔓\n\n";
+    const multimediaKeys = Object.keys(cajasFuertes[m.sender].multimedia);
 
     if (multimediaKeys.length === 0) {
         response +=
@@ -1280,18 +1277,13 @@ case 'abrircaja': {
         response += "\n✨ Usa el comando `.sacar palabraClave` para obtener el archivo.";
     }
 
-    // Marcar la caja fuerte como abierta
-    cajasFuertes[m.sender].isOpen = true;
-    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+    response += "\n\n⚠️ *Recuerda cerrar tu caja fuerte después de usarla con el comando `.cerrarcaja`.*";
 
-    // Enviar el menú y recordatorio
-    response += "\n\n⚠️ *Recuerda cambiar tu contraseña si usaste este comando en un grupo.* Usa el comando `.cambiar nuevaContraseña` en privado.";
     m.reply(response);
 
-    // Si el comando se ejecuta en un grupo, enviar el recordatorio adicional al privado
     if (m.isGroup) {
         try {
-            const privateJid = m.sender; // Enviar al privado del usuario
+            const privateJid = m.sender;
             await conn.sendMessage(
                 privateJid,
                 { text: "⚠️ *Por seguridad, considera cambiar tu contraseña.* Usa el comando `.cambiar nuevaContraseña` en privado." }
@@ -1299,6 +1291,69 @@ case 'abrircaja': {
         } catch (error) {
             console.error("Error al enviar mensaje al privado:", error);
         }
+    }
+}
+break;
+// cerrar caja
+case 'cerrarcaja': {
+    if (!cajasFuertes[m.sender]) {
+        return m.reply("❌ *No tienes una caja fuerte creada.* Usa el comando `.cajafuerte` para crearla.");
+    }
+
+    if (!cajasFuertes[m.sender].isOpen) {
+        return m.reply("⚠️ *Tu caja fuerte ya está cerrada.*");
+    }
+
+    cajasFuertes[m.sender].isOpen = false; // Marcar la caja fuerte como cerrada
+    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+
+    m.reply("🔒 *Tu Caja Fuerte ha sido cerrada. El acceso al comando `.sacar` está deshabilitado.*");
+}
+break;
+//para sacar multimedia
+case 'sacar': {
+    const keyword = args.join(' ').trim(); // Obtener la palabra clave
+
+    if (!keyword) {
+        return m.reply("❌ *Debes proporcionar una palabra clave para sacar un archivo.*\nEjemplo: `.sacar palabraClave`");
+    }
+
+    if (!cajasFuertes[m.sender]) {
+        return m.reply("❌ *No tienes una caja fuerte creada.* Usa el comando `.cajafuerte` para crearla.");
+    }
+
+    if (!cajasFuertes[m.sender].isOpen) {
+        return m.reply("❌ *Debes abrir tu caja fuerte antes de usar este comando.* Usa `.abrircaja contraseña`.");
+    }
+
+    const multimedia = cajasFuertes[m.sender].multimedia;
+
+    if (!multimedia[keyword]) {
+        return m.reply("❌ *No se encontró ningún archivo con esa palabra clave.* Verifica la palabra clave o usa `.abrircaja` para ver la lista de archivos guardados.");
+    }
+
+    const { type, data } = multimedia[keyword];
+
+    try {
+        switch (type) {
+            case 'image':
+                await conn.sendMessage(m.chat, { image: data }, { quoted: m });
+                break;
+            case 'video':
+                await conn.sendMessage(m.chat, { video: data }, { quoted: m });
+                break;
+            case 'audio':
+                await conn.sendMessage(m.chat, { audio: data, mimetype: 'audio/mpeg' }, { quoted: m });
+                break;
+            case 'sticker':
+                await conn.sendMessage(m.chat, { sticker: data }, { quoted: m });
+                break;
+            default:
+                await conn.sendMessage(m.chat, { text: "❌ *El tipo de archivo no es compatible para ser enviado.*" }, { quoted: m });
+        }
+    } catch (error) {
+        console.error("Error al enviar multimedia:", error);
+        m.reply("❌ *Hubo un error al intentar enviar el archivo. Intenta nuevamente.*");
     }
 }
 break;
