@@ -41,6 +41,8 @@ global.awaitingPasswords = {}; // Estructura global para rastrear contraseñas p
 global.falloSeguridad = false;
 global.tempCaja = {};
 global.mensajesPorUsuario = {};  // Usamos un objeto en lugar de un array para asociar usuarios y grupos
+// Configuración Global
+global.cajasFuertes = {}; // Almacenará todas las cajas fuertes de los usuarios
 global.antieliminar = {}; // Aquí se guardará el estado de los grupo
 // Define los grupos donde se realizará el conteo de mensajes.
 global.grupoChat = {
