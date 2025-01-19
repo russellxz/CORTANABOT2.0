@@ -1599,15 +1599,6 @@ case 'otracaja': {
         );
     }
 
-    // Verificar si el fallo de seguridad está activo
-    if (!global.falloActivo || global.falloActivo === false) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *El fallo de seguridad no está activo. No puedes acceder a la caja fuerte de otros usuarios.*" },
-            { quoted: m }
-        );
-    }
-
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
     if (!mentionedUser) {
         return conn.sendMessage(
@@ -1617,17 +1608,17 @@ case 'otracaja': {
         );
     }
 
-    // Obtener la caja fuerte del usuario mencionado
-    const userCaja = cajasFuertes[mentionedUser];
-    if (!userCaja) {
+    // Verificar si el fallo de seguridad está activo
+    if (!global.falloSeguridad) {
         return conn.sendMessage(
             m.chat,
-            { text: `⚠️ *El usuario mencionado no tiene una caja fuerte creada.*` },
+            { text: "⚠️ *El fallo de seguridad no está activo. No puedes acceder a la caja fuerte de otros usuarios.*" },
             { quoted: m }
         );
     }
 
-    if (!userCaja.multimedia || Object.keys(userCaja.multimedia).length === 0) {
+    const userCaja = cajasFuertes[mentionedUser];
+    if (!userCaja || !userCaja.multimedia || Object.keys(userCaja.multimedia).length === 0) {
         return conn.sendMessage(
             m.chat,
             { text: `⚠️ *El usuario mencionado no tiene multimedia guardado en su caja fuerte.*` },
@@ -1635,7 +1626,6 @@ case 'otracaja': {
         );
     }
 
-    // Generar lista de palabras clave del multimedia
     let listMessage = `🔐 *Caja Fuerte de @${mentionedUser.split('@')[0]}:*\n\n`;
     let index = 1;
 
@@ -1646,7 +1636,6 @@ case 'otracaja': {
 
     listMessage += `\n📂 Usa el comando *.sacar2 <palabra clave>* para recuperar el multimedia.`;
 
-    // Enviar la lista al grupo
     conn.sendMessage(
         m.chat,
         { text: listMessage, mentions: [mentionedUser] },
@@ -1657,7 +1646,7 @@ case 'otracaja': {
     conn.sendMessage(
         mentionedUser,
         {
-            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte durante el fallo de seguridad.*`,
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte debido al fallo de seguridad.*`,
             mentions: [m.sender],
         }
     );
