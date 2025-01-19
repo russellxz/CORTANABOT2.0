@@ -1600,7 +1600,7 @@ case 'otracaja': {
     }
 
     // Verificar si el fallo de seguridad está activo
-    if (!global.falloActivo) {
+    if (!global.falloActivo || global.falloActivo === false) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *El fallo de seguridad no está activo. No puedes acceder a la caja fuerte de otros usuarios.*" },
@@ -1653,7 +1653,7 @@ case 'otracaja': {
         { quoted: m }
     );
 
-    // Notificar al dueño de la caja fuerte en privado
+    // Notificar al dueño de la caja fuerte
     conn.sendMessage(
         mentionedUser,
         {
