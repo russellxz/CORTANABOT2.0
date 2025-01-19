@@ -1435,45 +1435,56 @@ case 'cajaguar': {
         );
     }
 
-    // Descargar el multimedia
-    const mediaType = m.quoted.mimetype.split('/')[0];
-    const mediaExt = m.quoted.mimetype.split('/')[1]; // Ejemplo: "jpg", "mp4", etc.
-    const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
+    try {
+        // Descargar el multimedia
+        const mediaType = m.quoted.mimetype.split('/')[0];
+        const mediaExt = m.quoted.mimetype.split('/')[1]; // Ejemplo: "jpg", "mp4", etc.
+        const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
 
-    // Convertir el stream en un buffer
-    let mediaBuffer = Buffer.alloc(0);
-    for await (const chunk of mediaStream) {
-        mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
-    }
+        // Convertir el stream en un buffer
+        let mediaBuffer = Buffer.alloc(0);
+        for await (const chunk of mediaStream) {
+            mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+        }
 
-    // Verificar si la palabra clave ya está en uso
-    if (cajasFuertes[m.sender].multimedia[keyword]) {
+        // Verificar si la palabra clave ya está en uso
+        if (cajasFuertes[m.sender].multimedia[keyword]) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: `❌ *Error:* Ya tienes un archivo guardado con la palabra clave: *"${keyword}"*. Usa una diferente. 🚫`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // Guardar el multimedia en la caja fuerte globalmente
+        cajasFuertes[m.sender].multimedia[keyword] = {
+            buffer: mediaBuffer.toString('base64'), // Convertir el buffer a base64
+            mimetype: m.quoted.mimetype,
+            extension: mediaExt,
+        };
+
+        // Guardar los cambios en el archivo
+        fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+
         return conn.sendMessage(
             m.chat,
             {
-                text: `❌ *Error:* Ya tienes un archivo guardado con la palabra clave: *"${keyword}"*. Usa una diferente. 🚫`,
+                text: `✅ *Listo:* El multimedia se ha guardado en tu caja fuerte con la palabra clave: *"${keyword}"*. 🎉`,
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error("Error al guardar multimedia:", error);
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* Hubo un problema al intentar guardar el multimedia. Intenta nuevamente. 🚫",
             },
             { quoted: m }
         );
     }
-
-    // Guardar el multimedia en la caja fuerte del usuario
-    cajasFuertes[m.sender].multimedia[keyword] = {
-        buffer: mediaBuffer, // Guardar el buffer directamente
-        mimetype: m.quoted.mimetype,
-        extension: mediaExt,
-    };
-
-    // Guardar los cambios en el archivo
-    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
-
-    return conn.sendMessage(
-        m.chat,
-        {
-            text: `✅ *Listo:* El multimedia se ha guardado en tu caja fuerte con la palabra clave: *"${keyword}"*. 🎉`,
-        },
-        { quoted: m }
-    );
 }
 break;
 //para eliminar multimedia de la cajafuerte
