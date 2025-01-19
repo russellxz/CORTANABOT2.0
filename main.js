@@ -1357,23 +1357,38 @@ case 'sacar': {
         );
     }
 
+    // Convertir el buffer desde base64
+    const mediaBuffer = Buffer.from(multimedia.buffer, 'base64');
+
     // Enviar el multimedia basado en su tipo
     try {
         switch (multimedia.mimetype.split('/')[0]) {
             case 'image':
-                await conn.sendMessage(m.chat, { image: multimedia.buffer }, { quoted: m });
+                if (multimedia.mimetype === 'image/webp') {
+                    // Enviar como sticker si es un archivo WebP
+                    await conn.sendMessage(m.chat, { sticker: mediaBuffer }, { quoted: m });
+                } else {
+                    // Enviar como imagen
+                    await conn.sendMessage(m.chat, { image: mediaBuffer }, { quoted: m });
+                }
                 break;
             case 'video':
-                await conn.sendMessage(m.chat, { video: multimedia.buffer }, { quoted: m });
+                await conn.sendMessage(m.chat, { video: mediaBuffer }, { quoted: m });
                 break;
             case 'audio':
-                await conn.sendMessage(m.chat, { audio: multimedia.buffer, mimetype: multimedia.mimetype }, { quoted: m });
+                await conn.sendMessage(
+                    m.chat,
+                    { audio: mediaBuffer, mimetype: multimedia.mimetype, ptt: false },
+                    { quoted: m }
+                );
                 break;
             case 'application':
-                await conn.sendMessage(m.chat, { document: multimedia.buffer, mimetype: multimedia.mimetype, fileName: `archivo.${multimedia.extension}` }, { quoted: m });
-                break;
-            case 'sticker':
-                await conn.sendMessage(m.chat, { sticker: multimedia.buffer }, { quoted: m });
+                const extension = multimedia.extension || multimedia.mimetype.split('/')[1];
+                await conn.sendMessage(
+                    m.chat,
+                    { document: mediaBuffer, mimetype: multimedia.mimetype, fileName: `archivo.${extension}` },
+                    { quoted: m }
+                );
                 break;
             default:
                 await conn.sendMessage(
