@@ -1201,11 +1201,13 @@ case 'cajafuerte': {
         return m.reply("⚠️ *La contraseña debe tener al menos 4 caracteres.*");
     }
 
-    if (cajasFuertes[m.sender]) {
+    const globalKey = m.sender; // Usar el ID del usuario como clave global
+
+    if (cajasFuertes[globalKey]) {
         return m.reply("✅ *Ya tienes una caja fuerte creada.* Usa tus comandos para gestionarla, como `.abrircaja` o `.cerrarcaja`.");
     }
 
-    cajasFuertes[m.sender] = {
+    cajasFuertes[globalKey] = {
         password,
         multimedia: {},
         isOpen: false,
@@ -1213,7 +1215,7 @@ case 'cajafuerte': {
 
     fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
 
-    m.reply("🔐 *Tu caja fuerte ha sido creada con éxito!*");
+    return m.reply("🔐 *Tu caja fuerte ha sido creada con éxito!*");
 }
 break;
 
