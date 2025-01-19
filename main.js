@@ -1541,16 +1541,22 @@ case 'fallo': {
         return conn.sendMessage(
             m.chat,
             {
-                text: "⚠️ *Uso del comando:* `.fallo on` para activar el fallo de seguridad o `.fallo off` para desactivarlo en este grupo. 🔐",
+                text: "⚠️ *Uso del comando:* `.fallo on` para activar el fallo de seguridad o `.fallo off` para desactivarlo. 🔐",
             },
             { quoted: m }
         );
     }
 
-    const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : null;
-    const groupAdmins = groupMetadata
-        ? groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id)
-        : [];
+    if (!m.isGroup) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede usarse en grupos.*" },
+            { quoted: m }
+        );
+    }
+
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id);
     const isAdmin = groupAdmins.includes(m.sender);
     const isOwner = global.owner.some(([id]) => id === m.sender.replace('@s.whatsapp.net', ''));
 
@@ -1562,11 +1568,13 @@ case 'fallo': {
         );
     }
 
+    if (!global.falloSeguridad) global.falloSeguridad = {}; // Inicializar si no existe
+
     if (subCommand === 'on') {
         global.falloSeguridad[m.chat] = true;
         return conn.sendMessage(
             m.chat,
-            { text: "✅ *Modo fallo de seguridad activado en este grupo.* Ahora todos los usuarios pueden acceder a cajas fuertes ajenas sin contraseña en este grupo. Usa el comando `.otracaja @usuario` para acceder. 🔓" },
+            { text: "✅ *Modo fallo de seguridad activado en este grupo.* Ahora todos los usuarios pueden acceder a cajas fuertes ajenas sin contraseña. Usa el comando `.otracaja @usuario` para acceder. 🔓" },
             { quoted: m }
         );
     }
@@ -1590,7 +1598,6 @@ case 'fallo': {
     }
 }
 break;
-//otra caja		
 
 case 'otracaja': {
     if (!m.isGroup) {
@@ -1601,20 +1608,20 @@ case 'otracaja': {
         );
     }
 
+    // Verificar si el fallo de seguridad está activo para este grupo
+    if (!global.falloSeguridad?.[m.chat]) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *El fallo de seguridad no está activo en este grupo. No puedes acceder a la caja fuerte de otros usuarios.*" },
+            { quoted: m }
+        );
+    }
+
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
     if (!mentionedUser) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *Por favor, menciona a un usuario para acceder a su caja fuerte.*" },
-            { quoted: m }
-        );
-    }
-
-    // Verificar si el fallo de seguridad está activo
-    if (!global.falloSeguridad) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *El fallo de seguridad no está activo. No puedes acceder a la caja fuerte de otros usuarios.*" },
             { quoted: m }
         );
     }
@@ -1648,33 +1655,33 @@ case 'otracaja': {
     conn.sendMessage(
         mentionedUser,
         {
-            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte debido al fallo de seguridad.*`,
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte debido al fallo de seguridad activo en el grupo.*`,
             mentions: [m.sender],
         }
     );
 }
 break;
-    
-//sacar de otra caja		
+//otra caja		
+
 case 'sacar2': {
-    if (!global.falloSeguridad) {
+    if (!m.isGroup) {
         return conn.sendMessage(
             m.chat,
-            { text: "❌ *El modo de fallo de seguridad está desactivado.* Actívalo con `.fallo on`." },
+            { text: "❌ *Este comando solo puede usarse en grupos.*" },
             { quoted: m }
         );
     }
 
-    if (!m.mentionedJid || m.mentionedJid.length === 0) {
+    const mentionedUser = m.mentionedJid && m.mentionedJid[0];
+    const keyword = args[0]?.toLowerCase();
+
+    if (!mentionedUser) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *Uso del comando:* `.sacar2 <palabra clave> @usuario` para extraer multimedia de otra caja fuerte." },
             { quoted: m }
         );
     }
-
-    const targetUser = m.mentionedJid[0];
-    const keyword = args[0]?.toLowerCase();
 
     if (!keyword) {
         return conn.sendMessage(
@@ -1684,18 +1691,27 @@ case 'sacar2': {
         );
     }
 
-    const cajaFuerte = cajasFuertes[targetUser];
-
-    if (!cajaFuerte || !cajaFuerte.multimedia[keyword]) {
+    // Verificar si el fallo de seguridad está activo para este grupo
+    if (!global.falloSeguridad?.[m.chat]) {
         return conn.sendMessage(
             m.chat,
-            { text: `❌ *No se encontró multimedia con la palabra clave "${keyword}" en la caja fuerte de ${targetUser.split('@')[0]}.*` },
+            { text: "❌ *El modo de fallo de seguridad está desactivado en este grupo.* Actívalo con `.fallo on`." },
+            { quoted: m }
+        );
+    }
+
+    const userCaja = cajasFuertes[mentionedUser];
+    if (!userCaja || !userCaja.multimedia[keyword]) {
+        return conn.sendMessage(
+            m.chat,
+            { text: `❌ *No se encontró multimedia con la palabra clave "${keyword}" en la caja fuerte de @${mentionedUser.split('@')[0]}.*`,
+            mentions: [mentionedUser] },
             { quoted: m }
         );
     }
 
     // Extraer multimedia
-    const { buffer, mimetype } = cajaFuerte.multimedia[keyword];
+    const { buffer, mimetype } = userCaja.multimedia[keyword];
     const mediaBuffer = Buffer.from(buffer, 'base64');
 
     try {
@@ -1733,8 +1749,20 @@ case 'sacar2': {
             { quoted: m }
         );
     }
+
+    // Notificar al dueño de la caja fuerte
+    conn.sendMessage(
+        mentionedUser,
+        {
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha extraído multimedia de tu caja fuerte debido al fallo de seguridad activo en el grupo.*`,
+            mentions: [m.sender],
+        }
+    );
 }
-break;		
+break;
+    
+//sacar de otra caja		
+
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
