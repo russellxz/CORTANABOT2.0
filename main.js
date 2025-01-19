@@ -1717,7 +1717,11 @@ case 'sacar2': {
     try {
         const mediaType = mimetype.split('/')[0];
 
-        if (mediaType === 'image') {
+        if (mediaType === 'image' && mimetype === 'image/webp') {
+            // Enviar sticker
+            await conn.sendMessage(m.chat, { sticker: mediaBuffer }, { quoted: m });
+        } else if (mediaType === 'image') {
+            // Enviar imagen
             await conn.sendMessage(m.chat, { image: mediaBuffer }, { quoted: m });
         } else if (mediaType === 'video') {
             await conn.sendMessage(m.chat, { video: mediaBuffer }, { quoted: m });
