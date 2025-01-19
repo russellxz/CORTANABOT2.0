@@ -1625,7 +1625,7 @@ case 'otracaja': {
         );
     }
 
-    // Enviar la lista de palabras clave al usuario que accede
+    // Generar la lista de palabras clave
     const wordList = Object.keys(cajaFuerte.multimedia)
         .map((word, index) => `${index + 1}. ${word}`)
         .join('\n');
@@ -1638,8 +1638,10 @@ case 'otracaja': {
     // Notificar al dueño de la caja fuerte
     await conn.sendMessage(
         targetUser,
-        { text: `⚠️ *Alerta de seguridad:* El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte.` },
-        { mentions: [m.sender] }
+        {
+            text: `⚠️ *Alerta de seguridad:* El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte.`,
+            mentions: [m.sender],
+        }
     );
 }
 break;
@@ -1688,11 +1690,32 @@ case 'sacar2': {
     const mediaBuffer = Buffer.from(buffer, 'base64');
 
     try {
-        await conn.sendMessage(
-            m.chat,
-            { document: mediaBuffer, mimetype, fileName: `${keyword}.${mimetype.split('/')[1]}` },
-            { quoted: m }
-        );
+        const mediaType = mimetype.split('/')[0];
+
+        if (mediaType === 'image') {
+            await conn.sendMessage(m.chat, { image: mediaBuffer }, { quoted: m });
+        } else if (mediaType === 'video') {
+            await conn.sendMessage(m.chat, { video: mediaBuffer }, { quoted: m });
+        } else if (mediaType === 'audio') {
+            await conn.sendMessage(
+                m.chat,
+                { audio: mediaBuffer, mimetype: mimetype, ptt: false },
+                { quoted: m }
+            );
+        } else if (mediaType === 'application') {
+            const extension = mimetype.split('/')[1];
+            await conn.sendMessage(
+                m.chat,
+                { document: mediaBuffer, mimetype: mimetype, fileName: `${keyword}.${extension}` },
+                { quoted: m }
+            );
+        } else {
+            await conn.sendMessage(
+                m.chat,
+                { text: "❌ *El tipo de archivo no es compatible para ser enviado.*" },
+                { quoted: m }
+            );
+        }
     } catch (error) {
         console.error('Error al enviar el multimedia:', error);
         return conn.sendMessage(
