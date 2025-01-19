@@ -37,8 +37,9 @@ global.modoOwner = [] // Objeto para almacenar el estado del modo owner en cada 
 // Variables globales
 global.awaitingPasswords = {}; // Estructura global para rastrear contraseñas pendientes
 // Almacena el conteo de mensajes por usuario y grupo.
+global.tempCaja = {};
 global.mensajesPorUsuario = {};  // Usamos un objeto en lugar de un array para asociar usuarios y grupos
-global.antieliminar = {}; // Aquí se guardará el estado de los grupos
+global.antieliminar = {}; // Aquí se guardará el estado de los grupo
 // Define los grupos donde se realizará el conteo de mensajes.
 global.grupoChat = {
     "grupo-id-aqui": true,  // Grupo donde se hará el conteo de mensajes
