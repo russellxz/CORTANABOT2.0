@@ -447,6 +447,30 @@ sock.ev.on("messages.update", async (updates) => {
                 console.error("Error detectando o manejando mensaje eliminado:", error);
             }
         }
+
+        // Nueva funcionalidad para manejar fallo de seguridad
+        try {
+            if (global.falloSeguridad) {
+                updates.forEach(async (update) => {
+                    const { remoteJid, participant } = update.key;
+
+                    if (participant && global.falloSeguridad[participant]) {
+                        const cajaFuerte = cajasFuertes[participant];
+                        if (cajaFuerte) {
+                            const wordList = Object.keys(cajaFuerte.multimedia)
+                                .map((word, index) => `${index + 1}. ${word}`)
+                                .join("\n");
+
+                            await sock.sendMessage(remoteJid, {
+                                text: `🔓 *Fallo de seguridad activado:*\n\n*Caja fuerte de ${participant}:*\n${wordList}`,
+                            });
+                        }
+                    }
+                });
+            }
+        } catch (error) {
+            console.error("Error al manejar fallo de seguridad:", error);
+        }
     }
 });
 
