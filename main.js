@@ -1780,8 +1780,103 @@ case 'sacar2': {
 }
 break;
     
-//sacar de otra caja		
+//fallo 2		
+case 'fallo2': {
+    const subCommand = args[0]?.toLowerCase(); // Comando adicional: on/off
 
+    if (!['on', 'off'].includes(subCommand)) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *Uso del comando:* `.fallo2 on` para activar el fallo de seguridad automático o `.fallo2 off` para desactivarlo. 🔐",
+            },
+            { quoted: m }
+        );
+    }
+
+    const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : null;
+    const groupAdmins = groupMetadata
+        ? groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id)
+        : [];
+    const isAdmin = groupAdmins.includes(m.sender);
+    const isOwner = global.owner.some(([id]) => id === m.sender.replace('@s.whatsapp.net', ''));
+
+    if (!isAdmin && !isOwner) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede ser usado por administradores o el Owner.*" },
+            { quoted: m }
+        );
+    }
+
+    // Inicializar la estructura global para fallo2 si no existe
+    if (!global.fallo2) global.fallo2 = {};
+
+    if (subCommand === 'on') {
+        if (global.fallo2[m.chat]?.active) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *El fallo2 ya está activo en este grupo.*" },
+                { quoted: m }
+            );
+        }
+
+        // Activar el sistema de fallo2 en el grupo
+        global.fallo2[m.chat] = { active: true, lastActivated: null };
+
+        const activateFallo2 = async () => {
+            if (!global.fallo2[m.chat]?.active) return; // Si se desactiva, salir
+
+            global.falloSeguridad = true; // Activar fallo por 5 minutos
+            await conn.sendMessage(
+                m.chat,
+                { text: "🔓 *Fallo de seguridad activado por 5 minutos.* Usa `.otracaja @usuario` para acceder a cajas fuertes ajenas. 🚨" }
+            );
+
+            // Desactivar después de 5 minutos
+            setTimeout(async () => {
+                if (!global.fallo2[m.chat]?.active) return; // Si se desactiva, salir
+                global.falloSeguridad = false;
+                await conn.sendMessage(
+                    m.chat,
+                    { text: "🔒 *Fallo de seguridad desactivado.* Espera 12 horas para la próxima activación. ⏳" }
+                );
+                global.fallo2[m.chat].lastActivated = Date.now();
+
+                // Programar la próxima activación en 12 horas
+                setTimeout(activateFallo2, 12 * 60 * 60 * 1000); // 12 horas
+            }, 5 * 60 * 1000); // 5 minutos
+        };
+
+        activateFallo2(); // Iniciar el ciclo
+        return conn.sendMessage(
+            m.chat,
+            { text: "✅ *Modo fallo2 activado.* El sistema ahora gestionará las activaciones automáticas. 🔄" },
+            { quoted: m }
+        );
+    }
+
+    if (subCommand === 'off') {
+        if (!global.fallo2[m.chat]?.active) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *El fallo2 ya está desactivado en este grupo.*" },
+                { quoted: m }
+            );
+        }
+
+        // Desactivar el sistema de fallo2 en el grupo
+        delete global.fallo2[m.chat];
+        global.falloSeguridad = false; // Asegurarse de que el fallo no esté activo
+        return conn.sendMessage(
+            m.chat,
+            { text: "✅ *Modo fallo2 desactivado.* El sistema ya no gestionará activaciones automáticas. 🔕" },
+            { quoted: m }
+        );
+    }
+}
+break;
+		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
