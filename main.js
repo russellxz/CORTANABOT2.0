@@ -1177,19 +1177,58 @@ break;
 // para agregar comando a stikerz
 // Comando para crear caja fuerte
 case 'cajafuerte': {
-    const userId = m.sender;
-
-    if (!cajasFuertes[userId]) {
-        // Crear un registro temporal para la creación de la caja fuerte
-        if (!global.tempCaja) global.tempCaja = {};
-        global.tempCaja[m.chat] = m.key.id;
-
-        await m.reply('🔐 No tienes una caja fuerte creada. Responde a este mensaje con una contraseña válida. Ejemplo: `.miContraseña123`');
+    if (!cajasFuertes[m.sender]) {
+        // Verifica si el usuario ya tiene una caja fuerte
+        m.reply(
+            "🔐 *No tienes una caja fuerte creada.*\n" +
+            "Usa el comando `.crear contraseña` para crearla.\n" +
+            "Ejemplo: `.crear miClave123`"
+        );
     } else {
-        await m.reply('✅ Ya tienes una caja fuerte creada. Usa los comandos correspondientes para gestionarla.');
+        m.reply(
+            "✅ *Ya tienes una caja fuerte creada.*\n" +
+            "Usa tus comandos para gestionarla, como `.abrircaja` o `.cerrarcaja`."
+        );
     }
-    break;
 }
+break;
+
+case 'crear': {
+    const password = args[0]?.trim();
+
+    if (!password || password.length < 4) {
+        return m.reply(
+            "⚠️ *Debes proporcionar una contraseña válida para crear tu caja fuerte.*\n" +
+            "Ejemplo: `.crear miClave123`"
+        );
+    }
+
+    if (cajasFuertes[m.sender]) {
+        return m.reply("✅ *Ya tienes una caja fuerte creada.* Usa tus comandos para gestionarla.");
+    }
+
+    // Crear la caja fuerte
+    cajasFuertes[m.sender] = {
+        password,
+        multimedia: {},
+        isOpen: false,
+    };
+
+    // Guardar en el archivo
+    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+
+    // Confirmación
+    m.reply("🔐 *Tu caja fuerte ha sido creada con éxito!*");
+
+    // Enviar mensaje al privado si el comando se ejecuta en un grupo
+    if (m.isGroup) {
+        await conn.sendMessage(
+            m.sender,
+            { text: "⚠️ Por seguridad, considera cambiar tu contraseña en privado si alguien la vio en el grupo." }
+        );
+    }
+}
+break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
