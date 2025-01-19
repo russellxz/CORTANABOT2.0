@@ -1614,6 +1614,7 @@ case 'fallo': {
 }
 break;
 
+//otra caja		
 case 'otracaja': {
     if (!m.isGroup) {
         return conn.sendMessage(
@@ -1623,8 +1624,9 @@ case 'otracaja': {
         );
     }
 
-    // Verificar si el fallo de seguridad está activo para este grupo
-    if (!global.falloSeguridad?.[m.chat]) {
+    // Verificar si el fallo de seguridad global o por grupo está activo
+    const isFalloActivo = global.falloSeguridad || (global.fallo2?.[m.chat]?.activo);
+    if (!isFalloActivo) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *El fallo de seguridad no está activo en este grupo. No puedes acceder a la caja fuerte de otros usuarios.*" },
@@ -1676,8 +1678,8 @@ case 'otracaja': {
     );
 }
 break;
-//otra caja		
-
+		
+//sacar 2
 case 'sacar2': {
     if (!m.isGroup) {
         return conn.sendMessage(
@@ -1706,11 +1708,12 @@ case 'sacar2': {
         );
     }
 
-    // Verificar si el fallo de seguridad está activo para este grupo
-    if (!global.falloSeguridad?.[m.chat]) {
+    // Verificar si el fallo de seguridad global o por grupo está activo
+    const isFalloActivo = global.falloSeguridad || (global.fallo2?.[m.chat]?.activo);
+    if (!isFalloActivo) {
         return conn.sendMessage(
             m.chat,
-            { text: "❌ *El modo de fallo de seguridad está desactivado en este grupo.* Actívalo con `.fallo on`." },
+            { text: "❌ *El modo de fallo de seguridad está desactivado en este grupo.* Actívalo con `.fallo on` o `.fallo2 on`." },
             { quoted: m }
         );
     }
