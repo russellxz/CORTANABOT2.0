@@ -1599,6 +1599,15 @@ case 'otracaja': {
         );
     }
 
+    // Verificar si el fallo de seguridad está activo
+    if (!global.falloActivo) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *El fallo de seguridad no está activo. No puedes acceder a la caja fuerte de otros usuarios.*" },
+            { quoted: m }
+        );
+    }
+
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
     if (!mentionedUser) {
         return conn.sendMessage(
@@ -1637,7 +1646,7 @@ case 'otracaja': {
     conn.sendMessage(
         mentionedUser,
         {
-            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte.*`,
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte durante el fallo de seguridad.*`,
             mentions: [m.sender],
         }
     );
