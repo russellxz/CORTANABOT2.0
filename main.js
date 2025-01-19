@@ -49,7 +49,17 @@ const {owner} = require('./plugins/propietario.js')
 const {enable} = require('./plugins/enable.js')
 const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 //manejo de mensaje
-// Objeto para almacenar usuarios muteados
+// Objeto fallo
+const falloPath = './fallo.json';
+
+// Verificar si el archivo fallo.json existe, si no, crearlo
+if (!fs.existsSync(falloPath)) {
+    fs.writeFileSync(falloPath, JSON.stringify({}));
+}
+
+// Cargar el contenido del archivo fallo.json
+let falloData = JSON.parse(fs.readFileSync(falloPath));
+
 //ok ok
 let multimediaStore = {};
 if (fs.existsSync(path2)) {
@@ -1729,11 +1739,8 @@ case 'fallo2': {
         );
     }
 
-    // Inicializar la estructura global para fallo2 si no existe
-    if (!global.fallo2) global.fallo2 = {};
-
     if (subCommand === 'on') {
-        if (global.fallo2[m.chat]?.active) {
+        if (falloData[m.chat]?.active) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *El fallo2 ya está activo en este grupo.*" },
@@ -1742,10 +1749,11 @@ case 'fallo2': {
         }
 
         // Activar el sistema de fallo2 en el grupo
-        global.fallo2[m.chat] = { active: true, lastActivated: null };
+        falloData[m.chat] = { active: true, lastActivated: null };
+        fs.writeFileSync(falloPath, JSON.stringify(falloData, null, 2));
 
         const activateFallo2 = async () => {
-            if (!global.fallo2[m.chat]?.active) return; // Si se desactiva, salir
+            if (!falloData[m.chat]?.active) return; // Si se desactiva, salir
 
             global.falloSeguridad = true; // Activar fallo por 5 minutos
             await conn.sendMessage(
@@ -1755,13 +1763,14 @@ case 'fallo2': {
 
             // Desactivar después de 5 minutos
             setTimeout(async () => {
-                if (!global.fallo2[m.chat]?.active) return; // Si se desactiva, salir
+                if (!falloData[m.chat]?.active) return; // Si se desactiva, salir
                 global.falloSeguridad = false;
                 await conn.sendMessage(
                     m.chat,
                     { text: "🔒 *Fallo de seguridad desactivado.* Espera 12 horas para la próxima activación. ⏳" }
                 );
-                global.fallo2[m.chat].lastActivated = Date.now();
+                falloData[m.chat].lastActivated = Date.now();
+                fs.writeFileSync(falloPath, JSON.stringify(falloData, null, 2));
 
                 // Programar la próxima activación en 12 horas
                 setTimeout(activateFallo2, 12 * 60 * 60 * 1000); // 12 horas
@@ -1777,7 +1786,7 @@ case 'fallo2': {
     }
 
     if (subCommand === 'off') {
-        if (!global.fallo2[m.chat]?.active) {
+        if (!falloData[m.chat]?.active) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *El fallo2 ya está desactivado en este grupo.*" },
@@ -1786,7 +1795,8 @@ case 'fallo2': {
         }
 
         // Desactivar el sistema de fallo2 en el grupo
-        delete global.fallo2[m.chat];
+        delete falloData[m.chat];
+        fs.writeFileSync(falloPath, JSON.stringify(falloData, null, 2));
         global.falloSeguridad = false; // Asegurarse de que el fallo no esté activo
         return conn.sendMessage(
             m.chat,
