@@ -297,25 +297,24 @@ const messageStore = {};
 
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
-    const key = msg.key;
-
-    // Comprobar si es un mensaje válido
-    if (!key.fromMe && msg.message) {
-        const messageId = key.id;
-        messageStore[messageId] = {
-            remoteJid: key.remoteJid,
-            participant: key.participant || key.remoteJid,
-            message: msg.message,
-        };
-    }
+    const key = msg?.key;
 
     try {
+        // Comprobar si es un mensaje válido
+        if (!key?.fromMe && msg?.message) {
+            const messageId = key.id;
+            messageStore[messageId] = {
+                remoteJid: key.remoteJid,
+                participant: key.participant || key.remoteJid,
+                message: msg.message,
+            };
+        }
+
         // Lógica para manejar la creación de la caja fuerte
         if (
             global.tempCaja &&
-            global.tempCaja[key.remoteJid] &&
-            msg.message &&
-            msg.message.conversation &&
+            global.tempCaja[key?.remoteJid] &&
+            msg?.message?.conversation &&
             global.tempCaja[key.remoteJid] === key.id
         ) {
             const password = msg.message.conversation.trim();
@@ -345,8 +344,9 @@ sock.ev.on("messages.upsert", async (message) => {
 
                 // Avisar al privado si se creó en un grupo
                 if (key.remoteJid.endsWith("@g.us")) {
+                    const privateJid = msg.participant || key.remoteJid;
                     await sock.sendMessage(
-                        msg.participant,
+                        privateJid,
                         { text: "⚠️ Por seguridad, considera cambiar tu contraseña en privado." }
                     );
                 }
