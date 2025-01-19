@@ -1204,13 +1204,6 @@ case 'cajafuerte': {
     fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
 
     m.reply("🔐 *Tu caja fuerte ha sido creada con éxito!*");
-
-    if (m.isGroup) {
-        await conn.sendMessage(
-            m.sender,
-            { text: "⚠️ Por seguridad, considera cambiar tu contraseña en privado con el comando `.cambiar nuevaContraseña`." }
-        );
-    }
 }
 break;
 
@@ -1280,18 +1273,6 @@ case 'abrircaja': {
     response += "\n\n⚠️ *Recuerda cerrar tu caja fuerte después de usarla con el comando `.cerrarcaja`.*";
 
     m.reply(response);
-
-    if (m.isGroup) {
-        try {
-            const privateJid = m.sender;
-            await conn.sendMessage(
-                privateJid,
-                { text: "⚠️ *Por seguridad, considera cambiar tu contraseña.* Usa el comando `.cambiar nuevaContraseña` en privado." }
-            );
-        } catch (error) {
-            console.error("Error al enviar mensaje al privado:", error);
-        }
-    }
 }
 break;
 // cerrar caja
