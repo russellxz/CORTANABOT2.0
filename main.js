@@ -1617,8 +1617,17 @@ case 'otracaja': {
         );
     }
 
+    // Obtener la caja fuerte del usuario mencionado
     const userCaja = cajasFuertes[mentionedUser];
-    if (!userCaja || !userCaja.multimedia || Object.keys(userCaja.multimedia).length === 0) {
+    if (!userCaja) {
+        return conn.sendMessage(
+            m.chat,
+            { text: `⚠️ *El usuario mencionado no tiene una caja fuerte creada.*` },
+            { quoted: m }
+        );
+    }
+
+    if (!userCaja.multimedia || Object.keys(userCaja.multimedia).length === 0) {
         return conn.sendMessage(
             m.chat,
             { text: `⚠️ *El usuario mencionado no tiene multimedia guardado en su caja fuerte.*` },
@@ -1626,6 +1635,7 @@ case 'otracaja': {
         );
     }
 
+    // Generar lista de palabras clave del multimedia
     let listMessage = `🔐 *Caja Fuerte de @${mentionedUser.split('@')[0]}:*\n\n`;
     let index = 1;
 
@@ -1636,13 +1646,14 @@ case 'otracaja': {
 
     listMessage += `\n📂 Usa el comando *.sacar2 <palabra clave>* para recuperar el multimedia.`;
 
+    // Enviar la lista al grupo
     conn.sendMessage(
         m.chat,
         { text: listMessage, mentions: [mentionedUser] },
         { quoted: m }
     );
 
-    // Notificar al dueño de la caja fuerte
+    // Notificar al dueño de la caja fuerte en privado
     conn.sendMessage(
         mentionedUser,
         {
