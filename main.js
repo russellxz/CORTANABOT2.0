@@ -1357,6 +1357,55 @@ case 'sacar': {
     }
 }
 break;
+//para guaedar en caja fuerte		
+case 'cajaguar': {
+    if (!m.quoted) {
+        return m.reply("❌ *Debes responder a un archivo (imagen, video, audio o sticker) con este comando y una palabra clave.*\nEjemplo: `.cajaguar vacaciones`");
+    }
+
+    const keyword = args.join(' ').trim(); // Obtener la palabra clave
+
+    if (!keyword) {
+        return m.reply("❌ *Debes proporcionar una palabra clave para guardar el archivo.*\nEjemplo: `.cajaguar vacaciones`");
+    }
+
+    if (!cajasFuertes[m.sender]) {
+        return m.reply("❌ *No tienes una caja fuerte creada.* Usa el comando `.cajafuerte contraseña` para crearla.");
+    }
+
+    const messageType = Object.keys(m.quoted.message)[0]; // Tipo de mensaje (image, video, audio, sticker)
+    const validTypes = ['imageMessage', 'videoMessage', 'audioMessage', 'stickerMessage'];
+
+    if (!validTypes.includes(messageType)) {
+        return m.reply("❌ *Solo puedes guardar imágenes, videos, audios o stickers en tu caja fuerte.*");
+    }
+
+    // Descargar el archivo multimedia
+    try {
+        const buffer = await m.quoted.download();
+        const type = messageType.replace('Message', '');
+
+        // Verificar si la palabra clave ya está en uso
+        if (cajasFuertes[m.sender].multimedia[keyword]) {
+            return m.reply("❌ *Ya tienes un archivo guardado con esta palabra clave. Usa una diferente.*");
+        }
+
+        // Guardar el archivo multimedia en la caja fuerte
+        cajasFuertes[m.sender].multimedia[keyword] = {
+            type,
+            data: buffer,
+        };
+
+        // Guardar cambios en el archivo
+        fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+
+        m.reply(`✅ *El archivo ha sido guardado exitosamente en tu caja fuerte con la palabra clave:* "${keyword}"`);
+    } catch (error) {
+        console.error("Error al guardar el archivo en la caja fuerte:", error);
+        m.reply("❌ *Hubo un error al intentar guardar el archivo. Intenta nuevamente.*");
+    }
+}
+break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
