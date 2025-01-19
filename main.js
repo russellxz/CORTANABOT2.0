@@ -1242,6 +1242,66 @@ case 'cambiar': {
     }
 }
 break;
+//abrir caja		
+case 'abrircaja': {
+    const password = args.join(' ').trim(); // Obtener la contraseña proporcionada
+
+    // Verificar si se proporcionó una contraseña
+    if (!password) {
+        return m.reply("❌ *Debes proporcionar la contraseña para abrir tu caja fuerte.*\nEjemplo: `.abrircaja tuContraseña123`");
+    }
+
+    // Verificar si el usuario tiene una caja fuerte creada
+    if (!cajasFuertes[m.sender]) {
+        return m.reply("❌ *No tienes una caja fuerte creada.* Usa el comando `.cajafuerte` para crearla.");
+    }
+
+    // Verificar si la contraseña es correcta
+    if (cajasFuertes[m.sender].password !== password) {
+        return m.reply("❌ *Contraseña incorrecta. Intenta nuevamente.*");
+    }
+
+    // Verificar si hay multimedia guardado en la caja fuerte
+    const multimedia = cajasFuertes[m.sender].multimedia;
+    const multimediaKeys = Object.keys(multimedia);
+
+    if (multimediaKeys.length === 0) {
+        return m.reply(
+            "📂 *Tu caja fuerte está vacía.*\n" +
+            "Puedes guardar multimedia usando el comando:\n" +
+            "`.cajaguar palabraClave` (respondiendo a un archivo)."
+        );
+    }
+
+    // Crear un menú bonito con las palabras clave de la caja fuerte
+    let menu = "🔓 *Tu Caja Fuerte* 🔓\n";
+    menu += "Aquí están las palabras clave de los archivos guardados:\n\n";
+    multimediaKeys.forEach((key, index) => {
+        menu += `*${index + 1}.* ${key}\n`;
+    });
+    menu += "\n✨ Usa el comando `.sacar palabraClave` para obtener el archivo.";
+
+    // Marcar la caja fuerte como abierta
+    cajasFuertes[m.sender].isOpen = true;
+    fs.writeFileSync(path, JSON.stringify(cajasFuertes, null, 2));
+
+    // Enviar mensaje al usuario
+    m.reply(menu);
+
+    // Si el comando se ejecuta en un grupo, enviar advertencia al privado
+    if (m.isGroup) {
+        try {
+            const privateJid = m.sender; // Enviar al privado del usuario
+            await conn.sendMessage(
+                privateJid,
+                { text: "⚠️ *Por seguridad, considera cambiar tu contraseña.* Usa el comando `.cambiar nuevaContraseña` en privado." }
+            );
+        } catch (error) {
+            console.error("Error al enviar mensaje al privado:", error);
+        }
+    }
+}
+break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
