@@ -1608,13 +1608,14 @@ case 'fallocaja': {
         { quoted: m }
     );
 
-    // Notificar al dueño de la caja fuerte
+    // Notificar al dueño de la caja fuerte en el grupo
     conn.sendMessage(
-        mentionedUser,
+        m.chat,
         {
-            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte debido al fallo de seguridad activo.*`,
-            mentions: [m.sender],
-        }
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a la caja fuerte de @${mentionedUser.split('@')[0]} debido al fallo de seguridad activo.*`,
+            mentions: [m.sender, mentionedUser],
+        },
+        { quoted: m }
     );
 }
 break;
@@ -1712,13 +1713,14 @@ case 'sacar2': {
         );
     }
 
-    // Notificar al dueño de la caja fuerte
+    // Notificar al dueño de la caja fuerte en el grupo
     conn.sendMessage(
-        mentionedUser,
+        m.chat,
         {
-            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha extraído multimedia de tu caja fuerte debido al fallo de seguridad activo en el grupo.*`,
-            mentions: [m.sender],
-        }
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha extraído multimedia de la caja fuerte de @${mentionedUser.split('@')[0]} debido al fallo de seguridad activo.*`,
+            mentions: [m.sender, mentionedUser],
+        },
+        { quoted: m }
     );
 }
 break;
@@ -1911,7 +1913,158 @@ case 'deletecaja': {
 
     break;
 }		
-				
+//caja fuerte abierta				
+case 'cajarobar': {
+    if (!m.isGroup) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede usarse en grupos.*" },
+            { quoted: m }
+        );
+    }
+
+    const mentionedUser = m.mentionedJid && m.mentionedJid[0];
+    if (!mentionedUser) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Por favor, menciona a un usuario para ver su caja fuerte.*" },
+            { quoted: m }
+        );
+    }
+
+    const userCaja = cajasFuertes[mentionedUser];
+    if (!userCaja || !userCaja.isOpen) {
+        return conn.sendMessage(
+            m.chat,
+            { text: `❌ *La caja fuerte del usuario @${mentionedUser.split('@')[0]} está cerrada o no existe.*`,
+            mentions: [mentionedUser] },
+            { quoted: m }
+        );
+    }
+
+    let listMessage = `🔐 *Caja Fuerte Abierta de @${mentionedUser.split('@')[0]}:*\n\n`;
+    const multimediaKeys = Object.keys(userCaja.multimedia);
+
+    if (multimediaKeys.length === 0) {
+        listMessage += "📂 *Esta caja fuerte está vacía.*";
+    } else {
+        multimediaKeys.forEach((key, index) => {
+            listMessage += `*${index + 1}.* 🔑 *${key}*\n`;
+        });
+        listMessage += "\n✨ Usa el comando `.resacar <palabra clave> @usuario` para extraer un archivo.";
+    }
+
+    conn.sendMessage(
+        m.chat,
+        { text: listMessage, mentions: [mentionedUser] },
+        { quoted: m }
+    );
+
+    // Notificar al dueño en el grupo
+    conn.sendMessage(
+        m.chat,
+        {
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte abierta.*`,
+            mentions: [m.sender, mentionedUser],
+        }
+    );
+}
+break;
+//resacar abierta		
+case 'resacar': {
+    if (!m.isGroup) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede usarse en grupos.*" },
+            { quoted: m }
+        );
+    }
+
+    const mentionedUser = m.mentionedJid && m.mentionedJid[0];
+    const keyword = args[0]?.toLowerCase();
+
+    if (!mentionedUser) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Uso del comando:* `.resacar <palabra clave> @usuario` para extraer multimedia de una caja fuerte abierta." },
+            { quoted: m }
+        );
+    }
+
+    if (!keyword) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Especifica la palabra clave del multimedia que deseas extraer.*" },
+            { quoted: m }
+        );
+    }
+
+    const userCaja = cajasFuertes[mentionedUser];
+    if (!userCaja || !userCaja.isOpen || !userCaja.multimedia[keyword]) {
+        return conn.sendMessage(
+            m.chat,
+            { text: `❌ *No se encontró multimedia con la palabra clave "${keyword}" en la caja fuerte de @${mentionedUser.split('@')[0]}.*`,
+            mentions: [mentionedUser] },
+            { quoted: m }
+        );
+    }
+
+    // Extraer multimedia
+    const { buffer, mimetype } = userCaja.multimedia[keyword];
+    const mediaBuffer = Buffer.from(buffer, 'base64');
+
+    try {
+        const mediaType = mimetype.split('/')[0];
+
+        if (mediaType === 'image' && mimetype === 'image/webp') {
+            // Enviar sticker
+            await conn.sendMessage(m.chat, { sticker: mediaBuffer }, { quoted: m });
+        } else if (mediaType === 'image') {
+            // Enviar imagen
+            await conn.sendMessage(m.chat, { image: mediaBuffer }, { quoted: m });
+        } else if (mediaType === 'video') {
+            await conn.sendMessage(m.chat, { video: mediaBuffer }, { quoted: m });
+        } else if (mediaType === 'audio') {
+            await conn.sendMessage(
+                m.chat,
+                { audio: mediaBuffer, mimetype: mimetype, ptt: false },
+                { quoted: m }
+            );
+        } else if (mediaType === 'application') {
+            const extension = mimetype.split('/')[1];
+            await conn.sendMessage(
+                m.chat,
+                { document: mediaBuffer, mimetype: mimetype, fileName: `${keyword}.${extension}` },
+                { quoted: m }
+            );
+        } else {
+            await conn.sendMessage(
+                m.chat,
+                { text: "❌ *El tipo de archivo no es compatible para ser enviado.*" },
+                { quoted: m }
+            );
+        }
+    } catch (error) {
+        console.error('Error al enviar el multimedia:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Hubo un error al intentar enviar el multimedia. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+
+    // Notificar al dueño en el grupo
+    conn.sendMessage(
+        m.chat,
+        {
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha extraído multimedia de tu caja fuerte abierta.*`,
+            mentions: [m.sender, mentionedUser],
+        }
+    );
+}
+break;
+	
+		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
