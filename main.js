@@ -2097,6 +2097,9 @@ _Extrae archivos de una caja fuerte abierta._
 🔑 *.sacar2* palabraClave @usuario  
 _Extrae multimedia de una caja fuerte durante el modo fallo2 activo._
 
+✅️ *.sacar* palabraClave
+_para sacar tu multimedia de tu caja_
+
 📋 *.robarcaja* @usuario  
 _Consulta los archivos de una caja abierta._
 
