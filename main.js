@@ -2128,6 +2128,14 @@ _Activa o desactiva el fallo automático que permite acceder a cajas fuertes dur
         },
         { quoted: m }
     );
+
+    // Reaccionar al mensaje del usuario
+    await conn.sendMessage(m.chat, {
+        react: {
+            text: "🕑", // Emoji de la reacción
+            key: m.key, // Mensaje del usuario al que reaccionará
+        },
+    });
 }
 break;
 
