@@ -1555,7 +1555,7 @@ break;
 //fallo 
 
 //otra caja		
-case 'otracaja': {
+case 'fallocaja': {
     if (!m.isGroup) {
         return conn.sendMessage(
             m.chat,
@@ -1769,9 +1769,14 @@ case 'fallo2': {
             if (!falloData[m.chat]?.active) return; // Si se desactiva, salir
 
             global.falloSeguridad = true; // Activar fallo por 5 minutos
+
+            const mentions = groupMetadata.participants.map(p => p.id); // Obtener todos los miembros del grupo
             await conn.sendMessage(
                 m.chat,
-                { text: "🔓 *Fallo de seguridad activado por 5 minutos.* Usa `.otracaja @usuario` para acceder a cajas fuertes ajenas. 🚨" }
+                {
+                    text: "🔓 *Fallo de seguridad activado por 5 minutos.* Usa `.fallocaja @usuario` para acceder a cajas fuertes ajenas. 🚨",
+                    mentions,
+                }
             );
 
             // Desactivar después de 5 minutos
@@ -1780,13 +1785,13 @@ case 'fallo2': {
                 global.falloSeguridad = false;
                 await conn.sendMessage(
                     m.chat,
-                    { text: "🔒 *Fallo de seguridad desactivado.* Espera 12 horas para la próxima activación. ⏳" }
+                    { text: "🔒 *Fallo de seguridad desactivado.* Espera 3 horas para la próxima activación. ⏳" }
                 );
                 falloData[m.chat].lastActivated = Date.now();
                 fs.writeFileSync(falloPath, JSON.stringify(falloData, null, 2));
 
-                // Programar la próxima activación en 12 horas
-                setTimeout(activateFallo2, 12 * 60 * 60 * 1000); // 12 horas
+                // Programar la próxima activación en 3 horas
+                setTimeout(activateFallo2, 3 * 60 * 60 * 1000); // 3 horas
             }, 5 * 60 * 1000); // 5 minutos
         };
 
