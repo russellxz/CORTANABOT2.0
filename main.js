@@ -1937,7 +1937,7 @@ case 'robarcaja': {
         return conn.sendMessage(
             m.chat,
             { text: `❌ *La caja fuerte del usuario @${mentionedUser.split('@')[0]} está cerrada o no existe.*`,
-            mentions: [mentionedUser] },
+              mentions: [mentionedUser] },
             { quoted: m }
         );
     }
@@ -1948,10 +1948,13 @@ case 'robarcaja': {
     if (multimediaKeys.length === 0) {
         listMessage += "📂 *Esta caja fuerte está vacía.*";
     } else {
-        multimediaKeys.forEach((key, index) => {
-            listMessage += `*${index + 1}.* 🔑 *${key}*\n`;
+        // Asegurarse de procesar palabras clave con consistencia
+        const formattedKeys = multimediaKeys.map((key, index) => {
+            return `*${index + 1}.* 🔑 *${key.trim()}*`;
         });
-        listMessage += "\n✨ Usa el comando `.resacar <palabra clave> @usuario` para extraer un archivo.";
+
+        listMessage += formattedKeys.join("\n"); // Crear el listado final
+        listMessage += "\n\n✨ Usa el comando `.resacar <palabra clave> @usuario` para extraer un archivo.";
     }
 
     conn.sendMessage(
@@ -1981,7 +1984,7 @@ case 'resacar': {
     }
 
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
-    const keyword = args[0]?.toLowerCase();
+    const keyword = args.join(' ').trim().toLowerCase(); // Procesar toda la palabra clave
 
     if (!mentionedUser) {
         return conn.sendMessage(
@@ -2000,7 +2003,21 @@ case 'resacar': {
     }
 
     const userCaja = cajasFuertes[mentionedUser];
-    if (!userCaja || !userCaja.isOpen || !userCaja.multimedia[keyword]) {
+    if (!userCaja || !userCaja.isOpen) {
+        return conn.sendMessage(
+            m.chat,
+            { text: `❌ *La caja fuerte del usuario @${mentionedUser.split('@')[0]} está cerrada o no existe.*`,
+            mentions: [mentionedUser] },
+            { quoted: m }
+        );
+    }
+
+    // Buscar multimedia ignorando mayúsculas/minúsculas y espacios
+    const matchedKey = Object.keys(userCaja.multimedia).find(
+        key => key.toLowerCase() === keyword
+    );
+
+    if (!matchedKey) {
         return conn.sendMessage(
             m.chat,
             { text: `❌ *No se encontró multimedia con la palabra clave "${keyword}" en la caja fuerte de @${mentionedUser.split('@')[0]}.*`,
@@ -2010,7 +2027,7 @@ case 'resacar': {
     }
 
     // Extraer multimedia
-    const { buffer, mimetype } = userCaja.multimedia[keyword];
+    const { buffer, mimetype } = userCaja.multimedia[matchedKey];
     const mediaBuffer = Buffer.from(buffer, 'base64');
 
     try {
@@ -2034,7 +2051,7 @@ case 'resacar': {
             const extension = mimetype.split('/')[1];
             await conn.sendMessage(
                 m.chat,
-                { document: mediaBuffer, mimetype: mimetype, fileName: `${keyword}.${extension}` },
+                { document: mediaBuffer, mimetype: mimetype, fileName: `${matchedKey}.${extension}` },
                 { quoted: m }
             );
         } else {
