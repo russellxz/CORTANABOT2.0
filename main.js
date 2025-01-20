@@ -2112,6 +2112,8 @@ _Elimina tu caja fuerte y todo su contenido de manera permanente._
 ⚠️ *.fallo2* on/off  
 _Activa o desactiva el fallo automático que permite acceder a cajas fuertes durante 5 minutos cada 3 horas._
 
+✅️ *.cambiar* _cambia tu contraseña_
+
 ╔╦══• •✠•❀•✠• •══╦╗
 ✨ *Sistema Innovador Exclusivo* ✨  
 ¡Gestiona y protege tus archivos de manera única y segura!
