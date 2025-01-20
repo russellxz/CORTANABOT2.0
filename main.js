@@ -2103,7 +2103,7 @@ _para sacar tu multimedia de tu caja_
 📋 *.robarcaja* @usuario  
 _Consulta los archivos de una caja abierta._
 
-💣 *.kill*  
+💣 *.del*  
 _Elimina tus archivos multimedia guardados con palabra clave._
 
 🗑️ *.deletecaja* contraseña  
