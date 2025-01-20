@@ -1914,7 +1914,7 @@ case 'deletecaja': {
     break;
 }		
 //caja fuerte abierta				
-case 'cajarobar': {
+case 'robarcaja': {
     if (!m.isGroup) {
         return conn.sendMessage(
             m.chat,
