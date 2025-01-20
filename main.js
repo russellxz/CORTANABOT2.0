@@ -2063,8 +2063,75 @@ case 'resacar': {
     );
 }
 break;
-	
-		
+//menucaja fuerte	
+case 'menucaja': {
+    const imageUrl = "https://i.postimg.cc/zvdLCYKR/file-Qc1-TKdfh-GKjk-Uwqs-Pwfjz-R-3.webp"; // URL de la imagen
+
+    const menuText = `
+✧══════•❁❀❁•══════✧
+🎉 *Bienvenidos al Menú Caja Fuerte de Cortana Bot 2.0* 🎉
+✧══════•❁❀❁•══════✧
+
+╔╦══• •✠•❀•✠• •══╦╗
+✨ *Lista de Comandos y Funciones* ✨
+╚╩═════════════════╩╝
+
+📂 *.cajafuerte* contraseña  
+_Crea tu caja fuerte personal con una contraseña segura._
+
+🔓 *.abrircaja* contraseña  
+_Abre tu caja fuerte y accede a tus archivos guardados._
+
+🔒 *.cerrarcaja*  
+_Cierra tu caja fuerte para proteger su contenido._
+
+💾 *.cajaguar* palabraClave  
+_Guarda multimedia en tu caja fuerte usando una palabra clave única._
+
+📜 *.fallocaja* @usuario  
+_Consulta la lista de archivos de otro usuario (si el evento de fallo2 está activo)._
+
+📤 *.resacar* palabraClave @usuario  
+_Extrae archivos de una caja fuerte abierta._
+
+🔑 *.sacar2* palabraClave @usuario  
+_Extrae multimedia de una caja fuerte durante el modo fallo2 activo._
+
+📋 *.robarcaja* @usuario  
+_Consulta los archivos de una caja abierta._
+
+💣 *.kill*  
+_Elimina tus archivos multimedia guardados con palabra clave._
+
+🗑️ *.deletecaja* contraseña  
+_Elimina tu caja fuerte y todo su contenido de manera permanente._
+
+⚠️ *.fallo2* on/off  
+_Activa o desactiva el fallo automático que permite acceder a cajas fuertes durante 5 minutos cada 3 horas._
+
+╔╦══• •✠•❀•✠• •══╦╗
+✨ *Sistema Innovador Exclusivo* ✨  
+¡Gestiona y protege tus archivos de manera única y segura!
+╚╩═════════════════╩╝
+
+✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏  
+✨ *Cortana Bot 2.0, innovación en tus manos.* ✨  
+✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+`;
+
+    // Enviar el menú con la imagen
+    await conn.sendMessage(
+        m.chat,
+        { 
+            image: { url: imageUrl },
+            caption: menuText 
+        },
+        { quoted: m }
+    );
+}
+break;
+
+
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
