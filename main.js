@@ -2206,11 +2206,7 @@ break;
 //mute
 case 'mute': {
     if (!m.isGroup) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Este comando solo puede usarse en grupos.*" },
-            { quoted: m }
-        );
+        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
     }
 
     // Verificar si el usuario respondió a alguien
@@ -2223,6 +2219,8 @@ case 'mute': {
     }
 
     const targetUser = m.quoted.sender;
+    const groupId = m.chat;
+
     if (!targetUser) {
         return conn.sendMessage(
             m.chat,
@@ -2231,10 +2229,9 @@ case 'mute': {
         );
     }
 
-    // Inicializar lista de muteados por grupo si no existe
-    if (!global.muteList[m.chat]) global.muteList[m.chat] = {};
+    if (!global.muteList[groupId]) global.muteList[groupId] = {}; // Inicializar la lista de muteados por grupo
 
-    if (global.muteList[m.chat][targetUser]) {
+    if (global.muteList[groupId][targetUser]) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *Este usuario ya está muteado.*" },
@@ -2243,7 +2240,7 @@ case 'mute': {
     }
 
     // Agregar al usuario a la lista de muteados
-    global.muteList[m.chat][targetUser] = { messagesSent: 0 };
+    global.muteList[groupId][targetUser] = { messagesSent: 0 };
     global.saveMuteList();
 
     conn.sendMessage(
@@ -2254,6 +2251,39 @@ case 'mute': {
         },
         { quoted: m }
     );
+
+    // Escuchar mensajes del usuario muteado para eliminarlos
+    sock.ev.on('messages.upsert', async (message) => {
+        const msg = message.messages[0];
+        const remoteJid = msg?.key?.remoteJid;
+        const sender = msg?.key?.participant || msg?.key?.remoteJid;
+
+        if (remoteJid === groupId && global.muteList[groupId]?.[sender]) {
+            // Incrementar el contador de mensajes
+            global.muteList[groupId][sender].messagesSent += 1;
+
+            // Eliminar el mensaje
+            await sock.sendMessage(remoteJid, { delete: msg.key });
+
+            // Avisar si está cerca del límite
+            if (global.muteList[groupId][sender].messagesSent === 9) {
+                await conn.sendMessage(
+                    remoteJid,
+                    {
+                        text: `⚠️ *Última advertencia @${sender.split('@')[0]}.* Si envías otro mensaje, serás eliminado del grupo.`,
+                        mentions: [sender],
+                    }
+                );
+            }
+
+            // Expulsar si excede el límite de mensajes
+            if (global.muteList[groupId][sender].messagesSent >= 10) {
+                await sock.groupParticipantsUpdate(remoteJid, [sender], "remove");
+                delete global.muteList[groupId][sender]; // Eliminar de la lista de muteados
+                global.saveMuteList();
+            }
+        }
+    });
 }
 break;
 
