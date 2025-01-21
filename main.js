@@ -70,6 +70,10 @@ function saveMuteList() {
         console.error("Error al guardar muteList:", error);
     }
 }
+
+// Asignar muteList y saveMuteList al objeto global correctamente
+global.muteList = muteList;
+global.saveMuteList = saveMuteList;
 // Función para guardar muteDa
 // Objeto fallo
 const falloPath = './fallo.json';
