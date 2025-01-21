@@ -2229,8 +2229,10 @@ case 'mute': {
         );
     }
 
-    if (!global.muteList[groupId]) global.muteList[groupId] = {}; // Inicializar la lista de muteados por grupo
+    // Inicializar la lista de muteados para el grupo si no existe
+    if (!global.muteList[groupId]) global.muteList[groupId] = {};
 
+    // Verificar si el usuario ya está muteado
     if (global.muteList[groupId][targetUser]) {
         return conn.sendMessage(
             m.chat,
@@ -2243,6 +2245,7 @@ case 'mute': {
     global.muteList[groupId][targetUser] = { messagesSent: 0 };
     global.saveMuteList();
 
+    // Notificar al grupo
     conn.sendMessage(
         m.chat,
         {
@@ -2251,39 +2254,6 @@ case 'mute': {
         },
         { quoted: m }
     );
-
-    // Escuchar mensajes del usuario muteado para eliminarlos
-    sock.ev.on('messages.upsert', async (message) => {
-        const msg = message.messages[0];
-        const remoteJid = msg?.key?.remoteJid;
-        const sender = msg?.key?.participant || msg?.key?.remoteJid;
-
-        if (remoteJid === groupId && global.muteList[groupId]?.[sender]) {
-            // Incrementar el contador de mensajes
-            global.muteList[groupId][sender].messagesSent += 1;
-
-            // Eliminar el mensaje
-            await sock.sendMessage(remoteJid, { delete: msg.key });
-
-            // Avisar si está cerca del límite
-            if (global.muteList[groupId][sender].messagesSent === 9) {
-                await conn.sendMessage(
-                    remoteJid,
-                    {
-                        text: `⚠️ *Última advertencia @${sender.split('@')[0]}.* Si envías otro mensaje, serás eliminado del grupo.`,
-                        mentions: [sender],
-                    }
-                );
-            }
-
-            // Expulsar si excede el límite de mensajes
-            if (global.muteList[groupId][sender].messagesSent >= 10) {
-                await sock.groupParticipantsUpdate(remoteJid, [sender], "remove");
-                delete global.muteList[groupId][sender]; // Eliminar de la lista de muteados
-                global.saveMuteList();
-            }
-        }
-    });
 }
 break;
 
