@@ -53,9 +53,6 @@ global.grupoChat = {
 //mute
 // Ruta del archivo mute.json
 
-// Inicializar muteData desde el archivo JSON o como objeto vacío
-global.muteData[participant] = { messageCount: 0 };
-global.saveMuteData();
 
 //---------[ NOMBRE/INFO ]---------
 global.botname = "CORTANABOT-2.0"
