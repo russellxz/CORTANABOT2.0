@@ -2209,6 +2209,20 @@ case 'mute': {
         return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
     }
 
+    // Verificar si el usuario es admin o el owner
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+    const isOwner = global.owner.includes(m.sender.split('@')[0]);
+
+    if (!isAdmin && !isOwner) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede ser usado por administradores o el Owner.*" },
+            { quoted: m }
+        );
+    }
+
     // Verificar si el usuario respondió a alguien
     if (!m.quoted) {
         return conn.sendMessage(
@@ -2262,6 +2276,20 @@ case 'unmute': {
         return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
     }
 
+    // Verificar si el usuario es admin o el owner
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+    const isOwner = global.owner.includes(m.sender.split('@')[0]);
+
+    if (!isAdmin && !isOwner) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede ser usado por administradores o el Owner.*" },
+            { quoted: m }
+        );
+    }
+
     if (!m.quoted) {
         return conn.sendMessage(
             m.chat,
@@ -2271,7 +2299,8 @@ case 'unmute': {
     }
 
     const targetUser = m.quoted.sender;
-    if (!muteList[m.chat] || !muteList[m.chat][targetUser]) {
+
+    if (!global.muteList[m.chat] || !global.muteList[m.chat][targetUser]) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *Este usuario no está muteado.*" },
@@ -2280,8 +2309,8 @@ case 'unmute': {
     }
 
     // Eliminar al usuario de la lista de muteados
-    delete muteList[m.chat][targetUser];
-    saveMuteList();
+    delete global.muteList[m.chat][targetUser];
+    global.saveMuteList();
 
     conn.sendMessage(
         m.chat,
