@@ -52,7 +52,6 @@ global.grupoChat = {
 };
 //mute
 // Ruta del archivo mute.json
-const mutePath = path.join(__dirname, 'mute.json');
 
 // Inicializar muteData desde el archivo JSON o como objeto vacío
 global.muteData[participant] = { messageCount: 0 };
