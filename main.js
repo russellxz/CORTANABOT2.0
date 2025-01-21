@@ -53,15 +53,6 @@ const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 const mutePath = path.join(__dirname, 'mute.json');
 
 // Inicializar muteData desde el archivo JSON o como objeto vacío
-global.muteData = {};
-if (fs.existsSync(mutePath)) {
-    try {
-        global.muteData = JSON.parse(fs.readFileSync(mutePath, 'utf-8'));
-    } catch (error) {
-        console.error("Error al cargar muteData desde el archivo:", error);
-        global.muteData = {};
-    }
-}
 
 
 //mute
