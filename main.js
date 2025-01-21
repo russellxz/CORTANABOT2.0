@@ -2193,7 +2193,11 @@ break;
 //mute
 case 'mute': {
     if (!m.isGroup) {
-        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede usarse en grupos.*" },
+            { quoted: m }
+        );
     }
 
     // Verificar si el usuario respondió a alguien
@@ -2214,8 +2218,10 @@ case 'mute': {
         );
     }
 
-    if (!muteList[m.chat]) muteList[m.chat] = {}; // Inicializar lista de muteados por grupo
-    if (muteList[m.chat][targetUser]) {
+    // Inicializar lista de muteados por grupo si no existe
+    if (!global.muteList[m.chat]) global.muteList[m.chat] = {};
+
+    if (global.muteList[m.chat][targetUser]) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *Este usuario ya está muteado.*" },
@@ -2224,8 +2230,8 @@ case 'mute': {
     }
 
     // Agregar al usuario a la lista de muteados
-    muteList[m.chat][targetUser] = { messagesSent: 0 };
-    saveMuteList();
+    global.muteList[m.chat][targetUser] = { messagesSent: 0 };
+    global.saveMuteList();
 
     conn.sendMessage(
         m.chat,
