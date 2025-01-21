@@ -49,13 +49,28 @@ const {owner} = require('./plugins/propietario.js')
 const {enable} = require('./plugins/enable.js')
 const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 //manejo de mensaje
-const mutePath = './mute.json';
+// Ruta del archivo mute.json
+const mutePath = path.join(__dirname, 'mute.json');
 
-// Cargar lista de muteados desde archivo
-let muteList = fs.existsSync(mutePath) ? JSON.parse(fs.readFileSync(mutePath)) : {};
+// Inicializar muteData desde el archivo JSON o como objeto vacío
+global.muteData = {};
+if (fs.existsSync(mutePath)) {
+    try {
+        global.muteData = JSON.parse(fs.readFileSync(mutePath, 'utf-8'));
+    } catch (error) {
+        console.error("Error al cargar muteData desde el archivo:", error);
+        global.muteData = {};
+    }
+}
 
-// Guardar cambios en el archivo
-const saveMuteList = () => fs.writeFileSync(mutePath, JSON.stringify(muteList, null, 2));
+// Función para guardar muteData en el archivo
+global.saveMuteData = () => {
+    try {
+        fs.writeFileSync(mutePath, JSON.stringify(global.muteData, null, 2));
+    } catch (error) {
+        console.error("Error al guardar muteData en el archivo:", error);
+    }
+};
 //mute
 // Objeto fallo
 const falloPath = './fallo.json';
