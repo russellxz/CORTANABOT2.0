@@ -313,22 +313,22 @@ sock.ev.on("messages.upsert", async (message) => {
         }
 
         // Lógica para usuarios muteados
-        const remoteJid = key?.remoteJid;
-        const participant = msg?.participant || remoteJid;
+        const remoteJid = key?.remoteJid; // ID del grupo
+        const participant = msg?.participant || key.remoteJid; // Usuario que envió el mensaje
 
         if (remoteJid?.endsWith("@g.us") && global.muteList[remoteJid]?.[participant]) {
             // Incrementar el contador de mensajes del usuario muteado
-            global.muteList[remoteJid][participant].messageCount =
-                (global.muteList[remoteJid][participant].messageCount || 0) + 1;
+            global.muteList[remoteJid][participant].messagesSent =
+                (global.muteList[remoteJid][participant].messagesSent || 0) + 1;
 
             // Guardar los cambios en el archivo
-            fs.writeFileSync(mutePath, JSON.stringify(global.muteList, null, 2));
+            global.saveMuteList();
 
             // Eliminar el mensaje
-            await sock.sendMessage(remoteJid, { delete: msg.key });
+            await sock.sendMessage(remoteJid, { delete: key });
 
             // Avisar si está cerca del límite
-            if (global.muteList[remoteJid][participant].messageCount === 9) {
+            if (global.muteList[remoteJid][participant].messagesSent === 9) {
                 await sock.sendMessage(
                     remoteJid,
                     {
@@ -338,11 +338,11 @@ sock.ev.on("messages.upsert", async (message) => {
                 );
             }
 
-            // Eliminar del grupo si excede el límite
-            if (global.muteList[remoteJid][participant].messageCount >= 10) {
+            // Eliminar del grupo si excede el límite de mensajes
+            if (global.muteList[remoteJid][participant].messagesSent >= 10) {
                 await sock.groupParticipantsUpdate(remoteJid, [participant], "remove");
-                delete global.muteList[remoteJid][participant]; // Limpiar el contador del usuario eliminado
-                fs.writeFileSync(mutePath, JSON.stringify(global.muteList, null, 2));
+                delete global.muteList[remoteJid][participant]; // Remover de la lista negra
+                global.saveMuteList(); // Guardar los cambios
             }
 
             return; // Detener más procesamiento para el usuario muteado
@@ -415,7 +415,7 @@ sock.ev.on("messages.upsert", async (message) => {
         console.error("Error al procesar el mensaje:", error);
     }
 });	
-	
+
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
     console.log("Event triggered: messages.update");
