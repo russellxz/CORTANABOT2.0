@@ -42,6 +42,10 @@ global.falloSeguridad = false;
 global.tempCaja = {};
 global.mensajesPorUsuario = {};  // Usamos un objeto en lugar de un array para asociar usuarios y grupos
 global.muteList = global.muteList || {};
+// Hacer muteList global para que se pueda usar en otros comandos
+global.muteList = muteList;
+global.saveMuteList = saveMuteList;
+
 // Configuración Global
 global.fallo2 = {}; // Objeto donde se almacenará el estado del fallo por grupo
 global.cajasFuertes = {}; // Almacenará todas las cajas fuertes de los usuarios
