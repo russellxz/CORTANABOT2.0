@@ -41,6 +41,7 @@ global.awaitingPasswords = {}; // Estructura global para rastrear contraseñas p
 global.falloSeguridad = false;
 global.tempCaja = {};
 global.mensajesPorUsuario = {};  // Usamos un objeto en lugar de un array para asociar usuarios y grupos
+global.muteList = global.muteList || {};
 // Configuración Global
 global.fallo2 = {}; // Objeto donde se almacenará el estado del fallo por grupo
 global.cajasFuertes = {}; // Almacenará todas las cajas fuertes de los usuarios
