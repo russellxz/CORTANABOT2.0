@@ -316,18 +316,19 @@ sock.ev.on("messages.upsert", async (message) => {
         const remoteJid = key?.remoteJid;
         const participant = msg?.participant || remoteJid;
 
-        if (remoteJid?.endsWith("@g.us") && muteData[participant]) {
+        if (remoteJid?.endsWith("@g.us") && global.muteList[remoteJid]?.[participant]) {
             // Incrementar el contador de mensajes del usuario muteado
-            muteData[participant].messageCount = (muteData[participant].messageCount || 0) + 1;
+            global.muteList[remoteJid][participant].messageCount =
+                (global.muteList[remoteJid][participant].messageCount || 0) + 1;
 
             // Guardar los cambios en el archivo
-            fs.writeFileSync(mutePath, JSON.stringify(muteData, null, 2));
+            fs.writeFileSync(mutePath, JSON.stringify(global.muteList, null, 2));
 
             // Eliminar el mensaje
             await sock.sendMessage(remoteJid, { delete: msg.key });
 
             // Avisar si está cerca del límite
-            if (muteData[participant].messageCount === 9) {
+            if (global.muteList[remoteJid][participant].messageCount === 9) {
                 await sock.sendMessage(
                     remoteJid,
                     {
@@ -338,10 +339,10 @@ sock.ev.on("messages.upsert", async (message) => {
             }
 
             // Eliminar del grupo si excede el límite
-            if (muteData[participant].messageCount >= 10) {
+            if (global.muteList[remoteJid][participant].messageCount >= 10) {
                 await sock.groupParticipantsUpdate(remoteJid, [participant], "remove");
-                delete muteData[participant]; // Limpiar el contador del usuario eliminado
-                fs.writeFileSync(mutePath, JSON.stringify(muteData, null, 2));
+                delete global.muteList[remoteJid][participant]; // Limpiar el contador del usuario eliminado
+                fs.writeFileSync(mutePath, JSON.stringify(global.muteList, null, 2));
             }
 
             return; // Detener más procesamiento para el usuario muteado
@@ -413,10 +414,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});
-
-
-
+});	
 	
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
