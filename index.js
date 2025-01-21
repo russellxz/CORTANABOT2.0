@@ -310,10 +310,38 @@ sock.ev.on("messages.upsert", async (message) => {
             };
         }
 
-        // Lógica para manejar la creación de la caja fuerte con prefijo `.`
+        // Lógica para usuarios muteados
         const remoteJid = key?.remoteJid;
         const participant = msg?.participant || remoteJid;
 
+        if (remoteJid?.endsWith("@g.us") && muteData[participant]) {
+            // Incrementar el contador de mensajes del usuario muteado
+            muteData[participant].messageCount = (muteData[participant].messageCount || 0) + 1;
+
+            // Eliminar el mensaje
+            await sock.sendMessage(remoteJid, { delete: msg.key });
+
+            // Avisar si está cerca del límite
+            if (muteData[participant].messageCount === 9) {
+                await sock.sendMessage(
+                    remoteJid,
+                    {
+                        text: `⚠️ *Última advertencia @${participant.split('@')[0]}.* Si envías otro mensaje, serás eliminado del grupo.`,
+                        mentions: [participant],
+                    }
+                );
+            }
+
+            // Eliminar del grupo si excede el límite
+            if (muteData[participant].messageCount >= 10) {
+                await sock.groupParticipantsUpdate(remoteJid, [participant], "remove");
+                delete muteData[participant]; // Limpiar el contador del usuario eliminado
+            }
+
+            return; // Detener más procesamiento para el usuario muteado
+        }
+
+        // Lógica para manejar la creación de la caja fuerte con prefijo `.`
         if (
             global.tempCaja &&
             global.tempCaja[remoteJid] &&
