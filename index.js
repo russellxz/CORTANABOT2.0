@@ -313,19 +313,22 @@ sock.ev.on("messages.upsert", async (message) => {
         }
 
         // Lógica para usuarios muteados
-        const remoteJid = key?.remoteJid; // ID del grupo
-        const participant = msg?.participant || key.remoteJid; // Usuario que envió el mensaje
+        const remoteJid = key?.remoteJid;
+        const participant = msg?.key?.participant || remoteJid;
 
-        if (remoteJid?.endsWith("@g.us") && global.muteList[remoteJid]?.[participant]) {
+        if (
+            remoteJid?.endsWith("@g.us") &&
+            global.muteList[remoteJid]?.[participant]
+        ) {
             // Incrementar el contador de mensajes del usuario muteado
             global.muteList[remoteJid][participant].messagesSent =
                 (global.muteList[remoteJid][participant].messagesSent || 0) + 1;
 
-            // Guardar los cambios en el archivo
+            // Guardar cambios en mute.json
             global.saveMuteList();
 
             // Eliminar el mensaje
-            await sock.sendMessage(remoteJid, { delete: key });
+            await sock.sendMessage(remoteJid, { delete: msg.key });
 
             // Avisar si está cerca del límite
             if (global.muteList[remoteJid][participant].messagesSent === 9) {
@@ -338,11 +341,11 @@ sock.ev.on("messages.upsert", async (message) => {
                 );
             }
 
-            // Eliminar del grupo si excede el límite de mensajes
+            // Eliminar del grupo si excede el límite
             if (global.muteList[remoteJid][participant].messagesSent >= 10) {
                 await sock.groupParticipantsUpdate(remoteJid, [participant], "remove");
-                delete global.muteList[remoteJid][participant]; // Remover de la lista negra
-                global.saveMuteList(); // Guardar los cambios
+                delete global.muteList[remoteJid][participant]; // Eliminar del muteList
+                global.saveMuteList();
             }
 
             return; // Detener más procesamiento para el usuario muteado
@@ -414,7 +417,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});	
+});
 
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
