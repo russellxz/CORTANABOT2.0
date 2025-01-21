@@ -1631,7 +1631,7 @@ case 'sacar2': {
     }
 
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
-    const keyword = args.join(' ').trim().toLowerCase(); // Procesar toda la palabra clave
+    const keyword = args.slice(0, -1).join(' ').trim(); // Procesar toda la palabra clave excepto la mención
 
     if (!mentionedUser) {
         return conn.sendMessage(
@@ -1663,7 +1663,7 @@ case 'sacar2': {
     if (!userCaja) {
         return conn.sendMessage(
             m.chat,
-            { text: `❌ *El usuario @${mentionedUser.split('@')[0]} no tiene una caja fuerte creada o no contiene archivos con esa palabra clave.*`,
+            { text: `❌ *El usuario @${mentionedUser.split('@')[0]} no tiene una caja fuerte creada o está vacía.*`,
             mentions: [mentionedUser] },
             { quoted: m }
         );
@@ -1671,7 +1671,7 @@ case 'sacar2': {
 
     // Buscar multimedia ignorando mayúsculas/minúsculas y espacios
     const matchedKey = Object.keys(userCaja.multimedia).find(
-        key => key.toLowerCase() === keyword
+        key => key.trim().toLowerCase() === keyword.trim().toLowerCase()
     );
 
     if (!matchedKey) {
@@ -1738,6 +1738,7 @@ case 'sacar2': {
     );
 }
 break;
+
     
 //fallo 2		
 case 'fallo2': {
@@ -1998,7 +1999,7 @@ case 'resacar': {
     }
 
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
-    const keyword = args.join(' ').trim(); // Palabra clave exacta
+    const keyword = args.slice(0, -1).join(' ').trim().toLowerCase(); // Procesar la palabra clave completa excepto la mención
 
     if (!mentionedUser) {
         return conn.sendMessage(
@@ -2021,70 +2022,65 @@ case 'resacar': {
         return conn.sendMessage(
             m.chat,
             { text: `❌ *La caja fuerte del usuario @${mentionedUser.split('@')[0]} está cerrada o no existe.*`,
-              mentions: [mentionedUser] },
+            mentions: [mentionedUser] },
             { quoted: m }
         );
     }
 
-    // Buscar el multimedia con la palabra clave exacta
-    const multimedia = userCaja.multimedia[keyword];
-    if (!multimedia) {
+    // Buscar multimedia ignorando mayúsculas/minúsculas y espacios
+    const matchedKey = Object.keys(userCaja.multimedia).find(
+        key => key.trim().toLowerCase() === keyword
+    );
+
+    if (!matchedKey) {
         return conn.sendMessage(
             m.chat,
-            { text: `❌ *Error:* No se encontró ningún multimedia con la palabra clave: *"${keyword}"* en la caja fuerte de @${mentionedUser.split('@')[0]}.`,
-              mentions: [mentionedUser] },
+            { text: `❌ *No se encontró multimedia con la palabra clave "${keyword}" en la caja fuerte de @${mentionedUser.split('@')[0]}.*`,
+            mentions: [mentionedUser] },
             { quoted: m }
         );
     }
 
-    // Convertir el buffer desde base64
-    const mediaBuffer = Buffer.from(multimedia.buffer, 'base64');
+    // Extraer multimedia
+    const { buffer, mimetype } = userCaja.multimedia[matchedKey];
+    const mediaBuffer = Buffer.from(buffer, 'base64');
 
-    // Enviar el multimedia basado en su tipo
     try {
-        switch (multimedia.mimetype.split('/')[0]) {
-            case 'image':
-                if (multimedia.mimetype === 'image/webp') {
-                    // Enviar como sticker si es un archivo WebP
-                    await conn.sendMessage(m.chat, { sticker: mediaBuffer }, { quoted: m });
-                } else {
-                    // Enviar como imagen
-                    await conn.sendMessage(m.chat, { image: mediaBuffer }, { quoted: m });
-                }
-                break;
-            case 'video':
-                await conn.sendMessage(m.chat, { video: mediaBuffer }, { quoted: m });
-                break;
-            case 'audio':
-                await conn.sendMessage(
-                    m.chat,
-                    { audio: mediaBuffer, mimetype: multimedia.mimetype, ptt: false },
-                    { quoted: m }
-                );
-                break;
-            case 'application':
-                const extension = multimedia.extension || multimedia.mimetype.split('/')[1];
-                await conn.sendMessage(
-                    m.chat,
-                    { document: mediaBuffer, mimetype: multimedia.mimetype, fileName: `archivo.${extension}` },
-                    { quoted: m }
-                );
-                break;
-            default:
-                await conn.sendMessage(
-                    m.chat,
-                    { text: `❌ *Error:* El tipo de archivo no es compatible para ser enviado.` },
-                    { quoted: m }
-                );
-                break;
+        const mediaType = mimetype.split('/')[0];
+
+        if (mediaType === 'image' && mimetype === 'image/webp') {
+            // Enviar sticker
+            await conn.sendMessage(m.chat, { sticker: mediaBuffer }, { quoted: m });
+        } else if (mediaType === 'image') {
+            // Enviar imagen
+            await conn.sendMessage(m.chat, { image: mediaBuffer }, { quoted: m });
+        } else if (mediaType === 'video') {
+            await conn.sendMessage(m.chat, { video: mediaBuffer }, { quoted: m });
+        } else if (mediaType === 'audio') {
+            await conn.sendMessage(
+                m.chat,
+                { audio: mediaBuffer, mimetype: mimetype, ptt: false },
+                { quoted: m }
+            );
+        } else if (mediaType === 'application') {
+            const extension = mimetype.split('/')[1];
+            await conn.sendMessage(
+                m.chat,
+                { document: mediaBuffer, mimetype: mimetype, fileName: `${matchedKey}.${extension}` },
+                { quoted: m }
+            );
+        } else {
+            await conn.sendMessage(
+                m.chat,
+                { text: "❌ *El tipo de archivo no es compatible para ser enviado.*" },
+                { quoted: m }
+            );
         }
     } catch (error) {
-        console.error("Error al enviar el multimedia:", error);
+        console.error('Error al enviar el multimedia:', error);
         return conn.sendMessage(
             m.chat,
-            {
-                text: "❌ *Error:* No se pudo enviar el multimedia. Verifica que sea un archivo válido. 🚫",
-            },
+            { text: "❌ *Hubo un error al intentar enviar el multimedia. Intenta nuevamente.*" },
             { quoted: m }
         );
     }
