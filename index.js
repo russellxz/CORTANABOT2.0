@@ -318,6 +318,9 @@ sock.ev.on("messages.upsert", async (message) => {
             // Incrementar el contador de mensajes del usuario muteado
             muteData[participant].messageCount = (muteData[participant].messageCount || 0) + 1;
 
+            // Guardar los cambios en el archivo
+            fs.writeFileSync(mutePath, JSON.stringify(muteData, null, 2));
+
             // Eliminar el mensaje
             await sock.sendMessage(remoteJid, { delete: msg.key });
 
@@ -336,6 +339,7 @@ sock.ev.on("messages.upsert", async (message) => {
             if (muteData[participant].messageCount >= 10) {
                 await sock.groupParticipantsUpdate(remoteJid, [participant], "remove");
                 delete muteData[participant]; // Limpiar el contador del usuario eliminado
+                fs.writeFileSync(mutePath, JSON.stringify(muteData, null, 2));
             }
 
             return; // Detener más procesamiento para el usuario muteado
@@ -410,7 +414,6 @@ sock.ev.on("messages.upsert", async (message) => {
 });
 
 
-// Comando para agregar comandos a stickers
 
 	
 //nuevo evento equetas
