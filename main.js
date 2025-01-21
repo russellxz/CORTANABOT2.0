@@ -63,14 +63,7 @@ if (fs.existsSync(mutePath)) {
     }
 }
 
-// Función para guardar muteData en el archivo
-global.saveMuteData = () => {
-    try {
-        fs.writeFileSync(mutePath, JSON.stringify(global.muteData, null, 2));
-    } catch (error) {
-        console.error("Error al guardar muteData en el archivo:", error);
-    }
-};
+
 //mute
 // Objeto fallo
 const falloPath = './fallo.json';
