@@ -1621,7 +1621,7 @@ case 'fallocaja': {
 break;
 		
 //sacar 2
-case 'sacar2': {
+case 'fasacar': {
     if (!m.isGroup) {
         return conn.sendMessage(
             m.chat,
@@ -1636,7 +1636,7 @@ case 'sacar2': {
     if (!mentionedUser) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Uso del comando:* `.sacar2 <palabra clave> @usuario` para extraer multimedia de otra caja fuerte." },
+            { text: "⚠️ *Uso del comando:* `.fasacar <palabra clave> @usuario` para extraer multimedia de otra caja fuerte." },
             { quoted: m }
         );
     }
@@ -2126,7 +2126,7 @@ _Consulta la lista de archivos de otro usuario (si el evento de fallo2 está act
 📤 *.resacar* palabraClave @usuario  
 _Extrae archivos de una caja fuerte abierta._
 
-🔑 *.sacar2* palabraClave @usuario  
+🔑 *.fasacar* palabraClave @usuario  
 _Extrae multimedia de una caja fuerte durante el modo fallo2 activo._
 
 ✅️ *.sacar* palabraClave
@@ -2145,6 +2145,8 @@ _Elimina tu caja fuerte y todo su contenido de manera permanente._
 _Activa o desactiva el fallo automático que permite acceder a cajas fuertes durante 5 minutos cada 3 horas._
 
 ✅️ *.cambiar* _cambia tu contraseña_
+
+📊 *.topcaja* _para ver que usuario tiene mas archivo guardado en su caja es un top_
 
 ╔╦══• •✠•❀•✠• •══╦╗
 ✨ *Sistema Innovador Exclusivo* ✨  
