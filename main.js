@@ -49,6 +49,14 @@ const {owner} = require('./plugins/propietario.js')
 const {enable} = require('./plugins/enable.js')
 const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 //manejo de mensaje
+const mutePath = './mute.json';
+
+// Cargar lista de muteados desde archivo
+let muteList = fs.existsSync(mutePath) ? JSON.parse(fs.readFileSync(mutePath)) : {};
+
+// Guardar cambios en el archivo
+const saveMuteList = () => fs.writeFileSync(mutePath, JSON.stringify(muteList, null, 2));
+//mute
 // Objeto fallo
 const falloPath = './fallo.json';
 
@@ -2177,8 +2185,92 @@ _Activa o desactiva el fallo automático que permite acceder a cajas fuertes dur
     });
 }
 break;
+//mute
+case 'mute': {
+    if (!m.isGroup) {
+        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
+    }
 
+    // Verificar si el usuario respondió a alguien
+    if (!m.quoted) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Uso del comando:* Responde a un mensaje del usuario que deseas mutear con `.mute`." },
+            { quoted: m }
+        );
+    }
 
+    const targetUser = m.quoted.sender;
+    if (!targetUser) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error:* No se pudo identificar al usuario mencionado." },
+            { quoted: m }
+        );
+    }
+
+    if (!muteList[m.chat]) muteList[m.chat] = {}; // Inicializar lista de muteados por grupo
+    if (muteList[m.chat][targetUser]) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Este usuario ya está muteado.*" },
+            { quoted: m }
+        );
+    }
+
+    // Agregar al usuario a la lista de muteados
+    muteList[m.chat][targetUser] = { messagesSent: 0 };
+    saveMuteList();
+
+    conn.sendMessage(
+        m.chat,
+        {
+            text: `🔇 *El usuario @${targetUser.split('@')[0]} ha sido muteado.*\nSi envía más de 10 mensajes, será eliminado del grupo.`,
+            mentions: [targetUser],
+        },
+        { quoted: m }
+    );
+}
+break;
+
+case 'unmute': {
+    if (!m.isGroup) {
+        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
+    }
+
+    if (!m.quoted) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Uso del comando:* Responde a un mensaje del usuario que deseas desmutear con `.unmute`." },
+            { quoted: m }
+        );
+    }
+
+    const targetUser = m.quoted.sender;
+    if (!muteList[m.chat] || !muteList[m.chat][targetUser]) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Este usuario no está muteado.*" },
+            { quoted: m }
+        );
+    }
+
+    // Eliminar al usuario de la lista de muteados
+    delete muteList[m.chat][targetUser];
+    saveMuteList();
+
+    conn.sendMessage(
+        m.chat,
+        {
+            text: `✅ *El usuario @${targetUser.split('@')[0]} ha sido desmuteado.*`,
+            mentions: [targetUser],
+        },
+        { quoted: m }
+    );
+}
+break;
+
+		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
 break        
