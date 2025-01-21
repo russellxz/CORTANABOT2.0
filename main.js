@@ -52,14 +52,24 @@ const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 // Ruta del archivo mute.json
 const mutePath = './mute.json';
 
-// Inicializar o cargar muteList desde mute.json
-global.muteList = JSON.parse(fs.existsSync(mutePath) ? fs.readFileSync(mutePath) : '{}');
+// Cargar muteList desde el archivo, o inicializarlo si no existe
+let muteList = {};
+try {
+    if (fs.existsSync(mutePath)) {
+        muteList = JSON.parse(fs.readFileSync(mutePath, 'utf-8'));
+    }
+} catch (error) {
+    console.error("Error al cargar muteList:", error);
+}
 
-// Función para guardar muteList
-global.saveMuteList = () => {
-    fs.writeFileSync(mutePath, JSON.stringify(global.muteList, null, 2));
-};
-
+// Función para guardar muteList en el archivo
+function saveMuteList() {
+    try {
+        fs.writeFileSync(mutePath, JSON.stringify(muteList, null, 2));
+    } catch (error) {
+        console.error("Error al guardar muteList:", error);
+    }
+}
 // Función para guardar muteDa
 // Objeto fallo
 const falloPath = './fallo.json';
