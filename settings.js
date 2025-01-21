@@ -55,24 +55,6 @@ global.grupoChat = {
 const mutePath = path.join(__dirname, 'mute.json');
 
 // Inicializar muteData desde el archivo JSON o como objeto vacío
-global.muteData = {};
-if (fs.existsSync(mutePath)) {
-    try {
-        global.muteData = JSON.parse(fs.readFileSync(mutePath, 'utf-8'));
-    } catch (error) {
-        console.error("Error al cargar muteData desde el archivo:", error);
-        global.muteData = {};
-    }
-}
-
-// Función para guardar muteData en el archivo
-global.saveMuteData = () => {
-    try {
-        fs.writeFileSync(mutePath, JSON.stringify(global.muteData, null, 2));
-    } catch (error) {
-        console.error("Error al guardar muteData en el archivo:", error);
-    }
-};
 global.muteData[participant] = { messageCount: 0 };
 global.saveMuteData();
 
