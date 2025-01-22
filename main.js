@@ -718,60 +718,68 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
+
 case 'sid': {
     if (!m.quoted) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.sid` para obtener su ID único." },
+            { text: "⚠️ *Uso del comando:* Responde a cualquier archivo multimedia (foto, video, audio, sticker, etc.) con `.sid` para obtener su ID único." },
             { quoted: m }
         );
     }
 
     try {
-        // Mostrar el contenido del mensaje citado para depuración
+        // Mostrar contenido del mensaje citado para depuración
         console.log("Mensaje citado (depuración):", m.quoted);
 
         // Acceder al mensaje citado
-        const quotedMessage = m.quoted;
-        const stickerMessage = quotedMessage?.message?.stickerMessage;
+        const quotedMessage = m.quoted.message;
 
-        if (!stickerMessage) {
+        // Verificar si hay un archivo multimedia
+        const mediaKey = quotedMessage?.imageMessage ||
+            quotedMessage?.videoMessage ||
+            quotedMessage?.audioMessage ||
+            quotedMessage?.stickerMessage ||
+            quotedMessage?.documentMessage;
+
+        if (!mediaKey || !mediaKey.fileSha256) {
             return conn.sendMessage(
                 m.chat,
-                { text: "❌ *Error:* Asegúrate de responder a un sticker válido." },
+                { text: "❌ *Error:* Asegúrate de responder a un archivo válido (foto, video, audio, sticker, etc.)." },
                 { quoted: m }
             );
         }
 
-        // Obtener el SHA256 del sticker
-        const stickerSha256 = stickerMessage.fileSha256;
-        if (!stickerSha256) {
+        // Obtener el SHA256 del archivo
+        const fileSha256 = mediaKey.fileSha256;
+        if (!fileSha256) {
             return conn.sendMessage(
                 m.chat,
-                { text: "❌ *Error:* No se pudo obtener el ID del sticker. Intenta con otro sticker." },
+                { text: "❌ *Error:* No se pudo obtener el ID del archivo. Intenta con otro archivo." },
                 { quoted: m }
             );
         }
 
         // Convertir el SHA256 a base64 para generar el ID único
-        const stickerId = Buffer.from(stickerSha256).toString('base64');
+        const fileId = Buffer.from(fileSha256).toString('base64');
 
-        // Enviar el ID del sticker al usuario
+        // Enviar el ID del archivo al usuario
         conn.sendMessage(
             m.chat,
-            { text: `✅ *ID del Sticker:*\n\`${stickerId}\`` },
+            { text: `✅ *ID del Archivo:*\n\`${fileId}\`` },
             { quoted: m }
         );
     } catch (error) {
-        console.error("Error al obtener el ID del sticker:", error);
+        console.error("Error al obtener el ID del archivo:", error);
         conn.sendMessage(
             m.chat,
-            { text: "❌ *Error interno:* No se pudo procesar el sticker. Intenta nuevamente." },
+            { text: "❌ *Error interno:* No se pudo procesar el archivo. Intenta nuevamente." },
             { quoted: m }
         );
     }
 }
 break;
+		
 //total mensaje
 	
 case "totalmensaje": {
