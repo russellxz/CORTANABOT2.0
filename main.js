@@ -731,39 +731,37 @@ case 'sid': {
     try {
         // Obtener el mensaje citado
         const quotedMessage = m.quoted;
-        const mediaType = Object.keys(quotedMessage.message || {})[0];
+        const mediaType = Object.keys(quotedMessage.message || {})[0]; // Detectar el tipo de mensaje
         const mediaContent = quotedMessage.message[mediaType];
 
-        // Depuración: Mostrar en consola el contenido del mensaje citado
-        console.log("Mensaje citado (depuración):", mediaContent);
-
+        // Verificar si el contenido del mensaje es válido
         if (!mediaContent || !mediaContent.fileSha256) {
             return conn.sendMessage(
                 m.chat,
-                { text: "❌ *Error:* Asegúrate de responder a un archivo válido (foto, video, audio, sticker, etc.)." },
+                { text: "❌ *Error:* El archivo no es válido o no contiene información para generar un ID." },
                 { quoted: m }
             );
         }
 
-        // Convertir el SHA256 del archivo a base64 para generar el ID único
+        // Generar el ID único del archivo
         const fileId = Buffer.from(mediaContent.fileSha256).toString('base64');
 
-        // Enviar el ID del archivo al usuario
+        // Enviar el ID al usuario
         await conn.sendMessage(
             m.chat,
             { text: `✅ *ID del Archivo:*\n\`${fileId}\`` },
             { quoted: m }
         );
     } catch (error) {
-        console.error("Error al obtener el ID del archivo:", error);
+        console.error("Error al obtener el ID del archivo:", error.message);
         conn.sendMessage(
             m.chat,
-            { text: "❌ *Error interno:* No se pudo procesar el archivo. Intenta nuevamente." },
+            { text: "❌ *Error interno:* No se pudo procesar el archivo. Verifica que es un archivo válido y vuelve a intentarlo." },
             { quoted: m }
         );
     }
 }
-break;
+break;		
 		
 //total mensaje
 	
