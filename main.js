@@ -716,10 +716,7 @@ break
 // prueba desde aqui ok
 
 case 'comando': {
-    if (!m.isGroup) {
-        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
-    }
-
+    // Verificar si el mensaje es una respuesta a un sticker
     if (!m.quoted || !m.quoted.message || !('stickerMessage' in m.quoted.message)) {
         return conn.sendMessage(
             m.chat,
@@ -737,6 +734,9 @@ case 'comando': {
         );
     }
 
+    // Verificar si ya existe una lista global de comandos, si no, inicializarla
+    if (!global.comandoList) global.comandoList = [];
+
     // Guardar el sticker junto con el comando en comando.json
     const stickerData = {
         content: m.quoted.message.stickerMessage, // Guardar el contenido completo del sticker
@@ -748,7 +748,10 @@ case 'comando': {
 
     conn.sendMessage(
         m.chat,
-        { text: `✅ *Comando asociado con éxito:*\n- Comando: ${newCommand}`, mentions: [m.sender] },
+        {
+            text: `✅ *Comando asociado con éxito:*\n- Comando: ${newCommand}`,
+            mentions: [m.sender],
+        },
         { quoted: m }
     );
 }
