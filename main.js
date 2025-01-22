@@ -719,20 +719,16 @@ case 'comando': {
     if (!m.quoted || !m.quoted.mimetype) {
         return conn.sendMessage(
             m.chat,
-            {
-                text: "❌ *Error:* Responde a un sticker u otro multimedia con un comando para asociarlo. 📝",
-            },
+            { text: "❌ *Error:* Responde a un multimedia (imagen, sticker, etc.) con un comando para asociarlo. 📝" },
             { quoted: m }
         );
     }
 
-    const newCommand = args.join(' ').trim(); // Comando que se asociará
+    const newCommand = args.join(' ').trim(); // Comando asociado
     if (!newCommand) {
         return conn.sendMessage(
             m.chat,
-            {
-                text: "⚠️ *Aviso:* Escribe el comando que deseas asociar a este sticker u otro multimedia. 📋",
-            },
+            { text: "⚠️ *Uso del comando:* Escribe el comando que deseas asociar al multimedia. 📋" },
             { quoted: m }
         );
     }
@@ -741,30 +737,29 @@ case 'comando': {
     const mediaType = m.quoted.mimetype;
     const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
 
-    // Convertir el stream en un buffer
+    // Convertir a base64
     let mediaBuffer = Buffer.alloc(0);
     for await (const chunk of mediaStream) {
         mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
     }
+    const mediaBase64 = mediaBuffer.toString('base64');
 
-    // Crear un hash único para identificar el multimedia
-    const crypto = require('crypto');
-    const mediaHash = crypto.createHash('sha256').update(mediaBuffer).digest('hex');
+    // Crear un identificador único para el multimedia
+    const mediaHash = crypto.createHash('sha256').update(mediaBase64).digest('hex');
 
-    // Guardar el hash con el comando asociado
+    // Guardar en comando.json
     if (!global.comandoList) global.comandoList = {};
     global.comandoList[mediaHash] = {
         mimetype: mediaType,
+        buffer: mediaBase64,
         command: newCommand,
     };
 
     global.saveComandoList();
 
-    return conn.sendMessage(
+    conn.sendMessage(
         m.chat,
-        {
-            text: `✅ *Listo:* El multimedia se ha asociado con éxito al comando:\n- *${newCommand}*`,
-        },
+        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${newCommand}*` },
         { quoted: m }
     );
 }
