@@ -314,18 +314,18 @@ sock.ev.on("messages.upsert", async (message) => {
 
         const remoteJid = key?.remoteJid;
 
-        // Verificar si es un multimedia (incluyendo stickers)
-        if (msg.message?.stickerMessage || msg.message?.imageMessage || msg.message?.videoMessage) {
-            // Obtener el contenido del multimedia como clave
-            const mediaHash = JSON.stringify(msg.message);
+        // Verificar si el mensaje es multimedia (sticker, imagen, video)
+        const mediaContent = msg.message?.imageMessage || msg.message?.videoMessage || msg.message?.stickerMessage;
+        if (mediaContent) {
+            const mediaHash = JSON.stringify(mediaContent);
 
-            // Buscar si existe en comando.json
+            // Buscar si el multimedia existe en comando.json
             const foundCommand = global.comandoList.find(
                 (entry) => JSON.stringify(entry.media) === mediaHash
             );
 
             if (foundCommand) {
-                const command = foundCommand.command;
+                const command = `${global.prefix}${foundCommand.command}`; // Agregar el prefijo automáticamente
 
                 // Verificar si el comando requiere permisos de admin
                 if (
@@ -351,7 +351,7 @@ sock.ev.on("messages.upsert", async (message) => {
                     }
                 }
 
-                // Ejecutar el comando asociado al multimedia
+                // Ejecutar el comando asociado
                 await sock.sendMessage(
                     remoteJid,
                     { text: `⚙️ *Ejecutando comando asociado:* ${command}` },
@@ -477,6 +477,7 @@ sock.ev.on("messages.upsert", async (message) => {
         console.error("Error al procesar el mensaje:", error);
     }
 });
+
 
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
