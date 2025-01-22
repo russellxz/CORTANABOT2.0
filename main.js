@@ -717,7 +717,7 @@ break
 
 case 'comando': {
     try {
-        // Verificar si el comando se usa correctamente
+        // Verificar si el comando es usado correctamente
         if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
             return conn.sendMessage(
                 m.chat,
@@ -735,25 +735,17 @@ case 'comando': {
             );
         }
 
-        // Descargar el sticker del mensaje citado
-        const mediaMessage = await conn.downloadMediaMessage(m.quoted);
-        if (!mediaMessage) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ *Error:* No se pudo descargar el sticker. Asegúrate de responder a un sticker válido." },
-                { quoted: m }
-            );
-        }
+        // Obtener información del sticker directamente
+        const stickerData = m.quoted.message.stickerMessage;
 
-        // Crear un identificador único para el sticker (puedes usar un hash o un timestamp)
-        const stickerID = `${Date.now()}`;
+        // Crear un identificador único para el sticker
+        const stickerID = stickerData.fileSha256.toString('base64');
 
         // Guardar el sticker y el comando en comando.json
         if (!global.comandoList) global.comandoList = {};
         global.comandoList[stickerID] = {
             command: newCommand,
-            file: mediaMessage.toString('base64'), // Guardar el sticker en base64
-            mimetype: m.quoted.message.stickerMessage.mimetype,
+            mimetype: stickerData.mimetype, // Guardar tipo MIME del sticker
         };
 
         global.saveComandoList();
