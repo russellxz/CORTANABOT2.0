@@ -2393,6 +2393,36 @@ case 'comando': {
     );
 }
 break;
+//para sacar id de los stierkz
+case 'sid': {
+    if (!m.quoted || !m.quoted.message || !('stickerMessage' in m.quoted.message)) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.sid` para obtener su ID único." },
+            { quoted: m }
+        );
+    }
+
+    // Obtener el ID único del sticker
+    const stickerSha256 = m.quoted.message.stickerMessage.fileSha256;
+    if (!stickerSha256) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error:* No se pudo obtener el ID del sticker. Asegúrate de responder a un sticker válido." },
+            { quoted: m }
+        );
+    }
+
+    const stickerId = Buffer.from(stickerSha256).toString('base64');
+
+    // Enviar el ID al usuario
+    conn.sendMessage(
+        m.chat,
+        { text: `✅ *ID del Sticker:*\n\`${stickerId}\`` },
+        { quoted: m }
+    );
+}
+break;
 
 		
 //Info  
