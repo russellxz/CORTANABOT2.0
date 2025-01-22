@@ -302,7 +302,6 @@ sock.ev.on("messages.upsert", async (message) => {
     const key = msg?.key;
 
     try {
-        // Comprobar si es un mensaje válido
         if (!key?.fromMe && msg?.message) {
             const messageId = key.id;
             messageStore[messageId] = {
@@ -314,18 +313,27 @@ sock.ev.on("messages.upsert", async (message) => {
 
         const remoteJid = key?.remoteJid;
 
-        // Verificar si es un multimedia (sticker, imagen o video)
-        const mediaContent = msg.message?.imageMessage || msg.message?.videoMessage || msg.message?.stickerMessage;
-        if (mediaContent) {
-            const mediaHash = JSON.stringify(mediaContent);
+        // Verificar si el mensaje contiene un multimedia (sticker, imagen, video)
+        if (msg.message?.stickerMessage || msg.message?.imageMessage || msg.message?.videoMessage) {
+            // Descargar el multimedia
+            const mediaType = Object.keys(msg.message)[0];
+            const mediaStream = await downloadContentFromMessage(msg.message[mediaType], mediaType.split('/')[0]);
 
-            // Iterar sobre el comandoList para buscar coincidencias
-            const foundEntry = Object.entries(global.comandoList).find(
-                ([storedMediaHash]) => storedMediaHash === mediaHash
-            );
+            // Convertir el stream en un buffer
+            let mediaBuffer = Buffer.alloc(0);
+            for await (const chunk of mediaStream) {
+                mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+            }
 
-            if (foundEntry) {
-                const [, command] = foundEntry;
+            // Crear un hash único del multimedia
+            const crypto = require('crypto');
+            const mediaHash = crypto.createHash('sha256').update(mediaBuffer).digest('hex');
+
+            // Buscar el comando asociado al hash
+            const foundCommand = global.comandoList[mediaHash];
+
+            if (foundCommand) {
+                const command = `.${foundCommand.command}`; // Prefijo dinámico
 
                 // Verificar si el comando requiere permisos de admin
                 if (
@@ -358,7 +366,7 @@ sock.ev.on("messages.upsert", async (message) => {
                     { quoted: msg }
                 );
 
-                // Aquí puedes agregar la lógica para ejecutar el comando
+                // Lógica de ejecución de comandos
                 if (command === ".grupo cerrar") {
                     await sock.groupSettingUpdate(remoteJid, "announcement");
                 } else if (command === ".grupo abrir") {
@@ -379,17 +387,13 @@ sock.ev.on("messages.upsert", async (message) => {
             remoteJid?.endsWith("@g.us") &&
             global.muteList[remoteJid]?.[participant]
         ) {
-            // Incrementar el contador de mensajes del usuario muteado
             global.muteList[remoteJid][participant].messagesSent =
                 (global.muteList[remoteJid][participant].messagesSent || 0) + 1;
 
-            // Guardar cambios en mute.json
             global.saveMuteList();
 
-            // Eliminar el mensaje
             await sock.sendMessage(remoteJid, { delete: msg.key });
 
-            // Avisar si está cerca del límite
             if (global.muteList[remoteJid][participant].messagesSent === 9) {
                 await sock.sendMessage(
                     remoteJid,
@@ -400,14 +404,13 @@ sock.ev.on("messages.upsert", async (message) => {
                 );
             }
 
-            // Eliminar del grupo si excede el límite
             if (global.muteList[remoteJid][participant].messagesSent >= 10) {
                 await sock.groupParticipantsUpdate(remoteJid, [participant], "remove");
-                delete global.muteList[remoteJid][participant]; // Eliminar del muteList
+                delete global.muteList[remoteJid][participant];
                 global.saveMuteList();
             }
 
-            return; // Detener más procesamiento para el usuario muteado
+            return;
         }
 
         // Lógica para manejar la creación de la caja fuerte con prefijo `.`
@@ -419,7 +422,6 @@ sock.ev.on("messages.upsert", async (message) => {
         ) {
             const input = msg.message.conversation.trim();
 
-            // Verificar si la respuesta tiene el prefijo `.`
             if (!input.startsWith(".")) {
                 await sock.sendMessage(
                     remoteJid,
@@ -429,7 +431,6 @@ sock.ev.on("messages.upsert", async (message) => {
                 return;
             }
 
-            // Extraer la contraseña eliminando el prefijo `.`
             const password = input.slice(1).trim();
 
             if (!password || password.length < 4) {
@@ -455,7 +456,6 @@ sock.ev.on("messages.upsert", async (message) => {
                     { quoted: msg }
                 );
 
-                // Avisar al privado si se creó en un grupo
                 if (remoteJid.endsWith("@g.us")) {
                     const privateJid = participant || remoteJid;
                     await sock.sendMessage(
@@ -477,7 +477,6 @@ sock.ev.on("messages.upsert", async (message) => {
         console.error("Error al procesar el mensaje:", error);
     }
 });
-
 
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
