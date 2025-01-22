@@ -735,11 +735,11 @@ case 'sid': {
         // Acceder al mensaje citado
         const quotedMessage = m.quoted.message;
 
-        // Verificar si hay un archivo multimedia
-        const mediaKey = quotedMessage?.imageMessage ||
+        // Verificar si hay un archivo multimedia (sticker, imagen, video, etc.)
+        const mediaKey = quotedMessage?.stickerMessage ||
+            quotedMessage?.imageMessage ||
             quotedMessage?.videoMessage ||
             quotedMessage?.audioMessage ||
-            quotedMessage?.stickerMessage ||
             quotedMessage?.documentMessage;
 
         if (!mediaKey || !mediaKey.fileSha256) {
@@ -764,7 +764,7 @@ case 'sid': {
         const fileId = Buffer.from(fileSha256).toString('base64');
 
         // Enviar el ID del archivo al usuario
-        conn.sendMessage(
+        await conn.sendMessage(
             m.chat,
             { text: `✅ *ID del Archivo:*\n\`${fileId}\`` },
             { quoted: m }
