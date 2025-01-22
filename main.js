@@ -730,19 +730,20 @@ case 'sid': {
 
     try {
         // Mostrar contenido del mensaje citado para depuración
-        console.log("Mensaje citado (depuración):", m.quoted);
+        console.log("Mensaje citado (depuración):", m.quoted.message);
 
         // Acceder al mensaje citado
         const quotedMessage = m.quoted.message;
 
-        // Verificar si hay un archivo multimedia (sticker, imagen, video, etc.)
-        const mediaKey = quotedMessage?.stickerMessage ||
+        // Obtener el tipo de mensaje multimedia
+        const mediaMessage = quotedMessage?.stickerMessage ||
             quotedMessage?.imageMessage ||
             quotedMessage?.videoMessage ||
             quotedMessage?.audioMessage ||
             quotedMessage?.documentMessage;
 
-        if (!mediaKey || !mediaKey.fileSha256) {
+        // Verificar si existe un archivo multimedia
+        if (!mediaMessage || !mediaMessage.fileSha256) {
             return conn.sendMessage(
                 m.chat,
                 { text: "❌ *Error:* Asegúrate de responder a un archivo válido (foto, video, audio, sticker, etc.)." },
@@ -750,18 +751,8 @@ case 'sid': {
             );
         }
 
-        // Obtener el SHA256 del archivo
-        const fileSha256 = mediaKey.fileSha256;
-        if (!fileSha256) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ *Error:* No se pudo obtener el ID del archivo. Intenta con otro archivo." },
-                { quoted: m }
-            );
-        }
-
-        // Convertir el SHA256 a base64 para generar el ID único
-        const fileId = Buffer.from(fileSha256).toString('base64');
+        // Convertir el SHA256 del archivo a base64 para generar el ID único
+        const fileId = Buffer.from(mediaMessage.fileSha256).toString('base64');
 
         // Enviar el ID del archivo al usuario
         await conn.sendMessage(
