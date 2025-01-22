@@ -718,7 +718,62 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
+case 'sid': {
+    if (!m.quoted) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.sid` para obtener su ID único." },
+            { quoted: m }
+        );
+    }
 
+    try {
+        // Mostrar el contenido del mensaje citado para depuración
+        console.log("Mensaje citado (depuración):", m.quoted);
+
+        // Acceder al mensaje citado
+        const quotedMessage = m.quoted;
+        const stickerMessage = quotedMessage?.message?.stickerMessage;
+
+        if (!stickerMessage) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *Error:* Asegúrate de responder a un sticker válido." },
+                { quoted: m }
+            );
+        }
+
+        // Obtener el SHA256 del sticker
+        const stickerSha256 = stickerMessage.fileSha256;
+        if (!stickerSha256) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *Error:* No se pudo obtener el ID del sticker. Intenta con otro sticker." },
+                { quoted: m }
+            );
+        }
+
+        // Convertir el SHA256 a base64 para generar el ID único
+        const stickerId = Buffer.from(stickerSha256).toString('base64');
+
+        // Enviar el ID del sticker al usuario
+        conn.sendMessage(
+            m.chat,
+            { text: `✅ *ID del Sticker:*\n\`${stickerId}\`` },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error("Error al obtener el ID del sticker:", error);
+        conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error interno:* No se pudo procesar el sticker. Intenta nuevamente." },
+            { quoted: m }
+        );
+    }
+}
+break;
+//total mensaje
+	
 case "totalmensaje": {
         function obtenerEstadisticasGrupo(chatId) {
             let stats = [];
@@ -2394,57 +2449,7 @@ case 'comando': {
 }
 break;
 //para sacar id de los stierkz
-case 'sid': {
-    if (!m.quoted) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.sid` para obtener su ID único." },
-            { quoted: m }
-        );
-    }
 
-    try {
-        // Acceder directamente a los datos del mensaje citado
-        const quotedMessage = m.quoted;
-        const stickerMessage = quotedMessage.message?.stickerMessage;
-
-        if (!stickerMessage) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ *Error:* Asegúrate de responder a un sticker válido." },
-                { quoted: m }
-            );
-        }
-
-        // Obtener el SHA256 del sticker
-        const stickerSha256 = stickerMessage.fileSha256;
-        if (!stickerSha256) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ *Error:* No se pudo obtener el ID del sticker. Intenta con otro sticker." },
-                { quoted: m }
-            );
-        }
-
-        // Convertir el SHA256 a base64 para generar el ID único
-        const stickerId = Buffer.from(stickerSha256).toString('base64');
-
-        // Enviar el ID del sticker al usuario
-        conn.sendMessage(
-            m.chat,
-            { text: `✅ *ID del Sticker:*\n\`${stickerId}\`` },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error("Error al obtener el ID del sticker:", error);
-        conn.sendMessage(
-            m.chat,
-            { text: "❌ *Error interno:* No se pudo procesar el sticker. Intenta nuevamente." },
-            { quoted: m }
-        );
-    }
-}
-break;
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
