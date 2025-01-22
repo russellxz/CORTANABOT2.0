@@ -74,7 +74,26 @@ function saveMuteList() {
 // Asignar muteList y saveMuteList al objeto global correctamente
 global.muteList = muteList;
 global.saveMuteList = saveMuteList;
-// Función para guardar muteDa
+// Función comando
+// Cargar la lista de comandos asociados a stickers
+// Cargar lista de comandos asociados a stickers
+global.comandoList = {};
+try {
+    global.comandoList = JSON.parse(fs.readFileSync('./comando.json', 'utf8'));
+} catch (error) {
+    console.error("⚠️ No se pudo cargar el archivo comando.json. Se iniciará con una lista vacía.");
+    global.comandoList = {};
+}
+
+// Función para guardar la lista de comandos
+global.saveComandoList = () => {
+    try {
+        fs.writeFileSync('./comando.json', JSON.stringify(global.comandoList, null, 2));
+    } catch (error) {
+        console.error("⚠️ Error al guardar el archivo comando.json:", error);
+    }
+};
+
 // Objeto fallo
 const falloPath = './fallo.json';
 
