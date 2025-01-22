@@ -2395,6 +2395,7 @@ case 'comando': {
 break;
 //para sacar id de los stierkz
 case 'sid': {
+    // Verificar si el mensaje citado es un sticker
     if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
         return conn.sendMessage(
             m.chat,
@@ -2404,7 +2405,7 @@ case 'sid': {
     }
 
     try {
-        // Obtener el ID único del sticker
+        // Intentar obtener el ID único del sticker (fileSha256)
         const stickerSha256 = m.quoted.message.stickerMessage.fileSha256;
         if (!stickerSha256) {
             return conn.sendMessage(
@@ -2414,19 +2415,20 @@ case 'sid': {
             );
         }
 
+        // Convertir el SHA256 a base64 para obtener el ID
         const stickerId = Buffer.from(stickerSha256).toString('base64');
 
-        // Enviar el ID al usuario
+        // Enviar el ID del sticker al usuario
         conn.sendMessage(
             m.chat,
             { text: `✅ *ID del Sticker:*\n\`${stickerId}\`` },
             { quoted: m }
         );
     } catch (error) {
-        console.error("Error obteniendo el ID del sticker:", error);
+        console.error("Error al obtener el ID del sticker:", error);
         conn.sendMessage(
             m.chat,
-            { text: "❌ *Error interno:* No se pudo procesar el sticker. Por favor, intenta nuevamente." },
+            { text: "❌ *Error interno:* No se pudo procesar el sticker. Intenta nuevamente." },
             { quoted: m }
         );
     }
