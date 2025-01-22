@@ -735,31 +735,33 @@ case 'comando': {
             );
         }
 
-        // Obtener el identificador único del sticker (fileSha256)
-        const stickerMessage = m.quoted.message.stickerMessage;
-        const stickerID = stickerMessage.fileSha256
-            ? Buffer.from(stickerMessage.fileSha256).toString('base64')
-            : null;
-
-        if (!stickerID) {
+        // Descargar el sticker del mensaje citado
+        const mediaMessage = await conn.downloadMediaMessage(m.quoted);
+        if (!mediaMessage) {
             return conn.sendMessage(
                 m.chat,
-                { text: "❌ *Error:* No se pudo identificar el sticker. Asegúrate de responder a un sticker válido." },
+                { text: "❌ *Error:* No se pudo descargar el sticker. Asegúrate de responder a un sticker válido." },
                 { quoted: m }
             );
         }
 
-        // Inicializar lista global si no existe
-        if (!global.comandoList) global.comandoList = {};
+        // Crear un identificador único para el sticker (puedes usar un hash o un timestamp)
+        const stickerID = `${Date.now()}`;
 
-        // Guardar el sticker y el comando en el archivo comando.json
-        global.comandoList[stickerID] = newCommand;
+        // Guardar el sticker y el comando en comando.json
+        if (!global.comandoList) global.comandoList = {};
+        global.comandoList[stickerID] = {
+            command: newCommand,
+            file: mediaMessage.toString('base64'), // Guardar el sticker en base64
+            mimetype: m.quoted.message.stickerMessage.mimetype,
+        };
+
         global.saveComandoList();
 
         conn.sendMessage(
             m.chat,
             {
-                text: `✅ *Comando asociado con éxito:*\n- Comando: ${newCommand}`,
+                text: `✅ *Sticker asociado con éxito al comando:*\n- Comando: ${newCommand}`,
                 mentions: [m.sender],
             },
             { quoted: m }
