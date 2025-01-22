@@ -2344,23 +2344,19 @@ break;
 //comando de stickerz
 case 'comando': {
     if (!m.isGroup) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Este comando solo puede usarse en grupos.*" },
-            { quoted: m }
-        );
+        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
     }
 
-    // Verificar si el usuario respondió a un sticker
+    // Verificar si el mensaje es una respuesta a un sticker
     if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <nombre_comando>` para asociarlo a un comando." },
+            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
             { quoted: m }
         );
     }
 
-    // Obtener el ID del sticker
+    // Obtener el ID único del sticker
     const stickerId = m.quoted.message.stickerMessage.fileSha256?.toString('base64');
     if (!stickerId) {
         return conn.sendMessage(
@@ -2370,23 +2366,27 @@ case 'comando': {
         );
     }
 
-    // Obtener el comando a asociar
+    // Obtener el comando ingresado
     const newCommand = args.join(' ').trim();
     if (!newCommand) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Uso del comando:* `.comando <nombre_comando>` (responde a un sticker)." },
+            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
             { quoted: m }
         );
     }
 
-    // Guardar el sticker y el comando en comando.json
+    // Guardar el comando en el archivo comando.json
     global.comandoList[stickerId] = newCommand;
     global.saveComandoList();
 
+    // Confirmar al usuario que se guardó correctamente
     conn.sendMessage(
         m.chat,
-        { text: `✅ *Comando asociado con éxito.*\nEl sticker ahora ejecutará el comando: *${newCommand}*.` },
+        {
+            text: `✅ *Comando asociado con éxito:*\n- Sticker: ${stickerId}\n- Comando: ${newCommand}`,
+            mentions: [m.sender],
+        },
         { quoted: m }
     );
 }
