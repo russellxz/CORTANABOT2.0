@@ -49,6 +49,7 @@ const {owner} = require('./plugins/propietario.js')
 const {enable} = require('./plugins/enable.js')
 const path2 = './almacenMultimedia.json'; // Archivo para guardar los datos
 //manejo de mensaje
+const stickerId = m.quoted.message.stickerMessage.fileSha256?.toString('base64');
 // Ruta del archivo mute.json
 const mutePath = './mute.json';
 
