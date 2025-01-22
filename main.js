@@ -716,56 +716,59 @@ break
 // prueba desde aqui ok
 
 case 'comando': {
-    try {
-        // Verificar si el comando es usado correctamente
-        if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
-                { quoted: m }
-            );
-        }
-
-        const newCommand = args.join(' ').trim();
-        if (!newCommand) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
-                { quoted: m }
-            );
-        }
-
-        // Obtener información del sticker directamente
-        const stickerData = m.quoted.message.stickerMessage;
-
-        // Crear un identificador único para el sticker
-        const stickerID = stickerData.fileSha256.toString('base64');
-
-        // Guardar el sticker y el comando en comando.json
-        if (!global.comandoList) global.comandoList = {};
-        global.comandoList[stickerID] = {
-            command: newCommand,
-            mimetype: stickerData.mimetype, // Guardar tipo MIME del sticker
-        };
-
-        global.saveComandoList();
-
-        conn.sendMessage(
+    if (!m.quoted || !m.quoted.mimetype) {
+        return conn.sendMessage(
             m.chat,
             {
-                text: `✅ *Sticker asociado con éxito al comando:*\n- Comando: ${newCommand}`,
-                mentions: [m.sender],
+                text: "❌ *Error:* Responde a un sticker u otro multimedia con un comando para asociarlo. 📝",
             },
             { quoted: m }
         );
-    } catch (error) {
-        console.error("Error al procesar el comando:", error);
-        conn.sendMessage(
+    }
+
+    const newCommand = args.join(' ').trim(); // Comando que se asociará
+    if (!newCommand) {
+        return conn.sendMessage(
             m.chat,
-            { text: "❌ *Error interno:* Hubo un problema al procesar el comando. Intenta nuevamente." },
+            {
+                text: "⚠️ *Aviso:* Escribe el comando que deseas asociar a este sticker u otro multimedia. 📋",
+            },
             { quoted: m }
         );
     }
+
+    // Descargar el sticker u otro multimedia
+    const mediaType = m.quoted.mimetype;
+    const mediaExt = mediaType.split('/')[1]; // Ejemplo: "webp", "mp4", etc.
+    const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
+
+    // Convertir el stream en un buffer
+    let mediaBuffer = Buffer.alloc(0);
+    for await (const chunk of mediaStream) {
+        mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+    }
+
+    // Crear un identificador único para el multimedia
+    const mediaID = `${newCommand}-${Date.now()}`;
+
+    // Guardar multimedia con el comando asociado
+    if (!global.comandoList) global.comandoList = {};
+    global.comandoList[mediaID] = {
+        buffer: mediaBuffer.toString('base64'), // Convertir a base64
+        mimetype: mediaType,
+        extension: mediaExt,
+        command: newCommand,
+    };
+
+    global.saveComandoList();
+
+    return conn.sendMessage(
+        m.chat,
+        {
+            text: `✅ *Listo:* El sticker o multimedia se ha asociado con éxito al comando:\n- *${newCommand}*`,
+        },
+        { quoted: m }
+    );
 }
 break;
 		
