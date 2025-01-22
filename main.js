@@ -716,53 +716,62 @@ break
 // prueba desde aqui ok
 
 case 'comando': {
-    // Verificar si el mensaje es una respuesta a un sticker
-    if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
-        return conn.sendMessage(
+    try {
+        // Verificar si el comando se usa correctamente
+        if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
+                { quoted: m }
+            );
+        }
+
+        const newCommand = args.join(' ').trim();
+        if (!newCommand) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
+                { quoted: m }
+            );
+        }
+
+        // Obtener el identificador único del sticker (fileSha256)
+        const stickerMessage = m.quoted.message.stickerMessage;
+        const stickerID = stickerMessage.fileSha256
+            ? Buffer.from(stickerMessage.fileSha256).toString('base64')
+            : null;
+
+        if (!stickerID) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *Error:* No se pudo identificar el sticker. Asegúrate de responder a un sticker válido." },
+                { quoted: m }
+            );
+        }
+
+        // Inicializar lista global si no existe
+        if (!global.comandoList) global.comandoList = {};
+
+        // Guardar el sticker y el comando en el archivo comando.json
+        global.comandoList[stickerID] = newCommand;
+        global.saveComandoList();
+
+        conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
+            {
+                text: `✅ *Comando asociado con éxito:*\n- Comando: ${newCommand}`,
+                mentions: [m.sender],
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error("Error al procesar el comando:", error);
+        conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error interno:* Hubo un problema al procesar el comando. Intenta nuevamente." },
             { quoted: m }
         );
     }
-
-    const newCommand = args.join(' ').trim();
-    if (!newCommand) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
-            { quoted: m }
-        );
-    }
-
-    // Obtener datos del sticker
-    const stickerContent = m.quoted.message.stickerMessage;
-    const stickerID = stickerContent.fileSha256
-        ? Buffer.from(stickerContent.fileSha256).toString('base64')
-        : null;
-
-    if (!stickerID) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Error:* No se pudo obtener un identificador único del sticker. Asegúrate de responder a un sticker válido." },
-            { quoted: m }
-        );
-    }
-
-    // Verificar si ya existe una lista global de comandos, si no, inicializarla
-    if (!global.comandoList) global.comandoList = {};
-
-    // Guardar el sticker junto con el comando en comando.json
-    global.comandoList[stickerID] = newCommand;
-    global.saveComandoList();
-
-    conn.sendMessage(
-        m.chat,
-        {
-            text: `✅ *Comando asociado con éxito:*\n- Comando: ${newCommand}`,
-            mentions: [m.sender],
-        },
-        { quoted: m }
-    );
 }
 break;
 		
