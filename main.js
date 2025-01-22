@@ -2348,7 +2348,7 @@ case 'comando': {
     }
 
     // Verificar si el mensaje es una respuesta a un sticker
-    if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
+    if (!m.quoted || !m.quoted.message || !('stickerMessage' in m.quoted.message)) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
@@ -2357,14 +2357,16 @@ case 'comando': {
     }
 
     // Obtener el ID único del sticker
-    const stickerId = m.quoted.message.stickerMessage.fileSha256?.toString('base64');
-    if (!stickerId) {
+    const stickerSha256 = m.quoted.message.stickerMessage.fileSha256;
+    if (!stickerSha256) {
         return conn.sendMessage(
             m.chat,
-            { text: "❌ *Error:* No se pudo obtener el ID del sticker. Inténtalo nuevamente." },
+            { text: "❌ *Error:* No se pudo obtener el ID del sticker. Asegúrate de responder a un sticker válido." },
             { quoted: m }
         );
     }
+
+    const stickerId = Buffer.from(stickerSha256).toString('base64');
 
     // Obtener el comando ingresado
     const newCommand = args.join(' ').trim();
@@ -2384,7 +2386,7 @@ case 'comando': {
     conn.sendMessage(
         m.chat,
         {
-            text: `✅ *Comando asociado con éxito:*\n- Sticker: ${stickerId}\n- Comando: ${newCommand}`,
+            text: `✅ *Comando asociado con éxito:*\n- Sticker ID: ${stickerId}\n- Comando: ${newCommand}`,
             mentions: [m.sender],
         },
         { quoted: m }
