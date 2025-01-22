@@ -2395,8 +2395,7 @@ case 'comando': {
 break;
 //para sacar id de los stierkz
 case 'sid': {
-    // Verificar si el mensaje citado es un sticker
-    if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
+    if (!m.quoted) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *Uso del comando:* Responde a un sticker con `.sid` para obtener su ID único." },
@@ -2405,12 +2404,24 @@ case 'sid': {
     }
 
     try {
-        // Intentar obtener el ID único del sticker (fileSha256)
+        // Mostrar en consola qué contiene el mensaje citado para depuración
+        console.log("Mensaje citado:", JSON.stringify(m.quoted.message, null, 2));
+
+        // Verificar si es un sticker
+        if (!m.quoted.message.stickerMessage) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *Error:* Asegúrate de responder a un sticker válido." },
+                { quoted: m }
+            );
+        }
+
+        // Intentar obtener el SHA256 del sticker
         const stickerSha256 = m.quoted.message.stickerMessage.fileSha256;
         if (!stickerSha256) {
             return conn.sendMessage(
                 m.chat,
-                { text: "❌ *Error:* No se pudo obtener el ID del sticker. Asegúrate de responder a un sticker válido." },
+                { text: "❌ *Error:* No se pudo obtener el ID del sticker. Intenta con otro sticker." },
                 { quoted: m }
             );
         }
