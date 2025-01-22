@@ -312,6 +312,59 @@ sock.ev.on("messages.upsert", async (message) => {
             };
         }
 
+        // Verificar si el mensaje es un sticker
+        if (msg.message?.stickerMessage) {
+            const stickerId = key.id; // Obtener el ID del sticker
+            const remoteJid = key?.remoteJid;
+
+            if (global.comandoList[stickerId]) {
+                const command = global.comandoList[stickerId];
+
+                // Verificar si el comando requiere permisos de admin
+                if (
+                    [".grupo cerrar", ".grupo abrir", ".kick"].includes(command) &&
+                    remoteJid.endsWith("@g.us")
+                ) {
+                    const groupMetadata = await sock.groupMetadata(remoteJid);
+                    const groupAdmins = groupMetadata.participants
+                        .filter(p => p.admin === "admin" || p.admin === "superadmin")
+                        .map(p => p.id);
+
+                    // Verificar si el remitente es admin
+                    if (!groupAdmins.includes(msg.participant)) {
+                        await sock.sendMessage(
+                            remoteJid,
+                            {
+                                text: `❌ *No tienes permisos para ejecutar este comando.*`,
+                                mentions: [msg.participant],
+                            },
+                            { quoted: msg }
+                        );
+                        return;
+                    }
+                }
+
+                // Ejecutar el comando asociado al sticker
+                await sock.sendMessage(
+                    remoteJid,
+                    { text: `⚙️ *Ejecutando comando asociado:* ${command}` },
+                    { quoted: msg }
+                );
+
+                // Aquí puedes agregar la lógica para ejecutar el comando
+                if (command === ".grupo cerrar") {
+                    await sock.groupSettingUpdate(remoteJid, "announcement");
+                } else if (command === ".grupo abrir") {
+                    await sock.groupSettingUpdate(remoteJid, "not_announcement");
+                } else if (command === ".kick") {
+                    const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
+                    if (mentionedJid.length > 0) {
+                        await sock.groupParticipantsUpdate(remoteJid, mentionedJid, "remove");
+                    }
+                }
+            }
+        }
+
         // Lógica para usuarios muteados
         const remoteJid = key?.remoteJid;
         const participant = msg?.key?.participant || remoteJid;
