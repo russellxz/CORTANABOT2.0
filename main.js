@@ -2404,12 +2404,11 @@ case 'sid': {
     }
 
     try {
-        // Depurar el contenido del mensaje citado
-        const quotedMessage = m.quoted.message;
-        console.log("Mensaje citado (depuración):", quotedMessage);
+        // Acceder directamente a los datos del mensaje citado
+        const quotedMessage = m.quoted;
+        const stickerMessage = quotedMessage.message?.stickerMessage;
 
-        // Verificar si es un sticker
-        if (!quotedMessage || !quotedMessage.stickerMessage) {
+        if (!stickerMessage) {
             return conn.sendMessage(
                 m.chat,
                 { text: "❌ *Error:* Asegúrate de responder a un sticker válido." },
@@ -2417,8 +2416,8 @@ case 'sid': {
             );
         }
 
-        // Intentar obtener el SHA256 del sticker
-        const stickerSha256 = quotedMessage.stickerMessage.fileSha256;
+        // Obtener el SHA256 del sticker
+        const stickerSha256 = stickerMessage.fileSha256;
         if (!stickerSha256) {
             return conn.sendMessage(
                 m.chat,
@@ -2427,7 +2426,7 @@ case 'sid': {
             );
         }
 
-        // Convertir el SHA256 a base64 para obtener el ID
+        // Convertir el SHA256 a base64 para generar el ID único
         const stickerId = Buffer.from(stickerSha256).toString('base64');
 
         // Enviar el ID del sticker al usuario
