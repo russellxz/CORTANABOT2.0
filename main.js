@@ -2351,34 +2351,46 @@ case 'comando': {
         );
     }
 
-    if (!m.quoted || !m.quoted.stickerMessage) {
+    // Verificar si el usuario respondió a un sticker
+    if (!m.quoted || !m.quoted.message.stickerMessage) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Responde a un sticker con el comando que deseas asociar.*\nEjemplo: `.comando .grupo cerrar`" },
+            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <nombre_comando>` para asociarlo a un comando." },
             { quoted: m }
         );
     }
 
-    const commandToAdd = args.join(' ').trim();
-    if (!commandToAdd.startsWith('.')) {
+    // Obtener el ID del sticker
+    const stickerId = m.quoted.message.stickerMessage.fileSha256?.toString('base64');
+    if (!stickerId) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *El comando debe empezar con un punto.*\nEjemplo: `.comando .grupo cerrar`" },
+            { text: "❌ *Error:* No se pudo obtener el ID del sticker. Inténtalo nuevamente." },
             { quoted: m }
         );
     }
 
-    const stickerId = m.quoted.fileSha256.toString('base64');
-    global.comandoList[stickerId] = commandToAdd;
+    // Obtener el comando a asociar
+    const newCommand = args.join(' ').trim();
+    if (!newCommand) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Uso del comando:* `.comando <nombre_comando>` (responde a un sticker)." },
+            { quoted: m }
+        );
+    }
+
+    // Guardar el sticker y el comando en comando.json
+    global.comandoList[stickerId] = newCommand;
     global.saveComandoList();
 
     conn.sendMessage(
         m.chat,
-        { text: `✅ *El comando "${commandToAdd}" ha sido asociado al sticker.*` },
+        { text: `✅ *Comando asociado con éxito.*\nEl sticker ahora ejecutará el comando: *${newCommand}*.` },
         { quoted: m }
     );
 }
-break;		
+break;
 
 		
 //Info  
