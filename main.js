@@ -2322,6 +2322,44 @@ case 'unmute': {
     );
 }
 break;
+//comando de stickerz
+case 'comando': {
+    if (!m.isGroup) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede usarse en grupos.*" },
+            { quoted: m }
+        );
+    }
+
+    if (!m.quoted || !m.quoted.stickerMessage) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Responde a un sticker con el comando que deseas asociar.*\nEjemplo: `.comando .grupo cerrar`" },
+            { quoted: m }
+        );
+    }
+
+    const commandToAdd = args.join(' ').trim();
+    if (!commandToAdd.startsWith('.')) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *El comando debe empezar con un punto.*\nEjemplo: `.comando .grupo cerrar`" },
+            { quoted: m }
+        );
+    }
+
+    const stickerId = m.quoted.fileSha256.toString('base64');
+    global.comandoList[stickerId] = commandToAdd;
+    global.saveComandoList();
+
+    conn.sendMessage(
+        m.chat,
+        { text: `✅ *El comando "${commandToAdd}" ha sido asociado al sticker.*` },
+        { quoted: m }
+    );
+}
+break;		
 
 		
 //Info  
