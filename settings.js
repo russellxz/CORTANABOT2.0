@@ -40,7 +40,7 @@ global.awaitingPasswords = {}; // Estructura global para rastrear contraseñas p
 // Modo de fallo de seguridad (inicialmente desactivado)
 global.falloSeguridad = false;
 global.tempCaja = {};
-
+global.comandoList = [];
 
 global.mensajesPorUsuario = {};  // Usamos un objeto en lugar de un array para asociar usuarios y grupos
 global.muteList = global.muteList || {};
