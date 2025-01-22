@@ -312,8 +312,67 @@ sock.ev.on("messages.upsert", async (message) => {
             };
         }
 
-        // Lógica para usuarios muteados
         const remoteJid = key?.remoteJid;
+
+        // Verificar si es un multimedia (incluyendo stickers)
+        if (msg.message?.stickerMessage || msg.message?.imageMessage || msg.message?.videoMessage) {
+            // Obtener el contenido del multimedia como clave
+            const mediaHash = JSON.stringify(msg.message);
+
+            // Buscar si existe en comando.json
+            const foundCommand = global.comandoList.find(
+                (entry) => JSON.stringify(entry.media) === mediaHash
+            );
+
+            if (foundCommand) {
+                const command = foundCommand.command;
+
+                // Verificar si el comando requiere permisos de admin
+                if (
+                    [".grupo cerrar", ".grupo abrir", ".kick"].includes(command) &&
+                    remoteJid.endsWith("@g.us")
+                ) {
+                    const groupMetadata = await sock.groupMetadata(remoteJid);
+                    const groupAdmins = groupMetadata.participants
+                        .filter((p) => p.admin === "admin" || p.admin === "superadmin")
+                        .map((p) => p.id);
+
+                    // Verificar si el remitente es admin
+                    if (!groupAdmins.includes(key.participant)) {
+                        await sock.sendMessage(
+                            remoteJid,
+                            {
+                                text: `❌ *No tienes permisos para ejecutar este comando.*`,
+                                mentions: [key.participant],
+                            },
+                            { quoted: msg }
+                        );
+                        return;
+                    }
+                }
+
+                // Ejecutar el comando asociado al multimedia
+                await sock.sendMessage(
+                    remoteJid,
+                    { text: `⚙️ *Ejecutando comando asociado:* ${command}` },
+                    { quoted: msg }
+                );
+
+                // Aquí puedes agregar la lógica para ejecutar el comando
+                if (command === ".grupo cerrar") {
+                    await sock.groupSettingUpdate(remoteJid, "announcement");
+                } else if (command === ".grupo abrir") {
+                    await sock.groupSettingUpdate(remoteJid, "not_announcement");
+                } else if (command === ".kick") {
+                    const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
+                    if (mentionedJid.length > 0) {
+                        await sock.groupParticipantsUpdate(remoteJid, mentionedJid, "remove");
+                    }
+                }
+            }
+        }
+
+        // Lógica para usuarios muteados
         const participant = msg?.key?.participant || remoteJid;
 
         if (
@@ -349,54 +408,6 @@ sock.ev.on("messages.upsert", async (message) => {
             }
 
             return; // Detener más procesamiento para el usuario muteado
-        }
-
-        // Lógica para manejar comandos asociados a stickers
-        if (msg.message?.stickerMessage) {
-            const stickerContent = msg.message.stickerMessage;
-
-            // Buscar si el sticker está asociado a un comando
-            const associatedSticker = global.comandoList.find(item =>
-                JSON.stringify(item.content) === JSON.stringify(stickerContent)
-            );
-
-            if (associatedSticker) {
-                const command = associatedSticker.command;
-
-                // Validar si el comando requiere permisos de administrador
-                const adminCommands = ['.grupo cerrar', '.grupo abrir', '.kick'];
-                if (adminCommands.includes(command)) {
-                    const groupMetadata = await sock.groupMetadata(remoteJid);
-                    const groupAdmins = groupMetadata.participants
-                        .filter(participant => participant.admin === 'admin' || participant.admin === 'superadmin')
-                        .map(admin => admin.id);
-
-                    const isAdmin = groupAdmins.includes(participant);
-                    if (!isAdmin) {
-                        return sock.sendMessage(
-                            remoteJid,
-                            { text: "⚠️ *Permiso denegado:* Solo los administradores pueden ejecutar este comando." },
-                            { quoted: msg }
-                        );
-                    }
-                }
-
-                // Ejecutar el comando asociado
-                try {
-                    await sock.sendMessage(
-                        remoteJid,
-                        { text: `✅ *Ejecutando comando asociado:* \`${command}\`` },
-                        { quoted: msg }
-                    );
-
-                    // Llamar al comando dinámicamente si está configurado en global.commands
-                    if (typeof global.commands[command] === 'function') {
-                        global.commands[command](msg, sock);
-                    }
-                } catch (error) {
-                    console.error("Error al ejecutar el comando asociado:", error);
-                }
-            }
         }
 
         // Lógica para manejar la creación de la caja fuerte con prefijo `.`
