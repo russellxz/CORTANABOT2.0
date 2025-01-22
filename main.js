@@ -750,7 +750,9 @@ case 'sid': {
 
         // Verificar si el archivo tiene un ID único
         const mediaContent = messageContent[mediaType];
-        if (!mediaContent || !mediaContent.fileSha256) {
+        const fileSha256 = mediaContent?.fileSha256;
+
+        if (!fileSha256) {
             return conn.sendMessage(
                 m.chat,
                 { text: "❌ *Error:* No se encontró un ID único para este archivo. Asegúrate de que es un archivo válido." },
@@ -759,7 +761,7 @@ case 'sid': {
         }
 
         // Generar el ID único del archivo
-        const fileId = Buffer.from(mediaContent.fileSha256).toString('base64');
+        const fileId = Buffer.from(fileSha256).toString('base64');
 
         // Enviar el ID al usuario
         await conn.sendMessage(
