@@ -729,13 +729,15 @@ case 'sid': {
     }
 
     try {
-        // Obtener el mensaje citado
+        // Obtener el mensaje citado y verificar su contenido
         const quotedMessage = m.quoted;
-        const messageContent = quotedMessage?.message;
-        const mediaType = Object.keys(messageContent || {})[0]; // Detectar el tipo de mensaje
-        const mediaContent = messageContent?.[mediaType];
+        const messageContent = quotedMessage?.message || {};
+        const mediaType = Object.keys(messageContent)[0]; // Detectar el tipo de mensaje
+        const mediaContent = messageContent[mediaType];
 
-        // Verificar si el contenido del mensaje y el archivo son válidos
+        // Imprimir en consola para depuración
+        console.log("Mensaje citado (depuración):", messageContent);
+
         if (!mediaContent || !mediaContent.fileSha256) {
             return conn.sendMessage(
                 m.chat,
