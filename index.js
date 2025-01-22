@@ -314,18 +314,18 @@ sock.ev.on("messages.upsert", async (message) => {
 
         const remoteJid = key?.remoteJid;
 
-        // Verificar si el mensaje es multimedia (sticker, imagen, video)
+        // Verificar si es un multimedia (sticker, imagen o video)
         const mediaContent = msg.message?.imageMessage || msg.message?.videoMessage || msg.message?.stickerMessage;
         if (mediaContent) {
             const mediaHash = JSON.stringify(mediaContent);
 
-            // Buscar si el multimedia existe en comando.json
-            const foundCommand = global.comandoList.find(
-                (entry) => JSON.stringify(entry.media) === mediaHash
+            // Iterar sobre el comandoList para buscar coincidencias
+            const foundEntry = Object.entries(global.comandoList).find(
+                ([storedMediaHash]) => storedMediaHash === mediaHash
             );
 
-            if (foundCommand) {
-                const command = `${global.prefix}${foundCommand.command}`; // Agregar el prefijo automáticamente
+            if (foundEntry) {
+                const [, command] = foundEntry;
 
                 // Verificar si el comando requiere permisos de admin
                 if (
