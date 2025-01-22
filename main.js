@@ -2352,7 +2352,7 @@ case 'comando': {
     }
 
     // Verificar si el usuario respondió a un sticker
-    if (!m.quoted || !m.quoted.message.stickerMessage) {
+    if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <nombre_comando>` para asociarlo a un comando." },
