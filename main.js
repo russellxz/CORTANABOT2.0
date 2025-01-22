@@ -729,21 +729,31 @@ case 'sid': {
     }
 
     try {
-        // Obtener el mensaje citado y verificar su contenido
+        // Obtener el mensaje citado
         const quotedMessage = m.quoted;
         const messageContent = quotedMessage?.message || {};
         const mediaType = Object.keys(messageContent)[0]; // Detectar el tipo de mensaje
-        const mediaContent = messageContent[mediaType];
 
-        // Depuración completa
+        // Depuración
         console.log("Mensaje citado (completo):", quotedMessage);
         console.log("Mensaje citado (contenido):", messageContent);
         console.log("Tipo de media detectada:", mediaType);
 
-        if (!mediaContent || !mediaContent.fileSha256) {
+        // Verificar si el mensaje citado contiene algún tipo de media soportado
+        if (!mediaType || !['stickerMessage', 'imageMessage', 'videoMessage', 'documentMessage', 'audioMessage'].includes(mediaType)) {
             return conn.sendMessage(
                 m.chat,
                 { text: "❌ *Error:* Asegúrate de responder a un archivo válido (foto, video, audio, sticker, etc.)." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el archivo tiene un ID único
+        const mediaContent = messageContent[mediaType];
+        if (!mediaContent || !mediaContent.fileSha256) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *Error:* No se encontró un ID único para este archivo. Asegúrate de que es un archivo válido." },
                 { quoted: m }
             );
         }
