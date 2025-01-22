@@ -729,20 +729,17 @@ case 'sid': {
     }
 
     try {
-        // Mostrar contenido del mensaje citado para depuración
-        console.log("Mensaje citado (depuración):", m.quoted.message);
+        // Verificar si el mensaje citado contiene datos multimedia
+        const quotedMessage = m.quoted.message || {};
+        const mediaMessage = quotedMessage.stickerMessage ||
+            quotedMessage.imageMessage ||
+            quotedMessage.videoMessage ||
+            quotedMessage.audioMessage ||
+            quotedMessage.documentMessage;
 
-        // Acceder al mensaje citado
-        const quotedMessage = m.quoted.message;
+        // Depuración: Mostrar en consola el contenido del mensaje citado
+        console.log("Mensaje citado (depuración):", quotedMessage);
 
-        // Obtener el tipo de mensaje multimedia
-        const mediaMessage = quotedMessage?.stickerMessage ||
-            quotedMessage?.imageMessage ||
-            quotedMessage?.videoMessage ||
-            quotedMessage?.audioMessage ||
-            quotedMessage?.documentMessage;
-
-        // Verificar si existe un archivo multimedia
         if (!mediaMessage || !mediaMessage.fileSha256) {
             return conn.sendMessage(
                 m.chat,
