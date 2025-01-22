@@ -731,14 +731,15 @@ case 'sid': {
     try {
         // Obtener el mensaje citado
         const quotedMessage = m.quoted;
-        const mediaType = Object.keys(quotedMessage.message || {})[0]; // Detectar el tipo de mensaje
-        const mediaContent = quotedMessage.message[mediaType];
+        const messageContent = quotedMessage?.message;
+        const mediaType = Object.keys(messageContent || {})[0]; // Detectar el tipo de mensaje
+        const mediaContent = messageContent?.[mediaType];
 
-        // Verificar si el contenido del mensaje es válido
+        // Verificar si el contenido del mensaje y el archivo son válidos
         if (!mediaContent || !mediaContent.fileSha256) {
             return conn.sendMessage(
                 m.chat,
-                { text: "❌ *Error:* El archivo no es válido o no contiene información para generar un ID." },
+                { text: "❌ *Error:* Asegúrate de responder a un archivo válido (foto, video, audio, sticker, etc.)." },
                 { quoted: m }
             );
         }
@@ -753,7 +754,7 @@ case 'sid': {
             { quoted: m }
         );
     } catch (error) {
-        console.error("Error al obtener el ID del archivo:", error.message);
+        console.error("Error al obtener el ID del archivo:", error);
         conn.sendMessage(
             m.chat,
             { text: "❌ *Error interno:* No se pudo procesar el archivo. Verifica que es un archivo válido y vuelve a intentarlo." },
@@ -761,7 +762,7 @@ case 'sid': {
         );
     }
 }
-break;		
+break;
 		
 //total mensaje
 	
