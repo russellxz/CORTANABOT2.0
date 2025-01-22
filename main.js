@@ -735,8 +735,10 @@ case 'sid': {
         const mediaType = Object.keys(messageContent)[0]; // Detectar el tipo de mensaje
         const mediaContent = messageContent[mediaType];
 
-        // Imprimir en consola para depuración
-        console.log("Mensaje citado (depuración):", messageContent);
+        // Depuración completa
+        console.log("Mensaje citado (completo):", quotedMessage);
+        console.log("Mensaje citado (contenido):", messageContent);
+        console.log("Tipo de media detectada:", mediaType);
 
         if (!mediaContent || !mediaContent.fileSha256) {
             return conn.sendMessage(
