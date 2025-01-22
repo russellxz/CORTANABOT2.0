@@ -2395,7 +2395,7 @@ case 'comando': {
 break;
 //para sacar id de los stierkz
 case 'sid': {
-    if (!m.quoted || !m.quoted.message || !('stickerMessage' in m.quoted.message)) {
+    if (!m.quoted || !m.quoted.message || !m.quoted.message.stickerMessage) {
         return conn.sendMessage(
             m.chat,
             { text: "⚠️ *Uso del comando:* Responde a un sticker con `.sid` para obtener su ID único." },
@@ -2403,27 +2403,35 @@ case 'sid': {
         );
     }
 
-    // Obtener el ID único del sticker
-    const stickerSha256 = m.quoted.message.stickerMessage.fileSha256;
-    if (!stickerSha256) {
-        return conn.sendMessage(
+    try {
+        // Obtener el ID único del sticker
+        const stickerSha256 = m.quoted.message.stickerMessage.fileSha256;
+        if (!stickerSha256) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *Error:* No se pudo obtener el ID del sticker. Asegúrate de responder a un sticker válido." },
+                { quoted: m }
+            );
+        }
+
+        const stickerId = Buffer.from(stickerSha256).toString('base64');
+
+        // Enviar el ID al usuario
+        conn.sendMessage(
             m.chat,
-            { text: "❌ *Error:* No se pudo obtener el ID del sticker. Asegúrate de responder a un sticker válido." },
+            { text: `✅ *ID del Sticker:*\n\`${stickerId}\`` },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error("Error obteniendo el ID del sticker:", error);
+        conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error interno:* No se pudo procesar el sticker. Por favor, intenta nuevamente." },
             { quoted: m }
         );
     }
-
-    const stickerId = Buffer.from(stickerSha256).toString('base64');
-
-    // Enviar el ID al usuario
-    conn.sendMessage(
-        m.chat,
-        { text: `✅ *ID del Sticker:*\n\`${stickerId}\`` },
-        { quoted: m }
-    );
 }
 break;
-
 		
 //Info  
 case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
