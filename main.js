@@ -77,22 +77,18 @@ global.saveMuteList = saveMuteList;
 // Función comando
 // Cargar la lista de comandos asociados a stickers
 // Cargar lista de comandos asociados a stickers
-global.comandoList = {};
-try {
-    global.comandoList = JSON.parse(fs.readFileSync('./comando.json', 'utf8'));
-} catch (error) {
-    console.error("⚠️ No se pudo cargar el archivo comando.json. Se iniciará con una lista vacía.");
-    global.comandoList = {};
-}
+// Inicializar la lista de stickers asociados
+global.comandoList = [];
+const comandoPath = './comando.json';
 
-// Función para guardar la lista de comandos
 global.saveComandoList = () => {
-    try {
-        fs.writeFileSync('./comando.json', JSON.stringify(global.comandoList, null, 2));
-    } catch (error) {
-        console.error("⚠️ Error al guardar el archivo comando.json:", error);
-    }
+    fs.writeFileSync(comandoPath, JSON.stringify(global.comandoList, null, 2));
 };
+
+// Cargar datos al iniciar
+if (fs.existsSync(comandoPath)) {
+    global.comandoList = JSON.parse(fs.readFileSync(comandoPath));
+}
 
 // Objeto fallo
 const falloPath = './fallo.json';
@@ -719,64 +715,42 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 
-case 'sid': {
-    if (!m.quoted) {
+case 'comando': {
+    if (!m.isGroup) {
+        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
+    }
+
+    if (!m.quoted || !m.quoted.message || !('stickerMessage' in m.quoted.message)) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Uso del comando:* Responde a cualquier archivo multimedia (foto, video, audio, sticker, etc.) con `.sid` para obtener su ID único." },
+            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
             { quoted: m }
         );
     }
 
-    try {
-        // Obtener el mensaje citado
-        const quotedMessage = m.quoted;
-        const messageContent = quotedMessage?.message || {};
-        const mediaType = Object.keys(messageContent)[0]; // Detectar el tipo de mensaje
-
-        // Depuración
-        console.log("Mensaje citado (completo):", quotedMessage);
-        console.log("Mensaje citado (contenido):", messageContent);
-        console.log("Tipo de media detectada:", mediaType);
-
-        // Verificar si el mensaje citado contiene algún tipo de media soportado
-        if (!mediaType || !['stickerMessage', 'imageMessage', 'videoMessage', 'documentMessage', 'audioMessage'].includes(mediaType)) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ *Error:* Asegúrate de responder a un archivo válido (foto, video, audio, sticker, etc.)." },
-                { quoted: m }
-            );
-        }
-
-        // Verificar si el archivo tiene un ID único
-        const mediaContent = messageContent[mediaType];
-        const fileSha256 = mediaContent?.fileSha256;
-
-        if (!fileSha256) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ *Error:* No se encontró un ID único para este archivo. Asegúrate de que es un archivo válido." },
-                { quoted: m }
-            );
-        }
-
-        // Generar el ID único del archivo
-        const fileId = Buffer.from(fileSha256).toString('base64');
-
-        // Enviar el ID al usuario
-        await conn.sendMessage(
+    const newCommand = args.join(' ').trim();
+    if (!newCommand) {
+        return conn.sendMessage(
             m.chat,
-            { text: `✅ *ID del Archivo:*\n\`${fileId}\`` },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error("Error al obtener el ID del archivo:", error);
-        conn.sendMessage(
-            m.chat,
-            { text: "❌ *Error interno:* No se pudo procesar el archivo. Verifica que es un archivo válido y vuelve a intentarlo." },
+            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
             { quoted: m }
         );
     }
+
+    // Guardar el sticker junto con el comando en comando.json
+    const stickerData = {
+        content: m.quoted.message.stickerMessage, // Guardar el contenido completo del sticker
+        command: newCommand,
+    };
+
+    global.comandoList.push(stickerData);
+    global.saveComandoList();
+
+    conn.sendMessage(
+        m.chat,
+        { text: `✅ *Comando asociado con éxito:*\n- Comando: ${newCommand}`, mentions: [m.sender] },
+        { quoted: m }
+    );
 }
 break;
 		
@@ -2405,57 +2379,7 @@ case 'unmute': {
 }
 break;
 //comando de stickerz
-case 'comando': {
-    if (!m.isGroup) {
-        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
-    }
 
-    // Verificar si el mensaje es una respuesta a un sticker
-    if (!m.quoted || !m.quoted.message || !('stickerMessage' in m.quoted.message)) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
-            { quoted: m }
-        );
-    }
-
-    // Obtener el ID único del sticker
-    const stickerSha256 = m.quoted.message.stickerMessage.fileSha256;
-    if (!stickerSha256) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Error:* No se pudo obtener el ID del sticker. Asegúrate de responder a un sticker válido." },
-            { quoted: m }
-        );
-    }
-
-    const stickerId = Buffer.from(stickerSha256).toString('base64');
-
-    // Obtener el comando ingresado
-    const newCommand = args.join(' ').trim();
-    if (!newCommand) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *Uso del comando:* Responde a un sticker con `.comando <comando>` para asociar un comando." },
-            { quoted: m }
-        );
-    }
-
-    // Guardar el comando en el archivo comando.json
-    global.comandoList[stickerId] = newCommand;
-    global.saveComandoList();
-
-    // Confirmar al usuario que se guardó correctamente
-    conn.sendMessage(
-        m.chat,
-        {
-            text: `✅ *Comando asociado con éxito:*\n- Sticker ID: ${stickerId}\n- Comando: ${newCommand}`,
-            mentions: [m.sender],
-        },
-        { quoted: m }
-    );
-}
-break;
 //para sacar id de los stierkz
 
 		
