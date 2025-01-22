@@ -737,9 +737,8 @@ case 'comando': {
         );
     }
 
-    // Descargar el sticker u otro multimedia
+    // Descargar el multimedia
     const mediaType = m.quoted.mimetype;
-    const mediaExt = mediaType.split('/')[1]; // Ejemplo: "webp", "mp4", etc.
     const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
 
     // Convertir el stream en un buffer
@@ -748,15 +747,14 @@ case 'comando': {
         mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
     }
 
-    // Crear un identificador único para el multimedia
-    const mediaID = `${newCommand}-${Date.now()}`;
+    // Crear un hash único para identificar el multimedia
+    const crypto = require('crypto');
+    const mediaHash = crypto.createHash('sha256').update(mediaBuffer).digest('hex');
 
-    // Guardar multimedia con el comando asociado
+    // Guardar el hash con el comando asociado
     if (!global.comandoList) global.comandoList = {};
-    global.comandoList[mediaID] = {
-        buffer: mediaBuffer.toString('base64'), // Convertir a base64
+    global.comandoList[mediaHash] = {
         mimetype: mediaType,
-        extension: mediaExt,
         command: newCommand,
     };
 
@@ -765,7 +763,7 @@ case 'comando': {
     return conn.sendMessage(
         m.chat,
         {
-            text: `✅ *Listo:* El sticker o multimedia se ha asociado con éxito al comando:\n- *${newCommand}*`,
+            text: `✅ *Listo:* El multimedia se ha asociado con éxito al comando:\n- *${newCommand}*`,
         },
         { quoted: m }
     );
