@@ -325,18 +325,21 @@ sock.ev.on("messages.upsert", async (message) => {
 
                 // Verificar si el ID único está en comando.json
                 if (global.comandoList[mediaHash]) {
-                    const command = global.comandoList[mediaHash];
+                    const command = global.comandoList[mediaHash]; // El comando asociado
 
-                    // Llamar al comando definido en main.js
-                    if (typeof global.commands[command] === "function") {
-                        await global.commands[command](sock, remoteJid, msg);
-                    } else {
-                        await sock.sendMessage(
-                            remoteJid,
-                            { text: `❌ *Error:* El comando "${command}" no está configurado correctamente.` },
-                            { quoted: msg }
-                        );
-                    }
+                    // Llamar directamente al manejador de comandos principal
+                    const args = command.split(" "); // Separar argumentos si existen
+                    const prefix = "."; // Asegúrate de que el prefijo coincida con tu configuración
+                    const fakeMsg = {
+                        key,
+                        message: {
+                            conversation: `${prefix}${command}`, // Simula un mensaje de texto
+                        },
+                        participant: key.participant,
+                    };
+
+                    // Llama al manejador principal como si fuera un comando normal
+                    return handleCommand(sock, fakeMsg, args);
                 }
             }
         }
@@ -445,7 +448,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});               
+});	
                 
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
