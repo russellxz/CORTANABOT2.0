@@ -715,75 +715,38 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 case 'getid': {
-    try {
-        // Verificar si el mensaje es una respuesta
-        if (!m.quoted) {
-            return conn.sendMessage(
-                m.chat,
-                {
-                    text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) o mensaje con `.getid` para obtener su ID único.",
-                },
-                { quoted: m }
-            );
-        }
-
-        // Obtener el ID del mensaje citado
-        const quotedId = m.quoted.id;
-        console.log("ID del mensaje citado:", quotedId);
-
-        // Verificar si el mensaje citado contiene algún tipo de multimedia válido
-        const quotedMessage = m.quoted.message;
-        const mediaType = Object.keys(quotedMessage || {}).find((type) =>
-            ['stickerMessage', 'imageMessage', 'videoMessage', 'audioMessage', 'documentMessage'].includes(type)
-        );
-
-        if (!mediaType) {
-            return conn.sendMessage(
-                m.chat,
-                {
-                    text: `✅ *ID del mensaje citado obtenido:*\n\n- *Message ID:* ${quotedId}`,
-                },
-                { quoted: m }
-            );
-        }
-
-        console.log(`Tipo de multimedia detectado: ${mediaType}`);
-
-        // Obtener el identificador único del archivo (fileSha256)
-        const fileSha256 = quotedMessage[mediaType]?.fileSha256;
-        if (!fileSha256) {
-            console.log("fileSha256 no encontrado en el multimedia.");
-            return conn.sendMessage(
-                m.chat,
-                {
-                    text: `✅ *ID del mensaje citado obtenido:*\n\n- *Message ID:* ${quotedId}`,
-                },
-                { quoted: m }
-            );
-        }
-
-        // Convertir el identificador a Base64
-        const base64Id = Buffer.from(fileSha256).toString('base64');
-
-        // Enviar ambos identificadores al usuario
+    if (!m.quoted) {
         return conn.sendMessage(
             m.chat,
             {
-                text: `✅ *Información obtenida:*\n\n- *Message ID:* ${quotedId}\n- *fileSha256 (Hex):* ${fileSha256.toString('hex')}\n- *Base64:* ${base64Id}`,
-            },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error("Error al procesar el archivo o mensaje:", error);
-
-        return conn.sendMessage(
-            m.chat,
-            {
-                text: "❌ *Error interno:* No se pudo procesar el archivo o mensaje. Intenta nuevamente.",
+                text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) con `.getid` para obtener su ID único.",
             },
             { quoted: m }
         );
     }
+
+    // Verificar si el multimedia tiene fileSha256
+    if (!m.quoted.fileSha256) {
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error:* No se pudo obtener el ID del archivo. Asegúrate de responder a un multimedia válido.",
+            },
+            { quoted: m }
+        );
+    }
+
+    // Obtener el ID en formato Base64
+    const fileId = m.quoted.fileSha256.toString("base64");
+
+    // Enviar el ID al usuario
+    return conn.sendMessage(
+        m.chat,
+        {
+            text: `✅ *ID del multimedia obtenido con éxito:*\n${fileId}`,
+        },
+        { quoted: m }
+    );
 }
 break;
 
