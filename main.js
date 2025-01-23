@@ -726,9 +726,12 @@ case 'getid': {
         );
     }
 
-    // Verificar si es un sticker u otro multimedia
-    const messageType = Object.keys(m.quoted.message)[0]; // Detectar el tipo de mensaje
+    // Detectar el tipo de mensaje citado
+    const messageType = Object.keys(m.quoted.message)[0]; // Extraer el tipo de mensaje
     const allowedTypes = ['stickerMessage', 'imageMessage', 'videoMessage', 'audioMessage'];
+
+    // Depuración: Mostrar el tipo de mensaje detectado en la consola
+    console.log("Tipo de mensaje citado:", messageType);
 
     if (!allowedTypes.includes(messageType)) {
         return conn.sendMessage(
@@ -740,7 +743,7 @@ case 'getid': {
         );
     }
 
-    // Obtener fileSha256 o cualquier identificador único
+    // Obtener el identificador único (fileSha256)
     const fileSha256 = m.quoted.message[messageType].fileSha256;
     if (!fileSha256) {
         return conn.sendMessage(
@@ -763,7 +766,7 @@ case 'getid': {
         { quoted: m }
     );
 }
-break;		
+break;
 
 //comando para agregar comando a los stikerz 
 	
