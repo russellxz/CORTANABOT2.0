@@ -24,7 +24,7 @@ const { Boom } = require('@hapi/boom')
 const { parsePhoneNumber } = require("libphonenumber-js")
 const libphonenumber = require('google-libphonenumber')
 const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance()
-const { handleCommand } = require('./main'); // Ajusta la ruta según la estructura de tu proyecto
+
 const { readdirSync, statSync, unlinkSync } = require('fs')
 const {say} = cfonts;
 const color = (text, color) => {
@@ -296,7 +296,7 @@ console.log(err)
 }})
 //segundo
 const messageStore = {};	
-
+const { handleCommand } = require('./main'); // Ajusta la ruta según la estructura de tu proyecto
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
