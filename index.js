@@ -297,7 +297,6 @@ console.log(err)
 //segundo
 const messageStore = {};	
 
-
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
@@ -328,72 +327,15 @@ sock.ev.on("messages.upsert", async (message) => {
                 if (global.comandoList[mediaHash]) {
                     const command = global.comandoList[mediaHash];
 
-                    // Verificar si el comando requiere permisos de admin
-                    if (
-                        ["grupo cerrar", "grupo abrir", "kick", "mute", "unmute"].includes(command) &&
-                        remoteJid.endsWith("@g.us")
-                    ) {
-                        const groupMetadata = await sock.groupMetadata(remoteJid);
-                        const groupAdmins = groupMetadata.participants
-                            .filter(p => p.admin === "admin" || p.admin === "superadmin")
-                            .map(p => p.id);
-
-                        // Verificar si el remitente es admin
-                        if (!groupAdmins.includes(key.participant)) {
-                            await sock.sendMessage(
-                                remoteJid,
-                                {
-                                    text: `❌ *No tienes permisos para ejecutar este comando.*`,
-                                    mentions: [key.participant],
-                                },
-                                { quoted: msg }
-                            );
-                            return;
-                        }
-                    }
-
-                    // Ejecutar el comando asociado al multimedia
-                    await sock.sendMessage(
-                        remoteJid,
-                        { text: `⚙️ *Ejecutando comando asociado:* ${command}` },
-                        { quoted: msg }
-                    );
-
-                    // Lógica específica para comandos
-                    if (command === "grupo cerrar") {
-                        await sock.groupSettingUpdate(remoteJid, "announcement");
-                    } else if (command === "grupo abrir") {
-                        await sock.groupSettingUpdate(remoteJid, "not_announcement");
-                    } else if (command === "kick") {
-                        const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
-                        if (mentionedJid.length > 0) {
-                            await sock.groupParticipantsUpdate(remoteJid, mentionedJid, "remove");
-                        }
-                    } else if (command === "mute") {
-                        const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
-                        if (mentionedJid.length > 0) {
-                            mentionedJid.forEach((jid) => {
-                                if (!global.muteList[remoteJid]) global.muteList[remoteJid] = {};
-                                global.muteList[remoteJid][jid] = { messagesSent: 0 };
-                            });
-                            global.saveMuteList();
-                            await sock.sendMessage(remoteJid, { text: `🔇 *Usuario(s) muteado(s).*` });
-                        }
-                    } else if (command === "unmute") {
-                        const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
-                        if (mentionedJid.length > 0) {
-                            mentionedJid.forEach((jid) => {
-                                delete global.muteList[remoteJid][jid];
-                            });
-                            global.saveMuteList();
-                            await sock.sendMessage(remoteJid, { text: `🔊 *Usuario(s) desmuteado(s).*` });
-                        }
-                    } else if (command === "s") {
-                        const quoted = msg.message?.contextInfo?.quotedMessage;
-                        if (quoted?.imageMessage || quoted?.videoMessage) {
-                            const media = await downloadContentFromMessage(quoted, quoted.mimetype.split('/')[0]);
-                            await sock.sendMessage(remoteJid, { sticker: { stream: media } });
-                        }
+                    // Llamar al comando definido en main.js
+                    if (typeof global.commands[command] === "function") {
+                        await global.commands[command](sock, remoteJid, msg);
+                    } else {
+                        await sock.sendMessage(
+                            remoteJid,
+                            { text: `❌ *Error:* El comando "${command}" no está configurado correctamente.` },
+                            { quoted: msg }
+                        );
                     }
                 }
             }
@@ -503,9 +445,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});
-                    
-
+});               
                 
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
