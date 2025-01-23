@@ -715,6 +715,50 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 
+case 'getid': {
+    if (!m.quoted || !m.quoted.mimetype) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error:* Responde a un sticker u otro multimedia (imagen, video, audio, etc.) con este comando para obtener su ID." },
+            { quoted: m }
+        );
+    }
+
+    try {
+        // Obtener el fileSha256 del multimedia
+        const fileSha256 = m.quoted.message[m.quoted.mtype]?.fileSha256;
+        if (!fileSha256) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *Error:* No se pudo obtener el ID del archivo. Asegúrate de responder a un archivo válido." },
+                { quoted: m }
+            );
+        }
+
+        // Convertir a base64
+        const base64Sha256 = Buffer.from(fileSha256).toString('base64');
+
+        // Enviar el resultado
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: `📂 *Información del Archivo:*\n\n- *FileSha256:* ${fileSha256.toString('hex')}\n- *Base64:* ${base64Sha256}`,
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error("Error al procesar el archivo:", error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error interno:* Ocurrió un problema al procesar el archivo. Intenta nuevamente." },
+            { quoted: m }
+        );
+    }
+}
+break;		
+
+//comando para agregar comando a los stikerz 
+	
 case 'comando': {
     if (!m.quoted || !m.quoted.mimetype) {
         return conn.sendMessage(
