@@ -327,7 +327,7 @@ sock.ev.on("messages.upsert", async (message) => {
                 if (global.comandoList[mediaHash]) {
                     const command = global.comandoList[mediaHash];
 
-                    // Verificar permisos de admin/owner
+                    // Verificar permisos de admin/owner para comandos específicos
                     const groupMetadata = await sock.groupMetadata(remoteJid);
                     const groupAdmins = groupMetadata.participants
                         .filter(p => p.admin === "admin" || p.admin === "superadmin")
