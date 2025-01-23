@@ -716,23 +716,24 @@ break
 // prueba desde aqui ok
 case 'getid': {
     try {
-        // Verificar si el mensaje es una respuesta a otro mensaje
-        if (!m.quoted || !m.quoted.message) {
+        // Verificar si el mensaje es una respuesta
+        if (!m.quoted) {
             return conn.sendMessage(
                 m.chat,
                 {
-                    text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) con `.getid` para obtener su ID único.",
+                    text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) o mensaje con `.getid` para obtener su ID único.",
                 },
                 { quoted: m }
             );
         }
 
-        // Mostrar el mensaje citado en la consola para depuración
-        console.log("Mensaje citado (depuración):", m.quoted.message);
+        // Obtener el ID del mensaje citado
+        const quotedId = m.quoted.id;
+        console.log("ID del mensaje citado:", quotedId);
 
         // Verificar si el mensaje citado contiene algún tipo de multimedia válido
         const quotedMessage = m.quoted.message;
-        const mediaType = Object.keys(quotedMessage).find((type) =>
+        const mediaType = Object.keys(quotedMessage || {}).find((type) =>
             ['stickerMessage', 'imageMessage', 'videoMessage', 'audioMessage', 'documentMessage'].includes(type)
         );
 
@@ -740,7 +741,7 @@ case 'getid': {
             return conn.sendMessage(
                 m.chat,
                 {
-                    text: "⚠️ *Aviso:* Responde a un sticker, imagen, video, audio o documento con `.getid`.",
+                    text: `✅ *ID del mensaje citado obtenido:*\n\n- *Message ID:* ${quotedId}`,
                 },
                 { quoted: m }
             );
@@ -755,7 +756,7 @@ case 'getid': {
             return conn.sendMessage(
                 m.chat,
                 {
-                    text: "❌ *Error:* No se pudo obtener el identificador único de este archivo. Asegúrate de responder a un archivo válido.",
+                    text: `✅ *ID del mensaje citado obtenido:*\n\n- *Message ID:* ${quotedId}`,
                 },
                 { quoted: m }
             );
@@ -764,21 +765,21 @@ case 'getid': {
         // Convertir el identificador a Base64
         const base64Id = Buffer.from(fileSha256).toString('base64');
 
-        // Enviar el identificador al usuario
+        // Enviar ambos identificadores al usuario
         return conn.sendMessage(
             m.chat,
             {
-                text: `✅ *ID del archivo obtenido:*\n\n- *fileSha256 (Hex):* ${fileSha256.toString('hex')}\n- *Base64:* ${base64Id}`,
+                text: `✅ *Información obtenida:*\n\n- *Message ID:* ${quotedId}\n- *fileSha256 (Hex):* ${fileSha256.toString('hex')}\n- *Base64:* ${base64Id}`,
             },
             { quoted: m }
         );
     } catch (error) {
-        console.error("Error al procesar el archivo:", error);
+        console.error("Error al procesar el archivo o mensaje:", error);
 
         return conn.sendMessage(
             m.chat,
             {
-                text: "❌ *Error interno:* No se pudo procesar el archivo. Intenta nuevamente.",
+                text: "❌ *Error interno:* No se pudo procesar el archivo o mensaje. Intenta nuevamente.",
             },
             { quoted: m }
         );
