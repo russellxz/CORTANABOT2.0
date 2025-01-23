@@ -71,7 +71,7 @@ function saveMuteList() {
     }
 }
 //comando a stikerz
-
+const { handleCommand } = require('./main'); // Ajusta la ruta según tu estructura
 
 //comando a stikerz
 // Asignar muteList y saveMuteList al objeto global correctamente
