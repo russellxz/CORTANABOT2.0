@@ -727,6 +727,9 @@ case 'getid': {
             );
         }
 
+        // Mostrar el mensaje citado en la consola para depuración
+        console.log("Mensaje citado (depuración):", m.quoted.message);
+
         // Verificar si el mensaje citado contiene algún tipo de multimedia válido
         const quotedMessage = m.quoted.message;
         const mediaType = Object.keys(quotedMessage).find((type) =>
@@ -743,9 +746,12 @@ case 'getid': {
             );
         }
 
+        console.log(`Tipo de multimedia detectado: ${mediaType}`);
+
         // Obtener el identificador único del archivo (fileSha256)
         const fileSha256 = quotedMessage[mediaType]?.fileSha256;
         if (!fileSha256) {
+            console.log("fileSha256 no encontrado en el multimedia.");
             return conn.sendMessage(
                 m.chat,
                 {
@@ -768,6 +774,7 @@ case 'getid': {
         );
     } catch (error) {
         console.error("Error al procesar el archivo:", error);
+
         return conn.sendMessage(
             m.chat,
             {
@@ -778,7 +785,6 @@ case 'getid': {
     }
 }
 break;
-
 
 //comando para agregar comando a los stikerz 
 	
