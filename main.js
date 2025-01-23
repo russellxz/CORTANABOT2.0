@@ -84,6 +84,78 @@ global.commands = {
             await sock.groupParticipantsUpdate(remoteJid, mentionedJid, "remove");
         }
     },
+    "mute": async (sock, remoteJid, msg) => {
+        // Verificar si el mensaje es una respuesta a alguien
+        if (!msg.message?.contextInfo?.quotedMessage) {
+            await sock.sendMessage(remoteJid, {
+                text: "⚠️ *Uso del comando:* Responde a un mensaje del usuario que deseas mutear con `.mute`."
+            });
+            return;
+        }
+
+        const targetUser = msg.message.contextInfo.participant;
+        if (!targetUser) {
+            await sock.sendMessage(remoteJid, {
+                text: "❌ *Error:* No se pudo identificar al usuario mencionado."
+            });
+            return;
+        }
+
+        // Inicializar la lista de muteados para el grupo si no existe
+        if (!global.muteList[remoteJid]) global.muteList[remoteJid] = {};
+
+        // Verificar si el usuario ya está muteado
+        if (global.muteList[remoteJid][targetUser]) {
+            await sock.sendMessage(remoteJid, {
+                text: "⚠️ *Este usuario ya está muteado.*"
+            });
+            return;
+        }
+
+        // Agregar al usuario a la lista de muteados
+        global.muteList[remoteJid][targetUser] = { messagesSent: 0 };
+        global.saveMuteList();
+
+        // Notificar al grupo
+        await sock.sendMessage(remoteJid, {
+            text: `🔇 *El usuario @${targetUser.split('@')[0]} ha sido muteado.*`,
+            mentions: [targetUser],
+        });
+    },
+    "unmute": async (sock, remoteJid, msg) => {
+        // Verificar si el mensaje es una respuesta a alguien
+        if (!msg.message?.contextInfo?.quotedMessage) {
+            await sock.sendMessage(remoteJid, {
+                text: "⚠️ *Uso del comando:* Responde a un mensaje del usuario que deseas desmutear con `.unmute`."
+            });
+            return;
+        }
+
+        const targetUser = msg.message.contextInfo.participant;
+        if (!targetUser) {
+            await sock.sendMessage(remoteJid, {
+                text: "❌ *Error:* No se pudo identificar al usuario mencionado."
+            });
+            return;
+        }
+
+        // Verificar si el usuario está muteado
+        if (!global.muteList[remoteJid] || !global.muteList[remoteJid][targetUser]) {
+            await sock.sendMessage(remoteJid, {
+                text: "⚠️ *Este usuario no está muteado.*"
+            });
+            return;
+        }
+
+        // Eliminar al usuario de la lista de muteados
+        delete global.muteList[remoteJid][targetUser];
+        global.saveMuteList();
+
+        await sock.sendMessage(remoteJid, {
+            text: `✅ *El usuario @${targetUser.split('@')[0]} ha sido desmuteado.*`,
+            mentions: [targetUser],
+        });
+    },
     // Agrega aquí otros comandos...
 };
 
