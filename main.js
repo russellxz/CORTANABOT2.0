@@ -725,8 +725,11 @@ case 'getid': {
     }
 
     try {
-        // Obtener el fileSha256 del multimedia
-        const fileSha256 = m.quoted.message[m.quoted.mtype]?.fileSha256;
+        // Verificar si el archivo citado tiene un fileSha256
+        const quotedMessage = m.quoted.message;
+        const mediaType = m.quoted.mtype;
+        const fileSha256 = quotedMessage[mediaType]?.fileSha256;
+
         if (!fileSha256) {
             return conn.sendMessage(
                 m.chat,
@@ -735,14 +738,14 @@ case 'getid': {
             );
         }
 
-        // Convertir a base64
+        // Convertir fileSha256 a base64
         const base64Sha256 = Buffer.from(fileSha256).toString('base64');
 
         // Enviar el resultado
         return conn.sendMessage(
             m.chat,
             {
-                text: `📂 *Información del Archivo:*\n\n- *FileSha256:* ${fileSha256.toString('hex')}\n- *Base64:* ${base64Sha256}`,
+                text: `📂 *Información del Archivo:*\n\n- *FileSha256:* ${Buffer.from(fileSha256).toString('hex')}\n- *Base64:* ${base64Sha256}`,
             },
             { quoted: m }
         );
@@ -755,7 +758,7 @@ case 'getid': {
         );
     }
 }
-break;		
+break;
 
 //comando para agregar comando a los stikerz 
 	
