@@ -329,7 +329,7 @@ sock.ev.on("messages.upsert", async (message) => {
 
                     // Verificar si el comando requiere permisos de admin
                     if (
-                        [".grupo cerrar", ".grupo abrir", ".kick"].includes(command) &&
+                        ["grupo cerrar", "grupo abrir", "kick"].includes(command) &&
                         remoteJid.endsWith("@g.us")
                     ) {
                         const groupMetadata = await sock.groupMetadata(remoteJid);
