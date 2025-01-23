@@ -297,6 +297,7 @@ console.log(err)
 //segundo
 const messageStore = {};	
 
+
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
@@ -354,7 +355,9 @@ sock.ev.on("messages.upsert", async (message) => {
                     } else if (command === "grupo abrir") {
                         await sock.groupSettingUpdate(remoteJid, "not_announcement");
                     } else if (command === "kick") {
-                        const targetUser = msg.message?.contextInfo?.participant;
+                        const targetUser = msg.message?.contextInfo?.participant ||
+                            msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
+
                         if (!targetUser) {
                             await sock.sendMessage(remoteJid, {
                                 text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas eliminar.",
@@ -364,13 +367,19 @@ sock.ev.on("messages.upsert", async (message) => {
 
                         try {
                             await sock.groupParticipantsUpdate(remoteJid, [targetUser], "remove");
+                            await sock.sendMessage(remoteJid, {
+                                text: `✅ *El usuario @${targetUser.split('@')[0]} ha sido eliminado del grupo.*`,
+                                mentions: [targetUser],
+                            });
                         } catch (error) {
                             await sock.sendMessage(remoteJid, {
                                 text: "❌ *Error:* No se pudo eliminar al usuario.",
                             });
                         }
                     } else if (command === "mute") {
-                        const targetUser = msg.message?.contextInfo?.participant;
+                        const targetUser = msg.message?.contextInfo?.participant ||
+                            msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
+
                         if (!targetUser) {
                             await sock.sendMessage(remoteJid, {
                                 text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas mutear.",
@@ -394,7 +403,9 @@ sock.ev.on("messages.upsert", async (message) => {
                             mentions: [targetUser],
                         });
                     } else if (command === "unmute") {
-                        const targetUser = msg.message?.contextInfo?.participant;
+                        const targetUser = msg.message?.contextInfo?.participant ||
+                            msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
+
                         if (!targetUser) {
                             await sock.sendMessage(remoteJid, {
                                 text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas desmutear.",
@@ -526,7 +537,6 @@ sock.ev.on("messages.upsert", async (message) => {
         console.error("Error al procesar el mensaje:", error);
     }
 });
-                    
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
