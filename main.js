@@ -726,25 +726,24 @@ case 'getid': {
         );
     }
 
-    // Detectar el tipo de mensaje citado
-    const messageType = Object.keys(m.quoted.message)[0]; // Extraer el tipo de mensaje
-    const allowedTypes = ['stickerMessage', 'imageMessage', 'videoMessage', 'audioMessage'];
+    // Identificar el tipo de mensaje citado
+    const quotedMessage = m.quoted.message;
+    const mediaType = Object.keys(quotedMessage).find((type) => 
+        ['stickerMessage', 'imageMessage', 'videoMessage', 'audioMessage', 'documentMessage'].includes(type)
+    );
 
-    // Depuración: Mostrar el tipo de mensaje detectado en la consola
-    console.log("Tipo de mensaje citado:", messageType);
-
-    if (!allowedTypes.includes(messageType)) {
+    if (!mediaType) {
         return conn.sendMessage(
             m.chat,
             {
-                text: "⚠️ *Aviso:* Solo puedes usar `.getid` en mensajes que contengan multimedia permitido (sticker, imagen, video o audio).",
+                text: "⚠️ *Aviso:* Solo puedes usar `.getid` en mensajes que contengan multimedia permitido (sticker, imagen, video, audio o documento).",
             },
             { quoted: m }
         );
     }
 
     // Obtener el identificador único (fileSha256)
-    const fileSha256 = m.quoted.message[messageType].fileSha256;
+    const fileSha256 = quotedMessage[mediaType]?.fileSha256;
     if (!fileSha256) {
         return conn.sendMessage(
             m.chat,
@@ -761,7 +760,7 @@ case 'getid': {
     return conn.sendMessage(
         m.chat,
         {
-            text: `✅ *ID del archivo obtenido:*\n\n- *fileSha256:* ${fileSha256.toString('hex')}\n- *Base64:* ${base64Id}`,
+            text: `✅ *ID del archivo obtenido:*\n\n- *fileSha256 (Hex):* ${fileSha256.toString('hex')}\n- *Base64:* ${base64Id}`,
         },
         { quoted: m }
     );
