@@ -70,7 +70,25 @@ function saveMuteList() {
         console.error("Error al guardar muteList:", error);
     }
 }
+//comando a stikerz
+global.commands = {
+    "grupo cerrar": async (sock, remoteJid) => {
+        await sock.groupSettingUpdate(remoteJid, "announcement");
+    },
+    "grupo abrir": async (sock, remoteJid) => {
+        await sock.groupSettingUpdate(remoteJid, "not_announcement");
+    },
+    "kick": async (sock, remoteJid, msg) => {
+        const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
+        if (mentionedJid.length > 0) {
+            await sock.groupParticipantsUpdate(remoteJid, mentionedJid, "remove");
+        }
+    },
+    // Agrega aquí otros comandos...
+};
 
+
+//comando a stikerz
 // Asignar muteList y saveMuteList al objeto global correctamente
 global.muteList = muteList;
 global.saveMuteList = saveMuteList;
@@ -714,6 +732,51 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
+case 'comando': {
+    if (!m.quoted || !m.quoted.mimetype) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error:* Responde a un multimedia (imagen, sticker, etc.) con un comando para asociarlo. 📝" },
+            { quoted: m }
+        );
+    }
+
+    const newCommand = args.join(' ').trim(); // Comando asociado
+    if (!newCommand) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Uso del comando:* Escribe el comando que deseas asociar al multimedia. 📋" },
+            { quoted: m }
+        );
+    }
+
+    // Obtener el ID único del multimedia (fileSha256 convertido a base64)
+    const mediaHash = m.quoted.fileSha256?.toString("base64");
+    if (!mediaHash) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error interno:* No se pudo obtener el ID único del multimedia. Intenta nuevamente." },
+            { quoted: m }
+        );
+    }
+
+    // Guardar en comando.json sin el prefijo
+    const formattedCommand = newCommand.startsWith('.') ? newCommand.slice(1) : newCommand; // Eliminar prefijo si existe
+
+    if (!global.comandoList) global.comandoList = {};
+    global.comandoList[mediaHash] = formattedCommand; // Guardar ID y comando
+
+    global.saveComandoList();
+
+    conn.sendMessage(
+        m.chat,
+        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${formattedCommand}*` },
+        { quoted: m }
+    );
+}
+break;
+	
+	
 case 'getid': {
     if (!m.quoted) {
         return conn.sendMessage(
