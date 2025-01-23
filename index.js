@@ -296,7 +296,7 @@ console.log(err)
 }})
 //segundo
 const messageStore = {};	
-const { handleCommand } = require('./main'); // Ajusta la ruta según la estructura de tu proyecto
+
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
