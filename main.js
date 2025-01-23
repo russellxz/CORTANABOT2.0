@@ -770,33 +770,28 @@ case 'comando': {
         );
     }
 
-    // Descargar el multimedia
-    const mediaType = m.quoted.mimetype;
-    const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
-
-    // Convertir a base64
-    let mediaBuffer = Buffer.alloc(0);
-    for await (const chunk of mediaStream) {
-        mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+    // Obtener el ID único del multimedia (fileSha256 convertido a base64)
+    const mediaHash = m.quoted.fileSha256?.toString("base64");
+    if (!mediaHash) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error interno:* No se pudo obtener el ID único del multimedia. Intenta nuevamente." },
+            { quoted: m }
+        );
     }
-    const mediaBase64 = mediaBuffer.toString('base64');
 
-    // Crear un identificador único para el multimedia
-    const mediaHash = crypto.createHash('sha256').update(mediaBase64).digest('hex');
+    // Permitir comandos con o sin prefijo
+    const formattedCommand = newCommand.startsWith('.') ? newCommand : `.${newCommand}`;
 
     // Guardar en comando.json
     if (!global.comandoList) global.comandoList = {};
-    global.comandoList[mediaHash] = {
-        mimetype: mediaType,
-        buffer: mediaBase64,
-        command: newCommand,
-    };
+    global.comandoList[mediaHash] = formattedCommand; // Solo guardar ID y comando
 
     global.saveComandoList();
 
     conn.sendMessage(
         m.chat,
-        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${newCommand}*` },
+        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${formattedCommand}*` },
         { quoted: m }
     );
 }
