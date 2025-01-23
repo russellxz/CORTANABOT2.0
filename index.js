@@ -302,6 +302,7 @@ sock.ev.on("messages.upsert", async (message) => {
     const key = msg?.key;
 
     try {
+        // Comprobar si es un mensaje válido
         if (!key?.fromMe && msg?.message) {
             const messageId = key.id;
             messageStore[messageId] = {
@@ -313,68 +314,60 @@ sock.ev.on("messages.upsert", async (message) => {
 
         const remoteJid = key?.remoteJid;
 
-        // Verificar si el mensaje contiene un multimedia (sticker, imagen, video)
+        // Verificar si el mensaje es multimedia
         if (msg.message?.stickerMessage || msg.message?.imageMessage || msg.message?.videoMessage) {
-            // Descargar el multimedia
-            const mediaType = Object.keys(msg.message)[0];
-            const mediaStream = await downloadContentFromMessage(msg.message[mediaType], mediaType.split('/')[0]);
+            const fileSha256 = msg.message?.stickerMessage?.fileSha256 ||
+                msg.message?.imageMessage?.fileSha256 ||
+                msg.message?.videoMessage?.fileSha256;
 
-            // Convertir el stream en un buffer
-            let mediaBuffer = Buffer.alloc(0);
-            for await (const chunk of mediaStream) {
-                mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
-            }
+            if (fileSha256) {
+                const mediaHash = fileSha256.toString("base64");
 
-            // Crear un hash único del multimedia
-            const crypto = require('crypto');
-            const mediaHash = crypto.createHash('sha256').update(mediaBuffer).digest('hex');
+                // Verificar si el ID único está en comando.json
+                if (global.comandoList[mediaHash]) {
+                    const command = global.comandoList[mediaHash];
 
-            // Buscar el comando asociado al hash
-            const foundCommand = global.comandoList[mediaHash];
+                    // Verificar si el comando requiere permisos de admin
+                    if (
+                        [".grupo cerrar", ".grupo abrir", ".kick"].includes(command) &&
+                        remoteJid.endsWith("@g.us")
+                    ) {
+                        const groupMetadata = await sock.groupMetadata(remoteJid);
+                        const groupAdmins = groupMetadata.participants
+                            .filter(p => p.admin === "admin" || p.admin === "superadmin")
+                            .map(p => p.id);
 
-            if (foundCommand) {
-                const command = `.${foundCommand.command}`; // Prefijo dinámico
-
-                // Verificar si el comando requiere permisos de admin
-                if (
-                    [".grupo cerrar", ".grupo abrir", ".kick"].includes(command) &&
-                    remoteJid.endsWith("@g.us")
-                ) {
-                    const groupMetadata = await sock.groupMetadata(remoteJid);
-                    const groupAdmins = groupMetadata.participants
-                        .filter((p) => p.admin === "admin" || p.admin === "superadmin")
-                        .map((p) => p.id);
-
-                    // Verificar si el remitente es admin
-                    if (!groupAdmins.includes(key.participant)) {
-                        await sock.sendMessage(
-                            remoteJid,
-                            {
-                                text: `❌ *No tienes permisos para ejecutar este comando.*`,
-                                mentions: [key.participant],
-                            },
-                            { quoted: msg }
-                        );
-                        return;
+                        // Verificar si el remitente es admin
+                        if (!groupAdmins.includes(key.participant)) {
+                            await sock.sendMessage(
+                                remoteJid,
+                                {
+                                    text: `❌ *No tienes permisos para ejecutar este comando.*`,
+                                    mentions: [key.participant],
+                                },
+                                { quoted: msg }
+                            );
+                            return;
+                        }
                     }
-                }
 
-                // Ejecutar el comando asociado
-                await sock.sendMessage(
-                    remoteJid,
-                    { text: `⚙️ *Ejecutando comando asociado:* ${command}` },
-                    { quoted: msg }
-                );
+                    // Ejecutar el comando asociado al multimedia
+                    await sock.sendMessage(
+                        remoteJid,
+                        { text: `⚙️ *Ejecutando comando asociado:* ${command}` },
+                        { quoted: msg }
+                    );
 
-                // Lógica de ejecución de comandos
-                if (command === ".grupo cerrar") {
-                    await sock.groupSettingUpdate(remoteJid, "announcement");
-                } else if (command === ".grupo abrir") {
-                    await sock.groupSettingUpdate(remoteJid, "not_announcement");
-                } else if (command === ".kick") {
-                    const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
-                    if (mentionedJid.length > 0) {
-                        await sock.groupParticipantsUpdate(remoteJid, mentionedJid, "remove");
+                    // Lógica específica para comandos
+                    if (command === ".grupo cerrar") {
+                        await sock.groupSettingUpdate(remoteJid, "announcement");
+                    } else if (command === ".grupo abrir") {
+                        await sock.groupSettingUpdate(remoteJid, "not_announcement");
+                    } else if (command === ".kick") {
+                        const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
+                        if (mentionedJid.length > 0) {
+                            await sock.groupParticipantsUpdate(remoteJid, mentionedJid, "remove");
+                        }
                     }
                 }
             }
@@ -387,13 +380,17 @@ sock.ev.on("messages.upsert", async (message) => {
             remoteJid?.endsWith("@g.us") &&
             global.muteList[remoteJid]?.[participant]
         ) {
+            // Incrementar el contador de mensajes del usuario muteado
             global.muteList[remoteJid][participant].messagesSent =
                 (global.muteList[remoteJid][participant].messagesSent || 0) + 1;
 
+            // Guardar cambios en mute.json
             global.saveMuteList();
 
+            // Eliminar el mensaje
             await sock.sendMessage(remoteJid, { delete: msg.key });
 
+            // Avisar si está cerca del límite
             if (global.muteList[remoteJid][participant].messagesSent === 9) {
                 await sock.sendMessage(
                     remoteJid,
@@ -404,13 +401,14 @@ sock.ev.on("messages.upsert", async (message) => {
                 );
             }
 
+            // Eliminar del grupo si excede el límite
             if (global.muteList[remoteJid][participant].messagesSent >= 10) {
                 await sock.groupParticipantsUpdate(remoteJid, [participant], "remove");
-                delete global.muteList[remoteJid][participant];
+                delete global.muteList[remoteJid][participant]; // Eliminar del muteList
                 global.saveMuteList();
             }
 
-            return;
+            return; // Detener más procesamiento para el usuario muteado
         }
 
         // Lógica para manejar la creación de la caja fuerte con prefijo `.`
@@ -422,6 +420,7 @@ sock.ev.on("messages.upsert", async (message) => {
         ) {
             const input = msg.message.conversation.trim();
 
+            // Verificar si la respuesta tiene el prefijo `.`
             if (!input.startsWith(".")) {
                 await sock.sendMessage(
                     remoteJid,
@@ -431,6 +430,7 @@ sock.ev.on("messages.upsert", async (message) => {
                 return;
             }
 
+            // Extraer la contraseña eliminando el prefijo `.`
             const password = input.slice(1).trim();
 
             if (!password || password.length < 4) {
@@ -456,6 +456,7 @@ sock.ev.on("messages.upsert", async (message) => {
                     { quoted: msg }
                 );
 
+                // Avisar al privado si se creó en un grupo
                 if (remoteJid.endsWith("@g.us")) {
                     const privateJid = participant || remoteJid;
                     await sock.sendMessage(
@@ -477,7 +478,7 @@ sock.ev.on("messages.upsert", async (message) => {
         console.error("Error al procesar el mensaje:", error);
     }
 });
-
+                
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
     console.log("Event triggered: messages.update");
