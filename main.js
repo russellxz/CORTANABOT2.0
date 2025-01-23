@@ -72,30 +72,6 @@ function saveMuteList() {
 }
 //comando a stikerz
 
-global.commands = {
-    "grupo cerrar": async (sock, remoteJid) => {
-        await sock.groupSettingUpdate(remoteJid, "announcement");
-    },
-    "grupo abrir": async (sock, remoteJid) => {
-        await sock.groupSettingUpdate(remoteJid, "not_announcement");
-    },
-    "kick": async (sock, remoteJid, msg) => {
-        const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
-        if (mentionedJid.length > 0) {
-            await sock.groupParticipantsUpdate(remoteJid, mentionedJid, "remove");
-        }
-    },
-    // Llamar directamente a las funciones ya existentes de mute y unmute
-    "mute": async (sock, remoteJid, msg) => {
-        const main = require('./main'); // Asegúrate de que el archivo `main.js` exporta sus funciones
-        await main.mute(sock, remoteJid, msg); // Llama a la función `mute` desde `main.js`
-    },
-    "unmute": async (sock, remoteJid, msg) => {
-        const main = require('./main'); // Asegúrate de que el archivo `main.js` exporta sus funciones
-        await main.unmute(sock, remoteJid, msg); // Llama a la función `unmute` desde `main.js`
-    },
-    // Agrega aquí más comandos según sea necesario...
-};
 
 //comando a stikerz
 // Asignar muteList y saveMuteList al objeto global correctamente
