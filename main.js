@@ -714,58 +714,71 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
-
 case 'getid': {
-    if (!m.quoted || !m.quoted.message) {
+    try {
+        // Verificar si el mensaje es una respuesta a otro mensaje
+        if (!m.quoted || !m.quoted.message) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) con `.getid` para obtener su ID único.",
+                },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el mensaje citado contiene algún tipo de multimedia válido
+        const quotedMessage = m.quoted.message;
+        const mediaType = Object.keys(quotedMessage).find((type) =>
+            ['stickerMessage', 'imageMessage', 'videoMessage', 'audioMessage', 'documentMessage'].includes(type)
+        );
+
+        if (!mediaType) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "⚠️ *Aviso:* Responde a un sticker, imagen, video, audio o documento con `.getid`.",
+                },
+                { quoted: m }
+            );
+        }
+
+        // Obtener el identificador único del archivo (fileSha256)
+        const fileSha256 = quotedMessage[mediaType]?.fileSha256;
+        if (!fileSha256) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "❌ *Error:* No se pudo obtener el identificador único de este archivo. Asegúrate de responder a un archivo válido.",
+                },
+                { quoted: m }
+            );
+        }
+
+        // Convertir el identificador a Base64
+        const base64Id = Buffer.from(fileSha256).toString('base64');
+
+        // Enviar el identificador al usuario
         return conn.sendMessage(
             m.chat,
             {
-                text: "❌ *Error:* Responde a un multimedia (imagen, video, audio, sticker, etc.) con `.getid` para obtener su ID único.",
+                text: `✅ *ID del archivo obtenido:*\n\n- *fileSha256 (Hex):* ${fileSha256.toString('hex')}\n- *Base64:* ${base64Id}`,
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error("Error al procesar el archivo:", error);
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: "❌ *Error interno:* No se pudo procesar el archivo. Intenta nuevamente.",
             },
             { quoted: m }
         );
     }
-
-    // Identificar el tipo de mensaje citado
-    const quotedMessage = m.quoted.message;
-    const mediaType = Object.keys(quotedMessage).find((type) => 
-        ['stickerMessage', 'imageMessage', 'videoMessage', 'audioMessage', 'documentMessage'].includes(type)
-    );
-
-    if (!mediaType) {
-        return conn.sendMessage(
-            m.chat,
-            {
-                text: "⚠️ *Aviso:* Solo puedes usar `.getid` en mensajes que contengan multimedia permitido (sticker, imagen, video, audio o documento).",
-            },
-            { quoted: m }
-        );
-    }
-
-    // Obtener el identificador único (fileSha256)
-    const fileSha256 = quotedMessage[mediaType]?.fileSha256;
-    if (!fileSha256) {
-        return conn.sendMessage(
-            m.chat,
-            {
-                text: "❌ *Error:* No se pudo obtener un identificador único de este archivo. Intenta con otro multimedia.",
-            },
-            { quoted: m }
-        );
-    }
-
-    const base64Id = Buffer.from(fileSha256).toString('base64'); // Convertir a Base64
-
-    // Enviar el ID al usuario
-    return conn.sendMessage(
-        m.chat,
-        {
-            text: `✅ *ID del archivo obtenido:*\n\n- *fileSha256 (Hex):* ${fileSha256.toString('hex')}\n- *Base64:* ${base64Id}`,
-        },
-        { quoted: m }
-    );
 }
 break;
+
 
 //comando para agregar comando a los stikerz 
 	
