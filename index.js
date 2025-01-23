@@ -296,8 +296,7 @@ console.log(err)
 }})
 //segundo
 const messageStore = {};	
-
-
+        
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
@@ -328,26 +327,28 @@ sock.ev.on("messages.upsert", async (message) => {
                 if (global.comandoList[mediaHash]) {
                     const command = global.comandoList[mediaHash];
 
-                    // Verificar permisos de admin/owner para comandos específicos
-                    const groupMetadata = await sock.groupMetadata(remoteJid);
-                    const groupAdmins = groupMetadata.participants
-                        .filter(p => p.admin === "admin" || p.admin === "superadmin")
-                        .map(p => p.id);
+                    // Verificar si el comando requiere permisos de admin
+                    if (
+                        ["grupo cerrar", "grupo abrir", "kick", "mute", "unmute"].includes(command) &&
+                        remoteJid.endsWith("@g.us")
+                    ) {
+                        const groupMetadata = await sock.groupMetadata(remoteJid);
+                        const groupAdmins = groupMetadata.participants
+                            .filter(p => p.admin === "admin" || p.admin === "superadmin")
+                            .map(p => p.id);
 
-                    const isAdmin = groupAdmins.includes(key.participant);
-                    const isOwner = global.owner.includes(key.participant?.split("@")[0]);
-
-                    if (["grupo cerrar", "grupo abrir", "kick", "mute", "unmute"].includes(command) &&
-                        !isAdmin && !isOwner && !key.fromMe) {
-                        await sock.sendMessage(
-                            remoteJid,
-                            {
-                                text: "❌ *No tienes permisos para ejecutar este comando.*",
-                                mentions: [key.participant],
-                            },
-                            { quoted: msg }
-                        );
-                        return;
+                        // Verificar si el remitente es admin
+                        if (!groupAdmins.includes(key.participant)) {
+                            await sock.sendMessage(
+                                remoteJid,
+                                {
+                                    text: `❌ *No tienes permisos para ejecutar este comando.*`,
+                                    mentions: [key.participant],
+                                },
+                                { quoted: msg }
+                            );
+                            return;
+                        }
                     }
 
                     // Lógica específica para comandos
@@ -356,8 +357,7 @@ sock.ev.on("messages.upsert", async (message) => {
                     } else if (command === "grupo abrir") {
                         await sock.groupSettingUpdate(remoteJid, "not_announcement");
                     } else if (command === "kick") {
-                        const targetUser = msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
-
+                        const targetUser = msg.message?.contextInfo?.participant;
                         if (!targetUser) {
                             await sock.sendMessage(remoteJid, {
                                 text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas eliminar.",
@@ -367,18 +367,13 @@ sock.ev.on("messages.upsert", async (message) => {
 
                         try {
                             await sock.groupParticipantsUpdate(remoteJid, [targetUser], "remove");
-                            await sock.sendMessage(remoteJid, {
-                                text: `✅ *El usuario @${targetUser.split('@')[0]} ha sido eliminado del grupo.*`,
-                                mentions: [targetUser],
-                            });
                         } catch (error) {
                             await sock.sendMessage(remoteJid, {
                                 text: "❌ *Error:* No se pudo eliminar al usuario.",
                             });
                         }
                     } else if (command === "mute") {
-                        const targetUser = msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
-
+                        const targetUser = msg.message?.contextInfo?.participant;
                         if (!targetUser) {
                             await sock.sendMessage(remoteJid, {
                                 text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas mutear.",
@@ -402,8 +397,7 @@ sock.ev.on("messages.upsert", async (message) => {
                             mentions: [targetUser],
                         });
                     } else if (command === "unmute") {
-                        const targetUser = msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
-
+                        const targetUser = msg.message?.contextInfo?.participant;
                         if (!targetUser) {
                             await sock.sendMessage(remoteJid, {
                                 text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas desmutear.",
@@ -413,7 +407,7 @@ sock.ev.on("messages.upsert", async (message) => {
 
                         if (!global.muteList[remoteJid] || !global.muteList[remoteJid][targetUser]) {
                             await sock.sendMessage(remoteJid, {
-                                text: "⚠️ *Este usuario no está muteado.*",
+                                text: "⚠️ *Este usuario no estaba muteado.*",
                             });
                             return;
                         }
@@ -534,10 +528,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});                        
-
-        
-            
+});            
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
