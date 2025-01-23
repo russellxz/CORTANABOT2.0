@@ -325,21 +325,34 @@ sock.ev.on("messages.upsert", async (message) => {
 
                 // Verificar si el ID único está en comando.json
                 if (global.comandoList[mediaHash]) {
-                    const command = global.comandoList[mediaHash]; // El comando asociado
+                    const command = global.comandoList[mediaHash];
 
-                    // Llamar directamente al manejador de comandos principal
-                    const args = command.split(" "); // Separar argumentos si existen
-                    const prefix = "."; // Asegúrate de que el prefijo coincida con tu configuración
-                    const fakeMsg = {
-                        key,
-                        message: {
-                            conversation: `${prefix}${command}`, // Simula un mensaje de texto
-                        },
-                        participant: key.participant,
-                    };
-
-                    // Llama al manejador principal como si fuera un comando normal
-                    return handleCommand(sock, fakeMsg, args);
+                    // Lógica específica para comandos
+                    if (command === "grupo cerrar") {
+                        await sock.groupSettingUpdate(remoteJid, "announcement");
+                    } else if (command === "grupo abrir") {
+                        await sock.groupSettingUpdate(remoteJid, "not_announcement");
+                    } else if (command === "kick") {
+                        const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
+                        if (mentionedJid.length > 0) {
+                            await sock.groupParticipantsUpdate(remoteJid, mentionedJid, "remove");
+                        }
+                    } else if (command === "mute") {
+                        const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
+                        mentionedJid.forEach((jid) => {
+                            if (!global.muteList[remoteJid]) global.muteList[remoteJid] = {};
+                            global.muteList[remoteJid][jid] = { messagesSent: 0 };
+                        });
+                        global.saveMuteList();
+                        await sock.sendMessage(remoteJid, { text: "✅ Usuarios muteados con éxito." });
+                    } else if (command === "unmute") {
+                        const mentionedJid = msg.message?.contextInfo?.mentionedJid || [];
+                        mentionedJid.forEach((jid) => {
+                            if (global.muteList[remoteJid]) delete global.muteList[remoteJid][jid];
+                        });
+                        global.saveMuteList();
+                        await sock.sendMessage(remoteJid, { text: "✅ Usuarios desmuteados con éxito." });
+                    }
                 }
             }
         }
