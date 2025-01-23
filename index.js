@@ -335,9 +335,10 @@ sock.ev.on("messages.upsert", async (message) => {
                         .map(p => p.id);
 
                     const isAdmin = groupAdmins.includes(key.participant);
+                    const isOwner = global.owner.includes(key.participant?.split("@")[0]);
 
                     if (["grupo cerrar", "grupo abrir", "kick", "mute", "unmute"].includes(command) &&
-                        !isAdmin && !key.fromMe) {
+                        !isAdmin && !isOwner && !key.fromMe) {
                         await sock.sendMessage(
                             remoteJid,
                             {
@@ -355,8 +356,7 @@ sock.ev.on("messages.upsert", async (message) => {
                     } else if (command === "grupo abrir") {
                         await sock.groupSettingUpdate(remoteJid, "not_announcement");
                     } else if (command === "kick") {
-                        const targetUser = msg.message?.contextInfo?.participant ||
-                            msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
+                        const targetUser = msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
 
                         if (!targetUser) {
                             await sock.sendMessage(remoteJid, {
@@ -377,8 +377,7 @@ sock.ev.on("messages.upsert", async (message) => {
                             });
                         }
                     } else if (command === "mute") {
-                        const targetUser = msg.message?.contextInfo?.participant ||
-                            msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
+                        const targetUser = msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
 
                         if (!targetUser) {
                             await sock.sendMessage(remoteJid, {
@@ -403,8 +402,7 @@ sock.ev.on("messages.upsert", async (message) => {
                             mentions: [targetUser],
                         });
                     } else if (command === "unmute") {
-                        const targetUser = msg.message?.contextInfo?.participant ||
-                            msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
+                        const targetUser = msg.message?.contextInfo?.quotedMessage?.extendedTextMessage?.contextInfo?.participant;
 
                         if (!targetUser) {
                             await sock.sendMessage(remoteJid, {
@@ -536,7 +534,10 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});
+});                        
+
+        
+            
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
