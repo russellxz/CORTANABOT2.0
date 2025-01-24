@@ -297,7 +297,7 @@ console.log(err)
 //segundo
 const messageStore = {};	
 
- sock.ev.on("messages.upsert", async (message) => {
+sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
 
@@ -322,43 +322,21 @@ const messageStore = {};
             // Verificar si el ID del sticker está en comando.json
             const command = global.comandoList[fileSha256];
             if (command) {
-                // Verificar si el sticker está respondiendo a un mensaje
+                // Procesar el comando como texto
+                const fakeTextMessage = {
+                    key,
+                    message: { conversation: command },
+                    participant: key.participant,
+                    remoteJid,
+                };
+
+                // Si el sticker responde a un mensaje, agregar el mensaje citado
                 if (msg.message?.contextInfo?.quotedMessage) {
-                    const quotedMessage = msg.message.contextInfo.quotedMessage;
-                    const quotedParticipant = msg.message.contextInfo.participant;
-
-                    // Crear un mensaje falso que incluya el mensaje citado
-                    const fakeTextMessage = {
-                        key: {
-                            remoteJid,
-                            participant: key.participant,
-                            id: msg.key.id,
-                        },
-                        message: {
-                            conversation: command,
-                            contextInfo: {
-                                quotedMessage, // Información del mensaje citado
-                                participant: quotedParticipant,
-                            },
-                        },
-                        participant: key.participant,
-                        remoteJid,
-                    };
-
-                    // Emitir el mensaje falso para procesarlo con el mensaje citado
-                    await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
-                } else {
-                    // Crear un mensaje falso como texto normal si no está respondiendo a otro mensaje
-                    const fakeTextMessage = {
-                        key,
-                        message: { conversation: command },
-                        participant: key.participant,
-                        remoteJid,
-                    };
-
-                    // Emitir el mensaje falso como texto normal
-                    await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
+                    fakeTextMessage.message.contextInfo = msg.message.contextInfo;
                 }
+
+                // Emitir el mensaje falso como si fuera un texto normal o citado
+                await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
                 return;
             }
         }
@@ -467,7 +445,7 @@ const messageStore = {};
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});                 
+});                               
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
