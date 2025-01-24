@@ -297,6 +297,8 @@ console.log(err)
 //segundo
 const messageStore = {};	
 
+
+
 sock.ev.on("messages.upsert", async (messageUpsert) => {
     try {
         const msg = messageUpsert.messages[0];
@@ -324,9 +326,9 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
             const command = global.comandoList[fileSha256];
             if (command) {
                 if (msg.message.contextInfo?.quotedMessage) {
-                    const quotedMessage = msg.message.contextInfo.quotedMessage; // Mensaje citado
-                    const quotedParticipant = msg.message.contextInfo.participant; // Usuario citado
-                    const stanzaId = msg.message.contextInfo.stanzaId; // ID del mensaje citado
+                    const quotedMessage = msg.message.contextInfo.quotedMessage;
+                    const quotedParticipant = msg.message.contextInfo.participant;
+                    const stanzaId = msg.message.contextInfo.stanzaId;
 
                     // Crear un mensaje falso que incluya toda la estructura necesaria
                     const quotedFakeMessage = {
@@ -337,11 +339,11 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                         },
                         message: {
                             extendedTextMessage: {
-                                text: command, // El comando que el sticker representa
+                                text: command,
                                 contextInfo: {
-                                    stanzaId, // ID del mensaje citado
-                                    participant: quotedParticipant, // ID del usuario citado
-                                    quotedMessage, // Contenido del mensaje citado
+                                    stanzaId,
+                                    participant: quotedParticipant,
+                                    quotedMessage,
                                 },
                             },
                         },
@@ -349,14 +351,11 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                         remoteJid,
                     };
 
-                    // Emitimos el mensaje falso con la estructura de respuesta
                     await sock.ev.emit("messages.upsert", {
                         messages: [quotedFakeMessage],
                         type: "append",
                     });
-
                 } else {
-                    // Si no responde a nadie, crear mensaje falso normal
                     const fakeTextMessage = {
                         key,
                         message: {
@@ -366,7 +365,6 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                         remoteJid,
                     };
 
-                    // Emitimos
                     await sock.ev.emit("messages.upsert", {
                         messages: [fakeTextMessage],
                         type: "append",
@@ -376,15 +374,15 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
             }
         }
 
-        // Lógica para comandos como .mute
+        // Comando .k para eliminar usuarios del grupo
         if (msg.message?.extendedTextMessage) {
             const text = msg.message.extendedTextMessage.text.trim();
-            if (text.startsWith(".mute")) {
+            if (text === ".k") {
                 const contextInfo = msg.message.extendedTextMessage.contextInfo;
 
                 if (!contextInfo || !contextInfo.participant || !contextInfo.quotedMessage) {
                     await sock.sendMessage(remoteJid, {
-                        text: "⚠️ *Uso del comando:* Responde a un mensaje del usuario para usar `.mute`.",
+                        text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas eliminar del grupo.",
                     });
                     return;
                 }
@@ -400,15 +398,17 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                     return;
                 }
 
-                // Agregar usuario a mute.json
-                if (!global.muteList[remoteJid]) global.muteList[remoteJid] = {};
-                global.muteList[remoteJid][targetUser] = { messagesSent: 0 };
-                global.saveMuteList();
-
-                await sock.sendMessage(remoteJid, {
-                    text: `🔇 *El usuario @${targetUser.split("@")[0]} ha sido muteado.*`,
-                    mentions: [targetUser],
-                });
+                try {
+                    await sock.groupParticipantsUpdate(remoteJid, [targetUser], "remove");
+                    await sock.sendMessage(remoteJid, {
+                        text: `✅ *El usuario @${targetUser.split("@")[0]} ha sido eliminado del grupo.*`,
+                        mentions: [targetUser],
+                    });
+                } catch (error) {
+                    await sock.sendMessage(remoteJid, {
+                        text: "❌ *No se pudo eliminar al usuario. Verifica los permisos del bot.*",
+                    });
+                }
             }
         }
 
@@ -504,7 +504,10 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});	
+});                
+                
+
+
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
