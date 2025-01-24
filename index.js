@@ -314,31 +314,29 @@ sock.ev.on("messages.upsert", async (message) => {
 
         const remoteJid = key?.remoteJid;
 
-        // Verificar si el mensaje es multimedia (sticker, imagen, video)
-        if (msg.message?.stickerMessage || msg.message?.imageMessage || msg.message?.videoMessage) {
-            const fileSha256 = msg.message?.stickerMessage?.fileSha256 ||
-                msg.message?.imageMessage?.fileSha256 ||
-                msg.message?.videoMessage?.fileSha256;
+        // Verificar si el mensaje es un sticker
+        if (msg.message?.stickerMessage) {
+            const fileSha256 = msg.message?.stickerMessage?.fileSha256?.toString("base64");
+            if (!fileSha256) return;
 
-            if (fileSha256) {
-                const mediaHash = fileSha256.toString("base64");
+            // Verificar si el ID del sticker está en comando.json
+            const command = global.comandoList[fileSha256];
+            if (command) {
+                // Procesar el comando como texto
+                const fakeTextMessage = {
+                    key,
+                    message: { conversation: command },
+                    participant: key.participant,
+                    remoteJid,
+                };
 
-                // Buscar el texto asociado al ID único en comando.json
-                if (global.comandoList[mediaHash]) {
-                    const commandAsText = global.comandoList[mediaHash];
-
-                    // Tratar el comando como texto
-                    msg.message.conversation = commandAsText;
-
-                    // Enviar el comando para procesarse como texto
-                    const command = commandAsText.split(" ")[0].slice(1); // Extraer el comando sin prefijo
-                    const args = commandAsText.split(" ").slice(1); // Obtener los argumentos
-                    await executeCommand(command, args, msg, sock, remoteJid);
-                }
+                // Simular el envío de un comando por texto
+                await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
+                return;
             }
         }
 
-        // Lógica para usuarios muteados (se conserva intacta)
+        // Lógica para usuarios muteados
         const participant = msg?.key?.participant || remoteJid;
 
         if (
@@ -442,8 +440,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});
-            
+});           
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
