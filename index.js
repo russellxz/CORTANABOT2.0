@@ -564,7 +564,8 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});             
+});
+
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
