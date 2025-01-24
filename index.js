@@ -299,7 +299,7 @@ const messageStore = {};
 
 
 
-sock.ev.on("messages.upsert", async (messageUpsert) => {
+ sock.ev.on("messages.upsert", async (messageUpsert) => {
     try {
         const msg = messageUpsert.messages[0];
         if (!msg) return;
@@ -325,47 +325,12 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
             // Verificar si el ID del sticker está en comando.json
             const command = global.comandoList[fileSha256];
             if (command) {
-                // Si el comando es ".k", procesarlo directamente como comando
-                if (command === ".k") {
-                    const contextInfo = msg.message.contextInfo;
-                    if (!contextInfo || !contextInfo.participant || !contextInfo.quotedMessage) {
-                        await sock.sendMessage(remoteJid, {
-                            text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas eliminar del grupo.",
-                        });
-                        return;
-                    }
-
-                    const targetUser = contextInfo.participant;
-                    const groupMetadata = await sock.groupMetadata(remoteJid);
-                    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
-
-                    if (!groupAdmins.includes(key.participant)) {
-                        await sock.sendMessage(remoteJid, {
-                            text: "❌ *Solo los administradores pueden usar este comando.*",
-                        });
-                        return;
-                    }
-
-                    try {
-                        await sock.groupParticipantsUpdate(remoteJid, [targetUser], "remove");
-                        await sock.sendMessage(remoteJid, {
-                            text: `✅ *El usuario @${targetUser.split("@")[0]} ha sido eliminado del grupo.*`,
-                            mentions: [targetUser],
-                        });
-                    } catch (error) {
-                        await sock.sendMessage(remoteJid, {
-                            text: "❌ *No se pudo eliminar al usuario. Verifica los permisos del bot.*",
-                        });
-                    }
-                    return; // Salir porque ya ejecutamos el comando
-                }
-
-                // Procesar el resto de los comandos como texto
                 if (msg.message.contextInfo?.quotedMessage) {
-                    const quotedMessage = msg.message.contextInfo.quotedMessage;
-                    const quotedParticipant = msg.message.contextInfo.participant;
-                    const stanzaId = msg.message.contextInfo.stanzaId;
+                    const quotedMessage = msg.message.contextInfo.quotedMessage; // Mensaje citado
+                    const quotedParticipant = msg.message.contextInfo.participant; // Usuario citado
+                    const stanzaId = msg.message.contextInfo.stanzaId; // ID del mensaje citado
 
+                    // Crear un mensaje falso que incluya toda la estructura necesaria
                     const quotedFakeMessage = {
                         key: {
                             remoteJid,
@@ -386,6 +351,7 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                         remoteJid,
                     };
 
+                    // Emitimos el mensaje falso con la estructura de respuesta
                     await sock.ev.emit("messages.upsert", {
                         messages: [quotedFakeMessage],
                         type: "append",
@@ -406,6 +372,44 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                     });
                 }
                 return;
+            }
+        }
+
+        // Comando .k para eliminar usuarios del grupo
+        if (msg.message?.extendedTextMessage) {
+            const text = msg.message.extendedTextMessage.text.trim();
+            if (text === ".k") {
+                const contextInfo = msg.message.extendedTextMessage.contextInfo;
+
+                if (!contextInfo || !contextInfo.participant || !contextInfo.quotedMessage) {
+                    await sock.sendMessage(remoteJid, {
+                        text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas eliminar del grupo.",
+                    });
+                    return;
+                }
+
+                const targetUser = contextInfo.participant;
+                const groupMetadata = await sock.groupMetadata(remoteJid);
+                const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+
+                if (!groupAdmins.includes(key.participant)) {
+                    await sock.sendMessage(remoteJid, {
+                        text: "❌ *Solo los administradores pueden usar este comando.*",
+                    });
+                    return;
+                }
+
+                try {
+                    await sock.groupParticipantsUpdate(remoteJid, [targetUser], "remove");
+                    await sock.sendMessage(remoteJid, {
+                        text: `✅ *El usuario @${targetUser.split("@")[0]} ha sido eliminado del grupo.*`,
+                        mentions: [targetUser],
+                    });
+                } catch (error) {
+                    await sock.sendMessage(remoteJid, {
+                        text: "❌ *No se pudo eliminar al usuario. Verifica los permisos del bot.*",
+                    });
+                }
             }
         }
 
@@ -501,8 +505,7 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});
-                
+});               
 
 
                     
