@@ -322,33 +322,35 @@ sock.ev.on("messages.upsert", async (message) => {
             // Verificar si el ID del sticker está en comando.json
             const command = global.comandoList[fileSha256];
             if (command) {
-                // Verificar si se está respondiendo a un mensaje
-                if (msg.message?.contextInfo?.quotedMessage) {
-                    const quotedKey = msg.message.contextInfo.stanzaId;
-                    const quotedMessage = messageStore[quotedKey];
-                    if (quotedMessage) {
-                        const fakeTextMessage = {
-                            key: quotedMessage.key,
-                            message: { conversation: command },
-                            participant: key.participant,
-                            remoteJid,
-                        };
-
-                        // Simular el envío de un comando por texto
-                        await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
-                        return;
-                    }
+                // Verificar si se respondió a un mensaje
+                if (!msg.message?.contextInfo?.quotedMessage) {
+                    await sock.sendMessage(remoteJid, {
+                        text: "⚠️ *Uso del comando:* Responde a un mensaje con el sticker para ejecutar el comando.",
+                        quoted: msg,
+                    });
+                    return;
                 }
 
-                // Procesar el comando como texto si no se responde
+                // Obtener información del mensaje citado
+                const quotedKey = msg.message.contextInfo.stanzaId;
+                const quotedMessage = messageStore[quotedKey];
+                if (!quotedMessage) {
+                    await sock.sendMessage(remoteJid, {
+                        text: "❌ *Error:* No se pudo identificar el mensaje citado.",
+                        quoted: msg,
+                    });
+                    return;
+                }
+
+                // Simular el procesamiento del comando como texto
                 const fakeTextMessage = {
-                    key,
+                    key: quotedMessage.key,
                     message: { conversation: command },
-                    participant: key.participant,
+                    participant: quotedMessage.participant,
                     remoteJid,
                 };
 
-                // Simular el envío de un comando por texto
+                // Emitir el comando como si fuera texto
                 await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
                 return;
             }
@@ -458,7 +460,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});
+});               
         
                     
 //nuevo evento equetas
