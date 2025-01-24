@@ -296,7 +296,7 @@ console.log(err)
 }})
 //segundo
 const messageStore = {};	
-        
+
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
@@ -327,7 +327,7 @@ sock.ev.on("messages.upsert", async (message) => {
                     const quotedMessage = msg.message.contextInfo.quotedMessage;
                     const quotedParticipant = msg.message.contextInfo.participant;
 
-                    // Simular el comando como si estuviera respondiendo al mensaje citado
+                    // Crear un mensaje simulado que cite al mensaje original
                     const fakeTextMessage = {
                         key: {
                             remoteJid,
@@ -335,19 +335,20 @@ sock.ev.on("messages.upsert", async (message) => {
                             id: msg.message.contextInfo.stanzaId,
                         },
                         message: {
-                            conversation: command,
+                            conversation: command, // Usa el comando como texto
                             contextInfo: {
                                 quotedMessage,
                                 participant: quotedParticipant,
                             },
                         },
-                        participant: quotedParticipant,
+                        participant: key.participant,
                         remoteJid,
                     };
 
+                    // Emitir el mensaje simulado
                     await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
                 } else {
-                    // Procesar el comando como texto normal
+                    // Si no hay mensaje citado, procesar el comando como texto normal
                     const fakeTextMessage = {
                         key,
                         message: { conversation: command },
@@ -355,6 +356,7 @@ sock.ev.on("messages.upsert", async (message) => {
                         remoteJid,
                     };
 
+                    // Emitir el mensaje simulado
                     await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
                 }
                 return;
@@ -465,7 +467,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});
+});	
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
