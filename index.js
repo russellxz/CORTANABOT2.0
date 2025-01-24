@@ -297,7 +297,6 @@ console.log(err)
 //segundo
 const messageStore = {};	
         
-
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
@@ -325,28 +324,24 @@ sock.ev.on("messages.upsert", async (message) => {
             if (command) {
                 // Si el sticker responde a un mensaje
                 if (msg.message?.contextInfo?.quotedMessage) {
-                    const quotedKey = msg.message.contextInfo.stanzaId;
-                    const quotedMessage = messageStore[quotedKey];
-                    if (!quotedMessage) {
-                        await sock.sendMessage(remoteJid, {
-                            text: "❌ *Error:* No se pudo identificar el mensaje citado.",
-                            quoted: msg,
-                        });
-                        return;
-                    }
+                    const quotedMessage = msg.message.contextInfo.quotedMessage;
+                    const quotedParticipant = msg.message.contextInfo.participant;
 
-                    // Crear un mensaje falso para simular el comando con el mensaje citado
+                    // Simular el comando como si se estuviera ejecutando sobre el mensaje citado
                     const fakeTextMessage = {
-                        key: quotedMessage.key,
+                        key: {
+                            remoteJid,
+                            participant: quotedParticipant,
+                            id: msg.message.contextInfo.stanzaId,
+                        },
                         message: { conversation: command },
-                        participant: quotedMessage.participant,
+                        participant: quotedParticipant,
                         remoteJid,
                     };
 
-                    // Emitir el comando como si fuera texto
                     await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
                 } else {
-                    // Procesar el comando como texto si no se respondió a un mensaje
+                    // Procesar el comando como texto normal
                     const fakeTextMessage = {
                         key,
                         message: { conversation: command },
@@ -354,7 +349,6 @@ sock.ev.on("messages.upsert", async (message) => {
                         remoteJid,
                     };
 
-                    // Simular el envío de un comando por texto
                     await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
                 }
                 return;
@@ -465,8 +459,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});
-        
+});        
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
