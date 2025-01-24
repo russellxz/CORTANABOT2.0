@@ -297,9 +297,6 @@ console.log(err)
 //segundo
 const messageStore = {};	
         
-
-
-
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
@@ -317,77 +314,31 @@ sock.ev.on("messages.upsert", async (message) => {
 
         const remoteJid = key?.remoteJid;
 
-        // Verificar si el mensaje es un sticker
-        if (msg.message?.stickerMessage) {
-            const fileSha256 = msg.message.stickerMessage.fileSha256?.toString("base64");
+        // Verificar si el mensaje es multimedia (sticker, imagen, video)
+        if (msg.message?.stickerMessage || msg.message?.imageMessage || msg.message?.videoMessage) {
+            const fileSha256 = msg.message?.stickerMessage?.fileSha256 ||
+                msg.message?.imageMessage?.fileSha256 ||
+                msg.message?.videoMessage?.fileSha256;
 
-            if (fileSha256 && global.comandoList[fileSha256]) {
-                const commandText = global.comandoList[fileSha256]; // Obtener el comando asociado
+            if (fileSha256) {
+                const mediaHash = fileSha256.toString("base64");
 
-                // Procesar el comando como texto
-                if (commandText === "grupo cerrar") {
-                    const groupMetadata = await sock.groupMetadata(remoteJid);
-                    const groupAdmins = groupMetadata.participants
-                        .filter(p => p.admin === "admin" || p.admin === "superadmin")
-                        .map(p => p.id);
+                // Buscar el texto asociado al ID único en comando.json
+                if (global.comandoList[mediaHash]) {
+                    const commandAsText = global.comandoList[mediaHash];
 
-                    if (!groupAdmins.includes(key.participant) && !key.fromMe) {
-                        await sock.sendMessage(
-                            remoteJid,
-                            { text: "❌ *No tienes permisos para ejecutar este comando.*" },
-                            { quoted: msg }
-                        );
-                        return;
-                    }
-                    await sock.groupSettingUpdate(remoteJid, "announcement");
-                } else if (commandText === "grupo abrir") {
-                    const groupMetadata = await sock.groupMetadata(remoteJid);
-                    const groupAdmins = groupMetadata.participants
-                        .filter(p => p.admin === "admin" || p.admin === "superadmin")
-                        .map(p => p.id);
+                    // Tratar el comando como texto
+                    msg.message.conversation = commandAsText;
 
-                    if (!groupAdmins.includes(key.participant) && !key.fromMe) {
-                        await sock.sendMessage(
-                            remoteJid,
-                            { text: "❌ *No tienes permisos para ejecutar este comando.*" },
-                            { quoted: msg }
-                        );
-                        return;
-                    }
-                    await sock.groupSettingUpdate(remoteJid, "not_announcement");
-                } else if (commandText === "kick") {
-                    const targetUser = msg.message?.contextInfo?.participant;
-                    if (!targetUser) return; // No hacer nada si no hay usuario citado
-
-                    try {
-                        await sock.groupParticipantsUpdate(remoteJid, [targetUser], "remove");
-                    } catch (error) {
-                        await sock.sendMessage(remoteJid, {
-                            text: "❌ *Error:* No se pudo eliminar al usuario.",
-                        });
-                    }
-                } else if (commandText === "mute") {
-                    const targetUser = msg.message?.contextInfo?.participant;
-                    if (!targetUser) return;
-
-                    if (!global.muteList[remoteJid]) global.muteList[remoteJid] = {};
-                    if (!global.muteList[remoteJid][targetUser]) {
-                        global.muteList[remoteJid][targetUser] = { messagesSent: 0 };
-                        global.saveMuteList();
-                    }
-                } else if (commandText === "unmute") {
-                    const targetUser = msg.message?.contextInfo?.participant;
-                    if (!targetUser) return;
-
-                    if (global.muteList[remoteJid] && global.muteList[remoteJid][targetUser]) {
-                        delete global.muteList[remoteJid][targetUser];
-                        global.saveMuteList();
-                    }
+                    // Enviar el comando para procesarse como texto
+                    const command = commandAsText.split(" ")[0].slice(1); // Extraer el comando sin prefijo
+                    const args = commandAsText.split(" ").slice(1); // Obtener los argumentos
+                    await executeCommand(command, args, msg, sock, remoteJid);
                 }
             }
         }
 
-        // Lógica para usuarios muteados
+        // Lógica para usuarios muteados (se conserva intacta)
         const participant = msg?.key?.participant || remoteJid;
 
         if (
@@ -403,6 +354,17 @@ sock.ev.on("messages.upsert", async (message) => {
 
             // Eliminar el mensaje
             await sock.sendMessage(remoteJid, { delete: msg.key });
+
+            // Avisar si está cerca del límite
+            if (global.muteList[remoteJid][participant].messagesSent === 9) {
+                await sock.sendMessage(
+                    remoteJid,
+                    {
+                        text: `⚠️ *Última advertencia @${participant.split('@')[0]}.* Si envías otro mensaje, serás eliminado del grupo.`,
+                        mentions: [participant],
+                    }
+                );
+            }
 
             // Eliminar del grupo si excede el límite
             if (global.muteList[remoteJid][participant].messagesSent >= 10) {
@@ -458,6 +420,15 @@ sock.ev.on("messages.upsert", async (message) => {
                     { text: "🔐 ¡Tu caja fuerte ha sido creada con éxito!" },
                     { quoted: msg }
                 );
+
+                // Avisar al privado si se creó en un grupo
+                if (remoteJid.endsWith("@g.us")) {
+                    const privateJid = participant || remoteJid;
+                    await sock.sendMessage(
+                        privateJid,
+                        { text: "⚠️ Por seguridad, considera cambiar tu contraseña en privado." }
+                    );
+                }
             } else {
                 await sock.sendMessage(
                     remoteJid,
