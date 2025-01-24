@@ -297,7 +297,7 @@ console.log(err)
 //segundo
 const messageStore = {};	
 
- sock.ev.on("messages.upsert", async (message) => {
+sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
 
@@ -313,6 +313,101 @@ const messageStore = {};
         }
 
         const remoteJid = key?.remoteJid;
+
+        // Verificar si el mensaje es texto con comando
+        if (msg.message?.conversation) {
+            const command = msg.message.conversation.trim().toLowerCase();
+
+            // Comandos nuevos
+            if ([".k", ".m", ".mm"].includes(command)) {
+                const groupMetadata = await sock.groupMetadata(remoteJid);
+                const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+                const isAdmin = groupAdmins.includes(key.participant);
+                const isOwner = global.owner.includes(key.participant?.split("@")[0]);
+
+                // Verificar permisos
+                if (!isAdmin && !isOwner) {
+                    await sock.sendMessage(
+                        remoteJid,
+                        { text: "❌ *Este comando solo puede ser usado por administradores o el Owner.*" },
+                        { quoted: msg }
+                    );
+                    return;
+                }
+
+                // Verificar si el mensaje está citando a otro usuario
+                const quotedMessage = msg.message?.contextInfo?.quotedMessage;
+                const quotedParticipant = msg.message?.contextInfo?.participant;
+
+                if (!quotedMessage || !quotedParticipant) {
+                    await sock.sendMessage(
+                        remoteJid,
+                        { text: "⚠️ *Uso del comando:* Responde al mensaje del usuario para ejecutar este comando." },
+                        { quoted: msg }
+                    );
+                    return;
+                }
+
+                if (command === ".k") {
+                    // Comando para eliminar a un usuario del grupo
+                    try {
+                        await sock.groupParticipantsUpdate(remoteJid, [quotedParticipant], "remove");
+                        await sock.sendMessage(
+                            remoteJid,
+                            { text: `✅ *El usuario @${quotedParticipant.split("@")[0]} ha sido eliminado del grupo.*`, mentions: [quotedParticipant] },
+                            { quoted: msg }
+                        );
+                    } catch (error) {
+                        await sock.sendMessage(
+                            remoteJid,
+                            { text: "❌ *Error:* No se pudo eliminar al usuario. Verifica los permisos del bot." },
+                            { quoted: msg }
+                        );
+                    }
+                } else if (command === ".m") {
+                    // Comando para agregar al usuario al archivo mute.json
+                    if (!global.muteList[remoteJid]) global.muteList[remoteJid] = {};
+
+                    if (global.muteList[remoteJid][quotedParticipant]) {
+                        await sock.sendMessage(
+                            remoteJid,
+                            { text: "⚠️ *Este usuario ya está muteado.*" },
+                            { quoted: msg }
+                        );
+                        return;
+                    }
+
+                    global.muteList[remoteJid][quotedParticipant] = { messagesSent: 0 };
+                    global.saveMuteList();
+
+                    await sock.sendMessage(
+                        remoteJid,
+                        { text: `🔇 *El usuario @${quotedParticipant.split("@")[0]} ha sido muteado.*`, mentions: [quotedParticipant] },
+                        { quoted: msg }
+                    );
+                } else if (command === ".mm") {
+                    // Comando para eliminar al usuario del archivo mute.json
+                    if (!global.muteList[remoteJid] || !global.muteList[remoteJid][quotedParticipant]) {
+                        await sock.sendMessage(
+                            remoteJid,
+                            { text: "⚠️ *Este usuario no está muteado.*" },
+                            { quoted: msg }
+                        );
+                        return;
+                    }
+
+                    delete global.muteList[remoteJid][quotedParticipant];
+                    global.saveMuteList();
+
+                    await sock.sendMessage(
+                        remoteJid,
+                        { text: `✅ *El usuario @${quotedParticipant.split("@")[0]} ha sido desmuteado.*`, mentions: [quotedParticipant] },
+                        { quoted: msg }
+                    );
+                }
+                return;
+            }
+        }
 
         // Verificar si el mensaje es un sticker
         if (msg.message?.stickerMessage) {
@@ -469,7 +564,7 @@ const messageStore = {};
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});          
+});             
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
