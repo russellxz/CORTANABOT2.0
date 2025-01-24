@@ -737,8 +737,8 @@ case 'm': {
         );
     }
 
-    // Verificar si el usuario respondió a alguien
-    const quotedMessage = m.quoted || m.message?.contextInfo?.quotedMessage;
+    // Verificar si el mensaje está citando a otro mensaje
+    const quotedMessage = m.quoted || (m.message?.contextInfo?.quotedMessage ? m.message.contextInfo.quotedMessage : null);
     const quotedParticipant = m.quoted?.sender || m.message?.contextInfo?.participant;
 
     if (!quotedMessage || !quotedParticipant) {
