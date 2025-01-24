@@ -304,51 +304,70 @@ sock.ev.on("messages.upsert", async (msgUpsert) => {
 
         const key = msg.key;
         const remoteJid = key.remoteJid;
+        const participant = key.participant || remoteJid;
 
-        // 1. Verificar si el mensaje es un sticker
+        // 1) Guardar en messageStore (por si necesitas histórico)
+        if (!key.fromMe && msg.message) {
+            const messageId = key.id;
+            messageStore[messageId] = {
+                remoteJid: key.remoteJid,
+                participant: key.participant || key.remoteJid,
+                message: msg.message,
+            };
+        }
+
+        // 2) Verificar si el mensaje es un Sticker 
         if (msg.message?.stickerMessage) {
             const fileSha256 = msg.message.stickerMessage.fileSha256?.toString("base64");
             if (!fileSha256) return;
 
-            // Verificar si el ID del sticker está en comando.json
+            // Verificar si el ID del sticker está en comandoList
             const command = global.comandoList[fileSha256];
             if (command) {
-                // Caso A: Sticker responde a un mensaje
-                if (msg.message?.contextInfo?.quotedMessage) {
+
+                // CASO A: Sticker está respondiendo a un mensaje
+                if (msg.message.contextInfo?.quotedMessage) {
+                    // Obtenemos la info necesaria
                     const quotedMessage = msg.message.contextInfo.quotedMessage;
                     const quotedParticipant = msg.message.contextInfo.participant;
                     const stanzaId = msg.message.contextInfo.stanzaId;
 
-                    // Crear un mensaje falso con `extendedTextMessage`
+                    // =======================================================
+                    // Creamos un objeto extendedTextMessage para que el parser
+                    // de comandos “vea” que es un reply.
+                    // =======================================================
                     const quotedFakeMessage = {
                         key: {
                             remoteJid,
                             participant: quotedParticipant,
                             id: stanzaId,
-                            fromMe: false,
+                            fromMe: false
                         },
                         message: {
                             extendedTextMessage: {
+                                // El texto del comando (ejemplo ".kick")
                                 text: command,
+                                // contextInfo con la info de a quién se está respondiendo
                                 contextInfo: {
                                     stanzaId,               // ID del mensaje citado
                                     participant: quotedParticipant, 
-                                    quotedMessage           // Contenido del mensaje citado
+                                    quotedMessage           // contenido del mensaje citado
                                 }
                             }
                         },
                         participant: quotedParticipant,
-                        remoteJid,
+                        remoteJid
                     };
 
-                    // Emitir el mensaje falso al flujo de mensajes
+                    // Emitimos el mensaje falso al flujo messages.upsert
                     await sock.ev.emit("messages.upsert", {
                         messages: [quotedFakeMessage],
                         type: "append",
                     });
 
-                // Caso B: Sticker no responde a ningún mensaje
+                // CASO B: Sticker NO responde a nadie
                 } else {
+                    // Usamos un "mensaje falso" normal con .conversation
                     const fakeTextMessage = {
                         key,
                         message: {
@@ -358,28 +377,32 @@ sock.ev.on("messages.upsert", async (msgUpsert) => {
                         remoteJid,
                     };
 
+                    // Emitimos
                     await sock.ev.emit("messages.upsert", {
                         messages: [fakeTextMessage],
                         type: "append",
                     });
                 }
-                return;
+                return; // Salimos, ya emitimos el falso
             }
         }
 
-        // 2. Lógica para usuarios muteados
-        const participant = key.participant || remoteJid;
+        // 3) Lógica de mute
         if (
             remoteJid.endsWith("@g.us") &&
             global.muteList[remoteJid]?.[participant]
         ) {
+            // Aumentar el contador
             global.muteList[remoteJid][participant].messagesSent =
                 (global.muteList[remoteJid][participant].messagesSent || 0) + 1;
 
+            // Guardamos cambios
             global.saveMuteList();
 
+            // Eliminamos el mensaje
             await sock.sendMessage(remoteJid, { delete: msg.key });
 
+            // Aviso de última advertencia
             if (global.muteList[remoteJid][participant].messagesSent === 9) {
                 await sock.sendMessage(remoteJid, {
                     text: `⚠️ *Última advertencia @${participant.split('@')[0]}.* Si envías otro mensaje, serás eliminado del grupo.`,
@@ -387,21 +410,26 @@ sock.ev.on("messages.upsert", async (msgUpsert) => {
                 });
             }
 
+            // Expulsar si excede 10
             if (global.muteList[remoteJid][participant].messagesSent >= 10) {
                 await sock.groupParticipantsUpdate(remoteJid, [participant], "remove");
+
+                // Eliminar de la lista
                 delete global.muteList[remoteJid][participant];
                 global.saveMuteList();
             }
             return;
         }
 
-        // 3. Manejo de la caja fuerte
+        // 4) Manejo de la "caja fuerte"
         if (
             global.tempCaja[remoteJid] &&
             global.tempCaja[remoteJid] === key.id && 
             msg.message?.conversation
         ) {
             const input = msg.message.conversation.trim();
+
+            // Debe iniciar con "."
             if (!input.startsWith(".")) {
                 await sock.sendMessage(
                     remoteJid,
@@ -411,7 +439,9 @@ sock.ev.on("messages.upsert", async (msgUpsert) => {
                 return;
             }
 
+            // Sacamos la contraseña
             const password = input.slice(1).trim();
+
             if (!password || password.length < 4) {
                 await sock.sendMessage(
                     remoteJid,
@@ -421,13 +451,14 @@ sock.ev.on("messages.upsert", async (msgUpsert) => {
                 return;
             }
 
+            // Crear la caja fuerte si no existe
             if (!cajasFuertes[remoteJid]) {
                 cajasFuertes[remoteJid] = {
                     password,
                     multimedia: {},
                     isOpen: false,
                 };
-                fs.writeFileSync(path.join(__dirname, "cajasFuertes.json"), JSON.stringify(cajasFuertes, null, 2));
+                fs.writeFileSync(CAJAS_PATH, JSON.stringify(cajasFuertes, null, 2));
 
                 await sock.sendMessage(
                     remoteJid,
@@ -435,6 +466,7 @@ sock.ev.on("messages.upsert", async (msgUpsert) => {
                     { quoted: msg }
                 );
 
+                // Avisamos por privado si se creó en un grupo
                 if (remoteJid.endsWith("@g.us")) {
                     const privateJid = participant || remoteJid;
                     await sock.sendMessage(
@@ -452,6 +484,41 @@ sock.ev.on("messages.upsert", async (msgUpsert) => {
 
             delete global.tempCaja[remoteJid];
         }
+
+        // ======================================
+        // 5) DETECCIÓN DE COMANDOS UNIFICADA
+        // ======================================
+        // Aquí, si quieres que tu bot lea .kick/.ban/etc.
+        // ya sea que venga de un "conversation" normal
+        // o de un "extendedTextMessage" (cuando responde).
+        let body = "";
+
+        if (msg.message?.conversation) {
+            // Mensaje “normal” escrito
+            body = msg.message.conversation;
+        } else if (msg.message?.extendedTextMessage?.text) {
+            // Mensaje en reply (o el "falso" que creamos si es sticker reply)
+            body = msg.message.extendedTextMessage.text;
+        }
+
+        // Si no hay texto, no hacemos nada
+        if (!body) return;
+
+        // (EJEMPLO) Checamos si es .kick
+        if (body.startsWith(".kick")) {
+            // Saber a quién respondiste (si es que se está respondiendo)
+            // Por si necesitas expulsar a la persona que está citada
+            const targetUser = msg.message?.extendedTextMessage?.contextInfo?.participant;
+
+            // Aquí haz tu lógica de expulsión, por ejemplo:
+            // if (targetUser) {
+            //     await sock.groupParticipantsUpdate(remoteJid, [targetUser], "remove");
+            //     await sock.sendMessage(remoteJid, { text: `Usuario @${targetUser.split('@')[0]} fue expulsado.` });
+            // }
+        }
+
+        // Puedes agregar más comandos (.ban, .warn, etc.) 
+        // usando la misma variable 'body'
 
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
