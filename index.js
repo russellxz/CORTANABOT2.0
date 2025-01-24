@@ -354,7 +354,6 @@ sock.ev.on("messages.upsert", async (message) => {
                         participant: quotedParticipant,
                         remoteJid,
                     };
-
                     // Emitir el mensaje falso con el mensaje citado
                     await sock.ev.emit("messages.upsert", { messages: [quotedFakeMessage], type: "append" });
                 } else {
@@ -421,7 +420,6 @@ sock.ev.on("messages.upsert", async (message) => {
                 );
                 return;
             }
-
             // Extraer la contraseña eliminando el prefijo `.`
             const password = input.slice(1).trim();
 
