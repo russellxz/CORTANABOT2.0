@@ -327,14 +327,20 @@ sock.ev.on("messages.upsert", async (message) => {
                     const quotedMessage = msg.message.contextInfo.quotedMessage;
                     const quotedParticipant = msg.message.contextInfo.participant;
 
-                    // Simular el comando como si se estuviera ejecutando sobre el mensaje citado
+                    // Simular el comando como si estuviera respondiendo al mensaje citado
                     const fakeTextMessage = {
                         key: {
                             remoteJid,
                             participant: quotedParticipant,
                             id: msg.message.contextInfo.stanzaId,
                         },
-                        message: { conversation: command },
+                        message: {
+                            conversation: command,
+                            contextInfo: {
+                                quotedMessage,
+                                participant: quotedParticipant,
+                            },
+                        },
                         participant: quotedParticipant,
                         remoteJid,
                     };
@@ -459,7 +465,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});        
+});
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
