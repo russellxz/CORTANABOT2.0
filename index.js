@@ -297,6 +297,7 @@ console.log(err)
 //segundo
 const messageStore = {};	
         
+
 sock.ev.on("messages.upsert", async (message) => {
     const msg = message.messages[0];
     const key = msg?.key;
@@ -322,36 +323,40 @@ sock.ev.on("messages.upsert", async (message) => {
             // Verificar si el ID del sticker está en comando.json
             const command = global.comandoList[fileSha256];
             if (command) {
-                // Verificar si se respondió a un mensaje
-                if (!msg.message?.contextInfo?.quotedMessage) {
-                    await sock.sendMessage(remoteJid, {
-                        text: "⚠️ *Uso del comando:* Responde a un mensaje con el sticker para ejecutar el comando.",
-                        quoted: msg,
-                    });
-                    return;
+                // Si el sticker responde a un mensaje
+                if (msg.message?.contextInfo?.quotedMessage) {
+                    const quotedKey = msg.message.contextInfo.stanzaId;
+                    const quotedMessage = messageStore[quotedKey];
+                    if (!quotedMessage) {
+                        await sock.sendMessage(remoteJid, {
+                            text: "❌ *Error:* No se pudo identificar el mensaje citado.",
+                            quoted: msg,
+                        });
+                        return;
+                    }
+
+                    // Crear un mensaje falso para simular el comando con el mensaje citado
+                    const fakeTextMessage = {
+                        key: quotedMessage.key,
+                        message: { conversation: command },
+                        participant: quotedMessage.participant,
+                        remoteJid,
+                    };
+
+                    // Emitir el comando como si fuera texto
+                    await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
+                } else {
+                    // Procesar el comando como texto si no se respondió a un mensaje
+                    const fakeTextMessage = {
+                        key,
+                        message: { conversation: command },
+                        participant: key.participant,
+                        remoteJid,
+                    };
+
+                    // Simular el envío de un comando por texto
+                    await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
                 }
-
-                // Obtener información del mensaje citado
-                const quotedKey = msg.message.contextInfo.stanzaId;
-                const quotedMessage = messageStore[quotedKey];
-                if (!quotedMessage) {
-                    await sock.sendMessage(remoteJid, {
-                        text: "❌ *Error:* No se pudo identificar el mensaje citado.",
-                        quoted: msg,
-                    });
-                    return;
-                }
-
-                // Simular el procesamiento del comando como texto
-                const fakeTextMessage = {
-                    key: quotedMessage.key,
-                    message: { conversation: command },
-                    participant: quotedMessage.participant,
-                    remoteJid,
-                };
-
-                // Emitir el comando como si fuera texto
-                await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
                 return;
             }
         }
@@ -460,7 +465,7 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});               
+});
         
                     
 //nuevo evento equetas
