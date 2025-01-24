@@ -322,7 +322,25 @@ sock.ev.on("messages.upsert", async (message) => {
             // Verificar si el ID del sticker está en comando.json
             const command = global.comandoList[fileSha256];
             if (command) {
-                // Procesar el comando como texto
+                // Verificar si se está respondiendo a un mensaje
+                if (msg.message?.contextInfo?.quotedMessage) {
+                    const quotedKey = msg.message.contextInfo.stanzaId;
+                    const quotedMessage = messageStore[quotedKey];
+                    if (quotedMessage) {
+                        const fakeTextMessage = {
+                            key: quotedMessage.key,
+                            message: { conversation: command },
+                            participant: key.participant,
+                            remoteJid,
+                        };
+
+                        // Simular el envío de un comando por texto
+                        await sock.ev.emit("messages.upsert", { messages: [fakeTextMessage], type: "append" });
+                        return;
+                    }
+                }
+
+                // Procesar el comando como texto si no se responde
                 const fakeTextMessage = {
                     key,
                     message: { conversation: command },
@@ -440,7 +458,8 @@ sock.ev.on("messages.upsert", async (message) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});           
+});
+        
                     
 //nuevo evento equetas
 sock.ev.on("messages.update", async (updates) => {
