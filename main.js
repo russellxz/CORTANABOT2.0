@@ -726,7 +726,7 @@ case 'comando': {
         );
     }
 
-    const newCommand = args.join(' ').trim(); // Comando asociado
+    const newCommand = args.join(' ').trim(); // Obtener el comando asociado
     if (!newCommand) {
         return conn.sendMessage(
             m.chat,
@@ -745,14 +745,17 @@ case 'comando': {
         );
     }
 
-    // Guardar en comando.json sin el prefijo
-    const formattedCommand = newCommand.startsWith('.') ? newCommand.slice(1) : newCommand; // Eliminar prefijo si existe
+    // Asegurarse de que el comando tenga el prefijo `.`
+    const formattedCommand = newCommand.startsWith('.') ? newCommand : `.${newCommand}`;
 
+    // Guardar el comando en `comandoList`
     if (!global.comandoList) global.comandoList = {};
-    global.comandoList[mediaHash] = formattedCommand; // Guardar ID y comando
+    global.comandoList[mediaHash] = formattedCommand; // Asociar ID con comando
 
+    // Guardar la lista actualizada en el archivo `comando.json`
     global.saveComandoList();
 
+    // Confirmar al usuario
     conn.sendMessage(
         m.chat,
         { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${formattedCommand}*` },
