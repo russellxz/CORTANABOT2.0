@@ -718,6 +718,75 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 		
+case 'mute': {
+    if (!m.isGroup) {
+        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
+    }
+
+    // Verificar si el usuario es admin o el owner
+    const groupMetadata = await conn.groupMetadata(m.chat);
+    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+    const isAdmin = groupAdmins.includes(m.sender);
+    const isOwner = global.owner.includes(m.sender.split('@')[0]);
+
+    if (!isAdmin && !isOwner) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Este comando solo puede ser usado por administradores o el Owner.*" },
+            { quoted: m }
+        );
+    }
+
+    // Verificar si el mensaje responde a otro mensaje
+    const quoted = m.message.extendedTextMessage?.contextInfo;
+    if (!quoted || !quoted.participant || !quoted.quotedMessage) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Uso del comando:* Responde a un mensaje del usuario que deseas mutear con `.mute`." },
+            { quoted: m }
+        );
+    }
+
+    const targetUser = quoted.participant; // Usuario citado
+    const groupId = m.chat;
+
+    if (!targetUser) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Error:* No se pudo identificar al usuario mencionado." },
+            { quoted: m }
+        );
+    }
+
+    // Inicializar la lista de muteados para el grupo si no existe
+    if (!global.muteList[groupId]) global.muteList[groupId] = {};
+
+    // Verificar si el usuario ya está muteado
+    if (global.muteList[groupId][targetUser]) {
+        return conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *Este usuario ya está muteado.*" },
+            { quoted: m }
+        );
+    }
+
+    // Agregar al usuario a la lista de muteados
+    global.muteList[groupId][targetUser] = { messagesSent: 0 };
+    global.saveMuteList();
+
+    // Notificar al grupo
+    conn.sendMessage(
+        m.chat,
+        {
+            text: `🔇 *El usuario @${targetUser.split('@')[0]} ha sido muteado.*\nSi envía más de 10 mensajes, será eliminado del grupo.`,
+            mentions: [targetUser],
+        },
+        { quoted: m }
+    );
+}
+break;
+	
+	
 case 'z': {
     if (!m.quoted || !m.quoted.fileSha256) {
         return conn.sendMessage(
@@ -2396,72 +2465,6 @@ _Activa o desactiva el fallo automático que permite acceder a cajas fuertes dur
 }
 break;
 //mute
-case 'mute': {
-    if (!m.isGroup) {
-        return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
-    }
-
-    // Verificar si el usuario es admin o el owner
-    const groupMetadata = await conn.groupMetadata(m.chat);
-    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
-    const isAdmin = groupAdmins.includes(m.sender);
-    const isOwner = global.owner.includes(m.sender.split('@')[0]);
-
-    if (!isAdmin && !isOwner) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Este comando solo puede ser usado por administradores o el Owner.*" },
-            { quoted: m }
-        );
-    }
-
-    // Verificar si el usuario respondió a alguien
-    if (!m.quoted) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *Uso del comando:* Responde a un mensaje del usuario que deseas mutear con `.mute`." },
-            { quoted: m }
-        );
-    }
-
-    const targetUser = m.quoted.sender;
-    const groupId = m.chat;
-
-    if (!targetUser) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Error:* No se pudo identificar al usuario mencionado." },
-            { quoted: m }
-        );
-    }
-
-    // Inicializar la lista de muteados para el grupo si no existe
-    if (!global.muteList[groupId]) global.muteList[groupId] = {};
-
-    // Verificar si el usuario ya está muteado
-    if (global.muteList[groupId][targetUser]) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "⚠️ *Este usuario ya está muteado.*" },
-            { quoted: m }
-        );
-    }
-
-    // Agregar al usuario a la lista de muteados
-    global.muteList[groupId][targetUser] = { messagesSent: 0 };
-    global.saveMuteList();
-
-    // Notificar al grupo
-    conn.sendMessage(
-        m.chat,
-        {
-            text: `🔇 *El usuario @${targetUser.split('@')[0]} ha sido muteado.*\nSi envía más de 10 mensajes, será eliminado del grupo.`,
-            mentions: [targetUser],
-        },
-        { quoted: m }
-    );
-}
-break;
 
 case 'unmute': {
     if (!m.isGroup) {
