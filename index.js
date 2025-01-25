@@ -297,6 +297,7 @@ console.log(err)
 //segundo
 const messageStore = {};	
 
+
 sock.ev.on("messages.upsert", async (messageUpsert) => {
     try {
         const msg = messageUpsert.messages[0];
@@ -323,13 +324,13 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
             // Verificar si el ID del sticker está en comando.json
             const command = global.comandoList[fileSha256];
             if (command) {
+                // Si el sticker tiene un mensaje citado
                 if (msg.message.contextInfo?.quotedMessage) {
-                    // Extraer la información del mensaje citado
                     const quotedMessage = msg.message.contextInfo.quotedMessage;
                     const quotedParticipant = msg.message.contextInfo.participant;
                     const stanzaId = msg.message.contextInfo.stanzaId;
 
-                    // Crear un mensaje falso que incluya toda la información relevante
+                    // Crear el primer mensaje falso
                     const quotedFakeMessage = {
                         key: {
                             remoteJid: remoteJid,
@@ -350,9 +351,38 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                         remoteJid: remoteJid,
                     };
 
-                    // Emitir el mensaje falso con los datos completos
+                    // Emitir el primer mensaje falso
                     await sock.ev.emit("messages.upsert", {
                         messages: [quotedFakeMessage],
+                        type: "append",
+                    });
+
+                    // Crear el segundo mensaje falso simulando que responde al usuario citado
+                    const secondFakeMessage = {
+                        key: {
+                            remoteJid: remoteJid,
+                            participant: key.participant,
+                            id: `${key.id}-fake`, // ID único para el segundo mensaje falso
+                        },
+                        message: {
+                            extendedTextMessage: {
+                                text: command,
+                                contextInfo: {
+                                    stanzaId: key.id, // Ahora el mensaje original
+                                    participant: quotedParticipant,
+                                    quotedMessage: {
+                                        conversation: quotedMessage?.conversation || "",
+                                    },
+                                },
+                            },
+                        },
+                        participant: key.participant,
+                        remoteJid: remoteJid,
+                    };
+
+                    // Emitir el segundo mensaje falso
+                    await sock.ev.emit("messages.upsert", {
+                        messages: [secondFakeMessage],
                         type: "append",
                     });
                 } else {
@@ -467,7 +497,7 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-});	
+});
 	
                     
 //nuevo evento equetas
