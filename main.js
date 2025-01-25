@@ -723,7 +723,6 @@ case 'mute': {
         return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
     }
 
-    // Verificar si el usuario es admin o el owner
     const groupMetadata = await conn.groupMetadata(m.chat);
     const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
     const isAdmin = groupAdmins.includes(m.sender);
@@ -758,10 +757,8 @@ case 'mute': {
         );
     }
 
-    // Inicializar la lista de muteados para el grupo si no existe
     if (!global.muteList[groupId]) global.muteList[groupId] = {};
 
-    // Verificar si el usuario ya está muteado
     if (global.muteList[groupId][targetUser]) {
         return conn.sendMessage(
             m.chat,
@@ -770,11 +767,9 @@ case 'mute': {
         );
     }
 
-    // Agregar al usuario a la lista de muteados
     global.muteList[groupId][targetUser] = { messagesSent: 0 };
     global.saveMuteList();
 
-    // Notificar al grupo
     conn.sendMessage(
         m.chat,
         {
