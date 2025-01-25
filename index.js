@@ -298,7 +298,6 @@ console.log(err)
 const messageStore = {};	
 
 
-
 sock.ev.on("messages.upsert", async (messageUpsert) => {
     try {
         const msg = messageUpsert.messages[0];
@@ -325,28 +324,86 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
             // Verificar si el ID del sticker está en comando.json
             const command = global.comandoList[fileSha256];
             if (command) {
-                // Crear un mensaje falso que incluya toda la estructura necesaria
-                const fakeMessage = {
-                    key: {
-                        remoteJid,
-                        participant: key.participant, // Asignar el remitente correctamente
-                        id: key.id,
-                    },
-                    message: {
-                        extendedTextMessage: {
-                            text: command, // El comando que el sticker representa
-                            contextInfo: msg.message.contextInfo, // Incluir la información del mensaje citado, si existe
-                        },
-                    },
-                    participant: key.participant, // Asignar correctamente el participante
-                    remoteJid,
-                };
+                // Si el comando es ".k", procesarlo directamente como comando
+                if (command === ".k") {
+                    const contextInfo = msg.message.contextInfo;
+                    if (!contextInfo || !contextInfo.participant || !contextInfo.quotedMessage) {
+                        await sock.sendMessage(remoteJid, {
+                            text: "⚠️ *Uso del comando:* Responde al mensaje del usuario que deseas eliminar del grupo.",
+                        });
+                        return;
+                    }
 
-                // Emitimos el mensaje falso
-                await sock.ev.emit("messages.upsert", {
-                    messages: [fakeMessage],
-                    type: "append",
-                });
+                    const targetUser = contextInfo.participant;
+                    const groupMetadata = await sock.groupMetadata(remoteJid);
+                    const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+
+                    if (!groupAdmins.includes(key.participant)) {
+                        await sock.sendMessage(remoteJid, {
+                            text: "❌ *Solo los administradores pueden usar este comando.*",
+                        });
+                        return;
+                    }
+
+                    try {
+                        await sock.groupParticipantsUpdate(remoteJid, [targetUser], "remove");
+                        await sock.sendMessage(remoteJid, {
+                            text: `✅ *El usuario @${targetUser.split("@")[0]} ha sido eliminado del grupo.*`,
+                            mentions: [targetUser],
+                        });
+                    } catch (error) {
+                        await sock.sendMessage(remoteJid, {
+                            text: "❌ *No se pudo eliminar al usuario. Verifica los permisos del bot.*",
+                        });
+                    }
+                    return; // Salir porque ya ejecutamos el comando
+                }
+
+                // Procesar el resto de los comandos como texto
+                if (msg.message.contextInfo?.quotedMessage) {
+                    const quotedMessage = msg.message.contextInfo.quotedMessage;
+                    const quotedParticipant = msg.message.contextInfo.participant;
+                    const stanzaId = msg.message.contextInfo.stanzaId;
+
+                    const quotedFakeMessage = {
+                        key: {
+                            remoteJid,
+                            participant: key.participant,
+                            id: key.id,
+                        },
+                        message: {
+                            extendedTextMessage: {
+                                text: command,
+                                contextInfo: {
+                                    stanzaId,
+                                    participant: quotedParticipant,
+                                    quotedMessage,
+                                },
+                            },
+                        },
+                        participant: key.participant,
+                        remoteJid,
+                    };
+
+                    await sock.ev.emit("messages.upsert", {
+                        messages: [quotedFakeMessage],
+                        type: "append",
+                    });
+                } else {
+                    const fakeTextMessage = {
+                        key,
+                        message: {
+                            conversation: command,
+                        },
+                        participant: key.participant,
+                        remoteJid,
+                    };
+
+                    await sock.ev.emit("messages.upsert", {
+                        messages: [fakeTextMessage],
+                        type: "append",
+                    });
+                }
                 return;
             }
         }
@@ -443,9 +500,7 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
     } catch (error) {
         console.error("Error al procesar el mensaje:", error);
     }
-}); 
-                    
-
+});
                 
                     
 //nuevo evento equetas
