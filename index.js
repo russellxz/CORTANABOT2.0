@@ -324,39 +324,43 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
             // Verificar si el ID del sticker está en comando.json
             const command = global.comandoList[fileSha256];
             if (command) {
+                // Si el sticker tiene un mensaje citado
                 if (msg.message.contextInfo?.quotedMessage) {
-                    const quotedMessage = msg.message.contextInfo.quotedMessage; // Mensaje citado
-                    const quotedParticipant = msg.message.contextInfo.participant; // Usuario citado
-                    const stanzaId = msg.message.contextInfo.stanzaId; // ID del mensaje citado
+                    // Extraer la información del mensaje citado
+                    const quotedMessage = msg.message.contextInfo.quotedMessage;
+                    const quotedParticipant = msg.message.contextInfo.participant;
+                    const stanzaId = msg.message.contextInfo.stanzaId;  // ID del mensaje citado
 
-                    // Crear un mensaje falso con toda la estructura necesaria para detectar el mensaje citado
-                    const quotedFakeMessage = {
-                        key: {
-                            remoteJid,
-                            participant: key.participant,
-                            id: key.id,
-                        },
-                        message: {
-                            extendedTextMessage: {
-                                text: command, // El comando mapeado al sticker
-                                contextInfo: {
-                                    stanzaId, // ID del mensaje citado
-                                    participant: quotedParticipant, // Usuario citado
-                                    quotedMessage, // Contenido del mensaje citado
-                                },
-                            },
-                        },
-                        participant: key.participant,
-                        remoteJid,
-                    };
+                    // Ahora que tenemos la información, podemos hacer lo que queramos con ella
+                    console.log(`El mensaje citado es: ${quotedMessage}`);
+                    console.log(`El participante citado es: ${quotedParticipant}`);
+                    console.log(`ID del mensaje citado: ${stanzaId}`);
 
-                    // Emitir el mensaje falso con la estructura de respuesta para manejarlo como un comando
-                    await sock.ev.emit("messages.upsert", {
-                        messages: [quotedFakeMessage],
-                        type: "append",
-                    });
+                    // Aquí puedes usar esta información para ejecutar el comando o cualquier otra acción
+                    if (command === ".mute") {
+                        // Aquí va la lógica para mutear al participante citado, por ejemplo
+                        const groupMetadata = await sock.groupMetadata(remoteJid);
+                        const groupAdmins = groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(p => p.id);
+
+                        if (!groupAdmins.includes(key.participant)) {
+                            await sock.sendMessage(remoteJid, {
+                                text: "❌ *Solo los administradores pueden usar este comando.*",
+                            });
+                            return;
+                        }
+
+                        // Agregar el usuario a la lista de muteados (o cualquier otra acción)
+                        if (!global.muteList[remoteJid]) global.muteList[remoteJid] = {};
+                        global.muteList[remoteJid][quotedParticipant] = { messagesSent: 0 };
+                        global.saveMuteList();
+
+                        await sock.sendMessage(remoteJid, {
+                            text: `🔇 *El usuario @${quotedParticipant.split("@")[0]} ha sido muteado.*`,
+                            mentions: [quotedParticipant],
+                        });
+                    }
                 } else {
-                    // Crear mensaje falso normal si no hay cita
+                    // Si el sticker no está respondiendo a un mensaje, procesamos como texto normal
                     const fakeTextMessage = {
                         key,
                         message: {
@@ -371,7 +375,7 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                         type: "append",
                     });
                 }
-                return;
+                return; // Salimos después de procesar el sticker
             }
         }
 
