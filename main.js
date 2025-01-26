@@ -2619,7 +2619,79 @@ case 'unmute': {
 }
 break;
 //comando de stickerz
+case 'menuguar': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
 
+        // URL de la imagen decorativa
+        const menuImageUrl = 'https://cloud.dorratz.com/files/5430343fab7566bc71c2feb244b4a240';
+
+        // Texto del menú
+        const menuText = `
+━━━━━━━━》❈《━━━━━━━━
+༺═──────────────═༻
+*╔═══❖•ೋ°°ೋ•❖═══╗*
+🎉 *BIENVENIDOS AL MENÚ DE GUARDADO GLOBAL* 🎉
+*╚═══❖•ೋ°°ೋ•❖═══╝*
+༺═──────────────═༻
+
+🗂️ *¡Gestiona tus archivos multimedia de forma fácil y eficiente!*
+
+📜 *Comandos Disponibles:*
+
+💾 *.guar*  
+📌 _Responde a un multimedia y agrega una palabra clave para guardarlo._  
+_Ejemplo:_ *.guar fotoPerfil*
+
+📥 *.g*  
+📌 _Recupera tu archivo multimedia con la palabra clave que usaste al guardarlo._  
+_Ejemplo:_ *.g fotoPerfil*
+
+🗑️ *.kill*  
+📌 _Elimina un archivo multimedia guardado utilizando su palabra clave._  
+_Ejemplo:_ *.kill fotoPerfil*
+
+📋 *.otra <número>*  
+📌 _Navega por tus archivos multimedia con botones._  
+_Ejemplo:_ *.otra 1*
+
+🚫 *.ban <número>*  
+📌 _Elimina multimedia utilizando un menú interactivo con botones._  
+_Ejemplo:_ *.ban 1*
+
+🔑 *.clavelista*  
+📌 _Muestra todas las palabras clave de los archivos multimedia que has guardado._  
+_Ejemplo:_ *.clavelista*
+
+━━━━━━━━》❈《━━━━━━━━
+📌 *Consejos:*  
+✅ Usa palabras clave fáciles de recordar.  
+✅ Si olvidas tu multimedia, usa *.otra* para explorar.  
+✅ Los administradores pueden gestionar todos los archivos.  
+
+👨‍💻 *Desarrollado por CORTANA 2.0*.
+━━━━━━━━》❈《━━━━━━━━`;
+
+        // Enviar el mensaje con la imagen
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: menuImageUrl },
+                caption: menuText,
+                footer: "CORTANA 2.0",
+                viewOnce: true,
+                mentions: [m.sender],
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error enviando el menú:', error);
+        m.reply('❌ *Ocurrió un error al intentar enviar el menú.*');
+    }
+}
+break;
+		
+		
 //para sacar id de los stierkz
 
 		
