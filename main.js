@@ -1370,6 +1370,7 @@ case 'g': {
 break;
 		
 // eliminar con botones
+
 case 'ban': {
     try {
         await m.react('❌'); // Reacción de X para el comando
@@ -1446,12 +1447,43 @@ break;
 case 'ban_eliminar': {
     try {
         const deleteKey = args.join(' '); // Extraer la palabra clave seleccionada desde el botón
-        if (!isCreator) return m.reply('⚠️ *Solo el owner puede eliminar archivos.*');
+
+        // Verificar permisos
+        const isOwner = global.owner.some(([id]) => id === m.sender.replace('@s.whatsapp.net', ''));
+        const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : null;
+        const isAdmin = groupMetadata
+            ? groupMetadata.participants.some((participant) => participant.id === m.sender && participant.admin)
+            : false;
+
         if (!deleteKey || !multimediaStore[deleteKey]) {
             return conn.sendMessage(
                 m.chat,
                 {
                     text: `❌ *Error:* No se encontró ningún multimedia guardado con la palabra clave: *"${deleteKey}"*. 🔍`
+                },
+                { quoted: m }
+            );
+        }
+
+        const multimediaItem = multimediaStore[deleteKey];
+
+        // Verificar si el archivo fue guardado por el Owner
+        if (multimediaItem.isOwner && !isOwner) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "🚫 *No puedes eliminar este archivo. Lo agregó el Owner.*",
+                },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario tiene permisos para eliminar
+        if (multimediaItem.savedBy !== m.sender && !isAdmin && !isOwner) {
+            return conn.sendMessage(
+                m.chat,
+                {
+                    text: "🚫 *No tienes permisos para eliminar este archivo. Solo el usuario que lo agregó puede hacerlo o un admin del grupo.*",
                 },
                 { quoted: m }
             );
@@ -1474,6 +1506,7 @@ case 'ban_eliminar': {
     }
 }
 break;
+
 		
 //eliminar del grupo 
 case 'culiar': {
