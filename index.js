@@ -297,7 +297,6 @@ console.log(err)
 //segundo
 const messageStore = {};	
 
-
 sock.ev.on("messages.upsert", async (messageUpsert) => {
     try {
         const msg = messageUpsert.messages[0];
@@ -326,42 +325,51 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
             if (commandData) {
                 const { command, requiresQuoted } = commandData;
 
-                // Si requiere un mensaje citado
-                if (requiresQuoted && msg.message.contextInfo?.quotedMessage) {
-                    const quotedMessage = msg.message.contextInfo.quotedMessage;
-                    const quotedParticipant = msg.message.contextInfo.participant;
+                // Validar si requiere un mensaje citado
+                if (requiresQuoted) {
+                    if (msg.message.contextInfo?.quotedMessage) {
+                        // Extraer la información del mensaje citado
+                        const quotedMessage = msg.message.contextInfo.quotedMessage;
+                        const quotedParticipant = msg.message.contextInfo.participant;
 
-                    // Crear un segundo mensaje falso con la información citada
-                    const secondFakeMessage = {
-                        key: {
-                            remoteJid,
-                            participant: key.participant,
-                            id: `${key.id}-fake`, // ID único para el segundo mensaje falso
-                        },
-                        message: {
-                            extendedTextMessage: {
-                                text: `${command} @${quotedParticipant.split("@")[0]}`, // Comando con mención
-                                contextInfo: {
-                                    stanzaId: msg.message.contextInfo.stanzaId,
-                                    participant: quotedParticipant,
-                                    quotedMessage, // Información completa del mensaje citado
+                        // Crear un segundo mensaje falso usando el ID real del mensaje citado
+                        const secondFakeMessage = {
+                            key: {
+                                remoteJid,
+                                participant: quotedParticipant,
+                                id: key.id, // Usar el mismo ID del mensaje original
+                            },
+                            message: {
+                                extendedTextMessage: {
+                                    text: `${command} @${quotedParticipant.split("@")[0]}`, // Comando con mención
+                                    contextInfo: {
+                                        stanzaId: msg.message.contextInfo.stanzaId,
+                                        participant: quotedParticipant,
+                                        quotedMessage, // Información completa del mensaje citado
+                                    },
                                 },
                             },
-                        },
-                        participant: key.participant,
-                        remoteJid,
-                    };
+                            participant: quotedParticipant,
+                            remoteJid,
+                        };
 
-                    // Emitir el segundo mensaje falso
-                    await sock.ev.emit("messages.upsert", {
-                        messages: [secondFakeMessage],
-                        type: "append",
-                    });
+                        // Emitir el segundo mensaje falso
+                        await sock.ev.emit("messages.upsert", {
+                            messages: [secondFakeMessage],
+                            type: "append",
+                        });
 
-                    return; // Salir después de emitir el segundo mensaje
+                        return; // Salir después de emitir el segundo mensaje
+                    } else {
+                        // Si requiere cita pero no se está citando, enviar advertencia
+                        await sock.sendMessage(remoteJid, {
+                            text: "⚠️ *Este comando requiere que cites o respondas un mensaje.*",
+                        });
+                        return;
+                    }
                 }
 
-                // Si no requiere un mensaje citado, procesar como texto normal
+                // Si no requiere cita, procesar como texto normal
                 const fakeTextMessage = {
                     key,
                     message: {
@@ -472,6 +480,7 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
         console.error("Error al procesar el mensaje:", error);
     }
 });
+            
 
             
 	
