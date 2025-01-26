@@ -1939,7 +1939,6 @@ break;
 //cuando esta activo el fallo		
 //sacar 2
 
-
 case 'fasacar': {
     if (!m.isGroup) {
         return conn.sendMessage(
@@ -1954,7 +1953,8 @@ case 'fasacar': {
     const quotedUser = m.message?.extendedTextMessage?.contextInfo?.participant;
     const targetUser = mentionedUser || quotedUser;
 
-    const keyword = args.slice(0, -1).join(' ').trim(); // Procesar toda la palabra clave excepto la mención
+    // Extraer palabra clave ignorando mención o cita
+    const keyword = args.join(' ').trim().toLowerCase(); // Usar todo el texto como palabra clave
 
     if (!targetUser) {
         return conn.sendMessage(
@@ -1992,9 +1992,9 @@ case 'fasacar': {
         );
     }
 
-    // Buscar multimedia ignorando mayúsculas/minúsculas y espacios
-    const matchedKey = Object.keys(userCaja.multimedia).find(
-        key => key.trim().toLowerCase() === keyword.trim().toLowerCase()
+    // Buscar multimedia ignorando mayúsculas/minúsculas, espacios y caracteres especiales
+    const matchedKey = Object.keys(userCaja.multimedia).find(key =>
+        key.trim().toLowerCase().replace(/\s+/g, '') === keyword.replace(/\s+/g, '')
     );
 
     if (!matchedKey) {
@@ -2060,110 +2060,8 @@ case 'fasacar': {
         { quoted: m }
     );
 }
-break;    
-
-    
-//fallo 2		
-case 'fallo2': {
-    const subCommand = args[0]?.toLowerCase(); // Comando adicional: on/off
-
-    if (!['on', 'off'].includes(subCommand)) {
-        return conn.sendMessage(
-            m.chat,
-            {
-                text: "⚠️ *Uso del comando:* `.fallo2 on` para activar el fallo de seguridad automático o `.fallo2 off` para desactivarlo. 🔐",
-            },
-            { quoted: m }
-        );
-    }
-
-    const groupMetadata = m.isGroup ? await conn.groupMetadata(m.chat) : null;
-    const groupAdmins = groupMetadata
-        ? groupMetadata.participants.filter(p => p.admin === 'admin' || p.admin === 'superadmin').map(a => a.id)
-        : [];
-    const isAdmin = groupAdmins.includes(m.sender);
-    const isOwner = global.owner.some(([id]) => id === m.sender.replace('@s.whatsapp.net', ''));
-
-    if (!isAdmin && !isOwner) {
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Este comando solo puede ser usado por administradores o el Owner.*" },
-            { quoted: m }
-        );
-    }
-
-    if (subCommand === 'on') {
-        if (falloData[m.chat]?.active) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *El fallo2 ya está activo en este grupo.*" },
-                { quoted: m }
-            );
-        }
-
-        // Activar el sistema de fallo2 en el grupo
-        falloData[m.chat] = { active: true, lastActivated: null };
-        fs.writeFileSync(falloPath, JSON.stringify(falloData, null, 2));
-
-        const activateFallo2 = async () => {
-            if (!falloData[m.chat]?.active) return; // Si se desactiva, salir
-
-            global.falloSeguridad = true; // Activar fallo por 5 minutos
-
-            const mentions = groupMetadata.participants.map(p => p.id); // Obtener todos los miembros del grupo
-            await conn.sendMessage(
-                m.chat,
-                {
-                    text: "🔓 *Fallo de seguridad activado por 5 minutos.* Usa `.fallocaja @usuario` para acceder a cajas fuertes ajenas. 🚨",
-                    mentions,
-                }
-            );
-
-            // Desactivar después de 5 minutos
-            setTimeout(async () => {
-                if (!falloData[m.chat]?.active) return; // Si se desactiva, salir
-                global.falloSeguridad = false;
-                await conn.sendMessage(
-                    m.chat,
-                    { text: "🔒 *Fallo de seguridad desactivado.* Espera 3 horas para la próxima activación. ⏳" }
-                );
-                falloData[m.chat].lastActivated = Date.now();
-                fs.writeFileSync(falloPath, JSON.stringify(falloData, null, 2));
-
-                // Programar la próxima activación en 3 horas
-                setTimeout(activateFallo2, 3 * 60 * 60 * 1000); // 3 horas
-            }, 5 * 60 * 1000); // 5 minutos
-        };
-
-        activateFallo2(); // Iniciar el ciclo
-        return conn.sendMessage(
-            m.chat,
-            { text: "✅ *Modo fallo2 activado.* El sistema ahora gestionará las activaciones automáticas. 🔄" },
-            { quoted: m }
-        );
-    }
-
-    if (subCommand === 'off') {
-        if (!falloData[m.chat]?.active) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *El fallo2 ya está desactivado en este grupo.*" },
-                { quoted: m }
-            );
-        }
-
-        // Desactivar el sistema de fallo2 en el grupo
-        delete falloData[m.chat];
-        fs.writeFileSync(falloPath, JSON.stringify(falloData, null, 2));
-        global.falloSeguridad = false; // Asegurarse de que el fallo no esté activo
-        return conn.sendMessage(
-            m.chat,
-            { text: "✅ *Modo fallo2 desactivado.* El sistema ya no gestionará activaciones automáticas. 🔕" },
-            { quoted: m }
-        );
-    }
-}
 break;
+
 //top caja fuerte		
 
 case 'topcaja': {
@@ -2434,7 +2332,7 @@ break;
 		
 //menucaja fuerte	
 case 'menucaja': {
-    const imageUrl = "https://i.postimg.cc/zvdLCYKR/file-Qc1-TKdfh-GKjk-Uwqs-Pwfjz-R-3.webp"; // URL de la imagen
+    const imageUrl = "https://cloud.dorratz.com/files/8f3d740c894ae979e4bfa72fc84589a7"; // URL de la imagen
 
     const menuText = `
 ✧══════•❁❀❁•══════✧
@@ -2484,6 +2382,8 @@ _Activa o desactiva el fallo automático que permite acceder a cajas fuertes dur
 ✅️ *.cambiar* _cambia tu contraseña_
 
 📊 *.topcaja* _para ver que usuario tiene mas archivo guardado en su caja es un top_
+
+ 🔎 *.escan* _para escaniar cajas fuertes abiertas_
 
 ╔╦══• •✠•❀•✠• •══╦╗
 ✨ *Sistema Innovador Exclusivo* ✨  
