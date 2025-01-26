@@ -717,7 +717,35 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
-		
+//escan para caja 		
+case 'escan': {
+    const cajasAbiertas = []; // Lista para almacenar los usuarios con cajas abiertas
+
+    // Recorrer todas las cajas fuertes
+    for (const userId in cajasFuertes) {
+        if (cajasFuertes[userId].isOpen) {
+            cajasAbiertas.push(userId); // Añadir al top si la caja está abierta
+        }
+    }
+
+    // Generar la respuesta
+    if (cajasAbiertas.length === 0) {
+        return m.reply("🔒 *Todas las cajas fuertes están cerradas.*");
+    } else {
+        let response = "🔓 *Cajas abiertas detectadas:* 🔓\n\n";
+        cajasAbiertas.forEach((userId, index) => {
+            response += `${index + 1}. @${userId.split("@")[0]}\n`;
+        });
+
+        response += "\n⚠️ *Recuerden cerrar sus cajas fuertes con el comando `.cerrarcaja`.*";
+
+        // Enviar el mensaje con menciones
+        return conn.sendMessage(m.chat, { text: response, mentions: cajasAbiertas });
+    }
+}
+break;
+	
+//muete de prueba	
 case 'mute': {
     if (!m.isGroup) {
         return conn.sendMessage(m.chat, { text: "❌ *Este comando solo puede usarse en grupos.*" }, { quoted: m });
@@ -1835,7 +1863,7 @@ case 'del': {
 }
 break;
 //fallo 
-
+//cuando esta activo el fallo
 //otra caja		
 case 'fallocaja': {
     if (!m.isGroup) {
@@ -1901,7 +1929,7 @@ case 'fallocaja': {
     );
 }
 break;
-		
+//cuando esta activo el fallo		
 //sacar 2
 case 'fasacar': {
     if (!m.isGroup) {
