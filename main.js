@@ -2332,7 +2332,9 @@ case 'resacar': {
     const targetUser = mentionedUser || quotedUser;
 
     // Extraer palabra clave ignorando mención o cita
-    const keyword = args.join(' ').trim().toLowerCase(); 
+    const keyword = mentionedUser 
+        ? args.slice(0, -1).join(' ').trim().toLowerCase() // Excluir la mención al procesar la palabra clave
+        : args.join(' ').trim().toLowerCase();
 
     if (!targetUser) {
         return conn.sendMessage(
