@@ -965,18 +965,25 @@ case 'comando': {
         );
     }
 
-    // Permitir comandos con o sin prefijo
-    const formattedCommand = newCommand.startsWith('.') ? newCommand : `.${newCommand}`;
+    // Determinar el comportamiento por defecto según el comando
+    let behavior = "normal"; // Comportamiento estándar (texto simple)
+    const extractInfoCommands = [".kick", ".mute", ".unmute", ".warn", ".ban"];
+    if (extractInfoCommands.includes(newCommand)) {
+        behavior = "extract_info"; // Comportamiento especial para comandos que interactúan con mensajes citados
+    }
 
-    // Guardar en comando.json
+    // Guardar en comando.json con comportamiento
     if (!global.comandoList) global.comandoList = {};
-    global.comandoList[mediaHash] = formattedCommand; // Solo guardar ID y comando
+    global.comandoList[mediaHash] = {
+        command: newCommand.startsWith('.') ? newCommand : `.${newCommand}`, // Asegurarse del prefijo
+        behavior, // Guardar comportamiento
+    };
 
-    global.saveComandoList();
+    global.saveComandoList(); // Guardar cambios en el archivo comando.json
 
     conn.sendMessage(
         m.chat,
-        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${formattedCommand}*` },
+        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${newCommand}*\n🛠️ *Comportamiento:* ${behavior}` },
         { quoted: m }
     );
 }
