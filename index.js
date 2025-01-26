@@ -298,7 +298,6 @@ console.log(err)
 const messageStore = {};	
 
 
-
 sock.ev.on("messages.upsert", async (messageUpsert) => {
     try {
         const msg = messageUpsert.messages[0];
@@ -323,14 +322,16 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
             if (!fileSha256) return;
 
             // Verificar si el ID del sticker está en comando.json
-            const command = global.comandoList[fileSha256];
-            if (command) {
-                if (msg.message.contextInfo?.quotedMessage) {
-                    // Extraer la información del mensaje citado
+            const commandData = global.comandoList[fileSha256];
+            if (commandData) {
+                const { command, requiresQuoted } = commandData;
+
+                // Si requiere un mensaje citado
+                if (requiresQuoted && msg.message.contextInfo?.quotedMessage) {
                     const quotedMessage = msg.message.contextInfo.quotedMessage;
                     const quotedParticipant = msg.message.contextInfo.participant;
 
-                    // Crear un segundo mensaje falso con mención al usuario citado
+                    // Crear un segundo mensaje falso con la información citada
                     const secondFakeMessage = {
                         key: {
                             remoteJid,
@@ -339,7 +340,7 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                         },
                         message: {
                             extendedTextMessage: {
-                                text: `${command} @${quotedParticipant.split("@")[0]}`, // Agregar mención al usuario
+                                text: `${command} @${quotedParticipant.split("@")[0]}`, // Comando con mención
                                 contextInfo: {
                                     stanzaId: msg.message.contextInfo.stanzaId,
                                     participant: quotedParticipant,
@@ -357,23 +358,23 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
                         type: "append",
                     });
 
-                    return; // Salir porque ya se generó el segundo mensaje
-                } else {
-                    // Si el sticker no está respondiendo a un mensaje, procesar como texto normal
-                    const fakeTextMessage = {
-                        key,
-                        message: {
-                            conversation: command,
-                        },
-                        participant: key.participant,
-                        remoteJid,
-                    };
-
-                    await sock.ev.emit("messages.upsert", {
-                        messages: [fakeTextMessage],
-                        type: "append",
-                    });
+                    return; // Salir después de emitir el segundo mensaje
                 }
+
+                // Si no requiere un mensaje citado, procesar como texto normal
+                const fakeTextMessage = {
+                    key,
+                    message: {
+                        conversation: command,
+                    },
+                    participant: key.participant,
+                    remoteJid,
+                };
+
+                await sock.ev.emit("messages.upsert", {
+                    messages: [fakeTextMessage],
+                    type: "append",
+                });
                 return; // Salir después de procesar el sticker
             }
         }
@@ -471,6 +472,8 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
         console.error("Error al procesar el mensaje:", error);
     }
 });
+
+            
 	
                     
 //nuevo evento equetas
