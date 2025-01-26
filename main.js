@@ -1884,25 +1884,31 @@ case 'fallocaja': {
         );
     }
 
+    // Obtener el usuario mencionado o citado
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
-    if (!mentionedUser) {
+    const quotedUser = m.message?.extendedTextMessage?.contextInfo?.participant;
+
+    const targetUser = mentionedUser || quotedUser; // Priorizar mencionados, luego citados
+    if (!targetUser) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Por favor, menciona a un usuario para acceder a su caja fuerte.*" },
+            { text: "⚠️ *Por favor, menciona o responde al mensaje de un usuario para acceder a su caja fuerte.*" },
             { quoted: m }
         );
     }
 
-    const userCaja = cajasFuertes[mentionedUser];
+    // Verificar si el usuario tiene una caja fuerte
+    const userCaja = cajasFuertes[targetUser];
     if (!userCaja || !userCaja.multimedia || Object.keys(userCaja.multimedia).length === 0) {
         return conn.sendMessage(
             m.chat,
-            { text: `⚠️ *El usuario mencionado no tiene multimedia guardado en su caja fuerte.*` },
+            { text: `⚠️ *El usuario mencionado o citado no tiene multimedia guardado en su caja fuerte.*` },
             { quoted: m }
         );
     }
 
-    let listMessage = `🔐 *Caja Fuerte de @${mentionedUser.split('@')[0]}:*\n\n`;
+    // Generar el listado de multimedia en la caja fuerte
+    let listMessage = `🔐 *Caja Fuerte de @${targetUser.split('@')[0]}:*\n\n`;
     let index = 1;
 
     for (const key in userCaja.multimedia) {
@@ -1912,9 +1918,10 @@ case 'fallocaja': {
 
     listMessage += `\n📂 Usa el comando *.sacar2 <palabra clave>* para recuperar el multimedia.`;
 
+    // Enviar el listado al grupo
     conn.sendMessage(
         m.chat,
-        { text: listMessage, mentions: [mentionedUser] },
+        { text: listMessage, mentions: [targetUser] },
         { quoted: m }
     );
 
@@ -1922,8 +1929,8 @@ case 'fallocaja': {
     conn.sendMessage(
         m.chat,
         {
-            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a la caja fuerte de @${mentionedUser.split('@')[0]} debido al fallo de seguridad activo.*`,
-            mentions: [m.sender, mentionedUser],
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a la caja fuerte de @${targetUser.split('@')[0]} debido al fallo de seguridad activo.*`,
+            mentions: [m.sender, targetUser],
         },
         { quoted: m }
     );
@@ -1931,6 +1938,8 @@ case 'fallocaja': {
 break;
 //cuando esta activo el fallo		
 //sacar 2
+
+
 case 'fasacar': {
     if (!m.isGroup) {
         return conn.sendMessage(
@@ -1940,13 +1949,17 @@ case 'fasacar': {
         );
     }
 
+    // Obtener el usuario mencionado o citado
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
+    const quotedUser = m.message?.extendedTextMessage?.contextInfo?.participant;
+    const targetUser = mentionedUser || quotedUser;
+
     const keyword = args.slice(0, -1).join(' ').trim(); // Procesar toda la palabra clave excepto la mención
 
-    if (!mentionedUser) {
+    if (!targetUser) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Uso del comando:* `.fasacar <palabra clave> @usuario` para extraer multimedia de otra caja fuerte." },
+            { text: "⚠️ *Uso del comando:* `.fasacar <palabra clave> @usuario` o responde al mensaje del usuario." },
             { quoted: m }
         );
     }
@@ -1969,12 +1982,12 @@ case 'fasacar': {
         );
     }
 
-    const userCaja = cajasFuertes[mentionedUser];
+    const userCaja = cajasFuertes[targetUser];
     if (!userCaja) {
         return conn.sendMessage(
             m.chat,
-            { text: `❌ *El usuario @${mentionedUser.split('@')[0]} no tiene una caja fuerte creada o está vacía.*`,
-            mentions: [mentionedUser] },
+            { text: `❌ *El usuario @${targetUser.split('@')[0]} no tiene una caja fuerte creada o está vacía.*`,
+            mentions: [targetUser] },
             { quoted: m }
         );
     }
@@ -1987,8 +2000,8 @@ case 'fasacar': {
     if (!matchedKey) {
         return conn.sendMessage(
             m.chat,
-            { text: `❌ *No se encontró multimedia con la palabra clave "${keyword}" en la caja fuerte de @${mentionedUser.split('@')[0]}.*`,
-            mentions: [mentionedUser] },
+            { text: `❌ *No se encontró multimedia con la palabra clave "${keyword}" en la caja fuerte de @${targetUser.split('@')[0]}.*`,
+            mentions: [targetUser] },
             { quoted: m }
         );
     }
@@ -2041,13 +2054,13 @@ case 'fasacar': {
     conn.sendMessage(
         m.chat,
         {
-            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha extraído multimedia de la caja fuerte de @${mentionedUser.split('@')[0]} debido al fallo de seguridad activo.*`,
-            mentions: [m.sender, mentionedUser],
+            text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha extraído multimedia de la caja fuerte de @${targetUser.split('@')[0]} debido al fallo de seguridad activo.*`,
+            mentions: [m.sender, targetUser],
         },
         { quoted: m }
     );
 }
-break;
+break;    
 
     
 //fallo 2		
@@ -2248,26 +2261,30 @@ case 'robarcaja': {
         );
     }
 
+    // Obtener el usuario mencionado o citado
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
-    if (!mentionedUser) {
+    const quotedUser = m.message?.extendedTextMessage?.contextInfo?.participant;
+    const targetUser = mentionedUser || quotedUser;
+
+    if (!targetUser) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Por favor, menciona a un usuario para ver su caja fuerte.*" },
+            { text: "⚠️ *Uso del comando:* `.robarcaja @usuario` o responde al mensaje de un usuario." },
             { quoted: m }
         );
     }
 
-    const userCaja = cajasFuertes[mentionedUser];
+    const userCaja = cajasFuertes[targetUser];
     if (!userCaja || !userCaja.isOpen) {
         return conn.sendMessage(
             m.chat,
-            { text: `❌ *La caja fuerte del usuario @${mentionedUser.split('@')[0]} está cerrada o no existe.*`,
-              mentions: [mentionedUser] },
+            { text: `❌ *La caja fuerte del usuario @${targetUser.split('@')[0]} está cerrada o no existe.*`,
+              mentions: [targetUser] },
             { quoted: m }
         );
     }
 
-    let listMessage = `🔐 *Caja Fuerte Abierta de @${mentionedUser.split('@')[0]}:*\n\n`;
+    let listMessage = `🔐 *Caja Fuerte Abierta de @${targetUser.split('@')[0]}:*\n\n`;
     const multimediaKeys = Object.keys(userCaja.multimedia);
 
     if (multimediaKeys.length === 0) {
@@ -2284,7 +2301,7 @@ case 'robarcaja': {
 
     conn.sendMessage(
         m.chat,
-        { text: listMessage, mentions: [mentionedUser] },
+        { text: listMessage, mentions: [targetUser] },
         { quoted: m }
     );
 
@@ -2293,12 +2310,13 @@ case 'robarcaja': {
         m.chat,
         {
             text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha accedido a tu caja fuerte abierta.*`,
-            mentions: [m.sender, mentionedUser],
+            mentions: [m.sender, targetUser],
         }
     );
 }
 break;
 //resacar abierta		
+
 case 'resacar': {
     if (!m.isGroup) {
         return conn.sendMessage(
@@ -2308,13 +2326,17 @@ case 'resacar': {
         );
     }
 
+    // Obtener el usuario mencionado o citado
     const mentionedUser = m.mentionedJid && m.mentionedJid[0];
+    const quotedUser = m.message?.extendedTextMessage?.contextInfo?.participant;
+    const targetUser = mentionedUser || quotedUser;
+
     const keyword = args.slice(0, -1).join(' ').trim().toLowerCase(); // Procesar la palabra clave completa excepto la mención
 
-    if (!mentionedUser) {
+    if (!targetUser) {
         return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *Uso del comando:* `.resacar <palabra clave> @usuario` para extraer multimedia de una caja fuerte abierta." },
+            { text: "⚠️ *Uso del comando:* `.resacar <palabra clave> @usuario` o responde al mensaje del usuario." },
             { quoted: m }
         );
     }
@@ -2327,12 +2349,12 @@ case 'resacar': {
         );
     }
 
-    const userCaja = cajasFuertes[mentionedUser];
+    const userCaja = cajasFuertes[targetUser];
     if (!userCaja || !userCaja.isOpen) {
         return conn.sendMessage(
             m.chat,
-            { text: `❌ *La caja fuerte del usuario @${mentionedUser.split('@')[0]} está cerrada o no existe.*`,
-            mentions: [mentionedUser] },
+            { text: `❌ *La caja fuerte del usuario @${targetUser.split('@')[0]} está cerrada o no existe.*`,
+            mentions: [targetUser] },
             { quoted: m }
         );
     }
@@ -2341,12 +2363,11 @@ case 'resacar': {
     const matchedKey = Object.keys(userCaja.multimedia).find(
         key => key.trim().toLowerCase() === keyword
     );
-
     if (!matchedKey) {
         return conn.sendMessage(
             m.chat,
-            { text: `❌ *No se encontró multimedia con la palabra clave "${keyword}" en la caja fuerte de @${mentionedUser.split('@')[0]}.*`,
-            mentions: [mentionedUser] },
+            { text: `❌ *No se encontró multimedia con la palabra clave "${keyword}" en la caja fuerte de @${targetUser.split('@')[0]}.*`,
+            mentions: [targetUser] },
             { quoted: m }
         );
     }
@@ -2400,11 +2421,12 @@ case 'resacar': {
         m.chat,
         {
             text: `⚠️ *El usuario @${m.sender.split('@')[0]} ha extraído multimedia de tu caja fuerte abierta.*`,
-            mentions: [m.sender, mentionedUser],
+            mentions: [m.sender, targetUser],
         }
     );
 }
 break;
+		
 //menucaja fuerte	
 case 'menucaja': {
     const imageUrl = "https://i.postimg.cc/zvdLCYKR/file-Qc1-TKdfh-GKjk-Uwqs-Pwfjz-R-3.webp"; // URL de la imagen
