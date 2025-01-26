@@ -2039,7 +2039,6 @@ case 'fallocaja': {
 break;
 //cuando esta activo el fallo		
 //sacar 2
-
 case 'fasacar': {
     if (!m.isGroup) {
         return conn.sendMessage(
@@ -2054,8 +2053,8 @@ case 'fasacar': {
     const quotedUser = m.message?.extendedTextMessage?.contextInfo?.participant;
     const targetUser = mentionedUser || quotedUser;
 
-    // Extraer palabra clave ignorando mención o cita
-    const keyword = args.join(' ').trim().toLowerCase(); // Usar todo el texto como palabra clave
+    // Filtrar menciones y obtener la palabra clave
+    const keyword = args.filter(arg => !arg.startsWith('@') && !arg.includes(targetUser)).join(' ').trim().toLowerCase();
 
     if (!targetUser) {
         return conn.sendMessage(
@@ -2161,7 +2160,7 @@ case 'fasacar': {
         { quoted: m }
     );
 }
-break;
+break;                
 
 //top caja fuerte		
 
