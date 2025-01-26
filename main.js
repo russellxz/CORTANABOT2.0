@@ -903,7 +903,7 @@ case 'comando': {
 
     conn.sendMessage(
         m.chat,
-        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${formattedCommand}*\nIncluyendo las indicaciones para mensajes citados.` },
+        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${formattedCommand}*\nfino capo😎` },
         { quoted: m }
     );
 }
