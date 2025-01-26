@@ -2331,7 +2331,8 @@ case 'resacar': {
     const quotedUser = m.message?.extendedTextMessage?.contextInfo?.participant;
     const targetUser = mentionedUser || quotedUser;
 
-    const keyword = args.slice(0, -1).join(' ').trim().toLowerCase(); // Procesar la palabra clave completa excepto la mención
+    // Extraer palabra clave ignorando mención
+    const keyword = args.join(' ').trim().toLowerCase(); 
 
     if (!targetUser) {
         return conn.sendMessage(
@@ -2359,10 +2360,11 @@ case 'resacar': {
         );
     }
 
-    // Buscar multimedia ignorando mayúsculas/minúsculas y espacios
-    const matchedKey = Object.keys(userCaja.multimedia).find(
-        key => key.trim().toLowerCase() === keyword
+    // Buscar multimedia ignorando mayúsculas/minúsculas, espacios y caracteres especiales
+    const matchedKey = Object.keys(userCaja.multimedia).find(key =>
+        key.trim().toLowerCase().replace(/\s+/g, '') === keyword.replace(/\s+/g, '')
     );
+
     if (!matchedKey) {
         return conn.sendMessage(
             m.chat,
@@ -2426,6 +2428,7 @@ case 'resacar': {
     );
 }
 break;
+    
 		
 //menucaja fuerte	
 case 'menucaja': {
