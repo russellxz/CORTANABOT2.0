@@ -2331,7 +2331,7 @@ case 'resacar': {
     const quotedUser = m.message?.extendedTextMessage?.contextInfo?.participant;
     const targetUser = mentionedUser || quotedUser;
 
-    // Extraer palabra clave ignorando mención
+    // Extraer palabra clave ignorando mención o cita
     const keyword = args.join(' ').trim().toLowerCase(); 
 
     if (!targetUser) {
