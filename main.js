@@ -850,7 +850,8 @@ case 'z': {
     );
 }
 break;	
-	
+//no tocar ariba
+
 case 'comando': {
     if (!m.quoted || !m.quoted.mimetype) {
         return conn.sendMessage(
@@ -860,7 +861,7 @@ case 'comando': {
         );
     }
 
-    const newCommand = args.join(' ').trim(); // Obtener el comando asociado
+    const newCommand = args.join(' ').trim(); // Comando asociado
     if (!newCommand) {
         return conn.sendMessage(
             m.chat,
@@ -879,26 +880,36 @@ case 'comando': {
         );
     }
 
-    // Asegurarse de que el comando tenga el prefijo `.`
+    // Permitir comandos con o sin prefijo
     const formattedCommand = newCommand.startsWith('.') ? newCommand : `.${newCommand}`;
 
-    // Guardar el comando en `comandoList`
-    if (!global.comandoList) global.comandoList = {};
-    global.comandoList[mediaHash] = formattedCommand; // Asociar ID con comando
+    // Crear la estructura del comando con indicaciones completas
+    const commandData = {
+        command: formattedCommand, // Comando principal
+        action: 'execute', // Tipo de acción que debe realizar
+        requireQuoted: true, // Indica que necesita un mensaje citado
+        context: {
+            stanzaId: m.quoted.stanzaId || null,
+            participant: m.quoted.participant || null,
+            quotedMessage: m.quoted.message || null,
+        },
+    };
 
-    // Guardar la lista actualizada en el archivo `comando.json`
+    // Guardar en comando.json
+    if (!global.comandoList) global.comandoList = {};
+    global.comandoList[mediaHash] = commandData; // Guardar toda la estructura asociada al ID
+
     global.saveComandoList();
 
-    // Confirmar al usuario
     conn.sendMessage(
         m.chat,
-        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${formattedCommand}*` },
+        { text: `✅ *Multimedia asociado con éxito al comando:*\n- *${formattedCommand}*\nIncluyendo las indicaciones para mensajes citados.` },
         { quoted: m }
     );
 }
-break;
-	
-	
+break;	
+
+//id de los multimedia	
 case 'getid': {
     if (!m.quoted) {
         return conn.sendMessage(
