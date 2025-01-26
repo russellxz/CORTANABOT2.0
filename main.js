@@ -2619,6 +2619,7 @@ case 'unmute': {
 }
 break;
 //comando de stickerz
+
 case 'menuguar': {
     try {
         await m.react('✅'); // Reacción al usar el comando
@@ -2679,7 +2680,7 @@ _Ejemplo:_ *.clavelista*
                 image: { url: menuImageUrl },
                 caption: menuText,
                 footer: "CORTANA 2.0",
-                viewOnce: true,
+                viewOnce: false, // Asegúrate de que no sea "ver una sola vez"
                 mentions: [m.sender],
             },
             { quoted: m }
@@ -2689,8 +2690,7 @@ _Ejemplo:_ *.clavelista*
         m.reply('❌ *Ocurrió un error al intentar enviar el menú.*');
     }
 }
-break;
-		
+break;		
 		
 //para sacar id de los stierkz
 
