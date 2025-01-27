@@ -730,8 +730,8 @@ break
 //sistema nuevo de mascota
 case 'batalla1': {
     try {
-        let userId = m.sender; // Declaramos con `let` porque podría cambiar si es necesario
-        let mentioned = m.mentionedJid[0]; // Usuario mencionado
+        const userId = m.sender; // ID del usuario que envía el comando
+        const mentioned = m.mentionedJid[0]; // Usuario mencionado para la batalla
 
         if (!mentioned) {
             return conn.sendMessage(
@@ -750,26 +750,33 @@ case 'batalla1': {
         }
 
         // Guardar solicitud de batalla
-        cartera[userId].battleRequest = mentioned; // Guardamos el ID del usuario mencionado
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2)); // Guardamos cambios en el archivo
+        if (!cartera[userId].battleRequest) {
+            cartera[userId].battleRequest = mentioned; // Asignar el usuario retado
+            fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2)); // Guardar cambios en el archivo
 
-        // Notificar al retado
-        let mensaje = `⚔️ *${conn.getName(userId)} te ha retado a una batalla.*  
+            // Notificar al usuario retado
+            const mensaje = `⚔️ *${conn.getName(userId)} te ha retado a una batalla.*  
 🛡️ *Responde con* \`.siquiero\` *para aceptar.*`;
-        await conn.sendMessage(m.chat, { text: mensaje, mentions: [mentioned] }, { quoted: m });
+            return conn.sendMessage(m.chat, { text: mensaje, mentions: [mentioned] }, { quoted: m });
+        } else {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Ya tienes una solicitud de batalla pendiente. Espera a que se complete.*" },
+                { quoted: m }
+            );
+        }
     } catch (error) {
         console.error('❌ Error en el comando .batalla1:', error);
-        m.reply('❌ *Ocurrió un error al iniciar la batalla. Intenta nuevamente.*');
+        m.reply('❌ *Ocurrió un error al intentar enviar la solicitud. Intenta nuevamente.*');
     }
 }
 break;
-
 		
 case 'siquiero': {
     try {
-        const userId = m.sender;
+        const userId = m.sender; // ID del usuario que acepta la batalla
 
-        // Verificar si hay una solicitud pendiente
+        // Buscar si alguien retó al usuario
         const challengerId = Object.keys(cartera).find(
             (id) => cartera[id].battleRequest === userId
         );
@@ -777,12 +784,12 @@ case 'siquiero': {
         if (!challengerId) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No tienes ninguna batalla pendiente.*" },
+                { text: "⚠️ *No tienes ninguna solicitud de batalla pendiente.*" },
                 { quoted: m }
             );
         }
 
-        // Obtener mascotas
+        // Obtener las mascotas de ambos usuarios
         const challengerMascota = cartera[challengerId].mascotas[0];
         const opponentMascota = cartera[userId].mascotas[0];
 
@@ -831,29 +838,10 @@ case 'siquiero': {
         if (perdedorMascota.vida < 0) perdedorMascota.vida = 0;
 
         // Subida de nivel automática
-        const mascotas = [ganadorMascota, perdedorMascota];
-        for (const mascota of mascotas) {
-            if (mascota.experiencia >= mascota.experienciaSiguienteNivel) {
-                while (mascota.experiencia >= mascota.experienciaSiguienteNivel) {
-                    mascota.nivel++;
-                    mascota.experiencia -= mascota.experienciaSiguienteNivel;
-                    mascota.experienciaSiguienteNivel += 100 * mascota.nivel;
-
-                    // Actualizar rango
-                    const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
-                    mascota.rango = rangos[Math.min(Math.floor(mascota.nivel / 10), rangos.length - 1)];
-                }
-
-                await conn.sendMessage(
-                    m.chat,
-                    {
-                        text: `🎉 *¡Felicidades! Tu mascota ${mascota.nombre} ha subido al nivel ${mascota.nivel}.*  
-📊 *Nuevo rango:* ${mascota.rango}  
-🆙 *Experiencia para el próximo nivel:* ${mascota.experienciaSiguienteNivel - mascota.experiencia}`,
-                    },
-                    { quoted: m }
-                );
-            }
+        if (ganadorMascota.experiencia >= ganadorMascota.experienciaSiguienteNivel) {
+            ganadorMascota.nivel++;
+            ganadorMascota.experiencia -= ganadorMascota.experienciaSiguienteNivel;
+            ganadorMascota.experienciaSiguienteNivel += 100 * ganadorMascota.nivel;
         }
 
         // Limpiar solicitud de batalla
@@ -882,6 +870,9 @@ case 'siquiero': {
     }
 }
 break;
+        
+
+        
 //batalla 	
 case 'lanzarpelota': {
     try {
