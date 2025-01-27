@@ -728,7 +728,6 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema nuevo de mascota
-
 case 'batalla1': {
     try {
         const userId = m.sender; // ID del usuario que envía el comando
@@ -760,8 +759,8 @@ case 'batalla1': {
         }
 
         // Guardar solicitud de batalla
-        cartera[userId].battleRequest = mentioned;
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+        cartera[userId].battleRequest = mentioned; // ID del usuario retado
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2)); // Guardar cambios
 
         // Notificar al usuario retado
         const mensaje = `⚔️ *${conn.getName(userId)} te ha retado a una batalla.*  
@@ -773,12 +772,12 @@ case 'batalla1': {
     }
 }
 break;
-		
+      
 case 'siquiero': {
     try {
         const userId = m.sender;
 
-        // Buscar si alguien retó al usuario
+        // Verificar si alguien retó al usuario
         const challengerId = Object.keys(cartera).find(
             (id) => cartera[id].battleRequest === userId
         );
@@ -795,22 +794,15 @@ case 'siquiero': {
         let challengerMascota = cartera[challengerId].mascotas[0];
         let opponentMascota = cartera[userId].mascotas[0];
 
-        // Simulación de la batalla
-        const animaciones = [
-            "⚔️ *¡Comienza la batalla feroz! Las mascotas se observan...*",
-            "🐾 *Un intercambio rápido de ataques... ¡ambas luchan con todo!*",
-            "💥 *Un golpe directo sacude a una de las mascotas...*",
-            "🛡️ *Defensa impecable, ¡qué emocionante!*",
-            "🔥 *¡Un movimiento crítico cambia el rumbo del combate!*",
-        ];
-        for (const animacion of animaciones) {
-            await conn.sendMessage(m.chat, { text: animacion }, { delay: 1500 });
-        }
+        // Calcular estadísticas basadas en nivel y habilidades
+        const statsChallenger =
+            challengerMascota.nivel * 5 +
+            challengerMascota.habilidades.reduce((total, h) => total + h.nivel, 0);
+        const statsOpponent =
+            opponentMascota.nivel * 5 +
+            opponentMascota.habilidades.reduce((total, h) => total + h.nivel, 0);
 
-        // Calcular estadísticas
-        const statsChallenger = challengerMascota.nivel * 5 + challengerMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
-        const statsOpponent = opponentMascota.nivel * 5 + opponentMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
-
+        // Determinar ganador
         let ganadorId, perdedorId;
         if (statsChallenger > statsOpponent) {
             ganadorId = challengerId;
@@ -822,9 +814,8 @@ case 'siquiero': {
             return conn.sendMessage(m.chat, { text: "🤝 *La batalla terminó en empate.*" });
         }
 
-        // Actualizar estadísticas
+        // Actualizar estadísticas del ganador
         let ganadorMascota = cartera[ganadorId].mascotas[0];
-
         const xpGanada = Math.floor(Math.random() * 500) + 500; // XP aleatoria
         ganadorMascota.experiencia += xpGanada;
         cartera[ganadorId].coins += 200; // Monedas ganadas
@@ -861,9 +852,7 @@ case 'siquiero': {
         m.reply('❌ *Ocurrió un error al aceptar la batalla. Intenta nuevamente.*');
     }
 }
-break;
-        
-        
+break;        
 
         
 //batalla 	
