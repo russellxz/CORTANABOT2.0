@@ -1669,7 +1669,7 @@ case 'saldo': {
     }
 }
 break;
-//elimimar caja 
+//elimimar cartera
 case 'deletecartera': {
     try {
         await m.react('❌'); // Reacción al usar el comando
@@ -1685,22 +1685,21 @@ case 'deletecartera': {
         }
 
         // Confirmación de eliminación
-        const confirmMessage = await conn.sendMessage(
+        await conn.sendMessage(
             m.chat,
             {
-                text: "⚠️ *¿Estás seguro de que deseas eliminar tu cartera?*\nTodos tus datos, mascotas y monedas se perderán.\n\nResponde con *Sí* para confirmar.",
+                text: "⚠️ *¿Estás seguro de que deseas eliminar tu cartera?*\nTodos tus datos, mascotas y monedas se perderán.\n\nResponde con *'Sí'* para confirmar.",
                 mentions: [m.sender],
             },
             { quoted: m }
         );
 
-        const collector = conn.createMessageCollector(m.chat, {
-            filter: (response) => response.key.fromMe && response.body?.toLowerCase() === 'sí',
-            max: 1,
-            time: 15000, // 15 segundos para confirmar
-        });
+        // Esperar respuesta del usuario
+        const filter = (response) => response.key.remoteJid === m.chat && response.key.participant === m.sender && response.message?.conversation?.toLowerCase() === 'sí';
 
-        collector.on('collect', async () => {
+        const collected = await conn.awaitMessage(m.chat, filter, { time: 15000 }); // Tiempo para confirmar (15 segundos)
+
+        if (collected) {
             // Eliminar la cartera
             delete cartera[userId];
             fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
@@ -1710,17 +1709,13 @@ case 'deletecartera': {
                 { text: "✅ *Tu cartera ha sido eliminada con éxito.*" },
                 { quoted: m }
             );
-        });
-
-        collector.on('end', (collected, reason) => {
-            if (reason === 'time') {
-                conn.sendMessage(
-                    m.chat,
-                    { text: "⏳ *Se agotó el tiempo para confirmar la eliminación de tu cartera.*" },
-                    { quoted: m }
-                );
-            }
-        });
+        } else {
+            await conn.sendMessage(
+                m.chat,
+                { text: "⏳ *Se agotó el tiempo para confirmar la eliminación de tu cartera.*" },
+                { quoted: m }
+            );
+        }
     } catch (error) {
         console.error('❌ Error eliminando cartera:', error);
         m.reply('❌ *Ocurrió un error al intentar eliminar tu cartera. Intenta nuevamente.*');
