@@ -1669,6 +1669,64 @@ case 'saldo': {
     }
 }
 break;
+//elimimar caja 
+case 'deletecartera': {
+    try {
+        await m.react('❌'); // Reacción al usar el comando
+
+        const userId = m.sender;
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes una cartera creada.* Usa `.crearcartera` para crear una." },
+                { quoted: m }
+            );
+        }
+
+        // Confirmación de eliminación
+        const confirmMessage = await conn.sendMessage(
+            m.chat,
+            {
+                text: "⚠️ *¿Estás seguro de que deseas eliminar tu cartera?*\nTodos tus datos, mascotas y monedas se perderán.\n\nResponde con *Sí* para confirmar.",
+                mentions: [m.sender],
+            },
+            { quoted: m }
+        );
+
+        const collector = conn.createMessageCollector(m.chat, {
+            filter: (response) => response.key.fromMe && response.body?.toLowerCase() === 'sí',
+            max: 1,
+            time: 15000, // 15 segundos para confirmar
+        });
+
+        collector.on('collect', async () => {
+            // Eliminar la cartera
+            delete cartera[userId];
+            fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+            await conn.sendMessage(
+                m.chat,
+                { text: "✅ *Tu cartera ha sido eliminada con éxito.*" },
+                { quoted: m }
+            );
+        });
+
+        collector.on('end', (collected, reason) => {
+            if (reason === 'time') {
+                conn.sendMessage(
+                    m.chat,
+                    { text: "⏳ *Se agotó el tiempo para confirmar la eliminación de tu cartera.*" },
+                    { quoted: m }
+                );
+            }
+        });
+    } catch (error) {
+        console.error('❌ Error eliminando cartera:', error);
+        m.reply('❌ *Ocurrió un error al intentar eliminar tu cartera. Intenta nuevamente.*');
+    }
+}
+break;
 		
 		
 //escan para caja 			
