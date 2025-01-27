@@ -728,13 +728,11 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema nuevo de mascota
-
 case 'batalla1': {
     try {
-        const userId = m.sender; // Usuario que envía el comando
-        const mentioned = m.mentionedJid[0]; // Usuario mencionado
+        const userId = m.sender;
+        const mentioned = m.mentionedJid[0];
 
-        // Validar que se mencione a alguien
         if (!mentioned) {
             return conn.sendMessage(
                 m.chat,
@@ -743,7 +741,6 @@ case 'batalla1': {
             );
         }
 
-        // Validar que ambos usuarios tengan carteras creadas
         if (!cartera[userId] || !cartera[mentioned]) {
             return conn.sendMessage(
                 m.chat,
@@ -752,34 +749,81 @@ case 'batalla1': {
             );
         }
 
-        // Verificar el intervalo de tiempo
-        let lastBattle = cartera[userId].lastBattle || 0;
-        const now = Date.now();
-        const interval = 5 * 60 * 1000; // 5 minutos
+        const challengerMascota = cartera[userId].mascotas[0];
+        const opponentMascota = cartera[mentioned].mascotas[0];
 
-        if (now - lastBattle < interval) {
-            const remainingTime = Math.ceil((interval - (now - lastBattle)) / 1000);
-            return conn.sendMessage(
+        // Animación de batalla
+        const animaciones = [
+            "⚔️ *¡Comienza la batalla feroz! Las mascotas se observan...*",
+            "🐾 *Un intercambio rápido de ataques... ¡ambas luchan con todo!*",
+            "💥 *Un golpe directo sacude a una de las mascotas...*",
+            "🛡️ *Defensa impecable, ¡qué emocionante!*",
+            "🔥 *¡Un movimiento crítico cambia el rumbo del combate!*",
+        ];
+        for (const animacion of animaciones) {
+            await conn.sendMessage(m.chat, { text: animacion }, { delay: 1500 });
+        }
+
+        // Determinar ganador
+        const statsChallenger = challengerMascota.nivel * 5 + challengerMascota.vida + challengerMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
+        const statsOpponent = opponentMascota.nivel * 5 + opponentMascota.vida + opponentMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
+
+        let ganadorId, perdedorId;
+        if (statsChallenger > statsOpponent) {
+            ganadorId = userId;
+            perdedorId = mentioned;
+        } else if (statsChallenger < statsOpponent) {
+            ganadorId = mentioned;
+            perdedorId = userId;
+        } else {
+            return conn.sendMessage(m.chat, { text: "🤝 *La batalla terminó en empate.*" });
+        }
+
+        // Recompensas y actualizaciones
+        const ganadorMascota = cartera[ganadorId].mascotas[0];
+        const perdedorMascota = cartera[perdedorId].mascotas[0];
+
+        const xpGanada = Math.floor(Math.random() * 500) + 500; // XP aleatoria
+        ganadorMascota.experiencia += xpGanada;
+        cartera[ganadorId].coins += 200; // Monedas ganadas
+        perdedorMascota.vida -= Math.floor(Math.random() * 20) + 10; // Reducción de vida
+
+        // Subida de nivel automática
+        if (ganadorMascota.experiencia >= ganadorMascota.experienciaSiguienteNivel) {
+            ganadorMascota.nivel++;
+            ganadorMascota.experiencia -= ganadorMascota.experienciaSiguienteNivel;
+            ganadorMascota.experienciaSiguienteNivel += 100 * ganadorMascota.nivel;
+
+            // Actualizar rango
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
+            ganadorMascota.rango = rangos[Math.min(Math.floor(ganadorMascota.nivel / 10), rangos.length - 1)];
+
+            await conn.sendMessage(
                 m.chat,
-                { text: `⏳ *Debes esperar ${Math.floor(remainingTime / 60)} minutos antes de iniciar otra batalla.*` },
+                {
+                    text: `🎉 *¡Felicidades! Tu mascota ${ganadorMascota.nombre} ha subido al nivel ${ganadorMascota.nivel}.*  
+📊 *Nuevo rango:* ${ganadorMascota.rango}  
+🆙 *Experiencia para el próximo nivel:* ${ganadorMascota.experienciaSiguienteNivel - ganadorMascota.experiencia}`,
+                },
                 { quoted: m }
             );
         }
 
-        // Guardar la solicitud de batalla en `cartera.json`
-        cartera[userId].battleRequest = mentioned;
+        // Guardar cambios
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Notificar al usuario mencionado
-        const acceptMessage = {
-            text: `⚔️ *${conn.getName(userId)} te ha retado a una batalla.*  
-🛡️ *Responde con* \`.siquiero\` *para aceptar.*`,
-            mentions: [mentioned],
-        };
-        await conn.sendMessage(m.chat, acceptMessage, { quoted: m });
+        // Anunciar resultados
+        const textoGanador = `🎉 *¡La batalla ha terminado!*  
+🏆 *Ganador:* ${conn.getName(ganadorId)}  
+💔 *Perdedor:* ${conn.getName(perdedorId)}  
+
+🪙 *Recompensa del ganador:* 200 Cortana Coins  
+🆙 *Experiencia ganada:* ${xpGanada} XP`;
+
+        await conn.sendMessage(m.chat, { text: textoGanador });
     } catch (error) {
         console.error('❌ Error en el comando .batalla1:', error);
-        m.reply('❌ *Ocurrió un error al intentar iniciar la batalla.*');
+        m.reply('❌ *Ocurrió un error durante la batalla. Intenta nuevamente.*');
     }
 }
 break;
@@ -788,7 +832,7 @@ case 'siquiero': {
     try {
         const userId = m.sender;
 
-        // Buscar si alguien te retó
+        // Verificar si hay una solicitud pendiente
         const challengerId = Object.keys(cartera).find(
             (id) => cartera[id].battleRequest === userId
         );
@@ -801,64 +845,89 @@ case 'siquiero': {
             );
         }
 
-        // Obtener datos de las mascotas
-        let mascota1 = cartera[challengerId].mascotas[0];
-        let mascota2 = cartera[userId].mascotas[0];
+        // Obtener las mascotas de ambos usuarios
+        const challengerMascota = cartera[challengerId].mascotas[0];
+        const opponentMascota = cartera[userId].mascotas[0];
 
-        // Simulación de la batalla (con animaciones)
+        // Animación de la batalla
         const animaciones = [
-            "⚔️ *Las mascotas se enfrentan ferozmente...*",
-            "🐾 *Intercambio de golpes rápidos...*",
-            "💥 *Un ataque sorpresa sacude el combate...*",
-            "🛡️ *Ambas mascotas defienden con valentía...*",
-            "🔥 *Un golpe crítico cambia el rumbo de la batalla...*",
+            "⚔️ *¡Comienza la batalla feroz! Las mascotas se observan...*",
+            "🐾 *Un intercambio rápido de ataques... ¡ambas luchan con todo!*",
+            "💥 *Un golpe directo sacude a una de las mascotas...*",
+            "🛡️ *Defensa impecable, ¡qué emocionante!*",
+            "🔥 *¡Un movimiento crítico cambia el rumbo del combate!*",
         ];
         for (const animacion of animaciones) {
             await conn.sendMessage(m.chat, { text: animacion }, { delay: 1500 });
         }
 
         // Determinar ganador basado en estadísticas
-        const stats1 = mascota1.nivel * 5 + mascota1.vida + mascota1.habilidades.reduce((a, h) => a + h.nivel, 0);
-        const stats2 = mascota2.nivel * 5 + mascota2.vida + mascota2.habilidades.reduce((a, h) => a + h.nivel, 0);
+        const statsChallenger = challengerMascota.nivel * 5 + challengerMascota.vida + challengerMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
+        const statsOpponent = opponentMascota.nivel * 5 + opponentMascota.vida + opponentMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
 
-        let ganador, perdedor;
-        if (stats1 > stats2) {
-            ganador = challengerId;
-            perdedor = userId;
-        } else if (stats1 < stats2) {
-            ganador = userId;
-            perdedor = challengerId;
+        let ganadorId, perdedorId;
+        if (statsChallenger > statsOpponent) {
+            ganadorId = challengerId;
+            perdedorId = userId;
+        } else if (statsChallenger < statsOpponent) {
+            ganadorId = userId;
+            perdedorId = challengerId;
         } else {
             return conn.sendMessage(m.chat, { text: "🤝 *La batalla terminó en empate.*" });
         }
 
-        // Recompensas al ganador
-        cartera[ganador].coins += 200;
-        cartera[ganador].mascotas[0].experiencia += Math.floor(Math.random() * 500) + 500;
+        // Actualizar estadísticas del ganador y perdedor
+        const ganadorMascota = cartera[ganadorId].mascotas[0];
+        const perdedorMascota = cartera[perdedorId].mascotas[0];
 
-        // Reducir vida del perdedor
-        cartera[perdedor].mascotas[0].vida -= Math.floor(Math.random() * 20) + 10;
+        const xpGanada = Math.floor(Math.random() * 500) + 500; // XP aleatoria
+        ganadorMascota.experiencia += xpGanada;
+        cartera[ganadorId].coins += 200; // Monedas ganadas
+        perdedorMascota.vida -= Math.floor(Math.random() * 20) + 10; // Reducción de vida
 
-        // Limpiar solicitudes de batalla y guardar cambios
+        // Subida de nivel automática
+        if (ganadorMascota.experiencia >= ganadorMascota.experienciaSiguienteNivel) {
+            ganadorMascota.nivel++;
+            ganadorMascota.experiencia -= ganadorMascota.experienciaSiguienteNivel;
+            ganadorMascota.experienciaSiguienteNivel += 100 * ganadorMascota.nivel;
+
+            // Actualizar rango
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
+            ganadorMascota.rango = rangos[Math.min(Math.floor(ganadorMascota.nivel / 10), rangos.length - 1)];
+
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! Tu mascota ${ganadorMascota.nombre} ha subido al nivel ${ganadorMascota.nivel}.*  
+📊 *Nuevo rango:* ${ganadorMascota.rango}  
+🆙 *Experiencia para el próximo nivel:* ${ganadorMascota.experienciaSiguienteNivel - ganadorMascota.experiencia}`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // Limpiar la solicitud de batalla
         delete cartera[challengerId].battleRequest;
-        cartera[challengerId].lastBattle = Date.now();
+
+        // Guardar cambios
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Anunciar el ganador
+        // Anunciar resultados
         const textoGanador = `🎉 *¡La batalla ha terminado!*  
-🏆 *Ganador:* ${conn.getName(ganador)}  
-💔 *Perdedor:* ${conn.getName(perdedor)}
+🏆 *Ganador:* ${conn.getName(ganadorId)}  
+💔 *Perdedor:* ${conn.getName(perdedorId)}  
 
-🪙 *Recompensa:* 200 Cortana Coins  
-🆙 *Experiencia ganada:* ${cartera[ganador].mascotas[0].experiencia}`;
+🪙 *Recompensa del ganador:* 200 Cortana Coins  
+🆙 *Experiencia ganada:* ${xpGanada} XP`;
 
         await conn.sendMessage(m.chat, { text: textoGanador });
     } catch (error) {
         console.error('❌ Error en el comando .siquiero:', error);
-        m.reply('❌ *Ocurrió un error al aceptar la batalla.*');
+        m.reply('❌ *Ocurrió un error al aceptar la batalla. Intenta nuevamente.*');
     }
 }
 break;
+
 
 //batalla 	
 case 'lanzarpelota': {
