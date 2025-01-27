@@ -728,10 +728,11 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema nuevo de mascota
+
 case 'batalla1': {
     try {
-        const userId = m.sender; // Usuario que envía el comando
-        const mentioned = m.mentionedJid[0]; // Usuario mencionado
+        const userId = m.sender; // ID del usuario que envía el comando
+        const mentioned = m.mentionedJid[0]; // Usuario mencionado para la batalla
 
         if (!mentioned) {
             return conn.sendMessage(
@@ -772,13 +773,12 @@ case 'batalla1': {
     }
 }
 break;
-
 		
 case 'siquiero': {
     try {
         const userId = m.sender;
 
-        // Buscar si alguien te retó
+        // Buscar si alguien retó al usuario
         const challengerId = Object.keys(cartera).find(
             (id) => cartera[id].battleRequest === userId
         );
@@ -808,8 +808,8 @@ case 'siquiero': {
         }
 
         // Calcular estadísticas
-        const statsChallenger = challengerMascota.nivel * 5 + challengerMascota.vida + challengerMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
-        const statsOpponent = opponentMascota.nivel * 5 + opponentMascota.vida + opponentMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
+        const statsChallenger = challengerMascota.nivel * 5 + challengerMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
+        const statsOpponent = opponentMascota.nivel * 5 + opponentMascota.habilidades.reduce((a, h) => a + h.nivel, 0);
 
         let ganadorId, perdedorId;
         if (statsChallenger > statsOpponent) {
@@ -824,31 +824,20 @@ case 'siquiero': {
 
         // Actualizar estadísticas
         let ganadorMascota = cartera[ganadorId].mascotas[0];
-        let perdedorMascota = cartera[perdedorId].mascotas[0];
 
         const xpGanada = Math.floor(Math.random() * 500) + 500; // XP aleatoria
         ganadorMascota.experiencia += xpGanada;
         cartera[ganadorId].coins += 200; // Monedas ganadas
 
-        // Reducir vida de ambas mascotas
-        ganadorMascota.vida -= Math.floor(Math.random() * 10) + 5;
-        perdedorMascota.vida -= Math.floor(Math.random() * 20) + 10;
-
-        if (ganadorMascota.vida < 0) ganadorMascota.vida = 0;
-        if (perdedorMascota.vida < 0) perdedorMascota.vida = 0;
-
         // Subida de nivel automática
-        const mascotas = [ganadorMascota, perdedorMascota];
-        for (let mascota of mascotas) {
-            while (mascota.experiencia >= mascota.experienciaSiguienteNivel) {
-                mascota.nivel++;
-                mascota.experiencia -= mascota.experienciaSiguienteNivel;
-                mascota.experienciaSiguienteNivel += 100 * mascota.nivel;
+        while (ganadorMascota.experiencia >= ganadorMascota.experienciaSiguienteNivel) {
+            ganadorMascota.nivel++;
+            ganadorMascota.experiencia -= ganadorMascota.experienciaSiguienteNivel;
+            ganadorMascota.experienciaSiguienteNivel += 100 * ganadorMascota.nivel;
 
-                // Actualizar rango
-                const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
-                mascota.rango = rangos[Math.min(Math.floor(mascota.nivel / 10), rangos.length - 1)];
-            }
+            // Actualizar rango
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
+            ganadorMascota.rango = rangos[Math.min(Math.floor(ganadorMascota.nivel / 10), rangos.length - 1)];
         }
 
         // Limpiar solicitud de batalla
@@ -864,11 +853,7 @@ case 'siquiero': {
 
 ✨ *Recompensas:*  
 🪙 *Cortana Coins:* 200  
-🆙 *Experiencia Ganada:* ${xpGanada} XP  
-
-❤️ *Reducción de vida:*  
-- ${ganadorMascota.nombre}: ${ganadorMascota.vida} HP  
-- ${perdedorMascota.nombre}: ${perdedorMascota.vida} HP`;
+🆙 *Experiencia Ganada:* ${xpGanada} XP`;
 
         await conn.sendMessage(m.chat, { text: textoResultados }, { quoted: m });
     } catch (error) {
@@ -877,6 +862,7 @@ case 'siquiero': {
     }
 }
 break;
+        
         
 
         
