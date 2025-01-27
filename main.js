@@ -742,12 +742,12 @@ case 'crearcartera': {
             );
         }
 
-        // Mascotas iniciales y sus habilidades
+        // Mascotas iniciales con emojis y habilidades
         const mascotas = {
-            raton: { habilidades: ['Velocidad', 'Agilidad', 'Evasión'] },
-            conejo: { habilidades: ['Saltar', 'Velocidad', 'Camuflaje'] },
-            perro: { habilidades: ['Fuerza', 'Lealtad', 'Protección'] },
-            gato: { habilidades: ['Sigilo', 'Reflejos', 'Curiosidad'] },
+            raton: { emoji: '🐁', habilidades: ['Velocidad', 'Agilidad', 'Evasión'] },
+            conejo: { emoji: '🐇', habilidades: ['Saltar', 'Velocidad', 'Camuflaje'] },
+            perro: { emoji: '🐶', habilidades: ['Fuerza', 'Lealtad', 'Protección'] },
+            gato: { emoji: '🐈‍⬛', habilidades: ['Sigilo', 'Reflejos', 'Curiosidad'] },
         };
 
         // Seleccionar una mascota aleatoria
@@ -757,7 +757,7 @@ case 'crearcartera': {
 
         // Establecer la información inicial de la mascota
         const mascotaInfo = {
-            nombre: mascotaSeleccionada.charAt(0).toUpperCase() + mascotaSeleccionada.slice(1),
+            nombre: `${mascotas[mascotaSeleccionada].emoji} ${mascotaSeleccionada.charAt(0).toUpperCase() + mascotaSeleccionada.slice(1)}`,
             habilidades: mascotas[mascotaSeleccionada].habilidades.map((hab) => ({
                 nombre: hab,
                 nivel: 1,
@@ -786,7 +786,7 @@ case 'crearcartera': {
         let mensaje = `
 🎉 *¡Cartera creada con éxito!* 🎉
 
-🐾 *Te ha tocado una mascota: ${mascotaInfo.nombre}*  
+🐾 *Te ha tocado una mascota:* ${mascotas[mascotaSeleccionada].emoji} ${mascotaInfo.nombre}  
 📊 *Rango:* ${mascotaInfo.rango}  
 🆙 *Nivel inicial:* ${mascotaInfo.nivel}  
 ❤️ *Vida inicial:* ${mascotaInfo.vida}
@@ -808,79 +808,7 @@ ${habilidadesText}
     }
 }
 break;
-
-case 'casar': {
-    try {
-        await m.react('✅'); // Reacción al usar el comando
-
-        const userId = m.sender;
-        if (!cartera[userId]) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
-                { quoted: m }
-            );
-        }
-
-        const userMascota = cartera[userId].mascotas[0];
-        const coinsGanados = Math.floor(Math.random() * 100) + 1;
-        const xpGanada = Math.floor(Math.random() * 1000) + 500;
-
-        // Incrementar experiencia y monedas
-        cartera[userId].coins += coinsGanados;
-        userMascota.experiencia += xpGanada;
-
-        // Revisar si sube de nivel
-        if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
-            userMascota.nivel++;
-            userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
-            userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
-
-            // Actualizar rango según el nivel
-            const rangos = [
-                '🐾 Principiante',
-                '🐾 Intermedio',
-                '🐾 Avanzado',
-                '🐾 Experto',
-                '🐾 Leyenda',
-            ];
-            const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
-            userMascota.rango = nuevoRango;
-
-            // Notificar subida de nivel
-            await conn.sendMessage(
-                m.chat,
-                {
-                    text: `🎉 *¡Felicidades! Tu mascota ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
-📊 *Nuevo rango:* ${nuevoRango}  
-🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel - userMascota.experiencia}`,
-                },
-                { quoted: m }
-            );
-        }
-
-        // Guardar cambios
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-
-        // Respuesta al comando
-        await conn.sendMessage(
-            m.chat,
-            {
-                text: `✨ *¡Tu mascota se ha casado con éxito!*\n\n🎖️ *Has ganado:*  
-🪙 ${coinsGanados} Cortana Coins  
-🆙 ${xpGanada} XP`,
-            },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error('❌ Error al casar mascota:', error);
-        m.reply('❌ *Ocurrió un error al intentar casar a tu mascota. Intenta nuevamente.*');
-    }
-}
-break;		
-		
-		
-		
+				
 
 		
 //escan para caja 			
