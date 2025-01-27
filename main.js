@@ -759,7 +759,8 @@ case 'batalla1': {
             );
         }
 
-        // Guardar solicitud de batalla
+        // Guardar solicitud de batalla y tiempo
+        cartera[userId].lastBattle = now;
         cartera[userId].battleRequest = {
             target: mentioned,
             time: now,
@@ -772,7 +773,7 @@ case 'batalla1': {
 ⏳ *Tienes 2 minutos para aceptar antes de que la solicitud expire.*`;
         await conn.sendMessage(
             m.chat,
-            { text: mensaje, mentions: [mentioned] }, // Mención visible
+            { text: mensaje, mentions: [mentioned] },
             { quoted: m }
         );
 
@@ -794,7 +795,7 @@ case 'batalla1': {
     }
 }
 break;
-        
+
 case 'siquiero': {
     try {
         const userId = m.sender;
@@ -838,8 +839,8 @@ case 'siquiero': {
         ];
 
         for (const animacion of animaciones) {
-            await conn.sendMessage(m.chat, { text: animacion }); // Enviar mensaje de animación
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 2 segundos
+            await conn.sendMessage(m.chat, { text: animacion });
+            await new Promise(resolve => setTimeout(resolve, 2000));
         }
 
         // Determinar estadísticas y ganador
@@ -894,9 +895,11 @@ case 'siquiero': {
                 await conn.sendMessage(
                     m.chat,
                     {
-                        text: `🎉 *¡Felicidades! Tu mascota ${mascota.nombre} ha subido al nivel ${mascota.nivel}.*  
+                        text: `🎉 *¡Felicidades @${ganadorId.split('@')[0]}!*  
+🐾 *Tu mascota ${mascota.nombre} ha subido al nivel ${mascota.nivel}.*  
 📊 *Nuevo rango:* ${mascota.rango}  
 🆙 *Experiencia para el próximo nivel:* ${mascota.experienciaSiguienteNivel - mascota.experiencia}`,
+                        mentions: [ganadorId],
                     },
                     { quoted: m }
                 );
@@ -930,8 +933,7 @@ case 'siquiero': {
         return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al procesar la batalla.*' }, { quoted: m });
     }
 }
-break;            
-
+break;
         
         
 //batalla 	
