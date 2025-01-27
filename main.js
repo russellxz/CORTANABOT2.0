@@ -730,8 +730,8 @@ break
 //sistema nuevo de mascota
 case 'batalla1': {
     try {
-        const userId = m.sender;
-        const mentioned = m.mentionedJid[0];
+        let userId = m.sender; // Declaramos con `let` porque podría cambiar si es necesario
+        let mentioned = m.mentionedJid[0]; // Usuario mencionado
 
         if (!mentioned) {
             return conn.sendMessage(
@@ -750,11 +750,11 @@ case 'batalla1': {
         }
 
         // Guardar solicitud de batalla
-        cartera[userId].battleRequest = mentioned;
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+        cartera[userId].battleRequest = mentioned; // Guardamos el ID del usuario mencionado
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2)); // Guardamos cambios en el archivo
 
         // Notificar al retado
-        const mensaje = `⚔️ *${conn.getName(userId)} te ha retado a una batalla.*  
+        let mensaje = `⚔️ *${conn.getName(userId)} te ha retado a una batalla.*  
 🛡️ *Responde con* \`.siquiero\` *para aceptar.*`;
         await conn.sendMessage(m.chat, { text: mensaje, mentions: [mentioned] }, { quoted: m });
     } catch (error) {
@@ -762,8 +762,9 @@ case 'batalla1': {
         m.reply('❌ *Ocurrió un error al iniciar la batalla. Intenta nuevamente.*');
     }
 }
-break;           
+break;
 
+		
 case 'siquiero': {
     try {
         const userId = m.sender;
