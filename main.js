@@ -864,6 +864,56 @@ case 'vermascotas': {
 }
 break;
 
+case 'saldo': {
+    try {
+        await m.react('💰'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes una cartera creada.* Usa `.crearcartera` para comenzar." },
+                { quoted: m }
+            );
+        }
+
+        // Obtener el saldo del usuario
+        const coins = cartera[userId].coins;
+
+        // Construir el mensaje
+        const mensaje = `
+╭───────────☆───────────╮
+💰 *CORTANA COINS* 💰
+╰───────────☆───────────╯
+
+👤 *Usuario:* @${userId.split('@')[0]}
+🪙 *Saldo Actual:* ${coins} Cortana Coins
+
+✨ *¡Usa tus monedas para comprar y mejorar tus mascotas!*  
+💡 *Comandos útiles:*  
+- `.vermascotas`  
+- `.otra <número>`  
+
+🌟 *¡Sigue ganando monedas completando actividades con tus mascotas!*
+━━━━━━━━━━━━━━━━━━
+📌 *Desarrollado por CORTANA 2.0*
+━━━━━━━━━━━━━━━━━━`;
+
+        // Enviar el mensaje
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: mensaje,
+                mentions: [m.sender],
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error consultando saldo:', error);
+        m.reply('❌ *Ocurrió un error al intentar consultar tu saldo.*');
+    }
+}
+break;		
 		
 		
 //escan para caja 			
