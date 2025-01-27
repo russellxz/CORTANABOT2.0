@@ -728,6 +728,134 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema nuevo de mascota
+case 'batalla1': {
+    try {
+        const userId = m.sender;
+        const mentioned = m.mentionedJid[0]; // Usuario mencionado
+        if (!mentioned) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚔️ *Debes mencionar a otro usuario para iniciar una batalla.*" },
+                { quoted: m }
+            );
+        }
+
+        if (!cartera[userId] || !cartera[mentioned]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Ambos usuarios deben tener una cartera creada con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar tiempo del último uso
+        const lastBattle = cartera[userId].lastBattle || 0;
+        const now = Date.now();
+        const interval = 5 * 60 * 1000; // 5 minutos
+
+        if (now - lastBattle < interval) {
+            const remainingTime = Math.ceil((interval - (now - lastBattle)) / 1000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${Math.floor(remainingTime / 60)} minutos para iniciar otra batalla.*` },
+                { quoted: m }
+            );
+        }
+
+        // Preguntar si el otro usuario acepta
+        const acceptMessage = {
+            text: `⚔️ *${conn.getName(userId)} te ha retado a una batalla.*  
+🛡️ *Responde con* \`.siquiero\` *para aceptar.*`,
+            mentions: [mentioned],
+        };
+        await conn.sendMessage(m.chat, acceptMessage, { quoted: m });
+
+        // Guardar el estado del reto
+        global.currentBattle = {
+            challenger: userId,
+            opponent: mentioned,
+            chatId: m.chat,
+        };
+    } catch (error) {
+        console.error('❌ Error en el comando .batalla1:', error);
+        m.reply('❌ *Ocurrió un error al intentar iniciar la batalla.*');
+    }
+}
+break;
+
+case 'siquiero': {
+    try {
+        const battle = global.currentBattle;
+        if (!battle || battle.opponent !== m.sender) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes ninguna batalla pendiente.*" },
+                { quoted: m }
+            );
+        }
+
+        // Obtener datos de los usuarios
+        const challenger = battle.challenger;
+        const opponent = battle.opponent;
+
+        const mascota1 = cartera[challenger].mascotas[0];
+        const mascota2 = cartera[opponent].mascotas[0];
+
+        // Simulación de la batalla (con emojis y texto)
+        let animaciones = [
+            "⚔️ *Las mascotas se enfrentan ferozmente...*",
+            "🐾 *Intercambio de golpes rápidos...*",
+            "💥 *Un ataque sorpresa sacude el combate...*",
+            "🛡️ *Ambas mascotas defienden con valentía...*",
+            "🔥 *Un golpe crítico cambia el rumbo de la batalla...*",
+        ];
+        for (let i = 0; i < animaciones.length; i++) {
+            await conn.sendMessage(m.chat, { text: animaciones[i] }, { delay: 1500 });
+        }
+
+        // Cálculo de estadísticas para determinar el ganador
+        const stats1 = mascota1.nivel * 5 + mascota1.vida + mascota1.habilidades.reduce((a, h) => a + h.nivel, 0);
+        const stats2 = mascota2.nivel * 5 + mascota2.vida + mascota2.habilidades.reduce((a, h) => a + h.nivel, 0);
+
+        let ganador, perdedor;
+        if (stats1 > stats2) {
+            ganador = challenger;
+            perdedor = opponent;
+        } else if (stats1 < stats2) {
+            ganador = opponent;
+            perdedor = challenger;
+        } else {
+            return conn.sendMessage(m.chat, { text: "🤝 *La batalla terminó en empate.*" });
+        }
+
+        // Recompensas al ganador
+        cartera[ganador].coins += 200;
+        cartera[ganador].mascotas[0].experiencia += Math.floor(Math.random() * 500) + 500;
+
+        // Reducir vida del perdedor
+        cartera[perdedor].mascotas[0].vida -= Math.floor(Math.random() * 20) + 10;
+
+        // Guardar cambios
+        cartera[challenger].lastBattle = Date.now();
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Anunciar el ganador
+        const textoGanador = `🎉 *¡La batalla ha terminado!*  
+🏆 *Ganador:* ${conn.getName(ganador)}  
+💔 *Perdedor:* ${conn.getName(perdedor)}
+
+🪙 *Recompensa:* 200 Cortana Coins  
+🆙 *Experiencia ganada:* ${cartera[ganador].mascotas[0].experiencia}`;
+
+        await conn.sendMessage(m.chat, { text: textoGanador });
+    } catch (error) {
+        console.error('❌ Error en el comando .siquiero:', error);
+        m.reply('❌ *Ocurrió un error al aceptar la batalla.*');
+    }
+}
+break;
+	
+//batalla 	
 case 'lanzarpelota': {
     try {
         await m.react('🎾'); // Reacción al usar el comando
