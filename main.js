@@ -1684,38 +1684,51 @@ case 'deletecartera': {
             );
         }
 
-        // Confirmación de eliminación
+        // Guardar el estado de confirmación
+        if (!global.confirmDelete) global.confirmDelete = {};
+        global.confirmDelete[userId] = true;
+
+        // Notificar al usuario
         await conn.sendMessage(
             m.chat,
             {
-                text: "⚠️ *¿Estás seguro de que deseas eliminar tu cartera?*\nTodos tus datos, mascotas y monedas se perderán.\n\nResponde con *'Sí'* para confirmar.",
+                text: "⚠️ *¿Estás seguro de que deseas eliminar tu cartera?*\nTodos tus datos, mascotas y monedas se perderán.\n\nResponde con `.ok` para confirmar.",
                 mentions: [m.sender],
             },
             { quoted: m }
         );
+    } catch (error) {
+        console.error('❌ Error preparando eliminación de cartera:', error);
+        m.reply('❌ *Ocurrió un error al intentar preparar la eliminación de tu cartera. Intenta nuevamente.*');
+    }
+}
+break;
 
-        // Esperar respuesta del usuario
-        const filter = (response) => response.key.remoteJid === m.chat && response.key.participant === m.sender && response.message?.conversation?.toLowerCase() === 'sí';
+case 'ok': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
 
-        const collected = await conn.awaitMessage(m.chat, filter, { time: 15000 }); // Tiempo para confirmar (15 segundos)
+        const userId = m.sender;
 
-        if (collected) {
-            // Eliminar la cartera
-            delete cartera[userId];
-            fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-
-            await conn.sendMessage(
+        // Verificar si el usuario solicitó la eliminación
+        if (!global.confirmDelete || !global.confirmDelete[userId]) {
+            return conn.sendMessage(
                 m.chat,
-                { text: "✅ *Tu cartera ha sido eliminada con éxito.*" },
-                { quoted: m }
-            );
-        } else {
-            await conn.sendMessage(
-                m.chat,
-                { text: "⏳ *Se agotó el tiempo para confirmar la eliminación de tu cartera.*" },
+                { text: "⚠️ *No hay una eliminación de cartera pendiente.* Usa `.deletecartera` primero." },
                 { quoted: m }
             );
         }
+
+        // Eliminar la cartera
+        delete cartera[userId];
+        delete global.confirmDelete[userId];
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        await conn.sendMessage(
+            m.chat,
+            { text: "✅ *Tu cartera ha sido eliminada con éxito.*" },
+            { quoted: m }
+        );
     } catch (error) {
         console.error('❌ Error eliminando cartera:', error);
         m.reply('❌ *Ocurrió un error al intentar eliminar tu cartera. Intenta nuevamente.*');
