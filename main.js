@@ -877,8 +877,8 @@ case 'saldo': {
             );
         }
 
-        // Obtener el saldo del usuario
-        const coins = cartera[userId].coins;
+        // Validar si coins existe y es un número
+        const coins = typeof cartera[userId].coins === 'number' ? cartera[userId].coins : 0;
 
         // Construir el mensaje
         const mensaje = `
@@ -891,8 +891,8 @@ case 'saldo': {
 
 ✨ *¡Usa tus monedas para comprar y mejorar tus mascotas!*  
 💡 *Comandos útiles:*  
-- `.vermascotas`  
-- `.otra <número>`  
+- \`.vermascotas\`  
+- \`.otra <número>\`  
 
 🌟 *¡Sigue ganando monedas completando actividades con tus mascotas!*
 ━━━━━━━━━━━━━━━━━━
@@ -913,7 +913,7 @@ case 'saldo': {
         m.reply('❌ *Ocurrió un error al intentar consultar tu saldo.*');
     }
 }
-break;		
+break;
 		
 		
 //escan para caja 			
