@@ -717,7 +717,163 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
-//escan para caja 		
+//sistema nuevo de mascota
+		
+case 'crearcartera': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Ya tienes una cartera creada.* Usa `.vermascotas` para ver tus mascotas." },
+                { quoted: m }
+            );
+        }
+
+        // Mascotas iniciales y sus habilidades
+        const mascotas = {
+            raton: { habilidades: ['Velocidad', 'Agilidad', 'Evasión'] },
+            conejo: { habilidades: ['Saltar', 'Velocidad', 'Camuflaje'] },
+            perro: { habilidades: ['Fuerza', 'Lealtad', 'Protección'] },
+            gato: { habilidades: ['Sigilo', 'Reflejos', 'Curiosidad'] },
+        };
+
+        // Seleccionar una mascota aleatoria
+        const keys = Object.keys(mascotas);
+        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        const mascotaSeleccionada = randomKey;
+
+        // Establecer la información inicial de la mascota
+        const mascotaInfo = {
+            nombre: mascotaSeleccionada.charAt(0).toUpperCase() + mascotaSeleccionada.slice(1),
+            habilidades: mascotas[mascotaSeleccionada].habilidades.map((hab) => ({
+                nombre: hab,
+                nivel: 1,
+            })),
+            vida: 100, // Vida igual para todas las mascotas
+            nivel: 1,
+            rango: '🐾 Principiante', // Rango inicial
+            experiencia: 0,
+            experienciaSiguienteNivel: 100, // XP necesaria para subir al siguiente nivel
+        };
+
+        // Crear la cartera del usuario
+        cartera[userId] = {
+            coins: 0,
+            mascotas: [mascotaInfo],
+        };
+
+        // Guardar en el archivo cartera.json
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Respuesta al usuario
+        let habilidadesText = mascotaInfo.habilidades
+            .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+            .join('\n');
+
+        let mensaje = `
+🎉 *¡Cartera creada con éxito!* 🎉
+
+🐾 *Te ha tocado una mascota: ${mascotaInfo.nombre}*  
+📊 *Rango:* ${mascotaInfo.rango}  
+🆙 *Nivel inicial:* ${mascotaInfo.nivel}  
+❤️ *Vida inicial:* ${mascotaInfo.vida}
+
+✨ *Habilidades iniciales:*  
+${habilidadesText}
+
+🔑 *Usa el comando* \`.vermascotas\` *para ver tus mascotas y sus estadísticas.*  
+💡 *Sube de nivel a tu mascota usando los comandos disponibles en el menú.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje, mentions: [m.sender] },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error creando cartera:', error);
+        m.reply('❌ *Ocurrió un error al intentar crear la cartera. Intenta nuevamente.*');
+    }
+}
+break;
+
+case 'casar': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        const userMascota = cartera[userId].mascotas[0];
+        const coinsGanados = Math.floor(Math.random() * 100) + 1;
+        const xpGanada = Math.floor(Math.random() * 1000) + 500;
+
+        // Incrementar experiencia y monedas
+        cartera[userId].coins += coinsGanados;
+        userMascota.experiencia += xpGanada;
+
+        // Revisar si sube de nivel
+        if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
+            userMascota.nivel++;
+            userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
+            userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
+
+            // Actualizar rango según el nivel
+            const rangos = [
+                '🐾 Principiante',
+                '🐾 Intermedio',
+                '🐾 Avanzado',
+                '🐾 Experto',
+                '🐾 Leyenda',
+            ];
+            const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
+            userMascota.rango = nuevoRango;
+
+            // Notificar subida de nivel
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! Tu mascota ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
+📊 *Nuevo rango:* ${nuevoRango}  
+🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel - userMascota.experiencia}`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // Guardar cambios
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Respuesta al comando
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: `✨ *¡Tu mascota se ha casado con éxito!*\n\n🎖️ *Has ganado:*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error al casar mascota:', error);
+        m.reply('❌ *Ocurrió un error al intentar casar a tu mascota. Intenta nuevamente.*');
+    }
+}
+break;		
+		
+		
+		
+
+		
+//escan para caja 			
 case 'escan': {
     const cajasAbiertas = []; // Lista para almacenar los usuarios con cajas abiertas
 
