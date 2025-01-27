@@ -762,6 +762,10 @@ case 'batalla1': {
             );
         }
 
+        // Guardar solicitud en cartera.json
+        cartera[userId].battleRequest = mentioned;
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
         // Preguntar si el otro usuario acepta
         const acceptMessage = {
             text: `⚔️ *${conn.getName(userId)} te ha retado a una batalla.*  
@@ -769,13 +773,6 @@ case 'batalla1': {
             mentions: [mentioned],
         };
         await conn.sendMessage(m.chat, acceptMessage, { quoted: m });
-
-        // Guardar el estado del reto
-        global.currentBattle = {
-            challenger: userId,
-            opponent: mentioned,
-            chatId: m.chat,
-        };
     } catch (error) {
         console.error('❌ Error en el comando .batalla1:', error);
         m.reply('❌ *Ocurrió un error al intentar iniciar la batalla.*');
@@ -785,8 +782,14 @@ break;
 
 case 'siquiero': {
     try {
-        const battle = global.currentBattle;
-        if (!battle || battle.opponent !== m.sender) {
+        const userId = m.sender;
+
+        // Buscar si alguien te retó
+        const challengerId = Object.keys(cartera).find(
+            (id) => cartera[id].battleRequest === userId
+        );
+
+        if (!challengerId) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *No tienes ninguna batalla pendiente.*" },
@@ -794,36 +797,33 @@ case 'siquiero': {
             );
         }
 
-        // Obtener datos de los usuarios
-        const challenger = battle.challenger;
-        const opponent = battle.opponent;
-
-        const mascota1 = cartera[challenger].mascotas[0];
-        const mascota2 = cartera[opponent].mascotas[0];
+        // Obtener datos de las mascotas
+        const mascota1 = cartera[challengerId].mascotas[0];
+        const mascota2 = cartera[userId].mascotas[0];
 
         // Simulación de la batalla (con emojis y texto)
-        let animaciones = [
+        const animaciones = [
             "⚔️ *Las mascotas se enfrentan ferozmente...*",
             "🐾 *Intercambio de golpes rápidos...*",
             "💥 *Un ataque sorpresa sacude el combate...*",
             "🛡️ *Ambas mascotas defienden con valentía...*",
             "🔥 *Un golpe crítico cambia el rumbo de la batalla...*",
         ];
-        for (let i = 0; i < animaciones.length; i++) {
-            await conn.sendMessage(m.chat, { text: animaciones[i] }, { delay: 1500 });
+        for (const animacion of animaciones) {
+            await conn.sendMessage(m.chat, { text: animacion }, { delay: 1500 });
         }
 
-        // Cálculo de estadísticas para determinar el ganador
+        // Determinar ganador
         const stats1 = mascota1.nivel * 5 + mascota1.vida + mascota1.habilidades.reduce((a, h) => a + h.nivel, 0);
         const stats2 = mascota2.nivel * 5 + mascota2.vida + mascota2.habilidades.reduce((a, h) => a + h.nivel, 0);
 
         let ganador, perdedor;
         if (stats1 > stats2) {
-            ganador = challenger;
-            perdedor = opponent;
+            ganador = challengerId;
+            perdedor = userId;
         } else if (stats1 < stats2) {
-            ganador = opponent;
-            perdedor = challenger;
+            ganador = userId;
+            perdedor = challengerId;
         } else {
             return conn.sendMessage(m.chat, { text: "🤝 *La batalla terminó en empate.*" });
         }
@@ -835,8 +835,11 @@ case 'siquiero': {
         // Reducir vida del perdedor
         cartera[perdedor].mascotas[0].vida -= Math.floor(Math.random() * 20) + 10;
 
+        // Limpiar solicitudes de batalla
+        delete cartera[challengerId].battleRequest;
+
         // Guardar cambios
-        cartera[challenger].lastBattle = Date.now();
+        cartera[challengerId].lastBattle = Date.now();
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // Anunciar el ganador
@@ -853,8 +856,7 @@ case 'siquiero': {
         m.reply('❌ *Ocurrió un error al aceptar la batalla.*');
     }
 }
-break;
-	
+break;	
 //batalla 	
 case 'lanzarpelota': {
     try {
