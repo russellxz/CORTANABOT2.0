@@ -78,8 +78,18 @@ const { handleCommand } = require('./main'); // Ajusta la ruta según tu estruct
 global.muteList = muteList;
 global.saveMuteList = saveMuteList;
 // Función comando
-// Cargar la lista de comandos asociados a stickers
-// Cargar lista de comandos asociados a stickers
+// sistema de mascota 
+// Verifica si existe el archivo 'cartera.json', si no, crea uno vacío
+const carteraFilePath = './cartera.json';
+if (!fs.existsSync(carteraFilePath)) {
+    fs.writeFileSync(carteraFilePath, JSON.stringify({}, null, 2));
+}
+
+// Carga los datos del archivo 'cartera.json'
+let cartera = JSON.parse(fs.readFileSync(carteraFilePath));
+
+
+// mascota 
 // Inicializar la lista de stickers asociados
 global.comandoList = [];
 const comandoPath = './comando.json';
