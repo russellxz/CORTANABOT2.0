@@ -808,8 +808,63 @@ ${habilidadesText}
     }
 }
 break;
-				
+//ver mascota				
+case 'vermascotas': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
 
+        const userId = m.sender;
+
+        // Verificar si el usuario tiene una cartera creada
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        const userMascotas = cartera[userId].mascotas;
+
+        // Construir texto con las estadísticas de las mascotas
+        let textoMascotas = `🐾 *Tus Mascotas y Estadísticas:* 🐾\n\n`;
+        userMascotas.forEach((mascota, index) => {
+            let habilidadesText = mascota.habilidades
+                .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+                .join('\n');
+
+            textoMascotas += `🦴 *Mascota ${index + 1}:* ${mascota.nombre}\n` +
+                `📊 *Rango:* ${mascota.rango}\n` +
+                `🆙 *Nivel:* ${mascota.nivel}\n` +
+                `❤️ *Vida:* ${mascota.vida}\n` +
+                `✨ *Experiencia:* ${mascota.experiencia} / ${mascota.experienciaSiguienteNivel}\n` +
+                `🌟 *Habilidades:*\n${habilidadesText}\n\n`;
+        });
+
+        // Agregar lista de comandos disponibles
+        textoMascotas += `🛠️ *Comandos para Subir de Nivel y Ganar Cortana Coins:* 🪙\n` +
+            `- *.casar* (15 min intervalo)\n` +
+            `- *.darcomida* (1 hora intervalo)\n` +
+            `- *.daragua* (2 horas intervalo)\n` +
+            `- *.entrenar* (20 min intervalo)\n` +
+            `- *.pasiar* (10 min intervalo)\n` +
+            `- *.darcariño* (5 min intervalo)\n` +
+            `- *.lanzarlapelota* (5 min intervalo)\n\n` +
+            `💡 *Usa estos comandos para subir de nivel tus mascotas y ganar monedas.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: textoMascotas, mentions: [m.sender] },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error mostrando las mascotas:', error);
+        m.reply('❌ *Ocurrió un error al intentar mostrar tus mascotas. Intenta nuevamente.*');
+    }
+}
+break;
+
+		
 		
 //escan para caja 			
 case 'escan': {
