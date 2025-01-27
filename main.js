@@ -1604,7 +1604,7 @@ case 'vermascotas': {
             `- *.entrenar* (20 min intervalo)\n` +
             `- *.pasiar* (10 min intervalo)\n` +
             `- *.darcariño* (5 min intervalo)\n` +
-            `- *.lanzarlapelota* (5 min intervalo)\n\n` +
+            `- *.lanzarpelota* (5 min intervalo)\n\n` +
             `💡 *Usa estos comandos para subir de nivel tus mascotas y ganar monedas.*`;
 
         await conn.sendMessage(
