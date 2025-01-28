@@ -728,6 +728,55 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema nuevo de mascota
+case 'estadomascota': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+
+        // Verificar si el usuario tiene una cartera creada
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        const mascotaPrincipal = cartera[userId].mascotas[0]; // La primera mascota es la principal
+
+        // Crear texto con las estadísticas de la mascota principal
+        let habilidadesText = mascotaPrincipal.habilidades
+            .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+            .join('\n');
+
+        const textoEstado = `
+🐾 *Estado de tu Mascota Principal:* 🐾
+
+🦴 *Nombre:* ${mascotaPrincipal.nombre}  
+📊 *Rango:* ${mascotaPrincipal.rango}  
+🆙 *Nivel:* ${mascotaPrincipal.nivel}  
+❤️ *Vida:* ${mascotaPrincipal.vida}  
+✨ *Experiencia:* ${mascotaPrincipal.experiencia} / ${mascotaPrincipal.experienciaSiguienteNivel}  
+
+🌟 *Habilidades:*  
+${habilidadesText}
+
+💡 *Usa los comandos de interacción para mejorar sus habilidades y subir de nivel.*`;
+
+        // Enviar mensaje al usuario con las estadísticas
+        await conn.sendMessage(
+            m.chat,
+            { text: textoEstado, mentions: [m.sender] },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error mostrando el estado de la mascota:', error);
+        m.reply('❌ *Ocurrió un error al intentar mostrar el estado de tu mascota. Intenta nuevamente.*');
+    }
+}
+break;
+	
 case 'mascota': {
     try {
         const userId = m.sender;
