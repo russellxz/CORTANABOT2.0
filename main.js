@@ -896,7 +896,6 @@ case 'batalla1': {
 }
 break;
 
-        
 case 'siquiero': {
     try {
         const userId = m.sender;
@@ -937,11 +936,14 @@ case 'siquiero': {
             `${opponentMascota.nombre} 🔥 *contraataca con un golpe certero!*`,
             `${challengerMascota.nombre} 💥 *responde con un movimiento crítico!*`,
             "💫 *Ambas mascotas están dando lo mejor de sí... ¿quién ganará?*",
+            "🔥 *El campo de batalla se llena de tensión... ¡estamos cerca del desenlace!*",
+            "🌟 *Un movimiento maestro podría decidirlo todo... ¡esto es épico!*",
+            "💥 *Impacto final... ¡qué combate tan increíble!*"
         ];
 
         let mensajeAnimado = await conn.sendMessage(m.chat, { text: animaciones[0] }, { quoted: m });
         for (let i = 1; i < animaciones.length; i++) {
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar 1 segundo
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Esperar 1.5 segundos
             await conn.sendMessage(
                 m.chat,
                 { text: animaciones[i], edit: mensajeAnimado.key }, // Editar el mensaje existente
@@ -1028,6 +1030,9 @@ case 'siquiero': {
     }
 }
 break;        
+
+
+        
 //curar        
 case 'curar': {
     try {
