@@ -1964,8 +1964,10 @@ case 'vermascotas': {
             `- *.daragua* (2 horas intervalo)\n` +
             `- *.entrenar* (20 min intervalo)\n` +
             `- *.pasear* (10 min intervalo)\n` +
-            `- *.darcariño* (5 min intervalo)\n` +
-            `- *.curar* (cuesta 100 Cortana Coins)\n` +
+            `- *.presumir* (5 min intervalo)\n` +
+	    `- *.darcariño* (5 min intervalo)\n` +
+            `- *.supermascota* (24 horas intervalo)\n` +
+	    `- *.curar* (cuesta 100 Cortana Coins)\n` +
             `- *.lanzarpelota* (5 min intervalo)\n\n` +
             `💡 *Usa estos comandos para mejorar tus mascotas y ganar monedas.*`;
 
@@ -1981,6 +1983,161 @@ case 'vermascotas': {
 }
 break;
 
+case 'supermascota': {
+    try {
+        const userId = m.sender;
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        const now = Date.now();
+        if (cartera[userId].lastSupermascota && now - cartera[userId].lastSupermascota < 86400000) {
+            const remainingTime = Math.ceil((86400000 - (now - cartera[userId].lastSupermascota)) / (60 * 60 * 1000));
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Espera ${remainingTime} horas antes de reclamar tu próxima recompensa de .supermascota.*` },
+                { quoted: m }
+            );
+        }
+
+        // Generar recompensas aleatorias
+        const xpGanada = Math.floor(Math.random() * 4500) + 500; // Entre 500 y 5000
+        const coinsGanados = Math.floor(Math.random() * 800) + 200; // Entre 200 y 1000
+
+        // Aplicar recompensas
+        const userMascota = cartera[userId].mascotas[0];
+        userMascota.experiencia += xpGanada;
+        cartera[userId].coins += coinsGanados;
+
+        // Guardar última vez usado
+        cartera[userId].lastSupermascota = now;
+
+        // Subida de nivel automática
+        while (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
+            userMascota.nivel++;
+            userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
+            userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
+        }
+
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `🎉 *¡Has reclamado tu recompensa de .supermascota!*  
+🆙 *XP ganada:* ${xpGanada}  
+🪙 *Cortana Coins ganadas:* ${coinsGanados}  
+
+🐾 *Tu mascota ahora tiene:*  
+- 🆙 Nivel: ${userMascota.nivel}  
+- ❤️ Vida: ${userMascota.vida}`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .supermascota:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al reclamar la recompensa de .supermascota.*' }, { quoted: m });
+    }
+}
+break;
+
+case 'presumir': {
+    try {
+        const userId = m.sender;
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        const now = Date.now();
+        if (cartera[userId].lastPresumir && now - cartera[userId].lastPresumir < 300000) {
+            const remainingTime = Math.ceil((300000 - (now - cartera[userId].lastPresumir)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Espera ${remainingTime} minutos antes de volver a usar el comando .presumir.*` },
+                { quoted: m }
+            );
+        }
+
+        // Generar recompensas aleatorias
+        const xpGanada = Math.floor(Math.random() * 200) + 50; // Entre 50 y 250 XP
+        const coinsGanados = Math.floor(Math.random() * 50) + 10; // Entre 10 y 60 coins
+
+        // Aplicar recompensas
+        const userMascota = cartera[userId].mascotas[0];
+        userMascota.experiencia += xpGanada;
+        cartera[userId].coins += coinsGanados;
+
+        // Guardar última vez usado
+        cartera[userId].lastPresumir = now;
+
+        // Subida de nivel automática
+        while (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
+            userMascota.nivel++;
+            userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
+            userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
+        }
+
+        // Incrementar habilidades aleatoriamente
+        const habilidadIndex = Math.floor(Math.random() * userMascota.habilidades.length);
+        userMascota.habilidades[habilidadIndex].nivel++;
+
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Textos aleatorios
+        const textos = [
+            "💥 *Tu mascota impresionó a todos en el parque y ganó popularidad.*",
+            "🔥 *Presumiste a tu mascota y todos quedaron asombrados.*",
+            "🎉 *La energía de tu mascota se robó las miradas del lugar.*",
+            "✨ *Un espectáculo digno de una estrella. ¡Qué gran mascota tienes!*",
+            "🏆 *Tu mascota recibió aplausos y ganó el respeto de los demás.*",
+            "🐾 *Un día increíble para presumir a tu compañero.*",
+            "🌟 *¡Tu mascota brilló como nunca antes!*",
+            "🎭 *Fue el alma del evento. ¡Un éxito total!*",
+            "🚀 *Tu mascota mostró todo su potencial. ¡Increíble!*",
+            "🏅 *Orgullo de dueño. ¡Gran día para presumir!*",
+            "💎 *Tu mascota deslumbró con sus habilidades.*",
+            "🔥 *Todos hablarán de este momento épico.*",
+            "🎶 *Un momento mágico para tu mascota y tú.*",
+            "💥 *Impresionaste a todos con el talento de tu mascota.*",
+            "✨ *Una actuación de alto nivel. ¡Felicitaciones!*",
+            "⚡ *Fue un espectáculo lleno de emoción y energía.*",
+            "🌟 *Tu mascota es una verdadera estrella.*",
+            "🎭 *Un día inolvidable para presumir a tu mascota.*",
+            "🚀 *Tu compañero mostró habilidades impresionantes.*",
+            "🏅 *¡Una mascota digna de aplausos y premios!*",
+        ];
+
+        const textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
+
+        // Respuesta final
+        const mensaje = `${textoAleatorio}  
+🆙 *XP ganada:* ${xpGanada}  
+🪙 *Cortana Coins ganadas:* ${coinsGanados}`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .presumir:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al presumir tu mascota.*' }, { quoted: m });
+    }
+}
+break;
+
+		
 case 'saldo': {
     try {
         await m.react('💰'); // Reacción al usar el comando
