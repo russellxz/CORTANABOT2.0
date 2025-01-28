@@ -764,10 +764,17 @@ ${habilidadesText}
 
 💡 *Usa los comandos de interacción para mejorar sus habilidades y subir de nivel.*`;
 
-        // Enviar mensaje al usuario con las estadísticas
+        // URL de la imagen correspondiente
+        const imageUrl = 'https://cloud.dorratz.com/files/0f1eacbf814e1342e424de1b3ab0fd3b'; // Reemplaza con la URL de la imagen que quieras enviar
+
+        // Enviar mensaje al usuario con la imagen y las estadísticas
         await conn.sendMessage(
             m.chat,
-            { text: textoEstado, mentions: [m.sender] },
+            {
+                image: { url: imageUrl }, // Enviar la imagen con la URL
+                caption: textoEstado, // Texto que acompaña a la imagen
+                mentions: [m.sender], // Menciones si aplica
+            },
             { quoted: m }
         );
     } catch (error) {
@@ -2019,16 +2026,24 @@ case 'vermascotas': {
             `- *.entrenar* (20 min intervalo)\n` +
             `- *.pasear* (10 min intervalo)\n` +
             `- *.presumir* (5 min intervalo)\n` +
-	    `- *.batalla1* (10 min intervalo)\n` +
-	    `- *.darcariño* (5 min intervalo)\n` +
+            `- *.batalla1* (10 min intervalo)\n` +
+            `- *.darcariño* (5 min intervalo)\n` +
+            `- *.estadomascota* (mira el estado de tu mascota principal)\n` +
             `- *.supermascota* (24 horas intervalo)\n` +
-	    `- *.curar* (cuesta 100 Cortana Coins)\n` +
+            `- *.curar* (cuesta 100 Cortana Coins)\n` +
             `- *.lanzarpelota* (5 min intervalo)\n\n` +
             `💡 *Usa estos comandos para mejorar tus mascotas y ganar monedas.*`;
 
+        // URL de la imagen correspondiente
+        const imageUrl = 'https://cloud.dorratz.com/files/bdc27b328f2f4c1fe018bbb0d6a5871b'; // Reemplaza con la URL de la imagen que desees mostrar
+
+        // Enviar mensaje con la imagen y el texto
         await conn.sendMessage(
             m.chat,
-            { text: textoMascotas },
+            {
+                image: { url: imageUrl }, // Enviar la imagen
+                caption: textoMascotas, // Texto que acompaña la imagen
+            },
             { quoted: m }
         );
     } catch (error) {
