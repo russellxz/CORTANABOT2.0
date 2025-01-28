@@ -1459,7 +1459,7 @@ case 'entrenar': {
 }
 break;	
 	
-case 'pasiar': {
+case 'pasear': {
     try {
         await m.react('✅'); // Reacción al usar el comando
 
@@ -1804,9 +1804,10 @@ case 'vermascotas': {
             `- *.darcomida* (1 hora intervalo)\n` +
             `- *.daragua* (2 horas intervalo)\n` +
             `- *.entrenar* (20 min intervalo)\n` +
-            `- *.pasiar* (10 min intervalo)\n` +
+            `- *.pasear* (10 min intervalo)\n` +
             `- *.darcariño* (5 min intervalo)\n` +
-            `- *.lanzarpelota* (5 min intervalo)\n\n` +
+            `- *.curar* (30 min intervalo)\n` +
+	    `- *.lanzarpelota* (5 min intervalo)\n\n` +
             `💡 *Usa estos comandos para subir de nivel tus mascotas y ganar monedas.*`;
 
         await conn.sendMessage(
