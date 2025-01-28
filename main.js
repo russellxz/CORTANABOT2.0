@@ -2166,7 +2166,7 @@ case 'saldo': {
 ✨ *¡Usa tus monedas para comprar y mejorar tus mascotas!*  
 💡 *Comandos útiles:*  
 - \`.vermascotas\`  
-- \`.tiendacoins\`  
+- \`.tiendamall\`  
 
 🌟 *¡Sigue ganando monedas completando actividades con tus mascotas!*
 ━━━━━━━━━━━━━━━━━━
