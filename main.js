@@ -928,7 +928,57 @@ case 'siquiero': {
     }
 }
 break;        
-        
+//curar        
+case 'curar': {
+    try {
+        const userId = m.sender;
+
+        // Verificar si el usuario tiene cartera
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        const userMascota = cartera[userId].mascotas[0];
+
+        // Verificar si el usuario tiene suficientes monedas
+        if (cartera[userId].coins < 100) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "💰 *No tienes suficientes Cortana Coins para curar a tu mascota.* (Necesitas 🪙 100)" },
+                { quoted: m }
+            );
+        }
+
+        // Curar la vida de la mascota
+        userMascota.vida = 100;
+
+        // Descontar monedas
+        cartera[userId].coins -= 100;
+
+        // Guardar cambios en la cartera
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Responder al usuario
+        const mensaje = `❤️ *Tu mascota ${userMascota.nombre} ha sido curada al máximo.*  
+💰 *Se descontaron 🪙 100 Cortana Coins de tu cuenta.*  
+✨ *Vida actual de la mascota:* 100 HP`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .curar:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar curar a tu mascota. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+		
 //batalla 	
 case 'lanzarpelota': {
     try {
