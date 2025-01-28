@@ -871,9 +871,16 @@ _Poderoso y letal._
 💡 *Próximamente más mascotas y sorpresas para ti.*  
 🛒 *¡Sigue ahorrando Cortana Coins para nuevas aventuras!* 🪙  
 `;
+
+        const imageUrl = 'https://cloud.dorratz.com/files/d940ad9ae373fadc8b1589c3e88ab4f0'; // Reemplaza con la URL de tu imagen
+
+        // Enviar el mensaje de la tienda junto con la imagen
         await conn.sendMessage(
             m.chat,
-            { text: tienda },
+            { 
+                caption: tienda,
+                image: { url: imageUrl },
+            },
             { quoted: m }
         );
     } catch (error) {
