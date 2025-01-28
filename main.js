@@ -1965,6 +1965,7 @@ case 'vermascotas': {
             `- *.entrenar* (20 min intervalo)\n` +
             `- *.pasear* (10 min intervalo)\n` +
             `- *.presumir* (5 min intervalo)\n` +
+	    `- *.batalla1* (10 min intervalo)\n` +
 	    `- *.darcariño* (5 min intervalo)\n` +
             `- *.supermascota* (24 horas intervalo)\n` +
 	    `- *.curar* (cuesta 100 Cortana Coins)\n` +
