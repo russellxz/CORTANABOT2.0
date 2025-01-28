@@ -728,6 +728,57 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema nuevo de mascota
+case 'mascota': {
+    try {
+        const userId = m.sender;
+        const args = m.text.split(' ')[1]; // Obtener el número de la mascota (ejemplo: .mascota 2)
+
+        // Verificar si el usuario tiene una cartera
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el argumento es válido
+        const mascotaIndex = parseInt(args);
+        if (isNaN(mascotaIndex) || mascotaIndex < 1 || mascotaIndex > cartera[userId].mascotas.length) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *Debes ingresar un número válido entre 1 y ${cartera[userId].mascotas.length}.*` },
+                { quoted: m }
+            );
+        }
+
+        // Cambiar la mascota principal
+        const mascotas = cartera[userId].mascotas;
+        const nuevaMascotaPrincipal = mascotas.splice(mascotaIndex - 1, 1)[0]; // Eliminar y obtener la mascota seleccionada
+        mascotas.unshift(nuevaMascotaPrincipal); // Moverla al inicio del arreglo
+
+        // Guardar cambios en cartera.json
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Confirmar cambio
+        const mensaje = `🎉 *Has cambiado tu mascota principal a:*  
+🦴 *${nuevaMascotaPrincipal.nombre}*  
+📊 *Rango:* ${nuevaMascotaPrincipal.rango}  
+🆙 *Nivel:* ${nuevaMascotaPrincipal.nivel}  
+❤️ *Vida:* ${nuevaMascotaPrincipal.vida}`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .mascota:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar cambiar de mascota. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
 case 'tiendamall': {
     try {
         const tienda = `
