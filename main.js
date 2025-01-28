@@ -728,6 +728,55 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema nuevo de mascota
+case 'tiendamall': {
+    try {
+        const tienda = `
+¸,ø¤º°\`°º¤ø,¸¸,ø¤º°
+★·.·´¯\`·.·★ *TIENDA MALL* ★·.·´¯\`·.·★
+🍒｡･ﾟ♡ﾟ･｡🍓｡･ﾟ♡ﾟ･｡
+
+🛒 *¡Bienvenido a la Tienda Mall! Aquí puedes comprar nuevas mascotas con tus Cortana Coins.* 🪙
+
+━─━────༺༻────━─━
+
+🐒 *Changuito*  
+💰 Precio: 🪙 100 Cortana Coins  
+_Compañero ágil y juguetón._
+
+🦁 *León*  
+💰 Precio: 🪙 200 Cortana Coins  
+_El rey de la selva, imponente y fuerte._
+
+🐓 *Gallo*  
+💰 Precio: 🪙 50 Cortana Coins  
+_Un luchador persistente._
+
+🐿 *Ardilla*  
+💰 Precio: 🪙 75 Cortana Coins  
+_Veloz y recolectora._
+
+🐅 *Tigre*  
+💰 Precio: 🪙 300 Cortana Coins  
+_Poderoso y letal._
+
+━─━────༺༻────━─━
+
+💡 *Próximamente más mascotas y sorpresas para ti.*  
+🛒 *¡Sigue ahorrando Cortana Coins para nuevas aventuras!* 🪙  
+`;
+        await conn.sendMessage(
+            m.chat,
+            { text: tienda },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .tiendamall:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al mostrar la tienda. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
+	
 case 'batalla1': {
     try {
         const userId = m.sender; // ID del usuario que envía el comando
@@ -1833,6 +1882,14 @@ case 'vermascotas': {
 
         const userMascotas = cartera[userId].mascotas;
 
+        if (!userMascotas || userMascotas.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "🐾 *No tienes ninguna mascota actualmente.* Usa `.crearcartera` o compra una en la tienda." },
+                { quoted: m }
+            );
+        }
+
         // Construir texto con las estadísticas de las mascotas
         let textoMascotas = `🐾 *Tus Mascotas y Estadísticas:* 🐾\n\n`;
         userMascotas.forEach((mascota, index) => {
@@ -1843,9 +1900,10 @@ case 'vermascotas': {
             textoMascotas += `🦴 *Mascota ${index + 1}:* ${mascota.nombre}\n` +
                 `📊 *Rango:* ${mascota.rango}\n` +
                 `🆙 *Nivel:* ${mascota.nivel}\n` +
-                `❤️ *Vida:* ${mascota.vida}\n` +
+                `❤️ *Vida:* ${mascota.vida}/100\n` +
                 `✨ *Experiencia:* ${mascota.experiencia} / ${mascota.experienciaSiguienteNivel}\n` +
-                `🌟 *Habilidades:*\n${habilidadesText}\n\n`;
+                `🌟 *Habilidades:*\n${habilidadesText}\n` +
+                `———————————————\n`;
         });
 
         // Agregar lista de comandos disponibles
@@ -1856,13 +1914,13 @@ case 'vermascotas': {
             `- *.entrenar* (20 min intervalo)\n` +
             `- *.pasear* (10 min intervalo)\n` +
             `- *.darcariño* (5 min intervalo)\n` +
-            `- *.curar* (30 min intervalo)\n` +
-	    `- *.lanzarpelota* (5 min intervalo)\n\n` +
-            `💡 *Usa estos comandos para subir de nivel tus mascotas y ganar monedas.*`;
+            `- *.curar* (cuesta 100 Cortana Coins)\n` +
+            `- *.lanzarpelota* (5 min intervalo)\n\n` +
+            `💡 *Usa estos comandos para mejorar tus mascotas y ganar monedas.*`;
 
         await conn.sendMessage(
             m.chat,
-            { text: textoMascotas, mentions: [m.sender] },
+            { text: textoMascotas },
             { quoted: m }
         );
     } catch (error) {
@@ -1988,6 +2046,317 @@ case 'ok': {
     }
 }
 break;
+//mascotas para comprar
+case 'changuito': {
+    try {
+        const userId = m.sender;
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        if (cartera[userId].coins < 100) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "💰 *No tienes suficientes Cortana Coins para comprar a 🐒 Changuito.* (Necesitas 🪙 100)" },
+                { quoted: m }
+            );
+        }
+
+        // Crear la mascota
+        const nuevaMascota = {
+            nombre: "🐒 Changuito",
+            habilidades: [
+                { nombre: 'Agilidad', nivel: 1 },
+                { nombre: 'Saltos', nivel: 1 },
+                { nombre: 'Evasión', nivel: 1 },
+            ],
+            vida: 100,
+            nivel: 1,
+            rango: '🐾 Principiante',
+            experiencia: 0,
+            experienciaSiguienteNivel: 100,
+        };
+
+        // Descontar monedas y añadir la mascota
+        cartera[userId].coins -= 100;
+        cartera[userId].mascotas.push(nuevaMascota);
+
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `🎉 *¡Felicidades! Has comprado a 🐒 Changuito.*  
+📊 *Habilidades iniciales:*  
+🔹 Agilidad (Nivel 1)  
+🔹 Saltos (Nivel 1)  
+🔹 Evasión (Nivel 1)  
+💰 *Se descontaron 🪙 100 Cortana Coins de tu cuenta.*  
+✨ *Tu mascota está lista para comenzar su aventura.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .changuito:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a 🐒 Changuito.*' }, { quoted: m });
+    }
+}
+break;
+
+case 'leon': {
+    try {
+        const userId = m.sender;
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        if (cartera[userId].coins < 200) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "💰 *No tienes suficientes Cortana Coins para comprar a 🦁 León.* (Necesitas 🪙 200)" },
+                { quoted: m }
+            );
+        }
+
+        // Crear la mascota
+        const nuevaMascota = {
+            nombre: "🦁 León",
+            habilidades: [
+                { nombre: 'Fuerza', nivel: 1 },
+                { nombre: 'Dominio', nivel: 1 },
+                { nombre: 'Rugido', nivel: 1 },
+            ],
+            vida: 100,
+            nivel: 1,
+            rango: '🐾 Principiante',
+            experiencia: 0,
+            experienciaSiguienteNivel: 100,
+        };
+
+        // Descontar monedas y añadir la mascota
+        cartera[userId].coins -= 200;
+        cartera[userId].mascotas.push(nuevaMascota);
+
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `🎉 *¡Felicidades! Has comprado a 🦁 León.*  
+📊 *Habilidades iniciales:*  
+🔹 Fuerza (Nivel 1)  
+🔹 Dominio (Nivel 1)  
+🔹 Rugido (Nivel 1)  
+💰 *Se descontaron 🪙 200 Cortana Coins de tu cuenta.*  
+✨ *Tu mascota está lista para comenzar su aventura.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .leon:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a 🦁 León.*' }, { quoted: m });
+    }
+}
+break;
+
+// .gallo, .ardilla y .tigre
+case 'gallo': {
+    try {
+        const userId = m.sender;
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        if (cartera[userId].coins < 50) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "💰 *No tienes suficientes Cortana Coins para comprar a 🐓 Gallo.* (Necesitas 🪙 50)" },
+                { quoted: m }
+            );
+        }
+
+        // Crear la mascota
+        const nuevaMascota = {
+            nombre: "🐓 Gallo",
+            habilidades: [
+                { nombre: 'Ataque', nivel: 1 },
+                { nombre: 'Velocidad', nivel: 1 },
+                { nombre: 'Resistencia', nivel: 1 },
+            ],
+            vida: 100,
+            nivel: 1,
+            rango: '🐾 Principiante',
+            experiencia: 0,
+            experienciaSiguienteNivel: 100,
+        };
+
+        // Descontar monedas y añadir la mascota
+        cartera[userId].coins -= 50;
+        cartera[userId].mascotas.push(nuevaMascota);
+
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `🎉 *¡Felicidades! Has comprado a 🐓 Gallo.*  
+📊 *Habilidades iniciales:*  
+🔹 Ataque (Nivel 1)  
+🔹 Velocidad (Nivel 1)  
+🔹 Resistencia (Nivel 1)  
+💰 *Se descontaron 🪙 50 Cortana Coins de tu cuenta.*  
+✨ *Tu mascota está lista para comenzar su aventura.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .gallo:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a 🐓 Gallo.*' }, { quoted: m });
+    }
+}
+break;
+
+case 'ardilla': {
+    try {
+        const userId = m.sender;
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        if (cartera[userId].coins < 75) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "💰 *No tienes suficientes Cortana Coins para comprar a 🐿 Ardilla.* (Necesitas 🪙 75)" },
+                { quoted: m }
+            );
+        }
+
+        // Crear la mascota
+        const nuevaMascota = {
+            nombre: "🐿 Ardilla",
+            habilidades: [
+                { nombre: 'Velocidad', nivel: 1 },
+                { nombre: 'Evasión', nivel: 1 },
+                { nombre: 'Recolección', nivel: 1 },
+            ],
+            vida: 100,
+            nivel: 1,
+            rango: '🐾 Principiante',
+            experiencia: 0,
+            experienciaSiguienteNivel: 100,
+        };
+
+        // Descontar monedas y añadir la mascota
+        cartera[userId].coins -= 75;
+        cartera[userId].mascotas.push(nuevaMascota);
+
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `🎉 *¡Felicidades! Has comprado a 🐿 Ardilla.*  
+📊 *Habilidades iniciales:*  
+🔹 Velocidad (Nivel 1)  
+🔹 Evasión (Nivel 1)  
+🔹 Recolección (Nivel 1)  
+💰 *Se descontaron 🪙 75 Cortana Coins de tu cuenta.*  
+✨ *Tu mascota está lista para comenzar su aventura.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .ardilla:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a 🐿 Ardilla.*' }, { quoted: m });
+    }
+}
+break;
+
+case 'tigre': {
+    try {
+        const userId = m.sender;
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        if (cartera[userId].coins < 300) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "💰 *No tienes suficientes Cortana Coins para comprar a 🐅 Tigre.* (Necesitas 🪙 300)" },
+                { quoted: m }
+            );
+        }
+
+        // Crear la mascota
+        const nuevaMascota = {
+            nombre: "🐅 Tigre",
+            habilidades: [
+                { nombre: 'Fuerza', nivel: 1 },
+                { nombre: 'Sigilo', nivel: 1 },
+                { nombre: 'Ataque crítico', nivel: 1 },
+            ],
+            vida: 100,
+            nivel: 1,
+            rango: '🐾 Principiante',
+            experiencia: 0,
+            experienciaSiguienteNivel: 100,
+        };
+
+        // Descontar monedas y añadir la mascota
+        cartera[userId].coins -= 300;
+        cartera[userId].mascotas.push(nuevaMascota);
+
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `🎉 *¡Felicidades! Has comprado a 🐅 Tigre.*  
+📊 *Habilidades iniciales:*  
+🔹 Fuerza (Nivel 1)  
+🔹 Sigilo (Nivel 1)  
+🔹 Ataque crítico (Nivel 1)  
+💰 *Se descontaron 🪙 300 Cortana Coins de tu cuenta.*  
+✨ *Tu mascota está lista para comenzar su aventura.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .tigre:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a 🐅 Tigre.*' }, { quoted: m });
+    }
+}
+break;		
 		
 		
 //escan para caja 			
