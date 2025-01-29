@@ -1113,7 +1113,7 @@ break;
 case 'delpersonaje': {
     try {
         const userId = m.sender;
-        const personajeNombre = args.join(" "); // Obtener el nombre del personaje desde el mensaje
+        const personajeNombre = args.join(" ").trim().toLowerCase(); // Normalizar el nombre
 
         if (!personajeNombre) {
             return conn.sendMessage(
@@ -1132,8 +1132,8 @@ case 'delpersonaje': {
             );
         }
 
-        // Buscar el personaje en la lista del usuario
-        const index = cartera[userId].personajes.findIndex(p => p.nombre.toLowerCase() === personajeNombre.toLowerCase());
+        // Buscar el personaje en la lista del usuario (ignorando mayúsculas y espacios adicionales)
+        const index = cartera[userId].personajes.findIndex(p => p.nombre.toLowerCase().includes(personajeNombre));
 
         if (index === -1) {
             return conn.sendMessage(
@@ -1143,20 +1143,21 @@ case 'delpersonaje': {
             );
         }
 
-        // Verificar si el personaje es exclusivo
+        // Obtener información del personaje
         const personaje = cartera[userId].personajes[index];
-        let esExclusivo = personaje.exclusivo || false;
+        const esExclusivo = personaje.exclusivo || false;
+        const nombreExacto = personaje.nombre;
 
         // Eliminar el personaje de la lista del usuario
         cartera[userId].personajes.splice(index, 1);
 
-        // Si el personaje era exclusivo, lo libera para que otro usuario pueda comprarlo
+        // Si el personaje era exclusivo, liberar para que otro usuario pueda comprarlo
         if (esExclusivo) {
             Object.keys(cartera).forEach(user => {
                 if (cartera[user].personajes) {
                     cartera[user].personajes = cartera[user].personajes.map(p => {
-                        if (p.nombre.toLowerCase() === personajeNombre.toLowerCase()) {
-                            delete p.dueño; // Elimina el dueño del personaje
+                        if (p.nombre.toLowerCase() === nombreExacto.toLowerCase()) {
+                            delete p.dueño; // Elimina el dueño del personaje exclusivo
                         }
                         return p;
                     });
@@ -1170,7 +1171,7 @@ case 'delpersonaje': {
         // Mensaje de confirmación
         await conn.sendMessage(
             m.chat,
-            { text: `🗑️ *El personaje "${personajeNombre}" ha sido eliminado con éxito.*` },
+            { text: `🗑️ *El personaje "${nombreExacto}" ha sido eliminado con éxito.*` },
             { quoted: m }
         );
     } catch (error) {
