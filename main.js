@@ -165,7 +165,7 @@ const pushname = m.pushName || "Sin nombre"
 const botnm = conn.user.id.split(":")[0] + "@s.whatsapp.net"  
 const _isBot = conn.user.jid
 m.isBot = m.id.startsWith('BAE5') && m.id.length === 16 || m.id.startsWith('3EB0') && m.id.length === 12 || m.id.startsWith('3EB0') && (m.id.length === 20 || m.id.length === 22) || m.id.startsWith('B24E') && m.id.length === 20;
-if (m.isBot) return;
+if (m.isBot) return 
 
 /**
  * Returns early if ID starts with 'NJX-' due to Baileys' different generateId system.
@@ -178,6 +178,7 @@ const userSender = m.key.fromMe ? botnm : m.isGroup && m.key.participant.include
 const isCreator = [conn.decodeJid(conn.user.id), ...global.owner.map(([numero]) => numero)].map((v) => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender);
 const isOwner = isCreator || m.fromMe;
 const isMods = isOwner || global.mods.map((v) => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender);
+m.isWABusiness = global.conn.authState?.creds?.platform === 'smba' || global.conn.authState?.creds?.platform === 'smbi'
 //const isCreator = global.owner.map(([numero]) => numero.replace(/[^\d\s().+:]/g, '').replace(/\s/g, '') + '@s.whatsapp.net').includes(userSender) 
 const itsMe = m.sender == conn.user.id ? true : false 
 const text = args.join(" ") 
@@ -524,7 +525,7 @@ if (global.db.data.chats[m.chat].simi) {
 let textodem = budy
 try {
 await conn.sendPresenceUpdate('composing', m.chat)
-let gpt = await fetch(`https://deliriussapi-oficial.vercel.app/tools/simi?text=${encodeURIComponent(textodem)}`)
+let gpt = await fetch(`https://delirius-apiofc.vercel.app/api/simi?text=${encodeURIComponent(textodem)}`)
 let res = await gpt.json()
 await delay(1 * 1000) 
 await m.reply(res.data.message)
@@ -8725,9 +8726,11 @@ if (media === 'texto')
 await conn.sendMessage(m.chat, {text: `${pickRandom(['*QUE YO QUE?*', 'Que?'])}`}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})}
 */
 //if (m.mentionedJid.includes(conn.user.jid) || (m.quoted && m.quoted.sender === conn.user.jid) || budy.includes(`Bot`) || budy.includes(`bot`) || budy.includes(`alexa`) || budy.includes(`Alexa`) || budy.includes(`simi`) || budy.includes(`Simi`) || budy.includes(`Simsimi`)) {
-if (m.mentionedJid.includes(conn.user.jid) || budy.includes(`bot`) || budy.includes(`cortana`) || budy.includes(`alexa`) || budy.includes(`Alexa`) || budy.includes(`Simi`) || budy.includes(`Simsimi`)) {
+if (m.mentionedJid.includes(conn.user.jid) || budy.includes(`bot`) || budy.includes(`alexa`) || budy.includes(`Bot`) || budy.includes(`Simi`) || budy.includes(`simi`) || budy.includes(`Simsimi`)) {
+m.isBot = m.id.startsWith('BAE5') && m.id.length === 16 || m.id.startsWith('3EB0') && m.id.length === 12 || m.id.startsWith('3EB0') && (m.id.length === 20 || m.id.length === 22) || m.id.startsWith('B24E') && m.id.length === 20;
+if (m.isBot) return 
 const axios = require('axios');
-    await conn.sendPresenceUpdate('composing', m.chat)    
+await conn.sendPresenceUpdate('composing', m.chat)    
 
 async function luminsesi(q, username, logic) {
     try {
@@ -8806,7 +8809,7 @@ if (result && result.trim().length > 0) {
 await m.reply(result);
 //conn.sendTextWithMentions(m.chat, result, m) 
 } else {
-let gpt = await fetch(`https://deliriussapi-oficial.vercel.app/tools/simi?text=${encodeURIComponent(budy)}`);
+let gpt = await fetch(`https://delirius-apiofc.vercel.app/tools/simi?text=${encodeURIComponent(budy)}`);
 let res = await gpt.json();
 await m.reply(res.data.message);
 }
@@ -9233,3 +9236,5 @@ console.log(chalk.redBright(`Update ${__filename}`))
 delete require.cache[file]
 require(file)
 })
+  
+  
