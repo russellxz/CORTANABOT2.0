@@ -733,11 +733,11 @@ case 'alaventa': {
     try {
         await m.react('🛒'); // Reacción al usar el comando
 
-        // Verificar si hay una sección de ventas en el JSON
-        if (!cartera.ventas || !Array.isArray(cartera.ventas) || cartera.ventas.length === 0) {
+        // Verificar si hay personajes en venta
+        if (!cartera.personajesEnVenta || cartera.personajesEnVenta.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No hay personajes exclusivos en venta actualmente.*\n\n📌 Usa `.venderpersonaje` para poner uno en venta." },
+                { text: "⚠️ *No hay personajes exclusivos en venta actualmente.* Vuelve más tarde o usa `.venderpersonaje` para poner uno en venta." },
                 { quoted: m }
             );
         }
@@ -745,19 +745,18 @@ case 'alaventa': {
         let menuVenta = `🎭 *Lista de Personajes en Venta* 🎭\n`;
         menuVenta += `━━━━━━━━━━━━━━━━━━━━\n`;
 
-        // Recorrer los personajes en venta y mostrarlos en formato bonito
-        cartera.ventas.forEach((venta, index) => {
+        cartera.personajesEnVenta.forEach((venta, index) => {
             let vendedor = venta.vendedor || "Desconocido";
-            let precio = venta.precio ? `🪙 *${venta.precio} Cortana Coins*` : "💰 *Precio no especificado*";
-            let habilidadesText = venta.personaje.habilidades && venta.personaje.habilidades.length > 0
-                ? venta.personaje.habilidades.map(hab => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`).join('\n')
-                : "⚠️ Sin habilidades registradas";
+            let precio = venta.precio ? `🪙 *${venta.precio} Cortana Coins*` : "Precio no especificado";
+            let habilidadesText = venta.habilidades
+                .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+                .join('\n');
 
-            let barraNivelBatalla = "■".repeat(venta.personaje.nivelBatalla) + "□".repeat(10 - venta.personaje.nivelBatalla);
-            let porcentajeBatalla = venta.personaje.nivelBatalla * 10;
+            let barraNivelBatalla = "■".repeat(venta.nivelBatalla) + "□".repeat(10 - venta.nivelBatalla);
+            let porcentajeBatalla = venta.nivelBatalla * 10;
 
-            menuVenta += `🛒 *#${index + 1} - ${venta.personaje.nombre}*\n`;
-            menuVenta += `🆙 *Nivel:* ${venta.personaje.nivel}\n`;
+            menuVenta += `🛒 *#${index + 1} - ${venta.nombre}*\n`;
+            menuVenta += `🆙 *Nivel:* ${venta.nivel}\n`;
             menuVenta += `💥 *Nivel de Batalla:* ${barraNivelBatalla} ${porcentajeBatalla}%\n`;
             menuVenta += `${precio}\n`;
             menuVenta += `🌟 *Habilidades:*\n${habilidadesText}\n`;
@@ -770,7 +769,7 @@ case 'alaventa': {
             m.chat,
             {
                 text: menuVenta,
-                mentions: cartera.ventas.map(venta => venta.vendedor)
+                mentions: cartera.personajesEnVenta.map(venta => venta.vendedor)
             },
             { quoted: m }
         );
