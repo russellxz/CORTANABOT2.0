@@ -944,7 +944,6 @@ case 'quitarventa': {
 }
 break;
 	
-
 case 'asta': {
     try {
         await m.react('✅'); // Reacción al usar el comando
@@ -959,16 +958,14 @@ case 'asta': {
         );
 
         if (personajeEnVenta) {
-            const vendedorId = personajeEnVenta.vendedor.includes('@s.whatsapp.net') 
-                ? personajeEnVenta.vendedor 
-                : personajeEnVenta.vendedor + '@s.whatsapp.net';
+            const vendedorId = personajeEnVenta.vendedor.replace('@s.whatsapp.net', '');
 
             return conn.sendMessage(
                 m.chat,
                 { 
-                    text: `⚠️ *${personajeNombre} está actualmente en venta por* @${personajeEnVenta.vendedor.split('@')[0]} *por 🪙 ${personajeEnVenta.precio} Cortana Coins.*  
+                    text: `⚠️ *${personajeNombre} está actualmente en venta por* @${vendedorId} *por 🪙 ${personajeEnVenta.precio} Cortana Coins.*  
 💡 *Debes esperar a que sea retirado de la venta o comprado por otro usuario.*`,
-                    mentions: [vendedorId]
+                    mentions: [`${vendedorId}@s.whatsapp.net`] 
                 }
             );
         }
@@ -979,15 +976,13 @@ case 'asta': {
         );
 
         if (personajeYaComprado) {
-            const dueñoId = personajeYaComprado[0].includes('@s.whatsapp.net') 
-                ? personajeYaComprado[0] 
-                : personajeYaComprado[0] + '@s.whatsapp.net';
+            const dueñoId = personajeYaComprado[0].replace('@s.whatsapp.net', '');
 
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *${personajeNombre} ya ha sido comprado por* @${personajeYaComprado[0].split('@')[0]}.*  
+                { text: `⚠️ *${personajeNombre} ya ha sido comprado por* @${dueñoId}.*  
 Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
-                { mentions: [dueñoId] }
+                { mentions: [`${dueñoId}@s.whatsapp.net`] }
             );
         }
 
