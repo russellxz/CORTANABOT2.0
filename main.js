@@ -797,7 +797,6 @@ ${habilidadesText}
     }
 }
 break;
-
 case 'personaje': {
     try {
         await m.react('🔄'); // Reacción al usar el comando
@@ -825,7 +824,7 @@ case 'personaje': {
         let personajesNormales = cartera[userId].personajes || [];
         let personajesExclusivos = cartera[userId].personajesExclusivos || [];
 
-        // Buscar el personaje en ambas listas
+        // Buscar el personaje en ambas listas (ignorando mayúsculas, minúsculas y emojis)
         let personajeIndex = personajesNormales.findIndex(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
         let personajeExclusivoIndex = personajesExclusivos.findIndex(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
 
@@ -840,23 +839,18 @@ case 'personaje': {
         let personajeSeleccionado;
 
         if (personajeExclusivoIndex !== -1) {
-            // Si es un personaje exclusivo, lo movemos al principio
+            // Si es un personaje exclusivo, lo ponemos primero y movemos todos los exclusivos arriba
             personajeSeleccionado = personajesExclusivos.splice(personajeExclusivoIndex, 1)[0];
             personajesExclusivos.unshift(personajeSeleccionado);
         } else {
-            // Si es un personaje normal, lo movemos al principio
+            // Si es un personaje normal, lo ponemos primero en su lista sin afectar los exclusivos
             personajeSeleccionado = personajesNormales.splice(personajeIndex, 1)[0];
             personajesNormales.unshift(personajeSeleccionado);
         }
 
-        // **Mover TODOS los personajes exclusivos al inicio si se elige uno**
-        if (personajeExclusivoIndex !== -1) {
-            personajesExclusivos = personajesExclusivos.sort((a, b) => a.nombre.localeCompare(b.nombre));
-        }
-
-        // Guardar los cambios en el JSON
+        // Guardar los cambios en el JSON asegurando que los exclusivos quedan arriba
         cartera[userId].personajes = personajesNormales;
-        cartera[userId].personajesExclusivos = personajesExclusivos;
+        cartera[userId].personajesExclusivos = personajesExclusivos.sort((a, b) => a.nombre.localeCompare(b.nombre));
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // Diccionario con las URLs de los personajes
@@ -902,6 +896,7 @@ ${barraNivelBatalla} ${porcentajeBatalla}%
     }
 }
 break;
+
 	
 case 'podermaximo': {
     try {
