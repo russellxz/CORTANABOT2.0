@@ -760,7 +760,24 @@ case 'vender': {
             );
         }
 
-        // Buscar el personaje con solo el primer nombre
+        // Verificar si el personaje ya está en venta en la lista global
+        if (!cartera.personajesEnVenta) {
+            cartera.personajesEnVenta = [];
+        }
+
+        let personajeYaEnVenta = cartera.personajesEnVenta.find(p =>
+            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '').split(" ")[0] === nombrePersonaje
+        );
+
+        if (personajeYaEnVenta) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *${personajeYaEnVenta.nombre} ya está en venta por @${personajeYaEnVenta.vendedor.split('@')[0]} por 🪙 ${personajeYaEnVenta.precio} Cortana Coins.*` },
+                { mentions: [personajeYaEnVenta.vendedor] }
+            );
+        }
+
+        // Buscar el personaje con solo el primer nombre dentro de los personajes exclusivos del usuario
         let personajeIndex = cartera[userId].personajesExclusivos.findIndex(p =>
             p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '').split(" ")[0] === nombrePersonaje
         );
@@ -774,21 +791,6 @@ case 'vender': {
         }
 
         let personajeEncontrado = cartera[userId].personajesExclusivos[personajeIndex];
-
-        // Asegurar que la lista de venta existe
-        if (!cartera.personajesEnVenta) {
-            cartera.personajesEnVenta = [];
-        }
-
-        // Verificar si ya está en venta
-        if (cartera.personajesEnVenta.some(p =>
-            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '').split(" ")[0] === nombrePersonaje)) {
-            return conn.sendMessage(
-                m.chat,
-                { text: `⚠️ *${personajeEncontrado.nombre} ya está en venta.* Usa \`.quitarventa ${nombrePersonaje}\` si quieres quitarlo.` },
-                { quoted: m }
-            );
-        }
 
         // Pasar el personaje a la lista de venta global
         cartera.personajesEnVenta.push({ 
@@ -945,11 +947,11 @@ case 'asta': {
 
         const userId = m.sender;
         const costo = 3000; // Costo de Asta
-        const personajeNombre = "Asta";
+        const personajeNombre = "Asta"; // Guardar solo el primer nombre
 
         // Verificar si ya ha sido comprado por otro usuario
         const personajeEnVenta = Object.entries(cartera).find(([id, data]) =>
-            data.personajesExclusivos?.some(p => p.nombre === personajeNombre)
+            data.personajesExclusivos?.some(p => p.nombre.toLowerCase() === personajeNombre.toLowerCase())
         );
 
         if (personajeEnVenta) {
@@ -986,12 +988,14 @@ Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
 
         // Crear el personaje
         const personaje = {
-            nombre: "⚔️ Asta",
+            nombre: personajeNombre, // Guardar solo "Asta"
             habilidades: habilidadesAsta,
             nivel: 1,
             experiencia: 0,
             experienciaSiguienteNivel: 500,
             nivelBatalla: nivelBatalla,
+            exclusivo: true, // Marca este personaje como exclusivo
+            dueño: userId // Guarda el dueño del personaje
         };
 
         // Agregar el personaje al usuario en personajes exclusivos
@@ -1021,6 +1025,7 @@ ${barraNivelBatalla} ${porcentajeBatalla}%
 🔹 ${habilidadesAsta[1].nombre} (Nivel 1)  
 🔹 ${habilidadesAsta[2].nombre} (Nivel 1)  
 
+⚠️ *Este personaje es exclusivo. No puede ser comprado por otro usuario hasta que lo pongas a la venta.*  
 💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
 
         await conn.sendMessage(
@@ -1040,15 +1045,27 @@ break;
 	
 case 'gojo': {
     try {
-        await m.react('✅'); // Reacción al usar el comando
+        await m.react('✅');
 
         const userId = m.sender;
-        const costo = 2000; // Nuevo costo de Gojo
-        const personajeNombre = "Gojo Satoru";
+        const costo = 2000;
+        const personajeNombre = "Gojo"; // Solo el primer nombre
+
+        // Verificar si el usuario ya lo tiene
+        if (cartera[userId]?.personajesExclusivos?.some(p =>
+            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === personajeNombre.toLowerCase())) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *Ya tienes a ${personajeNombre}, no puedes comprarlo otra vez.*` },
+                { quoted: m }
+            );
+        }
 
         // Verificar si ya ha sido comprado por otro usuario
         const personajeEnVenta = Object.entries(cartera).find(([id, data]) =>
-            data.personajesExclusivos?.some(p => p.nombre === personajeNombre)
+            data.personajesExclusivos?.some(p =>
+                p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === personajeNombre.toLowerCase()
+            )
         );
 
         if (personajeEnVenta) {
@@ -1064,7 +1081,7 @@ Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
         if (!cartera[userId] || cartera[userId].coins < costo) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar a Gojo.*" },
+                { text: `⚠️ *No tienes suficientes Cortana Coins para comprar a ${personajeNombre}.*` },
                 { quoted: m }
             );
         }
@@ -1085,7 +1102,7 @@ Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
 
         // Crear el personaje
         const personaje = {
-            nombre: "🔵 Gojo Satoru",
+            nombre: personajeNombre, // Solo "Gojo"
             habilidades: habilidadesGojo,
             nivel: 1,
             experiencia: 0,
@@ -1107,9 +1124,9 @@ Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
 
         // Mensaje de confirmación con imagen
         const mensaje = `
-🎉 *¡Has comprado a Gojo Satoru!* 🎉  
+🎉 *¡Has comprado a Gojo!* 🎉  
 
-🔵 *Nombre:* Gojo Satoru  
+🔵 *Nombre:* Gojo  
 🆙 *Nivel:* 1  
 ✨ *Experiencia:* 0 / 500  
 💥 *Nivel de Batalla:*  
@@ -1132,7 +1149,7 @@ ${barraNivelBatalla} ${porcentajeBatalla}%
         );
     } catch (error) {
         console.error('❌ Error en el comando .gojo:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Gojo. Intenta nuevamente.*' }, { quoted: m });
+        return conn.sendMessage(m.chat, { text: `❌ *Ocurrió un error al intentar comprar a Gojo. Intenta nuevamente.*` }, { quoted: m });
     }
 }
 break;
@@ -1142,12 +1159,13 @@ case 'senku': {
         await m.react('✅'); // Reacción al usar el comando
 
         const userId = m.sender;
-        const costo = 1000; // Nuevo precio de 1000 Cortana Coins
-        const nombrePersonaje = "🧪 Senku Ishigami";
+        const costo = 1000; // Precio del personaje exclusivo
+        const nombrePersonaje = "Senku"; // Guardar solo el primer nombre
 
         // Verificar si el personaje ya fue comprado por alguien más
         const personajeYaComprado = Object.keys(cartera).find(id => 
-            cartera[id].personajes && cartera[id].personajes.some(p => p.nombre === nombrePersonaje)
+            cartera[id].personajesExclusivos &&
+            cartera[id].personajesExclusivos.some(p => p.nombre.toLowerCase() === nombrePersonaje.toLowerCase())
         );
 
         if (personajeYaComprado) {
@@ -1187,7 +1205,7 @@ case 'senku': {
 
         // Crear el personaje
         const personaje = {
-            nombre: nombrePersonaje,
+            nombre: nombrePersonaje, // Guardar solo "Senku"
             habilidades: habilidadesSenku,
             nivel: 1,
             experiencia: 0,
@@ -1197,11 +1215,11 @@ case 'senku': {
             dueño: userId // Guarda el dueño del personaje
         };
 
-        // Agregar el personaje al usuario
-        if (!cartera[userId].personajes) {
-            cartera[userId].personajes = [];
+        // Agregar el personaje al usuario en personajes exclusivos
+        if (!cartera[userId].personajesExclusivos) {
+            cartera[userId].personajesExclusivos = [];
         }
-        cartera[userId].personajes.push(personaje);
+        cartera[userId].personajesExclusivos.push(personaje);
 
         // Guardar en el archivo JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
@@ -1213,7 +1231,7 @@ case 'senku': {
         const mensaje = `
 🎉 *¡Has comprado a Senku!* 🎉  
 
-🧪 *Nombre:* Senku Ishigami  
+🧪 *Nombre:* Senku  
 🆙 *Nivel:* 1  
 ✨ *Experiencia:* 0 / 500  
 💥 *Nivel de Batalla:*  
