@@ -728,6 +728,185 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema de personaje de anime
+// Comando para poner en venta un personaje exclusivo
+case 'vender': {
+    try {
+        await m.react('✅');
+
+        const userId = m.sender;
+        const args = text.split(" ");
+        const nombrePersonaje = args.slice(0, -1).join(" ").toLowerCase().replace(/[^a-z0-9]/gi, '');
+        const precio = parseInt(args[args.length - 1]);
+
+        if (!nombrePersonaje || isNaN(precio) || precio < 1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Formato incorrecto.* Usa `.vender [nombre] [precio]`." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario tiene ese personaje exclusivo
+        if (!cartera[userId]?.personajesExclusivos?.some(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes este personaje exclusivo para vender.*" },
+                { quoted: m }
+            );
+        }
+
+        // Guardar en la lista de venta
+        cartera[userId].personajesEnVenta = cartera[userId].personajesEnVenta || [];
+        if (cartera[userId].personajesEnVenta.some(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *${nombrePersonaje} ya está en venta.* Usa \`.quitarventa ${nombrePersonaje}\` si quieres quitarlo.` },
+                { quoted: m }
+            );
+        }
+
+        cartera[userId].personajesEnVenta.push({ nombre: nombrePersonaje, precio });
+
+        // Guardar cambios
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        await conn.sendMessage(
+            m.chat,
+            { text: `✅ *Has puesto en venta a ${nombrePersonaje} por 🪙 ${precio} Cortana Coins.*` },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .vender:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al poner en venta el personaje.*' }, { quoted: m });
+    }
+}
+break;
+
+// Comando para comprar un personaje en venta
+case 'comprar': {
+    try {
+        await m.react('💰');
+
+        const userId = m.sender;
+        const nombrePersonaje = text.toLowerCase().replace(/[^a-z0-9]/gi, '');
+
+        if (!nombrePersonaje) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Formato incorrecto.* Usa `.comprar [nombre]`." },
+                { quoted: m }
+            );
+        }
+
+        // Buscar el personaje en la lista de venta
+        let vendedorId = null;
+        let personajeVenta = null;
+
+        for (const [id, data] of Object.entries(cartera)) {
+            if (data.personajesEnVenta) {
+                const personajeEncontrado = data.personajesEnVenta.find(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
+                if (personajeEncontrado) {
+                    vendedorId = id;
+                    personajeVenta = personajeEncontrado;
+                    break;
+                }
+            }
+        }
+
+        if (!personajeVenta) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *${nombrePersonaje} no está en venta actualmente.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el comprador tiene suficientes Cortana Coins
+        if (!cartera[userId] || cartera[userId].coins < personajeVenta.precio) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar este personaje.*" },
+                { quoted: m }
+            );
+        }
+
+        // Transferir personaje del vendedor al comprador
+        const personajeComprado = cartera[vendedorId].personajesExclusivos.find(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
+        cartera[userId].personajesExclusivos = cartera[userId].personajesExclusivos || [];
+        cartera[userId].personajesExclusivos.push(personajeComprado);
+
+        // Descontar monedas al comprador
+        cartera[userId].coins -= personajeVenta.precio;
+
+        // Pagar al vendedor
+        cartera[vendedorId].coins += personajeVenta.precio;
+
+        // Eliminar personaje de la lista de venta y del vendedor
+        cartera[vendedorId].personajesEnVenta = cartera[vendedorId].personajesEnVenta.filter(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') !== nombrePersonaje);
+        cartera[vendedorId].personajesExclusivos = cartera[vendedorId].personajesExclusivos.filter(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') !== nombrePersonaje);
+
+        // Guardar cambios
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: `✅ *Has comprado a ${nombrePersonaje} por 🪙 ${personajeVenta.precio} Cortana Coins.*  
+🛒 *Nuevo dueño:* @${userId.split('@')[0]}`,
+                mentions: [userId, vendedorId]
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .comprar:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al comprar el personaje.*' }, { quoted: m });
+    }
+}
+break;
+
+// Comando para quitar un personaje de la venta
+case 'quitarventa': {
+    try {
+        await m.react('🚫');
+
+        const userId = m.sender;
+        const nombrePersonaje = text.toLowerCase().replace(/[^a-z0-9]/gi, '');
+
+        if (!nombrePersonaje) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Formato incorrecto.* Usa `.quitarventa [nombre]`." },
+                { quoted: m }
+            );
+        }
+
+        if (!cartera[userId]?.personajesEnVenta?.some(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *No tienes a ${nombrePersonaje} en venta.*` },
+                { quoted: m }
+            );
+        }
+
+        // Eliminar el personaje de la venta
+        cartera[userId].personajesEnVenta = cartera[userId].personajesEnVenta.filter(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') !== nombrePersonaje);
+
+        // Guardar cambios
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        await conn.sendMessage(
+            m.chat,
+            { text: `✅ *Has quitado de la venta a ${nombrePersonaje}.*` },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .quitarventa:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al quitar el personaje de la venta.*' }, { quoted: m });
+    }
+}
+break;
+	
+
 case 'asta': {
     try {
         await m.react('✅'); // Reacción al usar el comando
