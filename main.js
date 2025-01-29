@@ -728,6 +728,204 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema de personaje de anime
+case 'asta': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const costo = 3000; // Costo de Asta
+        const personajeNombre = "Asta";
+
+        // Verificar si ya ha sido comprado por otro usuario
+        const personajeEnVenta = Object.entries(cartera).find(([id, data]) =>
+            data.personajesExclusivos?.some(p => p.nombre === personajeNombre)
+        );
+
+        if (personajeEnVenta) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *${personajeNombre} ya ha sido comprado por @${personajeEnVenta[0].split('@')[0]}.*  
+Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
+                { mentions: [personajeEnVenta[0]] }
+            );
+        }
+
+        // Verificar si el usuario tiene suficientes Cortana Coins
+        if (!cartera[userId] || cartera[userId].coins < costo) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar a Asta.*" },
+                { quoted: m }
+            );
+        }
+
+        // Descontar Cortana Coins
+        cartera[userId].coins -= costo;
+
+        // Habilidades de Asta
+        const habilidadesAsta = [
+            { nombre: "Espada Antimagia ⚔️", nivel: 1 },
+            { nombre: "Modo Black Asta 🔥", nivel: 1 },
+            { nombre: "Desgarro Dimensional 🌑", nivel: 1 }
+        ];
+
+        // Nivel de batalla inicial (aleatorio entre 10% y 30%)
+        let nivelBatalla = Math.floor(Math.random() * 3) + 1;
+        let porcentajeBatalla = nivelBatalla * 10;
+
+        // Crear el personaje
+        const personaje = {
+            nombre: "⚔️ Asta",
+            habilidades: habilidadesAsta,
+            nivel: 1,
+            experiencia: 0,
+            experienciaSiguienteNivel: 500,
+            nivelBatalla: nivelBatalla,
+        };
+
+        // Agregar el personaje al usuario en personajes exclusivos
+        if (!cartera[userId].personajesExclusivos) {
+            cartera[userId].personajesExclusivos = [];
+        }
+        cartera[userId].personajesExclusivos.push(personaje);
+
+        // Guardar en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Convertir el nivel de batalla en barra visual
+        const barraNivelBatalla = "■".repeat(nivelBatalla) + "□".repeat(10 - nivelBatalla);
+
+        // Mensaje de confirmación con imagen
+        const mensaje = `
+🎉 *¡Has comprado a Asta!* 🎉  
+
+⚔️ *Nombre:* Asta  
+🆙 *Nivel:* 1  
+✨ *Experiencia:* 0 / 500  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidades Iniciales:*  
+🔹 ${habilidadesAsta[0].nombre} (Nivel 1)  
+🔹 ${habilidadesAsta[1].nombre} (Nivel 1)  
+🔹 ${habilidadesAsta[2].nombre} (Nivel 1)  
+
+💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/4e27f70d1ef739a21a09d7bcaff37eba" },
+                caption: mensaje
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .asta:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Asta. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
+case 'gojo': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const costo = 2000; // Nuevo costo de Gojo
+        const personajeNombre = "Gojo Satoru";
+
+        // Verificar si ya ha sido comprado por otro usuario
+        const personajeEnVenta = Object.entries(cartera).find(([id, data]) =>
+            data.personajesExclusivos?.some(p => p.nombre === personajeNombre)
+        );
+
+        if (personajeEnVenta) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *${personajeNombre} ya ha sido comprado por @${personajeEnVenta[0].split('@')[0]}.*  
+Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
+                { mentions: [personajeEnVenta[0]] }
+            );
+        }
+
+        // Verificar si el usuario tiene suficientes Cortana Coins
+        if (!cartera[userId] || cartera[userId].coins < costo) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar a Gojo.*" },
+                { quoted: m }
+            );
+        }
+
+        // Descontar Cortana Coins
+        cartera[userId].coins -= costo;
+
+        // Habilidades de Gojo
+        const habilidadesGojo = [
+            { nombre: "Ilusión Infinita 🔵", nivel: 1 },
+            { nombre: "Hollow Purple 🟣", nivel: 1 },
+            { nombre: "Mugen 無限 🌌", nivel: 1 }
+        ];
+
+        // Nivel de batalla inicial (aleatorio entre 10% y 30%)
+        let nivelBatalla = Math.floor(Math.random() * 3) + 1;
+        let porcentajeBatalla = nivelBatalla * 10;
+
+        // Crear el personaje
+        const personaje = {
+            nombre: "🔵 Gojo Satoru",
+            habilidades: habilidadesGojo,
+            nivel: 1,
+            experiencia: 0,
+            experienciaSiguienteNivel: 500,
+            nivelBatalla: nivelBatalla,
+        };
+
+        // Agregar el personaje al usuario en personajes exclusivos
+        if (!cartera[userId].personajesExclusivos) {
+            cartera[userId].personajesExclusivos = [];
+        }
+        cartera[userId].personajesExclusivos.push(personaje);
+
+        // Guardar en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Convertir el nivel de batalla en barra visual
+        const barraNivelBatalla = "■".repeat(nivelBatalla) + "□".repeat(10 - nivelBatalla);
+
+        // Mensaje de confirmación con imagen
+        const mensaje = `
+🎉 *¡Has comprado a Gojo Satoru!* 🎉  
+
+🔵 *Nombre:* Gojo Satoru  
+🆙 *Nivel:* 1  
+✨ *Experiencia:* 0 / 500  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidades Iniciales:*  
+🔹 ${habilidadesGojo[0].nombre} (Nivel 1)  
+🔹 ${habilidadesGojo[1].nombre} (Nivel 1)  
+🔹 ${habilidadesGojo[2].nombre} (Nivel 1)  
+
+💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/84f284821b6755e40810803ec1c74c94" },
+                caption: mensaje
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .gojo:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Gojo. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
 case 'senku': {
     try {
         await m.react('✅'); // Reacción al usar el comando
