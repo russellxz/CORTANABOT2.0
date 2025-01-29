@@ -1112,46 +1112,67 @@ break;
 		
 case 'delpersonaje': {
     try {
-        await m.react('❌'); // Reacción al usar el comando
-
         const userId = m.sender;
-        const args = text.trim().toLowerCase(); // Obtener el nombre del personaje en minúsculas
+        const personajeNombre = args.join(" "); // Obtener el nombre del personaje desde el mensaje
+
+        if (!personajeNombre) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Debes especificar el nombre del personaje que deseas eliminar.*" },
+                { quoted: m }
+            );
+        }
 
         // Verificar si el usuario tiene personajes
         if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No tienes personajes para eliminar.* Usa `.verpersonajes` para ver tu lista." },
+                { text: "⚠️ *No tienes personajes para eliminar.*" },
                 { quoted: m }
             );
         }
 
-        // Buscar el personaje en la lista del usuario ignorando emojis y espacios adicionales
-        const index = cartera[userId].personajes.findIndex(p => 
-            p.nombre.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() === args.replace(/[^a-zA-Z0-9]/g, '')
-        );
+        // Buscar el personaje en la lista del usuario
+        const index = cartera[userId].personajes.findIndex(p => p.nombre.toLowerCase() === personajeNombre.toLowerCase());
 
         if (index === -1) {
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *No se encontró el personaje* '${args}'. Verifica el nombre con \`.verpersonajes\`.` },
+                { text: `⚠️ *No tienes un personaje llamado "${personajeNombre}".*` },
                 { quoted: m }
             );
         }
 
-        // Eliminar el personaje de la lista
-        const personajeEliminado = cartera[userId].personajes.splice(index, 1)[0];
+        // Verificar si el personaje es exclusivo
+        const personaje = cartera[userId].personajes[index];
+        let esExclusivo = personaje.exclusivo || false;
+
+        // Eliminar el personaje de la lista del usuario
+        cartera[userId].personajes.splice(index, 1);
+
+        // Si el personaje era exclusivo, lo libera para que otro usuario pueda comprarlo
+        if (esExclusivo) {
+            Object.keys(cartera).forEach(user => {
+                if (cartera[user].personajes) {
+                    cartera[user].personajes = cartera[user].personajes.map(p => {
+                        if (p.nombre.toLowerCase() === personajeNombre.toLowerCase()) {
+                            delete p.dueño; // Elimina el dueño del personaje
+                        }
+                        return p;
+                    });
+                }
+            });
+        }
 
         // Guardar los cambios en el archivo JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Confirmar la eliminación
+        // Mensaje de confirmación
         await conn.sendMessage(
             m.chat,
-            { text: `🗑️ *Has eliminado a ${personajeEliminado.nombre} de tu colección.*` },
+            { text: `🗑️ *El personaje "${personajeNombre}" ha sido eliminado con éxito.*` },
             { quoted: m }
         );
-
     } catch (error) {
         console.error('❌ Error en el comando .delpersonaje:', error);
         return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar eliminar el personaje. Intenta nuevamente.*' }, { quoted: m });
