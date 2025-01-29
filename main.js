@@ -746,8 +746,13 @@ case 'vender': {
             );
         }
 
-        // Verificar si el usuario tiene personajes exclusivos
-        if (!cartera[userId]?.personajesExclusivos || cartera[userId].personajesExclusivos.length === 0) {
+        // Asegurar que la cartera del usuario está bien definida
+        if (!cartera[userId]) {
+            cartera[userId] = { coins: 0, personajes: [], personajesExclusivos: [], personajesEnVenta: [] };
+        }
+
+        // Asegurar que tiene personajes exclusivos
+        if (!cartera[userId].personajesExclusivos || cartera[userId].personajesExclusivos.length === 0) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *No tienes personajes exclusivos para vender.*" },
@@ -756,11 +761,11 @@ case 'vender': {
         }
 
         // Buscar el personaje con comparación flexible
-        const personajeEncontrado = cartera[userId].personajesExclusivos.find(p => 
+        let personajeIndex = cartera[userId].personajesExclusivos.findIndex(p =>
             p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje
         );
 
-        if (!personajeEncontrado) {
+        if (personajeIndex === -1) {
             return conn.sendMessage(
                 m.chat,
                 { text: `⚠️ *No tienes a ${nombrePersonaje} en tu colección.*` },
@@ -768,9 +773,15 @@ case 'vender': {
             );
         }
 
-        // Guardar en la lista de venta
-        cartera[userId].personajesEnVenta = cartera[userId].personajesEnVenta || [];
-        if (cartera[userId].personajesEnVenta.some(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje)) {
+        let personajeEncontrado = cartera[userId].personajesExclusivos[personajeIndex];
+
+        // Asegurar que la lista de venta existe
+        if (!cartera.personajesEnVenta) {
+            cartera.personajesEnVenta = [];
+        }
+
+        // Verificar si ya está en venta
+        if (cartera.personajesEnVenta.some(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje)) {
             return conn.sendMessage(
                 m.chat,
                 { text: `⚠️ *${nombrePersonaje} ya está en venta.* Usa \`.quitarventa ${nombrePersonaje}\` si quieres quitarlo.` },
@@ -778,7 +789,15 @@ case 'vender': {
             );
         }
 
-        cartera[userId].personajesEnVenta.push({ ...personajeEncontrado, precio });
+        // Pasar el personaje a la lista de venta global
+        cartera.personajesEnVenta.push({ 
+            ...personajeEncontrado, 
+            precio, 
+            vendedor: userId 
+        });
+
+        // Eliminar el personaje de la colección del usuario
+        cartera[userId].personajesExclusivos.splice(personajeIndex, 1);
 
         // Guardar cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
@@ -794,7 +813,6 @@ case 'vender': {
     }
 }
 break;
-
 // Comando para comprar un personaje en venta
 case 'comprar': {
     try {
