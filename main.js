@@ -847,7 +847,7 @@ case 'personaje': {
             personajesExclusivos.unshift(personajeSeleccionado);
         }
 
-        // Guardar los cambios en el JSON
+        // Guardar los cambios en el JSON asegurando que el personaje EXCLUSIVO también suba de nivel
         cartera[userId].personajes = personajesNormales;
         cartera[userId].personajesExclusivos = personajesExclusivos;
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
