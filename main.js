@@ -791,10 +791,14 @@ case 'verpersonajes': {
             });
         }
 
-        // Enviar mensaje con todos los personajes
+        // Enviar mensaje con todos los personajes e incluir la imagen
         await conn.sendMessage(
             m.chat,
-            { text: textoPersonajes, mentions: [m.sender] },
+            {
+                image: { url: "https://cloud.dorratz.com/files/d29a73d70ec2b2641804d2db43f8101a" },
+                caption: textoPersonajes,
+                mentions: [m.sender]
+            },
             { quoted: m }
         );
     } catch (error) {
