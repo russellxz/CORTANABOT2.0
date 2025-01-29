@@ -744,8 +744,8 @@ case 'estadopersonaje': {
             );
         }
 
-        // Obtener el personaje principal (primer personaje en la lista)
-        let personajePrincipal = cartera[userId].personajes?.[0] || cartera[userId].personajesExclusivos?.[0];
+        // Obtener el personaje principal (si es exclusivo o común)
+        let personajePrincipal = cartera[userId].personajesExclusivos?.[0] || cartera[userId].personajes?.[0];
 
         if (!personajePrincipal) {
             return conn.sendMessage(
@@ -778,14 +778,25 @@ ${habilidadesText}
 💡 *Usa los comandos de mejora para fortalecer a tu personaje.*
 `;
 
+        // Diccionario con las URLs de los personajes
+        const personajesImagenes = {
+            "goku": "https://cloud.dorratz.com/files/5286eef0a417a7f3e96bc4e78ab9b74b",
+            "luffy": "https://cloud.dorratz.com/files/a031fa4a97b99e5b34294cdaf5c9fc07",
+            "naruto": "https://cloud.dorratz.com/files/987a6e9295426a43f84fc4aa73867ae4",
+            "senku": "https://cloud.dorratz.com/files/88a1ee9d4cc1ba589276d42f0b0c61e6",
+            "gojo": "https://cloud.dorratz.com/files/84f284821b6755e40810803ec1c74c94",
+            "asta": "https://cloud.dorratz.com/files/4e27f70d1ef739a21a09d7bcaff37eba"
+        };
+
         // Obtener la URL de la imagen del personaje
-        const personajeImagen = personajePrincipal.imagen || "https://cloud.dorratz.com/files/d29a73d70ec2b2641804d2db43f8101a"; // Imagen por defecto si no tiene
+        const urlImagen = personajesImagenes[personajePrincipal.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '')] 
+            || "https://cloud.dorratz.com/files/d29a73d70ec2b2641804d2db43f8101a"; // Imagen por defecto si no está registrada
 
         // Enviar mensaje con imagen y estadísticas
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: personajeImagen },
+                image: { url: urlImagen },
                 caption: mensaje,
                 mentions: [m.sender]
             },
@@ -825,7 +836,7 @@ case 'personaje': {
         let personajesNormales = cartera[userId].personajes || [];
         let personajesExclusivos = cartera[userId].personajesExclusivos || [];
 
-        // Buscar el personaje en ambas listas (ignorando mayúsculas, minúsculas y emojis)
+        // Buscar el personaje en ambas listas
         let personajeIndex = personajesNormales.findIndex(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
         let personajeExclusivoIndex = personajesExclusivos.findIndex(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
 
@@ -838,25 +849,21 @@ case 'personaje': {
         }
 
         let personajeSeleccionado;
-        let usandoExclusivo = false;
-
+        
         if (personajeExclusivoIndex !== -1) {
-            // ✅ Si elige un personaje exclusivo, bloqueamos los normales y ponemos este al inicio
+            // Si elige un personaje exclusivo, moverlo al inicio de la lista de exclusivos
             personajeSeleccionado = personajesExclusivos.splice(personajeExclusivoIndex, 1)[0];
             personajesExclusivos.unshift(personajeSeleccionado);
-            usandoExclusivo = true;
         } else {
-            // ✅ Si elige un personaje normal, desbloqueamos los normales y bloqueamos los exclusivos
+            // Si elige un personaje normal, moverlo al inicio de la lista de normales
             personajeSeleccionado = personajesNormales.splice(personajeIndex, 1)[0];
             personajesNormales.unshift(personajeSeleccionado);
-            usandoExclusivo = false;
         }
 
-        // Guardar los cambios en el JSON asegurando que los exclusivos quedan bloqueados si se usa uno normal
-        cartera[userId].personajes = usandoExclusivo ? [] : personajesNormales; // Si usa exclusivo, vaciamos la lista de normales
-        cartera[userId].personajesExclusivos = usandoExclusivo ? personajesExclusivos : []; // Si usa normal, vaciamos la lista de exclusivos
-        cartera[userId].usandoExclusivo = usandoExclusivo; // Guardamos si está usando exclusivo o no
-
+        // Guardar los cambios en el JSON sin bloquear ninguna categoría
+        cartera[userId].personajes = personajesNormales;
+        cartera[userId].personajesExclusivos = personajesExclusivos;
+        cartera[userId].personajeActivo = personajeSeleccionado.nombre; // Guardar el personaje activo
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // Diccionario con las URLs de los personajes
@@ -884,8 +891,6 @@ case 'personaje': {
 ⚡ *Experiencia:* ${personajeSeleccionado.experiencia} / ${personajeSeleccionado.experienciaSiguienteNivel}  
 💥 *Nivel de Batalla:*  
 ${barraNivelBatalla} ${porcentajeBatalla}%  
-
-${usandoExclusivo ? "🔒 *Los personajes normales están bloqueados hasta que cambies a uno normal.*" : "🔒 *Los personajes exclusivos están bloqueados hasta que cambies a uno exclusivo.*"}
 
 💡 *Ahora este personaje recibirá la experiencia y mejoras en habilidades.*`;
 
