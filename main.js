@@ -729,6 +729,1044 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'estadopersonaje': {
+    try {
+        await m.react('📊'); // Reacción al usar el comando
+
+        const userId = m.sender;
+
+        // Verificar si el usuario tiene personajes
+        if (!cartera[userId] || (!cartera[userId].personajes && !cartera[userId].personajesExclusivos)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Obtener el personaje principal (primer personaje en la lista)
+        let personajePrincipal = cartera[userId].personajes?.[0] || cartera[userId].personajesExclusivos?.[0];
+
+        if (!personajePrincipal) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes un personaje activo.* Usa `.personaje [nombre]` para seleccionar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Construir el mensaje con estadísticas
+        let habilidadesText = personajePrincipal.habilidades
+            .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+            .join('\n');
+
+        let barraNivelBatalla = "■".repeat(personajePrincipal.nivelBatalla) + "□".repeat(10 - personajePrincipal.nivelBatalla);
+        let porcentajeBatalla = personajePrincipal.nivelBatalla * 10;
+
+        const mensaje = `
+📊 *Estado de tu Personaje Principal* 📊
+
+✨ *Nombre:* ${personajePrincipal.nombre}  
+🆙 *Nivel:* ${personajePrincipal.nivel}  
+⚡ *Experiencia:* ${personajePrincipal.experiencia} / ${personajePrincipal.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidades:*  
+${habilidadesText}
+
+💡 *Usa los comandos de mejora para fortalecer a tu personaje.*
+`;
+
+        // Obtener la URL de la imagen del personaje
+        const personajeImagen = personajePrincipal.imagen || "https://cloud.dorratz.com/files/d29a73d70ec2b2641804d2db43f8101a"; // Imagen por defecto si no tiene
+
+        // Enviar mensaje con imagen y estadísticas
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: personajeImagen },
+                caption: mensaje,
+                mentions: [m.sender]
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .estadopersonaje:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar ver el estado de tu personaje. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+
+case 'personaje': {
+    try {
+        await m.react('🔄'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const nombrePersonaje = text.trim().toLowerCase().replace(/[^a-z0-9]/gi, '');
+
+        if (!nombrePersonaje) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Formato incorrecto.* Usa `.personaje [nombre]`." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario tiene personajes
+        if (!cartera[userId] || (!cartera[userId].personajes && !cartera[userId].personajesExclusivos)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        let personajesNormales = cartera[userId].personajes || [];
+        let personajesExclusivos = cartera[userId].personajesExclusivos || [];
+
+        // Buscar el personaje en ambas listas
+        let personajeIndex = personajesNormales.findIndex(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
+        let personajeExclusivoIndex = personajesExclusivos.findIndex(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
+
+        if (personajeIndex === -1 && personajeExclusivoIndex === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *No tienes un personaje llamado "${text}" en tu colección.*` },
+                { quoted: m }
+            );
+        }
+
+        // Determinar si el personaje es normal o exclusivo
+        let personajeSeleccionado;
+        if (personajeIndex !== -1) {
+            personajeSeleccionado = personajesNormales.splice(personajeIndex, 1)[0]; // Sacar personaje de la lista
+            personajesNormales.unshift(personajeSeleccionado); // Colocar al inicio como principal
+        } else {
+            personajeSeleccionado = personajesExclusivos.splice(personajeExclusivoIndex, 1)[0];
+            personajesExclusivos.unshift(personajeSeleccionado);
+        }
+
+        // Guardar los cambios en el JSON
+        cartera[userId].personajes = personajesNormales;
+        cartera[userId].personajesExclusivos = personajesExclusivos;
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Diccionario con las URLs de los personajes
+        const personajesImagenes = {
+            "goku": "https://cloud.dorratz.com/files/5286eef0a417a7f3e96bc4e78ab9b74b",
+            "luffy": "https://cloud.dorratz.com/files/a031fa4a97b99e5b34294cdaf5c9fc07",
+            "naruto": "https://cloud.dorratz.com/files/987a6e9295426a43f84fc4aa73867ae4",
+            "senku": "https://cloud.dorratz.com/files/88a1ee9d4cc1ba589276d42f0b0c61e6",
+            "gojo": "https://cloud.dorratz.com/files/84f284821b6755e40810803ec1c74c94",
+            "asta": "https://cloud.dorratz.com/files/4e27f70d1ef739a21a09d7bcaff37eba"
+        };
+
+        // Obtener la URL de la imagen del personaje
+        const urlImagen = personajesImagenes[nombrePersonaje] || "https://cloud.dorratz.com/files/default.png"; // Imagen por defecto si no está registrada
+
+        // Convertir el nivel de batalla en barra visual
+        let porcentajeBatalla = personajeSeleccionado.nivelBatalla * 10;
+        let barraNivelBatalla = "■".repeat(personajeSeleccionado.nivelBatalla) + "□".repeat(10 - personajeSeleccionado.nivelBatalla);
+
+        // Mensaje de confirmación
+        const mensaje = `
+🔄 *Has cambiado tu personaje principal a:*  
+✨ *Nombre:* ${personajeSeleccionado.nombre}  
+🆙 *Nivel:* ${personajeSeleccionado.nivel}  
+⚡ *Experiencia:* ${personajeSeleccionado.experiencia} / ${personajeSeleccionado.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+💡 *Ahora este personaje recibirá la experiencia y mejoras en habilidades.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: urlImagen },
+                caption: mensaje
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .personaje:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar cambiar de personaje. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
+case 'podermaximo': {
+    try {
+        await m.react('🔥'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const now = Date.now();
+
+        // Verificar si el usuario tiene un personaje principal
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar cooldown de 5 minutos
+        if (cartera[userId].lastMaxPower && now - cartera[userId].lastMaxPower < 300000) {
+            const remainingTime = Math.ceil((300000 - (now - cartera[userId].lastMaxPower)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de volver a usar el Poder Máximo.*` },
+                { quoted: m }
+            );
+        }
+
+        cartera[userId].lastMaxPower = now; // Guardar el tiempo de la última activación
+
+        let personaje = cartera[userId].personajes[0]; // Usar el personaje principal
+        let expGanada = Math.floor(Math.random() * 2000) + 1000; // Entre 1000 y 3000 XP
+        let coinsGanadas = Math.floor(Math.random() * 700) + 500; // Entre 500 y 1200 Coins
+
+        // Subir experiencia y monedas
+        personaje.experiencia += expGanada;
+        cartera[userId].coins += coinsGanadas;
+
+        // Subir habilidades aleatoriamente
+        let habilidadSubida = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadSubida.nivel++;
+
+        // Subir nivel si alcanza la XP requerida
+        let nivelSubido = false;
+        if (personaje.experiencia >= personaje.experienciaSiguienteNivel) {
+            personaje.nivel++;
+            personaje.experiencia -= personaje.experienciaSiguienteNivel;
+            personaje.experienciaSiguienteNivel += 500 * personaje.nivel; // Subir XP requerida
+            nivelSubido = true;
+        }
+
+        // Subir nivel de batalla aleatoriamente con mayor probabilidad
+        let nivelBatallaSubido = false;
+        if (Math.random() < 0.5 && personaje.nivelBatalla < 10) {
+            personaje.nivelBatalla++;
+            nivelBatallaSubido = true;
+        }
+
+        let porcentajeBatalla = personaje.nivelBatalla * 10;
+        let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+
+        // Textos aleatorios
+        const textos = [
+            "🔥 *¡Tu personaje alcanza su máximo potencial!* El aura que lo rodea es indescriptible.",
+            "⚡ *¡Poder supremo desbloqueado!* Las habilidades de tu personaje se han disparado.",
+            "💥 *¡La transformación final ha sido completada!* Sientes un aumento de energía en el ambiente.",
+            "🌟 *¡Tu personaje ha superado sus propios límites!* Su poder es ahora colosal.",
+            "🔥 *Una fuerza incontrolable recorre el cuerpo de tu personaje.*",
+            "💥 *¡Un rugido de energía rompe el cielo!* Tu personaje ha alcanzado nuevas alturas.",
+            "⚡ *Su espíritu guerrero se enciende, alcanzando un nuevo nivel de poder.*",
+            "🔥 *La intensidad del poder es abrumadora, tu personaje ha evolucionado.*",
+            "💥 *Un estallido de energía rodea a tu personaje, marcando una nueva etapa de poder.*",
+            "🌟 *¡Su poder ha crecido más allá de los límites!* Nadie puede detenerlo ahora."
+        ];
+
+        let textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
+
+        // Guardar cambios en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de resultado
+        let mensaje = `
+🔥 *¡Tu personaje ha desatado su Poder Máximo!*  
+${textoAleatorio}  
+
+🆙 *Nivel:* ${personaje.nivel}  
+✨ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidad Mejorada:* ${habilidadSubida.nombre} (Nivel ${habilidadSubida.nivel})  
+💰 *Ganaste:* ${coinsGanadas} Cortana Coins  
+🆙 *Exp:* +${expGanada} XP  
+`;
+
+        // Notificación de nivel o barra de poder subida
+        if (nivelSubido) {
+            mensaje += `\n🎉 *¡Tu personaje ha subido de nivel!* Ahora es nivel *${personaje.nivel}*.\n`;
+        }
+
+        if (nivelBatallaSubido) {
+            mensaje += `\n🔥 *¡La barra de poder ha aumentado!* Ahora es *${porcentajeBatalla}%*.\n`;
+        }
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .podermaximo:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar usar el Poder Máximo. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
+case 'podersuper': {
+    try {
+        await m.react('⚡'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const now = Date.now();
+
+        // Verificar si el usuario tiene un personaje principal
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar cooldown de 5 minutos
+        if (cartera[userId].lastPower && now - cartera[userId].lastPower < 300000) {
+            const remainingTime = Math.ceil((300000 - (now - cartera[userId].lastPower)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de volver a usar el poder.*` },
+                { quoted: m }
+            );
+        }
+
+        cartera[userId].lastPower = now; // Guardar el tiempo de la última activación
+
+        let personaje = cartera[userId].personajes[0]; // Usar el personaje principal
+        let expGanada = Math.floor(Math.random() * 1500) + 500; // Entre 500 y 2000 XP
+        let coinsGanadas = Math.floor(Math.random() * 600) + 200; // Entre 200 y 800 Coins
+
+        // Subir experiencia y monedas
+        personaje.experiencia += expGanada;
+        cartera[userId].coins += coinsGanadas;
+
+        // Subir habilidades aleatoriamente
+        let habilidadSubida = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadSubida.nivel++;
+
+        // Subir nivel si alcanza la XP requerida
+        let nivelSubido = false;
+        if (personaje.experiencia >= personaje.experienciaSiguienteNivel) {
+            personaje.nivel++;
+            personaje.experiencia -= personaje.experienciaSiguienteNivel;
+            personaje.experienciaSiguienteNivel += 500 * personaje.nivel; // Subir XP requerida
+            nivelSubido = true;
+        }
+
+        // Subir nivel de batalla aleatoriamente
+        let nivelBatallaSubido = false;
+        if (Math.random() < 0.3 && personaje.nivelBatalla < 10) {
+            personaje.nivelBatalla++;
+            nivelBatallaSubido = true;
+        }
+
+        let porcentajeBatalla = personaje.nivelBatalla * 10;
+        let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+
+        // Textos aleatorios
+        const textos = [
+            "⚡ Una gran energía surge dentro de tu personaje, aumentando su poder.",
+            "🔥 La transformación se completa, alcanzando un nuevo nivel de fuerza.",
+            "💥 Una explosión de poder sacude el campo de batalla, fortaleciendo tu personaje.",
+            "🌟 Tu personaje siente una nueva energía fluyendo por su cuerpo.",
+            "⚡ Un aura dorada envuelve a tu personaje, mejorando sus habilidades.",
+            "🔥 La intensidad de tu personaje se dispara, logrando nuevas mejoras.",
+            "💥 Un destello de poder transforma a tu personaje en un ser más fuerte.",
+            "🌟 La evolución es inevitable, tu personaje avanza en su entrenamiento.",
+            "⚡ Tu personaje experimenta un crecimiento sin precedentes.",
+            "🔥 Una ráfaga de poder empuja a tu personaje al siguiente nivel."
+        ];
+
+        let textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
+
+        // Guardar cambios en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de resultado
+        let mensaje = `
+⚡ *¡Tu personaje ha desatado un Poder Supremo!*  
+${textoAleatorio}  
+
+🆙 *Nivel:* ${personaje.nivel}  
+✨ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidad Mejorada:* ${habilidadSubida.nombre} (Nivel ${habilidadSubida.nivel})  
+💰 *Ganaste:* ${coinsGanadas} Cortana Coins  
+🆙 *Exp:* +${expGanada} XP  
+`;
+
+        // Notificación de nivel o barra de poder subida
+        if (nivelSubido) {
+            mensaje += `\n🎉 *¡Tu personaje ha subido de nivel!* Ahora es nivel *${personaje.nivel}*.\n`;
+        }
+
+        if (nivelBatallaSubido) {
+            mensaje += `\n🔥 *¡La barra de poder ha aumentado!* Ahora es *${porcentajeBatalla}%*.\n`;
+        }
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .podersuper:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar usar el Poder Supremo. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
+case 'mododiablo': {
+    try {
+        await m.react('😈'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const now = Date.now();
+
+        // Verificar si el usuario tiene un personaje principal
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar cooldown de 10 minutos
+        if (cartera[userId].lastDevilMode && now - cartera[userId].lastDevilMode < 600000) {
+            const remainingTime = Math.ceil((600000 - (now - cartera[userId].lastDevilMode)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de volver a entrar en Modo Diablo.*` },
+                { quoted: m }
+            );
+        }
+
+        cartera[userId].lastDevilMode = now; // Guardar el tiempo de la última acción
+
+        let personaje = cartera[userId].personajes[0]; // Usar el personaje principal
+
+        // Decidir si el usuario gana o pierde
+        let resultado = Math.random() < 0.65 ? "ganar" : "perder"; // 65% de ganar, 35% de perder
+        let expCambio = Math.floor(Math.random() * 1200) + 800; // Entre 800 y 2000 XP
+        let coinsCambio = Math.floor(Math.random() * 500) + 400; // Entre 400 y 900 Coins
+
+        if (resultado === "ganar") {
+            personaje.experiencia += expCambio;
+            cartera[userId].coins += coinsCambio;
+        } else {
+            personaje.experiencia -= expCambio;
+            cartera[userId].coins -= coinsCambio;
+            if (personaje.experiencia < 0) personaje.experiencia = 0;
+            if (cartera[userId].coins < 0) cartera[userId].coins = 0;
+        }
+
+        // Subir habilidades aleatoriamente
+        let habilidadSubida = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadSubida.nivel++;
+
+        // Subir nivel si alcanza la XP requerida
+        let subioNivel = false;
+        if (personaje.experiencia >= personaje.experienciaSiguienteNivel) {
+            personaje.nivel++;
+            personaje.experiencia -= personaje.experienciaSiguienteNivel;
+            personaje.experienciaSiguienteNivel += 500 * personaje.nivel;
+            subioNivel = true;
+        }
+
+        // Subir nivel de batalla aleatoriamente
+        let subioNivelBatalla = false;
+        if (Math.random() < 0.4 && personaje.nivelBatalla < 10) {
+            personaje.nivelBatalla++;
+            subioNivelBatalla = true;
+        }
+
+        let porcentajeBatalla = personaje.nivelBatalla * 10;
+        let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+
+        // Textos aleatorios de Modo Diablo
+        const textosGanar = [
+            "😈 *Una energía oscura te invade, tu poder ha aumentado enormemente.*",
+            "🔥 *Las llamas del infierno fortalecen tu cuerpo, sientes un inmenso poder.*",
+            "💀 *Tu personaje abraza la oscuridad y libera su máximo potencial.*",
+            "🌑 *Un aura demoníaca rodea a tu personaje, logrando una mejora increíble.*",
+            "💥 *Modo Diablo activado. Tu personaje alcanza un nuevo nivel de fuerza.*",
+            "⚡ *La transformación infernal te llena de energía sin límites.*",
+            "🔥 *El pacto con el abismo ha sido sellado, ahora dominas fuerzas más allá de lo humano.*",
+            "🌀 *El caos fluye dentro de ti, aumentando tu nivel de batalla.*",
+            "⚠️ *La energía oscura dentro de ti despierta un poder temible.*",
+            "👹 *Modo Diablo completo. Tu personaje ha trascendido los límites convencionales.*"
+        ];
+
+        const textosPerder = [
+            "💀 *Tu cuerpo no soportó la transformación demoníaca, sufriendo una gran pérdida de energía...*",
+            "🔥 *La corrupción fue demasiado intensa y parte de tu poder se desvaneció.*",
+            "⚠️ *Modo Diablo inestable, la energía demoníaca se descontroló y perdiste experiencia.*",
+            "💥 *Intentaste manejar fuerzas oscuras, pero la energía infernal te sobrepasó.*",
+            "⚡ *Modo Diablo fallido. Sufriste una gran disminución de experiencia y Coins.*"
+        ];
+
+        let textoAleatorio = resultado === "ganar"
+            ? textosGanar[Math.floor(Math.random() * textosGanar.length)]
+            : textosPerder[Math.floor(Math.random() * textosPerder.length)];
+
+        // Guardar cambios en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Construir mensaje de resultado
+        let mensaje = `
+😈 *¡Tu personaje ha entrado en Modo Diablo!*  
+${textoAleatorio}  
+
+🆙 *Nivel:* ${personaje.nivel}  
+✨ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidad Mejorada:* ${habilidadSubida.nombre} (Nivel ${habilidadSubida.nivel})  
+${resultado === "ganar" 
+    ? `✅ *Ganaste:* 🪙 ${coinsCambio} Coins, +${expCambio} XP` 
+    : `❌ *Perdiste:* 🪙 ${coinsCambio} Coins, -${expCambio} XP`}
+`;
+
+        // Notificar si el personaje subió de nivel
+        if (subioNivel) {
+            mensaje += `🎉 *¡Felicidades! Tu personaje subió al nivel ${personaje.nivel}.*\n`;
+        }
+
+        // Notificar si la barra de poder subió de nivel
+        if (subioNivelBatalla) {
+            mensaje += `💥 *¡Tu nivel de batalla ha aumentado! Ahora es:*  
+${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+        }
+
+        // Enviar mensaje final
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .mododiablo:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar activar Modo Diablo. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+
+case 'mododios': {
+    try {
+        await m.react('⚡'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const now = Date.now();
+
+        // Verificar si el usuario tiene un personaje principal
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar cooldown de 15 minutos
+        if (cartera[userId].lastGodMode && now - cartera[userId].lastGodMode < 900000) {
+            const remainingTime = Math.ceil((900000 - (now - cartera[userId].lastGodMode)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de volver a entrar en Modo Dios.*` },
+                { quoted: m }
+            );
+        }
+
+        cartera[userId].lastGodMode = now; // Guardar el tiempo de la última acción
+
+        let personaje = cartera[userId].personajes[0]; // Usar el personaje principal
+
+        // Decidir si el usuario gana o pierde
+        let resultado = Math.random() < 0.8 ? "ganar" : "perder"; // 80% de ganar, 20% de perder
+        let expCambio = Math.floor(Math.random() * 1500) + 1000; // Entre 1000 y 2500 XP
+        let coinsCambio = Math.floor(Math.random() * 500) + 500; // Entre 500 y 1000 Coins
+
+        if (resultado === "ganar") {
+            personaje.experiencia += expCambio;
+            cartera[userId].coins += coinsCambio;
+        } else {
+            personaje.experiencia -= expCambio;
+            cartera[userId].coins -= coinsCambio;
+            if (personaje.experiencia < 0) personaje.experiencia = 0;
+            if (cartera[userId].coins < 0) cartera[userId].coins = 0;
+        }
+
+        // Subir habilidades aleatoriamente
+        let habilidadSubida = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadSubida.nivel++;
+
+        // Subir nivel si alcanza la XP requerida
+        let subioNivel = false;
+        if (personaje.experiencia >= personaje.experienciaSiguienteNivel) {
+            personaje.nivel++;
+            personaje.experiencia -= personaje.experienciaSiguienteNivel;
+            personaje.experienciaSiguienteNivel += 500 * personaje.nivel;
+            subioNivel = true;
+        }
+
+        // Subir nivel de batalla aleatoriamente
+        let subioNivelBatalla = false;
+        if (Math.random() < 0.3 && personaje.nivelBatalla < 10) {
+            personaje.nivelBatalla++;
+            subioNivelBatalla = true;
+        }
+
+        let porcentajeBatalla = personaje.nivelBatalla * 10;
+        let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+
+        // Textos aleatorios de Modo Dios
+        const textosGanar = [
+            "⚡ *Tu personaje libera todo su poder divino y alcanza un nuevo nivel de fuerza.*",
+            "🔥 *El aura de tu personaje brilla intensamente mientras entra en Modo Dios.*",
+            "💫 *La energía fluye en tu cuerpo, logrando una transformación increíble.*",
+            "💥 *Un destello dorado rodea a tu personaje, su poder ha aumentado exponencialmente.*",
+            "🌀 *La divinidad fluye en tu ser, sientes el poder absoluto en tus manos.*",
+            "⚡ *Tu personaje se ha convertido en una leyenda viviente en este universo.*",
+            "🔥 *Tu transformación en Modo Dios ha impresionado a todos, tu poder es incomparable.*",
+            "🌟 *Has alcanzado el estado supremo, ningún enemigo puede igualarte.*",
+            "🌠 *Tu personaje siente el cosmos dentro de sí, aumentando su experiencia exponencialmente.*",
+            "✨ *Modo Dios activado. La energía divina circula en tu interior, tu potencial ha despertado.*"
+        ];
+
+        const textosPerder = [
+            "💀 *Tu personaje intentó alcanzar el Modo Dios, pero su cuerpo no lo soportó y perdió energía...*",
+            "🌀 *La transformación en Modo Dios falló, tu personaje sufrió una gran pérdida de energía.*",
+            "🔥 *El poder divino era demasiado para tu personaje, sufrió una gran disminución de energía.*",
+            "⚠️ *Modo Dios no completado. La energía fue demasiado inestable y perdiste experiencia.*",
+            "💥 *Intentaste alcanzar la divinidad, pero te absorbió la presión y perdiste Cortana Coins.*"
+        ];
+
+        let textoAleatorio = resultado === "ganar"
+            ? textosGanar[Math.floor(Math.random() * textosGanar.length)]
+            : textosPerder[Math.floor(Math.random() * textosPerder.length)];
+
+        // Guardar cambios en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Construir mensaje de resultado
+        let mensaje = `
+⚡ *¡Tu personaje ha entrado en Modo Dios!*  
+${textoAleatorio}  
+
+🆙 *Nivel:* ${personaje.nivel}  
+✨ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidad Mejorada:* ${habilidadSubida.nombre} (Nivel ${habilidadSubida.nivel})  
+${resultado === "ganar" 
+    ? `✅ *Ganaste:* 🪙 ${coinsCambio} Coins, +${expCambio} XP` 
+    : `❌ *Perdiste:* 🪙 ${coinsCambio} Coins, -${expCambio} XP`}
+`;
+
+        // Notificar si el personaje subió de nivel
+        if (subioNivel) {
+            mensaje += `🎉 *¡Felicidades! Tu personaje subió al nivel ${personaje.nivel}.*\n`;
+        }
+
+        // Notificar si la barra de poder subió de nivel
+        if (subioNivelBatalla) {
+            mensaje += `💥 *¡Tu nivel de batalla ha aumentado! Ahora es:*  
+${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+        }
+
+        // Enviar mensaje final
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .mododios:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar activar Modo Dios. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
+case 'otrouniverso': {
+    try {
+        await m.react('🌌'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const now = Date.now();
+
+        // Verificar si el usuario tiene un personaje principal
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar cooldown de 10 minutos
+        if (cartera[userId].lastOtherWorld && now - cartera[userId].lastOtherWorld < 600000) {
+            const remainingTime = Math.ceil((600000 - (now - cartera[userId].lastOtherWorld)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de viajar a otro universo nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        cartera[userId].lastOtherWorld = now; // Guardar el tiempo de la última acción
+
+        let personaje = cartera[userId].personajes[0]; // Usar el personaje principal
+
+        // Asignar experiencia y monedas aleatorias
+        let expGanada = Math.floor(Math.random() * 800) + 700; // Entre 700 y 1500 XP
+        let coinsGanadas = Math.floor(Math.random() * 400) + 300; // Entre 300 y 700 Coins
+
+        personaje.experiencia += expGanada;
+        cartera[userId].coins += coinsGanadas;
+
+        // Subir habilidades aleatoriamente
+        let habilidadSubida = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadSubida.nivel++;
+
+        // Subir nivel si alcanza la XP requerida
+        let subioNivel = false;
+        if (personaje.experiencia >= personaje.experienciaSiguienteNivel) {
+            personaje.nivel++;
+            personaje.experiencia -= personaje.experienciaSiguienteNivel;
+            personaje.experienciaSiguienteNivel += 500 * personaje.nivel;
+            subioNivel = true;
+        }
+
+        // Subir nivel de batalla aleatoriamente
+        let subioNivelBatalla = false;
+        if (Math.random() < 0.3 && personaje.nivelBatalla < 10) {
+            personaje.nivelBatalla++;
+            subioNivelBatalla = true;
+        }
+
+        let porcentajeBatalla = personaje.nivelBatalla * 10;
+        let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+
+        // Textos aleatorios
+        const textos = [
+            "🌌 Viajas a otro universo y descubres una nueva fuente de poder.",
+            "✨ Has encontrado un universo alternativo donde tu poder aumenta exponencialmente.",
+            "🚀 Saltaste entre dimensiones y tu personaje ganó nueva experiencia.",
+            "🌀 Te teletransportaste a un universo extraño y has aprendido nuevas técnicas.",
+            "⚡ En otra realidad, te entrenaste con los dioses y mejoraste tus habilidades.",
+            "🔥 Experimentaste con energías cósmicas y subiste de nivel.",
+            "💫 Viste múltiples versiones de ti mismo y aprendiste nuevas estrategias de batalla.",
+            "🌠 Un colapso dimensional te fortaleció más de lo esperado.",
+            "🌍 El viaje interdimensional te ha dejado más sabio y poderoso.",
+            "💥 En un universo diferente, encontraste un enemigo poderoso y lo derrotaste."
+        ];
+
+        let textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
+
+        // Guardar cambios en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Construir mensaje de resultado
+        let mensaje = `
+🌌 *¡Has viajado a otro universo!*  
+${textoAleatorio}  
+
+🆙 *Nivel:* ${personaje.nivel}  
+✨ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidad Mejorada:* ${habilidadSubida.nombre} (Nivel ${habilidadSubida.nivel})  
+💰 *Ganaste:* ${coinsGanadas} Cortana Coins  
+🆙 *Exp:* +${expGanada} XP  
+`;
+
+        // Notificar si el personaje subió de nivel
+        if (subioNivel) {
+            mensaje += `🎉 *¡Felicidades! Tu personaje subió al nivel ${personaje.nivel}.*\n`;
+        }
+
+        // Notificar si la barra de poder subió de nivel
+        if (subioNivelBatalla) {
+            mensaje += `💥 *¡Tu nivel de batalla ha aumentado! Ahora es:*  
+${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+        }
+
+        // Enviar mensaje final
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .otrouniverso:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar viajar a otro universo. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
+case 'volar': {
+    try {
+        await m.react('🕊️'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const now = Date.now();
+
+        // Verificar si el usuario tiene un personaje principal
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar cooldown de 5 minutos
+        if (cartera[userId].lastFly && now - cartera[userId].lastFly < 300000) {
+            const remainingTime = Math.ceil((300000 - (now - cartera[userId].lastFly)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de intentar volar nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        cartera[userId].lastFly = now; // Guardar el tiempo de la última acción
+
+        let personaje = cartera[userId].personajes[0]; // Usar el personaje principal
+
+        // Decidir aleatoriamente si el usuario gana o pierde
+        let resultado = Math.random() < 0.5 ? "ganar" : "perder"; // 50% de probabilidad
+        let expCambio = Math.floor(Math.random() * 400) + 100; // Entre 100 y 500 XP
+        let coinsCambio = Math.floor(Math.random() * 150) + 50; // Entre 50 y 200 Coins
+
+        if (resultado === "ganar") {
+            personaje.experiencia += expCambio;
+            cartera[userId].coins += coinsCambio;
+        } else {
+            personaje.experiencia -= expCambio;
+            cartera[userId].coins -= coinsCambio;
+            if (personaje.experiencia < 0) personaje.experiencia = 0;
+            if (cartera[userId].coins < 0) cartera[userId].coins = 0;
+        }
+
+        // Subir nivel si alcanza la XP requerida
+        let subioNivel = false;
+        if (personaje.experiencia >= personaje.experienciaSiguienteNivel) {
+            personaje.nivel++;
+            personaje.experiencia -= personaje.experienciaSiguienteNivel;
+            personaje.experienciaSiguienteNivel += 500 * personaje.nivel;
+            subioNivel = true;
+        }
+
+        // Subir o bajar nivel de batalla aleatoriamente
+        let subioNivelBatalla = false;
+        let bajoNivelBatalla = false;
+        if (resultado === "ganar" && Math.random() < 0.3 && personaje.nivelBatalla < 10) {
+            personaje.nivelBatalla++;
+            subioNivelBatalla = true;
+        } else if (resultado === "perder" && Math.random() < 0.2 && personaje.nivelBatalla > 1) {
+            personaje.nivelBatalla--;
+            bajoNivelBatalla = true;
+        }
+
+        let porcentajeBatalla = personaje.nivelBatalla * 10;
+        let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+
+        // Mensajes aleatorios
+        const textosGanar = [
+            "🕊️ Tu personaje se eleva majestuosamente en el cielo y siente una gran energía.",
+            "⚡ Mientras vuelas, descubres una fuente de poder y te vuelves más fuerte.",
+            "💥 La vista desde arriba es increíble, y tu personaje siente una mejora notable.",
+            "🔥 Surcando los cielos, tu personaje obtiene un gran aumento de experiencia.",
+            "💨 El vuelo fue un éxito, ganaste habilidades y energía extra."
+        ];
+
+        const textosPerder = [
+            "💀 Intentaste volar, pero te caíste y perdiste experiencia...",
+            "🌀 Un error en el vuelo te hizo perder concentración y fuerza.",
+            "🔥 Una ráfaga de viento te derribó, perdiendo Cortana Coins en el proceso.",
+            "⚠️ Tu personaje voló demasiado alto y perdió estabilidad... y algo de experiencia.",
+            "💥 El intento de volar salió mal, sufriendo una penalización de XP."
+        ];
+
+        let textoAleatorio = resultado === "ganar" 
+            ? textosGanar[Math.floor(Math.random() * textosGanar.length)] 
+            : textosPerder[Math.floor(Math.random() * textosPerder.length)];
+
+        // Guardar cambios en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Construir mensaje de resultado
+        let mensaje = `
+🕊️ *¡Tu personaje intentó volar!*  
+${textoAleatorio}  
+
+🆙 *Nivel:* ${personaje.nivel}  
+✨ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+${resultado === "ganar" 
+    ? `✅ *Ganaste:* 🪙 ${coinsCambio} Coins, +${expCambio} XP` 
+    : `❌ *Perdiste:* 🪙 ${coinsCambio} Coins, -${expCambio} XP`}
+`;
+
+        // Notificar si el personaje subió de nivel
+        if (subioNivel) {
+            mensaje += `🎉 *¡Felicidades! Tu personaje subió al nivel ${personaje.nivel}.*\n`;
+        }
+
+        // Notificar si la barra de poder subió o bajó de nivel
+        if (subioNivelBatalla) {
+            mensaje += `💥 *¡Tu nivel de batalla ha aumentado! Ahora es:*  
+${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+        } else if (bajoNivelBatalla) {
+            mensaje += `⚠️ *Tu nivel de batalla ha disminuido... Ahora es:*  
+${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+        }
+
+        // Enviar mensaje final
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .volar:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar volar. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
+case 'luchar': {
+    try {
+        await m.react('⚔️'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const now = Date.now();
+
+        // Verificar si el usuario tiene un personaje principal
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar cooldown de 5 minutos
+        if (cartera[userId].lastFight && now - cartera[userId].lastFight < 300000) {
+            const remainingTime = Math.ceil((300000 - (now - cartera[userId].lastFight)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de luchar nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        cartera[userId].lastFight = now; // Guardar el tiempo de la última lucha
+
+        let personaje = cartera[userId].personajes[0]; // Usar el personaje principal
+        let expGanada = Math.floor(Math.random() * 500) + 500; // Entre 500 y 1000 XP
+        let coinsGanadas = Math.floor(Math.random() * 200) + 100; // Entre 100 y 300 Coins
+
+        // Subir experiencia y monedas
+        personaje.experiencia += expGanada;
+        cartera[userId].coins += coinsGanadas;
+
+        // Subir habilidades aleatoriamente
+        let habilidadSubida = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadSubida.nivel++;
+
+        // Subir nivel si alcanza la XP requerida
+        let subioNivel = false;
+        if (personaje.experiencia >= personaje.experienciaSiguienteNivel) {
+            personaje.nivel++;
+            personaje.experiencia -= personaje.experienciaSiguienteNivel;
+            personaje.experienciaSiguienteNivel += 500 * personaje.nivel; // Subir XP requerida
+            subioNivel = true;
+        }
+
+        // Subir nivel de batalla aleatoriamente
+        let subioNivelBatalla = false;
+        if (Math.random() < 0.3 && personaje.nivelBatalla < 10) {
+            personaje.nivelBatalla++;
+            subioNivelBatalla = true;
+        }
+
+        let porcentajeBatalla = personaje.nivelBatalla * 10;
+        let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+
+        // Textos aleatorios
+        const textos = [
+            "🔥 Tu personaje pelea con gran determinación y mejora sus habilidades.",
+            "⚡ Después de un combate intenso, tu personaje se siente más fuerte.",
+            "💥 ¡Una batalla épica! Tu personaje se enfrenta a un oponente poderoso.",
+            "🌀 En un duelo rápido, tu personaje demuestra su crecimiento.",
+            "⚔️ Una lucha feroz ha hecho que tu personaje gane más experiencia.",
+            "🔥 Tu entrenamiento da frutos, tu personaje avanza con cada combate.",
+            "💪 ¡Tu personaje se supera a sí mismo en esta pelea!",
+            "💥 Una batalla difícil, pero tu personaje ha aprendido nuevas estrategias.",
+            "🌟 Tu personaje se enfrenta a un enemigo desafiante y sale más fuerte.",
+            "🔥 La determinación de tu personaje le hace subir de nivel."
+        ];
+
+        let textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
+
+        // Guardar cambios en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Construir mensaje de resultado
+        let mensaje = `
+⚔️ *¡Tu personaje ha luchado!*  
+${textoAleatorio}  
+
+🆙 *Nivel:* ${personaje.nivel}  
+✨ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidad Mejorada:* ${habilidadSubida.nombre} (Nivel ${habilidadSubida.nivel})  
+💰 *Ganaste:* ${coinsGanadas} Cortana Coins  
+🆙 *Exp:* +${expGanada} XP  
+`;
+
+        // Notificar si el personaje subió de nivel
+        if (subioNivel) {
+            mensaje += `🎉 *¡Felicidades! Tu personaje subió al nivel ${personaje.nivel}.*\n`;
+        }
+
+        // Notificar si la barra de poder subió de nivel
+        if (subioNivelBatalla) {
+            mensaje += `💥 *¡Tu nivel de batalla ha aumentado! Ahora es:*  
+${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+        }
+
+        // Enviar mensaje final
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .luchar:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar luchar. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
 case 'toppersonajes': {
     try {
         await m.react('🏆'); // Reacción al usar el comando
@@ -847,6 +1885,19 @@ case 'verpersonajes': {
                 textoPersonajes += `❖ ─────────────────── ❖\n\n`;
             });
         }
+
+        // 📌 **Lista de Comandos para Mejorar y Cambiar de Personaje**
+        textoPersonajes += `🌟 *Comandos para mejorar y cambiar de personaje:* 🌟\n\n`;
+        textoPersonajes += `⚔️ *.luchar* → (Cada 5 min) Gana experiencia y Cortana Coins.\n`;
+        textoPersonajes += `🕊️ *.volar* → (Cada 5 min) Evento aleatorio: ganas o pierdes XP y monedas.\n`;
+        textoPersonajes += `🌌 *.otrouniverso* → (Cada 10 min) Obtén XP y monedas.\n`;
+        textoPersonajes += `🔥 *.mododios* → (Cada 15 min) Gran aumento de XP y Cortana Coins.\n`;
+        textoPersonajes += `😈 *.mododiablo* → (Cada 10 min) Aumenta o pierde habilidades y XP.\n`;
+        textoPersonajes += `⚡ *.podersuper* → (Cada 5 min) Mejora habilidades y XP.\n`;
+        textoPersonajes += `💥 *.podermaximo* → (Cada 5 min) Alto riesgo, alta recompensa.\n`;
+        textoPersonajes += `💥 *.estadopersonaje* → (para ver estado de tu personaje principal).\n`;
+	textoPersonajes += `🔄 *.personaje [nombre]* → Cambia a otro personaje de tu colección.\n\n`;
+        textoPersonajes += `💡 *Usa estos comandos para mejorar tus personajes y dominar la batalla.* 🚀`;
 
         // Enviar mensaje con todos los personajes e incluir la imagen
         await conn.sendMessage(
