@@ -944,6 +944,7 @@ case 'quitarventa': {
 }
 break;
 	
+
 case 'asta': {
     try {
         await m.react('✅'); // Reacción al usar el comando
@@ -952,41 +953,41 @@ case 'asta': {
         const costo = 3000; // Costo de Asta
         const personajeNombre = "Asta"; // Guardar solo el primer nombre
 
-        // Verificar si el personaje está en venta
+        // 📌 **Verificar si el personaje está en venta**
         const personajeEnVenta = cartera.personajesEnVenta?.find(p =>
             p.nombre.toLowerCase() === personajeNombre.toLowerCase()
         );
 
         if (personajeEnVenta) {
-            const vendedorId = personajeEnVenta.vendedor.replace('@s.whatsapp.net', '');
-
             return conn.sendMessage(
                 m.chat,
                 { 
-                    text: `⚠️ *${personajeNombre} está actualmente en venta por* @${vendedorId} *por 🪙 ${personajeEnVenta.precio} Cortana Coins.*  
+                    text: `⚠️ *${personajeNombre} está actualmente en venta por* @${personajeEnVenta.vendedor.split('@')[0]} *por 🪙 ${personajeEnVenta.precio} Cortana Coins.*  
 💡 *Debes esperar a que sea retirado de la venta o comprado por otro usuario.*`,
-                    mentions: [`${vendedorId}@s.whatsapp.net`] 
-                }
+                    mentions: [personajeEnVenta.vendedor] // ✅ Mención corregida
+                },
+                { quoted: m }
             );
         }
 
-        // Verificar si el personaje ya ha sido comprado por otro usuario
+        // 📌 **Verificar si el personaje ya ha sido comprado por otro usuario**
         const personajeYaComprado = Object.entries(cartera).find(([id, data]) =>
             data.personajesExclusivos?.some(p => p.nombre.toLowerCase() === personajeNombre.toLowerCase())
         );
 
         if (personajeYaComprado) {
-            const dueñoId = personajeYaComprado[0].replace('@s.whatsapp.net', '');
-
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *${personajeNombre} ya ha sido comprado por* @${dueñoId}.*  
-Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
-                { mentions: [`${dueñoId}@s.whatsapp.net`] }
+                { 
+                    text: `⚠️ *${personajeNombre} ya ha sido comprado por* @${personajeYaComprado[0].split('@')[0]}.*  
+Si quieres obtenerlo, debes esperar a que lo ponga a la venta.`,
+                    mentions: [personajeYaComprado[0]] // ✅ Mención corregida
+                },
+                { quoted: m }
             );
         }
 
-        // Verificar si el usuario tiene suficientes Cortana Coins
+        // 📌 **Verificar si el usuario tiene suficientes Cortana Coins**
         if (!cartera[userId] || cartera[userId].coins < costo) {
             return conn.sendMessage(
                 m.chat,
@@ -995,21 +996,21 @@ Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
             );
         }
 
-        // Descontar Cortana Coins
+        // 📌 **Descontar Cortana Coins**
         cartera[userId].coins -= costo;
 
-        // Habilidades de Asta
+        // 📌 **Habilidades de Asta**
         const habilidadesAsta = [
             { nombre: "Espada Antimagia ⚔️", nivel: 1 },
             { nombre: "Modo Black Asta 🔥", nivel: 1 },
             { nombre: "Desgarro Dimensional 🌑", nivel: 1 }
         ];
 
-        // Nivel de batalla inicial (aleatorio entre 10% y 30%)
+        // 📌 **Nivel de batalla inicial (aleatorio entre 10% y 30%)**
         let nivelBatalla = Math.floor(Math.random() * 3) + 1;
         let porcentajeBatalla = nivelBatalla * 10;
 
-        // Crear el personaje
+        // 📌 **Crear el personaje**
         const personaje = {
             nombre: personajeNombre, // Guardar solo "Asta"
             habilidades: habilidadesAsta,
@@ -1021,19 +1022,19 @@ Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
             dueño: userId // Guarda el dueño del personaje
         };
 
-        // Agregar el personaje al usuario en personajes exclusivos
+        // 📌 **Agregar el personaje al usuario en personajes exclusivos**
         if (!cartera[userId].personajesExclusivos) {
             cartera[userId].personajesExclusivos = [];
         }
         cartera[userId].personajesExclusivos.push(personaje);
 
-        // Guardar en el archivo JSON
+        // 📌 **Guardar en el archivo JSON**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Convertir el nivel de batalla en barra visual
+        // 📌 **Convertir el nivel de batalla en barra visual**
         const barraNivelBatalla = "■".repeat(nivelBatalla) + "□".repeat(10 - nivelBatalla);
 
-        // Mensaje de confirmación con imagen
+        // 📌 **Mensaje de confirmación con imagen**
         const mensaje = `
 🎉 *¡Has comprado a Asta!* 🎉  
 
@@ -1064,8 +1065,7 @@ ${barraNivelBatalla} ${porcentajeBatalla}%
         return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Asta. Intenta nuevamente.*' }, { quoted: m });
     }
 }
-break;
-        
+break;        
 
 case 'gojo': {
     try {
