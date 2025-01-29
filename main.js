@@ -737,19 +737,21 @@ case 'toppersonajes': {
 
         // Recorrer la cartera y recopilar los personajes de cada usuario
         Object.entries(cartera).forEach(([userId, data]) => {
-            const personajes = [...(data.personajes || []), ...(data.personajesExclusivos || [])];
+            const personajesComunes = data.personajes || [];
+            const personajesExclusivos = data.personajesExclusivos || [];
 
-            if (personajes.length > 0) {
+            if (personajesComunes.length > 0 || personajesExclusivos.length > 0) {
                 ranking.push({
                     usuario: userId,
-                    cantidad: personajes.length,
-                    personajes: personajes.map(p => `${p.nombre} (Lvl ${p.nivel})`).join(', ')
+                    cantidadTotal: personajesComunes.length + personajesExclusivos.length,
+                    personajesComunes: personajesComunes.map(p => `${p.nombre} (Lvl ${p.nivel})`).join(', ') || "Ninguno",
+                    personajesExclusivos: personajesExclusivos.map(p => `${p.nombre} (Lvl ${p.nivel})`).join(', ') || "Ninguno"
                 });
             }
         });
 
-        // Ordenar por cantidad de personajes de mayor a menor
-        ranking.sort((a, b) => b.cantidad - a.cantidad);
+        // Ordenar por cantidad total de personajes de mayor a menor
+        ranking.sort((a, b) => b.cantidadTotal - a.cantidadTotal);
 
         if (ranking.length === 0) {
             return conn.sendMessage(
@@ -761,8 +763,10 @@ case 'toppersonajes': {
 
         let textoRanking = `🏆 *TOP Usuarios con más Personajes* 🏆\n\n`;
         ranking.forEach((item, index) => {
-            textoRanking += `✨ *${index + 1}.* @${item.usuario.split('@')[0]} - *${item.cantidad} personajes*\n`;
-            textoRanking += `📜 *Personajes:* ${item.personajes}\n\n`;
+            textoRanking += `✨ *${index + 1}.* @${item.usuario.split('@')[0]} - *${item.cantidadTotal} personajes*\n`;
+            textoRanking += `📜 *Comunes:* ${item.personajesComunes}\n`;
+            textoRanking += `👑 *Exclusivos:* ${item.personajesExclusivos}\n`;
+            textoRanking += `━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
         });
 
         // Enviar mensaje con la imagen
