@@ -931,8 +931,8 @@ case 'podermaximo': {
         const userId = m.sender;
         const now = Date.now();
 
-        // Verificar si el usuario tiene personajes
-        if (!cartera[userId] || (!cartera[userId].personajes.length && !cartera[userId].personajesExclusivos.length)) {
+        // Verificar si el usuario tiene un personaje principal
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
@@ -950,11 +950,9 @@ case 'podermaximo': {
             );
         }
 
-        cartera[userId].lastMaxPower = now; // Guardar tiempo de la última activación
+        cartera[userId].lastMaxPower = now; // Guardar el tiempo de la última activación
 
-        // Obtener el personaje activo (prioriza exclusivos si están en primer lugar)
-        let personaje = cartera[userId].personajesExclusivos[0] || cartera[userId].personajes[0];
-
+        let personaje = cartera[userId].personajes[0]; // Usar el personaje principal
         let expGanada = Math.floor(Math.random() * 2000) + 1000; // Entre 1000 y 3000 XP
         let coinsGanadas = Math.floor(Math.random() * 700) + 500; // Entre 500 y 1200 Coins
 
@@ -966,19 +964,17 @@ case 'podermaximo': {
         let habilidadSubida = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
         habilidadSubida.nivel++;
 
-        // Variables de notificación
-        let nivelSubido = false;
-        let nivelBatallaSubido = false;
-
         // Subir nivel si alcanza la XP requerida
+        let nivelSubido = false;
         if (personaje.experiencia >= personaje.experienciaSiguienteNivel) {
             personaje.nivel++;
             personaje.experiencia -= personaje.experienciaSiguienteNivel;
-            personaje.experienciaSiguienteNivel += 500 * personaje.nivel;
+            personaje.experienciaSiguienteNivel += 500 * personaje.nivel; // Subir XP requerida
             nivelSubido = true;
         }
 
         // Subir nivel de batalla aleatoriamente con mayor probabilidad
+        let nivelBatallaSubido = false;
         if (Math.random() < 0.5 && personaje.nivelBatalla < 10) {
             personaje.nivelBatalla++;
             nivelBatallaSubido = true;
@@ -987,18 +983,18 @@ case 'podermaximo': {
         let porcentajeBatalla = personaje.nivelBatalla * 10;
         let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
 
-        // 🔥 **Mensajes aleatorios**
+        // Textos aleatorios
         const textos = [
-            "🔥 *Tu personaje alcanza un poder inimaginable!*",
-            "⚡ *Una explosión de energía desata su máximo potencial!*",
-            "💥 *El aura de tu personaje se vuelve incontrolable!*",
-            "🌟 *Su espíritu guerrero rompe todos los límites!*",
-            "🔥 *Su poder desata un impacto devastador!*",
-            "💀 *Su presencia ahora es aterradora para sus enemigos!*",
-            "⚠️ *Un rugido de energía sacude el entorno!*",
-            "🔥 *¡Su fuerza ha superado los límites conocidos!*",
-            "🌟 *La intensidad de su energía es inigualable!*",
-            "💥 *Una explosión de poder recorre su cuerpo!*"
+            "🔥 *¡Tu personaje alcanza su máximo potencial!* El aura que lo rodea es indescriptible.",
+            "⚡ *¡Poder supremo desbloqueado!* Las habilidades de tu personaje se han disparado.",
+            "💥 *¡La transformación final ha sido completada!* Sientes un aumento de energía en el ambiente.",
+            "🌟 *¡Tu personaje ha superado sus propios límites!* Su poder es ahora colosal.",
+            "🔥 *Una fuerza incontrolable recorre el cuerpo de tu personaje.*",
+            "💥 *¡Un rugido de energía rompe el cielo!* Tu personaje ha alcanzado nuevas alturas.",
+            "⚡ *Su espíritu guerrero se enciende, alcanzando un nuevo nivel de poder.*",
+            "🔥 *La intensidad del poder es abrumadora, tu personaje ha evolucionado.*",
+            "💥 *Un estallido de energía rodea a tu personaje, marcando una nueva etapa de poder.*",
+            "🌟 *¡Su poder ha crecido más allá de los límites!* Nadie puede detenerlo ahora."
         ];
 
         let textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
@@ -1006,37 +1002,42 @@ case 'podermaximo': {
         // Guardar cambios en el archivo JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 📌 **Mensajes de notificación (sólo si hay cambios importantes)**
+        // Mensaje de resultado
+        let mensaje = `
+🔥 *¡Tu personaje ha desatado su Poder Máximo!*  
+${textoAleatorio}  
+
+🆙 *Nivel:* ${personaje.nivel}  
+✨ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidad Mejorada:* ${habilidadSubida.nombre} (Nivel ${habilidadSubida.nivel})  
+💰 *Ganaste:* ${coinsGanadas} Cortana Coins  
+🆙 *Exp:* +${expGanada} XP  
+`;
+
+        // Notificación de nivel o barra de poder subida
         if (nivelSubido) {
-            await conn.sendMessage(
-                m.chat,
-                { text: `🎉 *¡${personaje.nombre} ha subido de nivel!* Ahora es nivel *${personaje.nivel}*.` },
-                { quoted: m }
-            );
+            mensaje += `\n🎉 *¡Tu personaje ha subido de nivel!* Ahora es nivel *${personaje.nivel}*.\n`;
         }
 
         if (nivelBatallaSubido) {
-            await conn.sendMessage(
-                m.chat,
-                { text: `🔥 *¡${personaje.nombre} ha aumentado su barra de poder!* Ahora es *${porcentajeBatalla}%*.` },
-                { quoted: m }
-            );
+            mensaje += `\n🔥 *¡La barra de poder ha aumentado!* Ahora es *${porcentajeBatalla}%*.\n`;
         }
 
         await conn.sendMessage(
             m.chat,
-            { text: `🔥 *${personaje.nombre} ha usado su Poder Máximo!* ${textoAleatorio} \n\nGanó 🪙 ${coinsGanadas} Coins y +${expGanada} XP.` },
+            { text: mensaje },
             { quoted: m }
         );
-
     } catch (error) {
         console.error('❌ Error en el comando .podermaximo:', error);
         return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar usar el Poder Máximo. Intenta nuevamente.*' }, { quoted: m });
     }
 }
 break;
-        
-	
+                
 case 'podersuper': {
     try {
         await m.react('⚡'); // Reacción al usar el comando
@@ -1044,8 +1045,8 @@ case 'podersuper': {
         const userId = m.sender;
         const now = Date.now();
 
-        // Verificar si el usuario tiene personajes
-        if (!cartera[userId] || (!cartera[userId].personajes.length && !cartera[userId].personajesExclusivos.length)) {
+        // Verificar si el usuario tiene un personaje principal
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
@@ -1063,11 +1064,9 @@ case 'podersuper': {
             );
         }
 
-        cartera[userId].lastPower = now; // Guardar tiempo de la última activación
+        cartera[userId].lastPower = now; // Guardar el tiempo de la última activación
 
-        // Obtener el personaje activo (prioriza exclusivos si están en primer lugar)
-        let personaje = cartera[userId].personajesExclusivos[0] || cartera[userId].personajes[0];
-
+        let personaje = cartera[userId].personajes[0]; // Usar el personaje principal
         let expGanada = Math.floor(Math.random() * 1500) + 500; // Entre 500 y 2000 XP
         let coinsGanadas = Math.floor(Math.random() * 600) + 200; // Entre 200 y 800 Coins
 
@@ -1079,19 +1078,17 @@ case 'podersuper': {
         let habilidadSubida = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
         habilidadSubida.nivel++;
 
-        // Variables de notificación
-        let nivelSubido = false;
-        let nivelBatallaSubido = false;
-
         // Subir nivel si alcanza la XP requerida
+        let nivelSubido = false;
         if (personaje.experiencia >= personaje.experienciaSiguienteNivel) {
             personaje.nivel++;
             personaje.experiencia -= personaje.experienciaSiguienteNivel;
-            personaje.experienciaSiguienteNivel += 500 * personaje.nivel;
+            personaje.experienciaSiguienteNivel += 500 * personaje.nivel; // Subir XP requerida
             nivelSubido = true;
         }
 
-        // Subir nivel de batalla aleatoriamente con menor probabilidad que en poder máximo
+        // Subir nivel de batalla aleatoriamente
+        let nivelBatallaSubido = false;
         if (Math.random() < 0.3 && personaje.nivelBatalla < 10) {
             personaje.nivelBatalla++;
             nivelBatallaSubido = true;
@@ -1100,18 +1097,18 @@ case 'podersuper': {
         let porcentajeBatalla = personaje.nivelBatalla * 10;
         let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
 
-        // ⚡ **Mensajes aleatorios**
+        // Textos aleatorios
         const textos = [
-            "⚡ *Tu personaje siente una descarga de poder inigualable!*",
-            "🔥 *Un destello de energía dorada envuelve a tu personaje!*",
-            "💥 *El aura de tu personaje brilla con intensidad!*",
-            "🌟 *Un relámpago de fuerza recorre su cuerpo!*",
-            "⚡ *El aire a su alrededor se vuelve electrizante!*",
-            "🔥 *Tu personaje alcanza una nueva etapa de evolución!*",
-            "💀 *Una explosión de energía atraviesa el espacio!*",
-            "⚠️ *Su espíritu guerrero estalla en llamas!*",
-            "🌟 *Tu personaje ha alcanzado un estado superior de existencia!*",
-            "💥 *Un aumento repentino de poder sacude su ser!*"
+            "⚡ Una gran energía surge dentro de tu personaje, aumentando su poder.",
+            "🔥 La transformación se completa, alcanzando un nuevo nivel de fuerza.",
+            "💥 Una explosión de poder sacude el campo de batalla, fortaleciendo tu personaje.",
+            "🌟 Tu personaje siente una nueva energía fluyendo por su cuerpo.",
+            "⚡ Un aura dorada envuelve a tu personaje, mejorando sus habilidades.",
+            "🔥 La intensidad de tu personaje se dispara, logrando nuevas mejoras.",
+            "💥 Un destello de poder transforma a tu personaje en un ser más fuerte.",
+            "🌟 La evolución es inevitable, tu personaje avanza en su entrenamiento.",
+            "⚡ Tu personaje experimenta un crecimiento sin precedentes.",
+            "🔥 Una ráfaga de poder empuja a tu personaje al siguiente nivel."
         ];
 
         let textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
@@ -1119,35 +1116,42 @@ case 'podersuper': {
         // Guardar cambios en el archivo JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 📌 **Notificaciones solo si hay cambios importantes**
+        // Mensaje de resultado
+        let mensaje = `
+⚡ *¡Tu personaje ha desatado un Poder Supremo!*  
+${textoAleatorio}  
+
+🆙 *Nivel:* ${personaje.nivel}  
+✨ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidad Mejorada:* ${habilidadSubida.nombre} (Nivel ${habilidadSubida.nivel})  
+💰 *Ganaste:* ${coinsGanadas} Cortana Coins  
+🆙 *Exp:* +${expGanada} XP  
+`;
+
+        // Notificación de nivel o barra de poder subida
         if (nivelSubido) {
-            await conn.sendMessage(
-                m.chat,
-                { text: `🎉 *¡${personaje.nombre} ha subido de nivel!* Ahora es nivel *${personaje.nivel}*.` },
-                { quoted: m }
-            );
+            mensaje += `\n🎉 *¡Tu personaje ha subido de nivel!* Ahora es nivel *${personaje.nivel}*.\n`;
         }
 
         if (nivelBatallaSubido) {
-            await conn.sendMessage(
-                m.chat,
-                { text: `🔥 *¡${personaje.nombre} ha aumentado su barra de poder!* Ahora es *${porcentajeBatalla}%*.` },
-                { quoted: m }
-            );
+            mensaje += `\n🔥 *¡La barra de poder ha aumentado!* Ahora es *${porcentajeBatalla}%*.\n`;
         }
 
         await conn.sendMessage(
             m.chat,
-            { text: `⚡ *${personaje.nombre} ha liberado su Poder Supremo!* ${textoAleatorio} \n\nGanó 🪙 ${coinsGanadas} Coins y +${expGanada} XP.` },
+            { text: mensaje },
             { quoted: m }
         );
-
     } catch (error) {
         console.error('❌ Error en el comando .podersuper:', error);
         return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar usar el Poder Supremo. Intenta nuevamente.*' }, { quoted: m });
     }
 }
-break;
+break;	
+        
 	
 case 'mododiablo': {
     try {
