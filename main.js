@@ -822,7 +822,7 @@ case 'comprar': {
         await m.react('💰');
 
         const userId = m.sender;
-        const nombrePersonaje = text.toLowerCase().replace(/[^a-z0-9]/gi, '');
+        const nombrePersonaje = text.trim().toLowerCase().replace(/[^a-z0-9]/gi, ''); // Formato limpio del nombre
 
         if (!nombrePersonaje) {
             return conn.sendMessage(
@@ -832,20 +832,11 @@ case 'comprar': {
             );
         }
 
-        // Buscar el personaje en la lista de venta
+        // Buscar el personaje en la lista de venta global
         let vendedorId = null;
-        let personajeVenta = null;
-
-        for (const [id, data] of Object.entries(cartera)) {
-            if (data.personajesEnVenta) {
-                const personajeEncontrado = data.personajesEnVenta.find(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
-                if (personajeEncontrado) {
-                    vendedorId = id;
-                    personajeVenta = personajeEncontrado;
-                    break;
-                }
-            }
-        }
+        let personajeVenta = cartera.personajesEnVenta?.find(p =>
+            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje
+        );
 
         if (!personajeVenta) {
             return conn.sendMessage(
@@ -855,19 +846,30 @@ case 'comprar': {
             );
         }
 
+        vendedorId = personajeVenta.vendedor; // ID del vendedor
+
         // Verificar si el comprador tiene suficientes Cortana Coins
         if (!cartera[userId] || cartera[userId].coins < personajeVenta.precio) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar este personaje.*" },
+                { text: `⚠️ *No tienes suficientes Cortana Coins para comprar a ${personajeVenta.nombre}.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario ya tiene el personaje (para evitar compra duplicada)
+        if (cartera[userId].personajesExclusivos?.some(p =>
+            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *Ya tienes a ${personajeVenta.nombre} en tu colección.*` },
                 { quoted: m }
             );
         }
 
         // Transferir personaje del vendedor al comprador
-        const personajeComprado = cartera[vendedorId].personajesExclusivos.find(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
         cartera[userId].personajesExclusivos = cartera[userId].personajesExclusivos || [];
-        cartera[userId].personajesExclusivos.push(personajeComprado);
+        cartera[userId].personajesExclusivos.push({ ...personajeVenta, dueño: userId }); // Se transfiere el dueño
 
         // Descontar monedas al comprador
         cartera[userId].coins -= personajeVenta.precio;
@@ -875,18 +877,20 @@ case 'comprar': {
         // Pagar al vendedor
         cartera[vendedorId].coins += personajeVenta.precio;
 
-        // Eliminar personaje de la lista de venta y del vendedor
-        cartera[vendedorId].personajesEnVenta = cartera[vendedorId].personajesEnVenta.filter(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') !== nombrePersonaje);
-        cartera[vendedorId].personajesExclusivos = cartera[vendedorId].personajesExclusivos.filter(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') !== nombrePersonaje);
+        // Eliminar personaje de la lista de venta global
+        cartera.personajesEnVenta = cartera.personajesEnVenta.filter(p =>
+            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') !== nombrePersonaje
+        );
 
-        // Guardar cambios
+        // Guardar cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         await conn.sendMessage(
             m.chat,
             {
-                text: `✅ *Has comprado a ${nombrePersonaje} por 🪙 ${personajeVenta.precio} Cortana Coins.*  
-🛒 *Nuevo dueño:* @${userId.split('@')[0]}`,
+                text: `✅ *Has comprado a ${personajeVenta.nombre} por 🪙 ${personajeVenta.precio} Cortana Coins.*  
+🛒 *Nuevo dueño:* @${userId.split('@')[0]}  
+💰 *Pago recibido por:* @${vendedorId.split('@')[0]}`,
                 mentions: [userId, vendedorId]
             },
             { quoted: m }
