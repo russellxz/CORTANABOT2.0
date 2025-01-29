@@ -728,6 +728,98 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema de personaje de anime
+case 'naruto': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const costo = 250;
+        const nombrePersonaje = "🍜 Naruto";
+
+        // Verificar si el usuario tiene suficiente dinero
+        if (!cartera[userId] || cartera[userId].coins < costo) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar a Naruto.*" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario ya tiene a Naruto
+        if (cartera[userId].personajes && cartera[userId].personajes.some(p => p.nombre === nombrePersonaje)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Ya tienes a Naruto en tu colección. No puedes comprarlo nuevamente.*" },
+                { quoted: m }
+            );
+        }
+
+        // Descontar Cortana Coins
+        cartera[userId].coins -= costo;
+
+        // Habilidades de Naruto con emojis
+        const habilidadesNaruto = [
+            { nombre: "🍥 Rasengan", nivel: 1 },
+            { nombre: "🌀 Modo Sabio", nivel: 1 },
+            { nombre: "👥 Clones de Sombra", nivel: 1 }
+        ];
+
+        // Nivel de batalla inicial (aleatorio entre 10% y 30%)
+        let nivelBatalla = Math.floor(Math.random() * 3) + 1; // 1, 2 o 3
+        let porcentajeBatalla = nivelBatalla * 10; // Convertir a porcentaje
+
+        // Crear el personaje
+        const personaje = {
+            nombre: nombrePersonaje,
+            habilidades: habilidadesNaruto,
+            nivel: 1,
+            experiencia: 0,
+            experienciaSiguienteNivel: 500,
+            nivelBatalla: nivelBatalla, // Subirá aleatoriamente al subir de nivel
+        };
+
+        // Agregar el personaje al usuario
+        if (!cartera[userId].personajes) {
+            cartera[userId].personajes = [];
+        }
+        cartera[userId].personajes.push(personaje);
+
+        // Guardar en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Convertir el nivel de batalla en barra visual
+        const barraNivelBatalla = "■".repeat(nivelBatalla) + "□".repeat(10 - nivelBatalla);
+
+        // Mensaje de confirmación con imagen
+        const mensaje = `
+🎉 *¡Has comprado a Naruto!* 🎉  
+
+🍜 *Nombre:* Naruto Uzumaki  
+🆙 *Nivel:* 1  
+✨ *Experiencia:* 0 / 500  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidades Iniciales:*  
+${habilidadesNaruto.map(h => `🔹 ${h.nombre} (Nivel 1)`).join("\n")}  
+
+💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/987a6e9295426a43f84fc4aa73867ae4" },
+                caption: mensaje
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .naruto:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Naruto. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
 case 'luffy': {
     try {
         await m.react('✅'); // Reacción al usar el comando
