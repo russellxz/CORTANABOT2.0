@@ -728,6 +728,90 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema de personaje de anime
+case 'luffy': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const costo = 250;
+
+        // Verificar si el usuario tiene suficiente dinero
+        if (!cartera[userId] || cartera[userId].coins < costo) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar a Luffy.*" },
+                { quoted: m }
+            );
+        }
+
+        // Descontar Cortana Coins
+        cartera[userId].coins -= costo;
+
+        // Habilidades de Luffy con emojis diferentes
+        const habilidadesLuffy = [
+            { nombre: "👊 Gomu Gomu no Pistol", nivel: 1 }, // Emoji de puño para representar su golpe
+            { nombre: "🌀 Gomu Gomu no Bazooka", nivel: 1 }, // Emoji de remolino para su ataque de impacto
+            { nombre: "🔥 Red Hawk", nivel: 1 } // Emoji de fuego para su golpe ardiente
+        ];
+
+        // Nivel de batalla inicial (aleatorio entre 10% y 30%)
+        let nivelBatalla = Math.floor(Math.random() * 3) + 1; // 1, 2 o 3
+        let porcentajeBatalla = nivelBatalla * 10; // Convertir a porcentaje (ejemplo: 1 → 10%, 2 → 20%, 3 → 30%)
+
+        // Crear el personaje
+        const personaje = {
+            nombre: "🏴‍☠️ Luffy",
+            habilidades: habilidadesLuffy,
+            nivel: 1,
+            experiencia: 0,
+            experienciaSiguienteNivel: 500,
+            nivelBatalla: nivelBatalla, // Subirá aleatoriamente al subir de nivel
+        };
+
+        // Agregar el personaje al usuario
+        if (!cartera[userId].personajes) {
+            cartera[userId].personajes = [];
+        }
+        cartera[userId].personajes.push(personaje);
+
+        // Guardar en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Convertir el nivel de batalla en barra visual
+        const barraNivelBatalla = "■".repeat(nivelBatalla) + "□".repeat(10 - nivelBatalla);
+
+        // Mensaje de confirmación con imagen
+        const mensaje = `
+🎉 *¡Has comprado a Luffy!* 🎉  
+
+🏴‍☠️ *Nombre:* Monkey D. Luffy  
+🆙 *Nivel:* 1  
+✨ *Experiencia:* 0 / 500  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidades Iniciales:*  
+🔹 ${habilidadesLuffy[0].nombre} (Nivel 1)  
+🔹 ${habilidadesLuffy[1].nombre} (Nivel 1)  
+🔹 ${habilidadesLuffy[2].nombre} (Nivel 1)  
+
+💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/a031fa4a97b99e5b34294cdaf5c9fc07" },
+                caption: mensaje
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .luffy:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Luffy. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
 case 'goku': {
     try {
         await m.react('✅'); // Reacción al usar el comando
@@ -818,47 +902,40 @@ case 'delpersonaje': {
         await m.react('❌'); // Reacción al usar el comando
 
         const userId = m.sender;
-        const args = text.trim().split(/ +/).slice(1);
-        const personajeNombre = args.join(" ").toLowerCase(); // Convertir a minúsculas para evitar errores
-
-        if (!personajeNombre) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *Debes especificar el nombre del personaje que deseas eliminar.*\nEjemplo: `.delpersonaje goku`" },
-                { quoted: m }
-            );
-        }
+        const args = text.trim().toLowerCase(); // Obtener el nombre del personaje en minúsculas
 
         // Verificar si el usuario tiene personajes
         if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No tienes personajes en tu lista para eliminar.*" },
+                { text: "⚠️ *No tienes personajes para eliminar.* Usa `.verpersonajes` para ver tu lista." },
                 { quoted: m }
             );
         }
 
-        // Buscar el personaje en la lista del usuario
-        const index = cartera[userId].personajes.findIndex(p => p.nombre.toLowerCase().includes(personajeNombre));
+        // Buscar el personaje en la lista del usuario ignorando emojis y espacios adicionales
+        const index = cartera[userId].personajes.findIndex(p => 
+            p.nombre.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() === args.replace(/[^a-zA-Z0-9]/g, '')
+        );
 
         if (index === -1) {
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *No se encontró un personaje llamado "${personajeNombre}".*` },
+                { text: `⚠️ *No se encontró el personaje* '${args}'. Verifica el nombre con \`.verpersonajes\`.` },
                 { quoted: m }
             );
         }
 
-        // Eliminar personaje de la lista
+        // Eliminar el personaje de la lista
         const personajeEliminado = cartera[userId].personajes.splice(index, 1)[0];
 
-        // Guardar cambios en el archivo
+        // Guardar los cambios en el archivo JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Confirmar eliminación
+        // Confirmar la eliminación
         await conn.sendMessage(
             m.chat,
-            { text: `🗑️ *Has eliminado a ${personajeEliminado.nombre} de tu lista de personajes.*` },
+            { text: `🗑️ *Has eliminado a ${personajeEliminado.nombre} de tu colección.*` },
             { quoted: m }
         );
 
@@ -867,7 +944,7 @@ case 'delpersonaje': {
         return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar eliminar el personaje. Intenta nuevamente.*' }, { quoted: m });
     }
 }
-break;		
+break;
 		
 		
 //sistema nuevo de mascota
