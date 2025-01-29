@@ -737,9 +737,13 @@ case 'alaventa': {
         if (!cartera.personajesEnVenta || cartera.personajesEnVenta.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No hay personajes exclusivos en venta actualmente.* Vuelve más tarde o usa `.venderpersonaje` para poner uno en venta." },
+                { 
+                    image: { url: "https://cloud.dorratz.com/files/a7e2ef746d6984b66b9a79983780e5c7" },
+                    caption: "⚠️ *No hay personajes exclusivos en venta actualmente.*\n\nVuelve más tarde o usa `.venderpersonaje` para poner uno en venta."
+                },
                 { quoted: m }
             );
+            return;
         }
 
         let menuVenta = `🎭 *Lista de Personajes en Venta* 🎭\n`;
@@ -764,11 +768,12 @@ case 'alaventa': {
             menuVenta += `━━━━━━━━━━━━━━━━━━━━\n\n`;
         });
 
-        // Enviar menú de personajes en venta
+        // Enviar menú de personajes en venta con imagen de presentación
         await conn.sendMessage(
             m.chat,
             {
-                text: menuVenta,
+                image: { url: "https://cloud.dorratz.com/files/c1f1527efec4cfb476e7695024d1b27e" },
+                caption: menuVenta,
                 mentions: cartera.personajesEnVenta.map(venta => venta.vendedor)
             },
             { quoted: m }
