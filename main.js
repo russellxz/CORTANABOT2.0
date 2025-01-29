@@ -728,7 +728,6 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema de personaje de anime
-
 case 'goku': {
     try {
         await m.react('✅'); // Reacción al usar el comando
@@ -748,15 +747,16 @@ case 'goku': {
         // Descontar Cortana Coins
         cartera[userId].coins -= costo;
 
-        // Habilidades de Goku
+        // Habilidades de Goku con emojis diferentes
         const habilidadesGoku = [
-            { nombre: "Kamehameha", nivel: 1 },
-            { nombre: "Kaioken", nivel: 1 },
-            { nombre: "Golpe Ultra Rápido", nivel: 1 }
+            { nombre: "🔥 Kamehameha", nivel: 1 }, // Emoji de fuego para el ataque Kamehameha
+            { nombre: "⚡ Kaioken", nivel: 1 }, // Emoji de rayo para representar el Kaioken
+            { nombre: "🥋 Golpe Ultra Rápido", nivel: 1 } // Emoji de kimono para representar la técnica de combate
         ];
 
-        // Nivel de batalla inicial (aleatorio entre 10% y 100%)
-        let nivelBatalla = Math.floor(Math.random() * 10) + 1; // 1 a 10
+        // Nivel de batalla inicial (aleatorio entre 10% y 30%)
+        let nivelBatalla = Math.floor(Math.random() * 3) + 1; // 1, 2 o 3
+        let porcentajeBatalla = nivelBatalla * 10; // Convertir a porcentaje (ejemplo: 1 → 10%, 2 → 20%, 3 → 30%)
 
         // Crear el personaje
         const personaje = {
@@ -765,7 +765,7 @@ case 'goku': {
             nivel: 1,
             experiencia: 0,
             experienciaSiguienteNivel: 500,
-            nivelBatalla: nivelBatalla, // Se actualizará al subir de nivel
+            nivelBatalla: nivelBatalla, // Subirá aleatoriamente al subir de nivel
         };
 
         // Agregar el personaje al usuario
@@ -779,7 +779,6 @@ case 'goku': {
 
         // Convertir el nivel de batalla en barra visual
         const barraNivelBatalla = "■".repeat(nivelBatalla) + "□".repeat(10 - nivelBatalla);
-        const porcentajeBatalla = nivelBatalla * 10 + "%";
 
         // Mensaje de confirmación con imagen
         const mensaje = `
@@ -789,14 +788,14 @@ case 'goku': {
 🆙 *Nivel:* 1  
 ✨ *Experiencia:* 0 / 500  
 💥 *Nivel de Batalla:*  
-${barraNivelBatalla} ${porcentajeBatalla}  
+${barraNivelBatalla} ${porcentajeBatalla}%  
 
 🌟 *Habilidades Iniciales:*  
 🔹 ${habilidadesGoku[0].nombre} (Nivel 1)  
 🔹 ${habilidadesGoku[1].nombre} (Nivel 1)  
 🔹 ${habilidadesGoku[2].nombre} (Nivel 1)  
 
-💡 *Usa los comandos de batalla y entrenamiento para subir de nivel a tu personaje.*`;
+💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
 
         await conn.sendMessage(
             m.chat,
@@ -811,9 +810,64 @@ ${barraNivelBatalla} ${porcentajeBatalla}
         return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Goku. Intenta nuevamente.*' }, { quoted: m });
     }
 }
+break;
+	
+		
+case 'delpersonaje': {
+    try {
+        await m.react('❌'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const args = text.trim().split(/ +/).slice(1);
+        const personajeNombre = args.join(" ").toLowerCase(); // Convertir a minúsculas para evitar errores
+
+        if (!personajeNombre) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Debes especificar el nombre del personaje que deseas eliminar.*\nEjemplo: `.delpersonaje goku`" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario tiene personajes
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu lista para eliminar.*" },
+                { quoted: m }
+            );
+        }
+
+        // Buscar el personaje en la lista del usuario
+        const index = cartera[userId].personajes.findIndex(p => p.nombre.toLowerCase().includes(personajeNombre));
+
+        if (index === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *No se encontró un personaje llamado "${personajeNombre}".*` },
+                { quoted: m }
+            );
+        }
+
+        // Eliminar personaje de la lista
+        const personajeEliminado = cartera[userId].personajes.splice(index, 1)[0];
+
+        // Guardar cambios en el archivo
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Confirmar eliminación
+        await conn.sendMessage(
+            m.chat,
+            { text: `🗑️ *Has eliminado a ${personajeEliminado.nombre} de tu lista de personajes.*` },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .delpersonaje:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar eliminar el personaje. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
 break;		
-		
-		
 		
 		
 //sistema nuevo de mascota
