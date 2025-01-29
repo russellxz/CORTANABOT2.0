@@ -734,6 +734,7 @@ case 'luffy': {
 
         const userId = m.sender;
         const costo = 250;
+        const nombrePersonaje = "🏴‍☠️ Luffy";
 
         // Verificar si el usuario tiene suficiente dinero
         if (!cartera[userId] || cartera[userId].coins < costo) {
@@ -744,23 +745,32 @@ case 'luffy': {
             );
         }
 
+        // Verificar si el usuario ya tiene a Luffy
+        if (cartera[userId].personajes && cartera[userId].personajes.some(p => p.nombre === nombrePersonaje)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Ya tienes a Luffy en tu colección. No puedes comprarlo nuevamente.*" },
+                { quoted: m }
+            );
+        }
+
         // Descontar Cortana Coins
         cartera[userId].coins -= costo;
 
-        // Habilidades de Luffy con emojis diferentes
+        // Habilidades de Luffy con emojis
         const habilidadesLuffy = [
-            { nombre: "👊 Gomu Gomu no Pistol", nivel: 1 }, // Emoji de puño para representar su golpe
-            { nombre: "🌀 Gomu Gomu no Bazooka", nivel: 1 }, // Emoji de remolino para su ataque de impacto
-            { nombre: "🔥 Red Hawk", nivel: 1 } // Emoji de fuego para su golpe ardiente
+            { nombre: "👊 Gomu Gomu no Pistol", nivel: 1 },
+            { nombre: "💨 Gear Second", nivel: 1 },
+            { nombre: "🔥 Red Hawk", nivel: 1 }
         ];
 
         // Nivel de batalla inicial (aleatorio entre 10% y 30%)
         let nivelBatalla = Math.floor(Math.random() * 3) + 1; // 1, 2 o 3
-        let porcentajeBatalla = nivelBatalla * 10; // Convertir a porcentaje (ejemplo: 1 → 10%, 2 → 20%, 3 → 30%)
+        let porcentajeBatalla = nivelBatalla * 10; // Convertir a porcentaje
 
         // Crear el personaje
         const personaje = {
-            nombre: "🏴‍☠️ Luffy",
+            nombre: nombrePersonaje,
             habilidades: habilidadesLuffy,
             nivel: 1,
             experiencia: 0,
@@ -784,16 +794,14 @@ case 'luffy': {
         const mensaje = `
 🎉 *¡Has comprado a Luffy!* 🎉  
 
-🏴‍☠️ *Nombre:* Monkey D. Luffy  
+🏴‍☠️ *Nombre:* Luffy  
 🆙 *Nivel:* 1  
 ✨ *Experiencia:* 0 / 500  
 💥 *Nivel de Batalla:*  
 ${barraNivelBatalla} ${porcentajeBatalla}%  
 
 🌟 *Habilidades Iniciales:*  
-🔹 ${habilidadesLuffy[0].nombre} (Nivel 1)  
-🔹 ${habilidadesLuffy[1].nombre} (Nivel 1)  
-🔹 ${habilidadesLuffy[2].nombre} (Nivel 1)  
+${habilidadesLuffy.map(h => `🔹 ${h.nombre} (Nivel 1)`).join("\n")}  
 
 💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
 
@@ -818,6 +826,7 @@ case 'goku': {
 
         const userId = m.sender;
         const costo = 250;
+        const nombrePersonaje = "🟠 Goku";
 
         // Verificar si el usuario tiene suficiente dinero
         if (!cartera[userId] || cartera[userId].coins < costo) {
@@ -828,23 +837,32 @@ case 'goku': {
             );
         }
 
+        // Verificar si el usuario ya tiene a Goku
+        if (cartera[userId].personajes && cartera[userId].personajes.some(p => p.nombre === nombrePersonaje)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Ya tienes a Goku en tu colección. No puedes comprarlo nuevamente.*" },
+                { quoted: m }
+            );
+        }
+
         // Descontar Cortana Coins
         cartera[userId].coins -= costo;
 
-        // Habilidades de Goku con emojis diferentes
+        // Habilidades de Goku con emojis
         const habilidadesGoku = [
-            { nombre: "🔥 Kamehameha", nivel: 1 }, // Emoji de fuego para el ataque Kamehameha
-            { nombre: "⚡ Kaioken", nivel: 1 }, // Emoji de rayo para representar el Kaioken
-            { nombre: "🥋 Golpe Ultra Rápido", nivel: 1 } // Emoji de kimono para representar la técnica de combate
+            { nombre: "🔥 Kamehameha", nivel: 1 },
+            { nombre: "💥 Kaioken", nivel: 1 },
+            { nombre: "⚡ Golpe Ultra Rápido", nivel: 1 }
         ];
 
         // Nivel de batalla inicial (aleatorio entre 10% y 30%)
         let nivelBatalla = Math.floor(Math.random() * 3) + 1; // 1, 2 o 3
-        let porcentajeBatalla = nivelBatalla * 10; // Convertir a porcentaje (ejemplo: 1 → 10%, 2 → 20%, 3 → 30%)
+        let porcentajeBatalla = nivelBatalla * 10; // Convertir a porcentaje
 
         // Crear el personaje
         const personaje = {
-            nombre: "🟠 Goku",
+            nombre: nombrePersonaje,
             habilidades: habilidadesGoku,
             nivel: 1,
             experiencia: 0,
@@ -875,9 +893,7 @@ case 'goku': {
 ${barraNivelBatalla} ${porcentajeBatalla}%  
 
 🌟 *Habilidades Iniciales:*  
-🔹 ${habilidadesGoku[0].nombre} (Nivel 1)  
-🔹 ${habilidadesGoku[1].nombre} (Nivel 1)  
-🔹 ${habilidadesGoku[2].nombre} (Nivel 1)  
+${habilidadesGoku.map(h => `🔹 ${h.nombre} (Nivel 1)`).join("\n")}  
 
 💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
 
