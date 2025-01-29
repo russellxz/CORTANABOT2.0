@@ -746,11 +746,24 @@ case 'vender': {
             );
         }
 
-        // Verificar si el usuario tiene ese personaje exclusivo
-        if (!cartera[userId]?.personajesExclusivos?.some(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje)) {
+        // Verificar si el usuario tiene personajes exclusivos
+        if (!cartera[userId]?.personajesExclusivos || cartera[userId].personajesExclusivos.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No tienes este personaje exclusivo para vender.*" },
+                { text: "⚠️ *No tienes personajes exclusivos para vender.*" },
+                { quoted: m }
+            );
+        }
+
+        // Buscar el personaje con comparación flexible
+        const personajeEncontrado = cartera[userId].personajesExclusivos.find(p => 
+            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje
+        );
+
+        if (!personajeEncontrado) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *No tienes a ${nombrePersonaje} en tu colección.*` },
                 { quoted: m }
             );
         }
@@ -765,14 +778,14 @@ case 'vender': {
             );
         }
 
-        cartera[userId].personajesEnVenta.push({ nombre: nombrePersonaje, precio });
+        cartera[userId].personajesEnVenta.push({ ...personajeEncontrado, precio });
 
-        // Guardar cambios
+        // Guardar cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         await conn.sendMessage(
             m.chat,
-            { text: `✅ *Has puesto en venta a ${nombrePersonaje} por 🪙 ${precio} Cortana Coins.*` },
+            { text: `✅ *Has puesto en venta a ${personajeEncontrado.nombre} por 🪙 ${precio} Cortana Coins.*` },
             { quoted: m }
         );
     } catch (error) {
