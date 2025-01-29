@@ -797,6 +797,7 @@ ${habilidadesText}
     }
 }
 break;
+
 case 'personaje': {
     try {
         await m.react('🔄'); // Reacción al usar el comando
@@ -837,20 +838,25 @@ case 'personaje': {
         }
 
         let personajeSeleccionado;
+        let usandoExclusivo = false;
 
         if (personajeExclusivoIndex !== -1) {
-            // Si es un personaje exclusivo, lo ponemos primero y movemos todos los exclusivos arriba
+            // ✅ Si elige un personaje exclusivo, bloqueamos los normales y ponemos este al inicio
             personajeSeleccionado = personajesExclusivos.splice(personajeExclusivoIndex, 1)[0];
             personajesExclusivos.unshift(personajeSeleccionado);
+            usandoExclusivo = true;
         } else {
-            // Si es un personaje normal, lo ponemos primero en su lista sin afectar los exclusivos
+            // ✅ Si elige un personaje normal, desbloqueamos los normales y bloqueamos los exclusivos
             personajeSeleccionado = personajesNormales.splice(personajeIndex, 1)[0];
             personajesNormales.unshift(personajeSeleccionado);
+            usandoExclusivo = false;
         }
 
-        // Guardar los cambios en el JSON asegurando que los exclusivos quedan arriba
-        cartera[userId].personajes = personajesNormales;
-        cartera[userId].personajesExclusivos = personajesExclusivos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        // Guardar los cambios en el JSON asegurando que los exclusivos quedan bloqueados si se usa uno normal
+        cartera[userId].personajes = usandoExclusivo ? [] : personajesNormales; // Si usa exclusivo, vaciamos la lista de normales
+        cartera[userId].personajesExclusivos = usandoExclusivo ? personajesExclusivos : []; // Si usa normal, vaciamos la lista de exclusivos
+        cartera[userId].usandoExclusivo = usandoExclusivo; // Guardamos si está usando exclusivo o no
+
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // Diccionario con las URLs de los personajes
@@ -879,6 +885,8 @@ case 'personaje': {
 💥 *Nivel de Batalla:*  
 ${barraNivelBatalla} ${porcentajeBatalla}%  
 
+${usandoExclusivo ? "🔒 *Los personajes normales están bloqueados hasta que cambies a uno normal.*" : "🔒 *Los personajes exclusivos están bloqueados hasta que cambies a uno exclusivo.*"}
+
 💡 *Ahora este personaje recibirá la experiencia y mejoras en habilidades.*`;
 
         await conn.sendMessage(
@@ -896,7 +904,6 @@ ${barraNivelBatalla} ${porcentajeBatalla}%
     }
 }
 break;
-
 	
 case 'podermaximo': {
     try {
