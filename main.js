@@ -736,7 +736,7 @@ case 'estadopersonaje': {
         const userId = m.sender;
 
         // Verificar si el usuario tiene personajes
-        if (!cartera[userId] || (!cartera[userId].personajes && !cartera[userId].personajesExclusivos)) {
+        if (!cartera[userId] || (!cartera[userId].personajes.length && !cartera[userId].personajesExclusivos.length)) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
@@ -744,8 +744,19 @@ case 'estadopersonaje': {
             );
         }
 
-        // Obtener el personaje principal (si es exclusivo o común)
-        let personajePrincipal = cartera[userId].personajesExclusivos?.[0] || cartera[userId].personajes?.[0];
+        // Determinar qué personaje es el principal actualmente (exclusivo o común)
+        let personajePrincipal = null;
+
+        if (cartera[userId].personajeActivo) {
+            // Buscar el personaje activo en ambas listas
+            personajePrincipal = cartera[userId].personajes.find(p => p.nombre === cartera[userId].personajeActivo) ||
+                                 cartera[userId].personajesExclusivos.find(p => p.nombre === cartera[userId].personajeActivo);
+        }
+
+        // Si no se encuentra un personaje activo, elegir el primero disponible
+        if (!personajePrincipal) {
+            personajePrincipal = cartera[userId].personajes[0] || cartera[userId].personajesExclusivos[0];
+        }
 
         if (!personajePrincipal) {
             return conn.sendMessage(
@@ -836,7 +847,7 @@ case 'personaje': {
         let personajesNormales = cartera[userId].personajes || [];
         let personajesExclusivos = cartera[userId].personajesExclusivos || [];
 
-        // Buscar el personaje en ambas listas
+        // Buscar el personaje en ambas listas (ignorando mayúsculas, minúsculas y emojis)
         let personajeIndex = personajesNormales.findIndex(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
         let personajeExclusivoIndex = personajesExclusivos.findIndex(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje);
 
@@ -849,21 +860,24 @@ case 'personaje': {
         }
 
         let personajeSeleccionado;
-        
+        let esExclusivo = false;
+
         if (personajeExclusivoIndex !== -1) {
-            // Si elige un personaje exclusivo, moverlo al inicio de la lista de exclusivos
+            // Si elige un personaje exclusivo, moverlo al inicio
             personajeSeleccionado = personajesExclusivos.splice(personajeExclusivoIndex, 1)[0];
             personajesExclusivos.unshift(personajeSeleccionado);
+            esExclusivo = true;
         } else {
-            // Si elige un personaje normal, moverlo al inicio de la lista de normales
+            // Si elige un personaje normal, moverlo al inicio
             personajeSeleccionado = personajesNormales.splice(personajeIndex, 1)[0];
             personajesNormales.unshift(personajeSeleccionado);
         }
 
-        // Guardar los cambios en el JSON sin bloquear ninguna categoría
+        // Guardar los cambios en el JSON asegurando que el personaje seleccionado reciba la XP y mejoras
         cartera[userId].personajes = personajesNormales;
         cartera[userId].personajesExclusivos = personajesExclusivos;
-        cartera[userId].personajeActivo = personajeSeleccionado.nombre; // Guardar el personaje activo
+        cartera[userId].personajeActivo = personajeSeleccionado.nombre; // Guardar el personaje activo correctamente
+        cartera[userId].esExclusivoActivo = esExclusivo; // Guardar si es exclusivo o no
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // Diccionario con las URLs de los personajes
