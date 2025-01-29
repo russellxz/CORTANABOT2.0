@@ -727,6 +727,95 @@ switch (prefix && command) {
 case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': case 'imagen': case 'traducir': case 'translate': case "tts": case 'ia': case 'chatgpt': case 'dalle': case 'ia2': case 'aimg': case 'imagine': case 'dall-e': case 'ss': case 'ssweb': case 'wallpaper': case 'hd': case 'horario': case 'bard': case 'wikipedia': case 'wiki': case 'pinterest': case 'style': case 'styletext': case 'npmsearch': await buscadores(m, command, conn, text, budy, from, fkontak, prefix, args, quoted, lolkeysapi)
 break   
 // prueba desde aqui ok
+//sistema de personaje de anime
+
+case 'goku': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const costo = 250;
+
+        // Verificar si el usuario tiene suficiente dinero
+        if (!cartera[userId] || cartera[userId].coins < costo) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar a Goku.*" },
+                { quoted: m }
+            );
+        }
+
+        // Descontar Cortana Coins
+        cartera[userId].coins -= costo;
+
+        // Habilidades de Goku
+        const habilidadesGoku = [
+            { nombre: "Kamehameha", nivel: 1 },
+            { nombre: "Kaioken", nivel: 1 },
+            { nombre: "Golpe Ultra Rápido", nivel: 1 }
+        ];
+
+        // Nivel de batalla inicial (aleatorio entre 10% y 100%)
+        let nivelBatalla = Math.floor(Math.random() * 10) + 1; // 1 a 10
+
+        // Crear el personaje
+        const personaje = {
+            nombre: "🟠 Goku",
+            habilidades: habilidadesGoku,
+            nivel: 1,
+            experiencia: 0,
+            experienciaSiguienteNivel: 500,
+            nivelBatalla: nivelBatalla, // Se actualizará al subir de nivel
+        };
+
+        // Agregar el personaje al usuario
+        if (!cartera[userId].personajes) {
+            cartera[userId].personajes = [];
+        }
+        cartera[userId].personajes.push(personaje);
+
+        // Guardar en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Convertir el nivel de batalla en barra visual
+        const barraNivelBatalla = "■".repeat(nivelBatalla) + "□".repeat(10 - nivelBatalla);
+        const porcentajeBatalla = nivelBatalla * 10 + "%";
+
+        // Mensaje de confirmación con imagen
+        const mensaje = `
+🎉 *¡Has comprado a Goku!* 🎉  
+
+🟠 *Nombre:* Goku  
+🆙 *Nivel:* 1  
+✨ *Experiencia:* 0 / 500  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}  
+
+🌟 *Habilidades Iniciales:*  
+🔹 ${habilidadesGoku[0].nombre} (Nivel 1)  
+🔹 ${habilidadesGoku[1].nombre} (Nivel 1)  
+🔹 ${habilidadesGoku[2].nombre} (Nivel 1)  
+
+💡 *Usa los comandos de batalla y entrenamiento para subir de nivel a tu personaje.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/5286eef0a417a7f3e96bc4e78ab9b74b" },
+                caption: mensaje
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .goku:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Goku. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;		
+		
+		
+		
+		
 //sistema nuevo de mascota
 case 'estadomascota': {
     try {
