@@ -729,6 +729,81 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'verpersonajes': {
+    try {
+        await m.react('📜'); // Reacción al usar el comando
+
+        const userId = m.sender;
+
+        // Verificar si el usuario tiene personajes
+        if (!cartera[userId] || (!cartera[userId].personajes && !cartera[userId].personajesExclusivos)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.tiendamall` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        const personajesNormales = cartera[userId].personajes || [];
+        const personajesExclusivos = cartera[userId].personajesExclusivos || [];
+
+        let textoPersonajes = `★━━━━━━✩━━━━━━★\n`;
+        textoPersonajes += `✨ *Tus Personajes Adquiridos* ✨\n`;
+        textoPersonajes += `★━━━━━━✩━━━━━━★\n\n`;
+
+        if (personajesNormales.length > 0) {
+            textoPersonajes += `📜 *Personajes Comunes:* 📜\n`;
+            personajesNormales.forEach((personaje, index) => {
+                let habilidadesText = personaje.habilidades
+                    .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+                    .join('\n');
+
+                let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+                let porcentajeBatalla = personaje.nivelBatalla * 10;
+
+                textoPersonajes += `┏━┅┅┄┄⟞⟦ ${index + 1} ⟝┄┄┉┉━┓\n`;
+                textoPersonajes += `✨ *Nombre:* ${personaje.nombre}\n`;
+                textoPersonajes += `🆙 *Nivel:* ${personaje.nivel}\n`;
+                textoPersonajes += `⚡ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}\n`;
+                textoPersonajes += `💥 *Nivel de Batalla:* ${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+                textoPersonajes += `🌟 *Habilidades:*\n${habilidadesText}\n`;
+                textoPersonajes += `┗━━━━━━━━━━━┛\n\n`;
+            });
+        }
+
+        if (personajesExclusivos.length > 0) {
+            textoPersonajes += `👑 *Personajes Exclusivos:* 👑\n`;
+            personajesExclusivos.forEach((personaje, index) => {
+                let habilidadesText = personaje.habilidades
+                    .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+                    .join('\n');
+
+                let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+                let porcentajeBatalla = personaje.nivelBatalla * 10;
+
+                textoPersonajes += `❖ ── ✦ ──『${index + 1}』── ✦ ── ❖\n`;
+                textoPersonajes += `👑 *Nombre:* ${personaje.nombre}\n`;
+                textoPersonajes += `🆙 *Nivel:* ${personaje.nivel}\n`;
+                textoPersonajes += `⚡ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}\n`;
+                textoPersonajes += `💥 *Nivel de Batalla:* ${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+                textoPersonajes += `🌟 *Habilidades:*\n${habilidadesText}\n`;
+                textoPersonajes += `❖ ─────────────────── ❖\n\n`;
+            });
+        }
+
+        // Enviar mensaje con todos los personajes
+        await conn.sendMessage(
+            m.chat,
+            { text: textoPersonajes, mentions: [m.sender] },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .verpersonajes:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar ver tus personajes. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
 case 'vender': {
     try {
         await m.react('✅');
