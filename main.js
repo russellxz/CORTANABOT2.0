@@ -837,17 +837,24 @@ case 'personaje': {
             );
         }
 
-        // Determinar si el personaje es normal o exclusivo
         let personajeSeleccionado;
-        if (personajeIndex !== -1) {
-            personajeSeleccionado = personajesNormales.splice(personajeIndex, 1)[0]; // Sacar personaje de la lista
-            personajesNormales.unshift(personajeSeleccionado); // Colocar al inicio como principal
-        } else {
+
+        if (personajeExclusivoIndex !== -1) {
+            // Si es un personaje exclusivo, lo movemos al principio
             personajeSeleccionado = personajesExclusivos.splice(personajeExclusivoIndex, 1)[0];
             personajesExclusivos.unshift(personajeSeleccionado);
+        } else {
+            // Si es un personaje normal, lo movemos al principio
+            personajeSeleccionado = personajesNormales.splice(personajeIndex, 1)[0];
+            personajesNormales.unshift(personajeSeleccionado);
         }
 
-        // Guardar los cambios en el JSON asegurando que el personaje EXCLUSIVO también suba de nivel
+        // **Mover TODOS los personajes exclusivos al inicio si se elige uno**
+        if (personajeExclusivoIndex !== -1) {
+            personajesExclusivos = personajesExclusivos.sort((a, b) => a.nombre.localeCompare(b.nombre));
+        }
+
+        // Guardar los cambios en el JSON
         cartera[userId].personajes = personajesNormales;
         cartera[userId].personajesExclusivos = personajesExclusivos;
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
