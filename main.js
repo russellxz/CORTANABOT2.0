@@ -2642,17 +2642,41 @@ case 'verpersonajes': {
         if (personajesNormales.length > 0) {
             textoPersonajes += `📜 *Personajes Comunes:* 📜\n`;
             personajesNormales.forEach((personaje, index) => {
-                textoPersonajes += `🌀 *${personaje.nombre}* - Nivel ${personaje.nivel}\n`;
+                let habilidadesText = personaje.habilidades
+                    .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+                    .join('\n');
+
+                let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+                let porcentajeBatalla = personaje.nivelBatalla * 10;
+
+                textoPersonajes += `┏━┅┅┄┄⟞⟦ ${index + 1} ⟝┄┄┉┉━┓\n`;
+                textoPersonajes += `✨ *Nombre:* ${personaje.nombre}\n`;
+                textoPersonajes += `🆙 *Nivel:* ${personaje.nivel}\n`;
+                textoPersonajes += `⚡ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}\n`;
+                textoPersonajes += `💥 *Nivel de Batalla:* ${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+                textoPersonajes += `🌟 *Habilidades:*\n${habilidadesText}\n`;
+                textoPersonajes += `┗━━━━━━━━━━━┛\n\n`;
             });
-            textoPersonajes += `\n`;
         }
 
         if (personajesExclusivos.length > 0) {
             textoPersonajes += `👑 *Personajes Exclusivos:* 👑\n`;
             personajesExclusivos.forEach((personaje, index) => {
-                textoPersonajes += `💠 *${personaje.nombre}* - Nivel ${personaje.nivel}\n`;
+                let habilidadesText = personaje.habilidades
+                    .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+                    .join('\n');
+
+                let barraNivelBatalla = "■".repeat(personaje.nivelBatalla) + "□".repeat(10 - personaje.nivelBatalla);
+                let porcentajeBatalla = personaje.nivelBatalla * 10;
+
+                textoPersonajes += `❖ ── ✦ ──『${index + 1}』── ✦ ── ❖\n`;
+                textoPersonajes += `👑 *Nombre:* ${personaje.nombre}\n`;
+                textoPersonajes += `🆙 *Nivel:* ${personaje.nivel}\n`;
+                textoPersonajes += `⚡ *Experiencia:* ${personaje.experiencia} / ${personaje.experienciaSiguienteNivel}\n`;
+                textoPersonajes += `💥 *Nivel de Batalla:* ${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+                textoPersonajes += `🌟 *Habilidades:*\n${habilidadesText}\n`;
+                textoPersonajes += `❖ ─────────────────── ❖\n\n`;
             });
-            textoPersonajes += `\n`;
         }
 
         // 📌 **Lista de Comandos para Mejorar y Cambiar de Personaje**
