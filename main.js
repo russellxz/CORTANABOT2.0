@@ -940,7 +940,6 @@ case 'quitarventa': {
 }
 break;
 	
-
 case 'asta': {
     try {
         await m.react('✅'); // Reacción al usar el comando
@@ -949,17 +948,33 @@ case 'asta': {
         const costo = 3000; // Costo de Asta
         const personajeNombre = "Asta"; // Guardar solo el primer nombre
 
-        // Verificar si ya ha sido comprado por otro usuario
-        const personajeEnVenta = Object.entries(cartera).find(([id, data]) =>
-            data.personajesExclusivos?.some(p => p.nombre.toLowerCase() === personajeNombre.toLowerCase())
+        // Verificar si el personaje está en venta
+        const personajeEnVenta = cartera.personajesEnVenta?.find(p =>
+            p.nombre.toLowerCase() === personajeNombre.toLowerCase()
         );
 
         if (personajeEnVenta) {
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *${personajeNombre} ya ha sido comprado por @${personajeEnVenta[0].split('@')[0]}.*  
+                { 
+                    text: `⚠️ *${personajeNombre} está actualmente en venta por @${personajeEnVenta.vendedor.split('@')[0]} por 🪙 ${personajeEnVenta.precio} Cortana Coins.*  
+💡 *Debes esperar a que sea retirado de la venta o comprado por otro usuario.*`,
+                    mentions: [personajeEnVenta.vendedor]
+                }
+            );
+        }
+
+        // Verificar si el personaje ya ha sido comprado por otro usuario
+        const personajeYaComprado = Object.entries(cartera).find(([id, data]) =>
+            data.personajesExclusivos?.some(p => p.nombre.toLowerCase() === personajeNombre.toLowerCase())
+        );
+
+        if (personajeYaComprado) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *${personajeNombre} ya ha sido comprado por @${personajeYaComprado[0].split('@')[0]}.*  
 Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
-                { mentions: [personajeEnVenta[0]] }
+                { mentions: [personajeYaComprado[0]] }
             );
         }
 
@@ -1042,38 +1057,42 @@ ${barraNivelBatalla} ${porcentajeBatalla}%
     }
 }
 break;
-	
+
 case 'gojo': {
     try {
-        await m.react('✅');
+        await m.react('✅'); // Reacción al usar el comando
 
         const userId = m.sender;
-        const costo = 2000;
-        const personajeNombre = "Gojo"; // Solo el primer nombre
+        const costo = 2000; // Costo de Gojo
+        const personajeNombre = "Gojo"; // Guardar solo el primer nombre
 
-        // Verificar si el usuario ya lo tiene
-        if (cartera[userId]?.personajesExclusivos?.some(p =>
-            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === personajeNombre.toLowerCase())) {
-            return conn.sendMessage(
-                m.chat,
-                { text: `⚠️ *Ya tienes a ${personajeNombre}, no puedes comprarlo otra vez.*` },
-                { quoted: m }
-            );
-        }
-
-        // Verificar si ya ha sido comprado por otro usuario
-        const personajeEnVenta = Object.entries(cartera).find(([id, data]) =>
-            data.personajesExclusivos?.some(p =>
-                p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === personajeNombre.toLowerCase()
-            )
+        // Verificar si el personaje está en venta
+        const personajeEnVenta = cartera.personajesEnVenta?.find(p =>
+            p.nombre.toLowerCase() === personajeNombre.toLowerCase()
         );
 
         if (personajeEnVenta) {
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *${personajeNombre} ya ha sido comprado por @${personajeEnVenta[0].split('@')[0]}.*  
+                { 
+                    text: `⚠️ *${personajeNombre} está actualmente en venta por @${personajeEnVenta.vendedor.split('@')[0]} por 🪙 ${personajeEnVenta.precio} Cortana Coins.*  
+💡 *Debes esperar a que sea retirado de la venta o comprado por otro usuario.*`,
+                    mentions: [personajeEnVenta.vendedor]
+                }
+            );
+        }
+
+        // Verificar si el personaje ya ha sido comprado por otro usuario
+        const personajeYaComprado = Object.entries(cartera).find(([id, data]) =>
+            data.personajesExclusivos?.some(p => p.nombre.toLowerCase() === personajeNombre.toLowerCase())
+        );
+
+        if (personajeYaComprado) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *${personajeNombre} ya ha sido comprado por @${personajeYaComprado[0].split('@')[0]}.*  
 Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
-                { mentions: [personajeEnVenta[0]] }
+                { mentions: [personajeYaComprado[0]] }
             );
         }
 
@@ -1081,7 +1100,7 @@ Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
         if (!cartera[userId] || cartera[userId].coins < costo) {
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *No tienes suficientes Cortana Coins para comprar a ${personajeNombre}.*` },
+                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar a Gojo.*" },
                 { quoted: m }
             );
         }
@@ -1102,12 +1121,14 @@ Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
 
         // Crear el personaje
         const personaje = {
-            nombre: personajeNombre, // Solo "Gojo"
+            nombre: personajeNombre, // Guardar solo "Gojo"
             habilidades: habilidadesGojo,
             nivel: 1,
             experiencia: 0,
             experienciaSiguienteNivel: 500,
             nivelBatalla: nivelBatalla,
+            exclusivo: true, // Marca este personaje como exclusivo
+            dueño: userId // Guarda el dueño del personaje
         };
 
         // Agregar el personaje al usuario en personajes exclusivos
@@ -1137,6 +1158,7 @@ ${barraNivelBatalla} ${porcentajeBatalla}%
 🔹 ${habilidadesGojo[1].nombre} (Nivel 1)  
 🔹 ${habilidadesGojo[2].nombre} (Nivel 1)  
 
+⚠️ *Este personaje es exclusivo. No puede ser comprado por otro usuario hasta que lo pongas a la venta.*  
 💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
 
         await conn.sendMessage(
@@ -1149,42 +1171,54 @@ ${barraNivelBatalla} ${porcentajeBatalla}%
         );
     } catch (error) {
         console.error('❌ Error en el comando .gojo:', error);
-        return conn.sendMessage(m.chat, { text: `❌ *Ocurrió un error al intentar comprar a Gojo. Intenta nuevamente.*` }, { quoted: m });
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Gojo. Intenta nuevamente.*' }, { quoted: m });
     }
 }
 break;
-	
+
 case 'senku': {
     try {
         await m.react('✅'); // Reacción al usar el comando
 
         const userId = m.sender;
-        const costo = 1000; // Precio del personaje exclusivo
-        const nombrePersonaje = "Senku"; // Guardar solo el primer nombre
+        const costo = 1000; // Costo de Senku
+        const personajeNombre = "Senku"; // Guardar solo el primer nombre
 
-        // Verificar si el personaje ya fue comprado por alguien más
-        const personajeYaComprado = Object.keys(cartera).find(id => 
-            cartera[id].personajesExclusivos &&
-            cartera[id].personajesExclusivos.some(p => p.nombre.toLowerCase() === nombrePersonaje.toLowerCase())
+        // Verificar si el personaje está en venta
+        const personajeEnVenta = cartera.personajesEnVenta?.find(p =>
+            p.nombre.toLowerCase() === personajeNombre.toLowerCase()
+        );
+
+        if (personajeEnVenta) {
+            return conn.sendMessage(
+                m.chat,
+                { 
+                    text: `⚠️ *${personajeNombre} está actualmente en venta por @${personajeEnVenta.vendedor.split('@')[0]} por 🪙 ${personajeEnVenta.precio} Cortana Coins.*  
+💡 *Debes esperar a que sea retirado de la venta o comprado por otro usuario.*`,
+                    mentions: [personajeEnVenta.vendedor]
+                }
+            );
+        }
+
+        // Verificar si el personaje ya ha sido comprado por otro usuario
+        const personajeYaComprado = Object.entries(cartera).find(([id, data]) =>
+            data.personajesExclusivos?.some(p => p.nombre.toLowerCase() === personajeNombre.toLowerCase())
         );
 
         if (personajeYaComprado) {
             return conn.sendMessage(
                 m.chat,
-                { 
-                    text: `⚠️ *${nombrePersonaje} ya fue comprado por* @${personajeYaComprado.split('@')[0]}.  
-💡 *Debes esperar a que lo ponga en venta para poder adquirirlo.*`,
-                    mentions: [personajeYaComprado]
-                },
-                { quoted: m }
+                { text: `⚠️ *${personajeNombre} ya ha sido comprado por @${personajeYaComprado[0].split('@')[0]}.*  
+Si quieres obtenerlo, debes esperar a que lo ponga a la venta.` },
+                { mentions: [personajeYaComprado[0]] }
             );
         }
 
-        // Verificar si el usuario tiene suficiente dinero
+        // Verificar si el usuario tiene suficientes Cortana Coins
         if (!cartera[userId] || cartera[userId].coins < costo) {
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *No tienes suficientes Cortana Coins para comprar a Senku.* (Necesitas 🪙 1000 Cortana Coins)` },
+                { text: "⚠️ *No tienes suficientes Cortana Coins para comprar a Senku.*" },
                 { quoted: m }
             );
         }
@@ -1192,25 +1226,25 @@ case 'senku': {
         // Descontar Cortana Coins
         cartera[userId].coins -= costo;
 
-        // Habilidades de Senku con emojis
+        // Habilidades de Senku
         const habilidadesSenku = [
-            { nombre: "🧪 Ciencia Absoluta", nivel: 1 },
-            { nombre: "⚡ Genio Estratégico", nivel: 1 },
-            { nombre: "🔬 Conocimiento Extremo", nivel: 1 }
+            { nombre: "Ciencia Absoluta 🧪", nivel: 1 },
+            { nombre: "Genio Estratégico 🧠", nivel: 1 },
+            { nombre: "Conocimiento Extremo 🔬", nivel: 1 }
         ];
 
         // Nivel de batalla inicial (aleatorio entre 10% y 30%)
-        let nivelBatalla = Math.floor(Math.random() * 3) + 1; // 1, 2 o 3
-        let porcentajeBatalla = nivelBatalla * 10; // Convertir a porcentaje
+        let nivelBatalla = Math.floor(Math.random() * 3) + 1;
+        let porcentajeBatalla = nivelBatalla * 10;
 
         // Crear el personaje
         const personaje = {
-            nombre: nombrePersonaje, // Guardar solo "Senku"
+            nombre: personajeNombre, // Guardar solo "Senku"
             habilidades: habilidadesSenku,
             nivel: 1,
             experiencia: 0,
             experienciaSiguienteNivel: 500,
-            nivelBatalla: nivelBatalla, // Subirá aleatoriamente al subir de nivel
+            nivelBatalla: nivelBatalla,
             exclusivo: true, // Marca este personaje como exclusivo
             dueño: userId // Guarda el dueño del personaje
         };
@@ -1238,7 +1272,9 @@ case 'senku': {
 ${barraNivelBatalla} ${porcentajeBatalla}%  
 
 🌟 *Habilidades Iniciales:*  
-${habilidadesSenku.map(h => `🔹 ${h.nombre} (Nivel 1)`).join("\n")}  
+🔹 ${habilidadesSenku[0].nombre} (Nivel 1)  
+🔹 ${habilidadesSenku[1].nombre} (Nivel 1)  
+🔹 ${habilidadesSenku[2].nombre} (Nivel 1)  
 
 ⚠️ *Este personaje es exclusivo. No puede ser comprado por otro usuario hasta que lo pongas a la venta.*  
 💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
@@ -1257,6 +1293,7 @@ ${habilidadesSenku.map(h => `🔹 ${h.nombre} (Nivel 1)`).join("\n")}
     }
 }
 break;
+        
 		
 //personaje exclucivo 
 
