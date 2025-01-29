@@ -729,6 +729,59 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'toppersonajes': {
+    try {
+        await m.react('🏆'); // Reacción al usar el comando
+
+        let ranking = [];
+
+        // Recorrer la cartera y recopilar los personajes de cada usuario
+        Object.entries(cartera).forEach(([userId, data]) => {
+            const personajes = [...(data.personajes || []), ...(data.personajesExclusivos || [])];
+
+            if (personajes.length > 0) {
+                ranking.push({
+                    usuario: userId,
+                    cantidad: personajes.length,
+                    personajes: personajes.map(p => `${p.nombre} (Lvl ${p.nivel})`).join(', ')
+                });
+            }
+        });
+
+        // Ordenar por cantidad de personajes de mayor a menor
+        ranking.sort((a, b) => b.cantidad - a.cantidad);
+
+        if (ranking.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No hay usuarios con personajes en este momento.*" },
+                { quoted: m }
+            );
+        }
+
+        let textoRanking = `🏆 *TOP Usuarios con más Personajes* 🏆\n\n`;
+        ranking.forEach((item, index) => {
+            textoRanking += `✨ *${index + 1}.* @${item.usuario.split('@')[0]} - *${item.cantidad} personajes*\n`;
+            textoRanking += `📜 *Personajes:* ${item.personajes}\n\n`;
+        });
+
+        // Enviar mensaje con la imagen
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/2f7b6f131b41e5e4d4173a96668f7ac6" },
+                caption: textoRanking,
+                mentions: ranking.map(r => r.usuario)
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .toppersonajes:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar ver el top de personajes. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+
 case 'verpersonajes': {
     try {
         await m.react('📜'); // Reacción al usar el comando
@@ -1876,37 +1929,65 @@ case 'tiendamall': {
 ★·.·´¯\`·.·★ *TIENDA MALL* ★·.·´¯\`·.·★
 🍒｡･ﾟ♡ﾟ･｡🍓｡･ﾟ♡ﾟ･｡
 
-🛒 *¡Bienvenido a la Tienda Mall! Aquí puedes comprar nuevas mascotas con tus Cortana Coins.* 🪙
+🛒 *¡Bienvenido a la Tienda Mall! Aquí puedes comprar nuevas mascotas y personajes con tus Cortana Coins.* 🪙
 
 ━─━────༺༻────━─━
 
-🐒 *Changuito*  
+🐾 *Mascotas Disponibles:* 🐾
+
+🐒 *.changuito*  
 💰 Precio: 🪙 100 Cortana Coins  
 _Compañero ágil y juguetón._
 
-🦁 *León*  
+🦁 *.leon*  
 💰 Precio: 🪙 200 Cortana Coins  
 _El rey de la selva, imponente y fuerte._
 
-🐓 *Gallo*  
+🐓 *.gallo*  
 💰 Precio: 🪙 50 Cortana Coins  
 _Un luchador persistente._
 
-🐿 *Ardilla*  
+🐿 *.ardilla*  
 💰 Precio: 🪙 75 Cortana Coins  
 _Veloz y recolectora._
 
-🐅 *Tigre*  
+🐅 *.tigre*  
 💰 Precio: 🪙 300 Cortana Coins  
 _Poderoso y letal._
 
 ━─━────༺༻────━─━
 
-💡 *Próximamente más mascotas y sorpresas para ti.*  
+🎭 *Personajes Comunes:* 🎭  
+
+🟠 *.goku* (Dragon Ball Z)  
+💰 Precio: 🪙 250 Cortana Coins  
+
+🏴‍☠️ *.luffy* (One Piece)  
+💰 Precio: 🪙 250 Cortana Coins  
+
+🍥 *.naruto* (Naruto Shippuden)  
+💰 Precio: 🪙 250 Cortana Coins  
+
+━─━────༺༻────━─━
+
+👑 *Personajes Exclusivos:* 👑 *(Solo 1 usuario puede poseerlos)*  
+
+🧪 *.senku* (Dr. Stone)  
+💰 Precio: 🪙 1000 Cortana Coins  
+
+🔵 *.gojo* (Jujutsu Kaisen)  
+💰 Precio: 🪙 2000 Cortana Coins  
+
+⚔️ *.asta* (Black Clover)  
+💰 Precio: 🪙 3000 Cortana Coins  
+
+━─━────༺༻────━─━
+
+💡 *Próximamente más personajes, mascotas y sorpresas para ti.*  
 🛒 *¡Sigue ahorrando Cortana Coins para nuevas aventuras!* 🪙  
 `;
 
-        const imageUrl = 'https://cloud.dorratz.com/files/d940ad9ae373fadc8b1589c3e88ab4f0'; // Reemplaza con la URL de tu imagen
+        const imageUrl = 'https://cloud.dorratz.com/files/d940ad9ae373fadc8b1589c3e88ab4f0'; // Imagen para la tienda
 
         // Enviar el mensaje de la tienda junto con la imagen
         await conn.sendMessage(
