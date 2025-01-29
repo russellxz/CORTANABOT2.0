@@ -728,6 +728,111 @@ case 'yts': case 'playlist': case 'ytsearch': case 'acortar': case 'google': cas
 break   
 // prueba desde aqui ok
 //sistema de personaje de anime
+case 'senku': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const costo = 1000; // Nuevo precio de 1000 Cortana Coins
+        const nombrePersonaje = "🧪 Senku Ishigami";
+
+        // Verificar si el personaje ya fue comprado por alguien más
+        const personajeYaComprado = Object.keys(cartera).find(id => 
+            cartera[id].personajes && cartera[id].personajes.some(p => p.nombre === nombrePersonaje)
+        );
+
+        if (personajeYaComprado) {
+            return conn.sendMessage(
+                m.chat,
+                { 
+                    text: `⚠️ *${nombrePersonaje} ya fue comprado por* @${personajeYaComprado.split('@')[0]}.  
+💡 *Debes esperar a que lo ponga en venta para poder adquirirlo.*`,
+                    mentions: [personajeYaComprado]
+                },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario tiene suficiente dinero
+        if (!cartera[userId] || cartera[userId].coins < costo) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *No tienes suficientes Cortana Coins para comprar a Senku.* (Necesitas 🪙 1000 Cortana Coins)` },
+                { quoted: m }
+            );
+        }
+
+        // Descontar Cortana Coins
+        cartera[userId].coins -= costo;
+
+        // Habilidades de Senku con emojis
+        const habilidadesSenku = [
+            { nombre: "🧪 Ciencia Absoluta", nivel: 1 },
+            { nombre: "⚡ Genio Estratégico", nivel: 1 },
+            { nombre: "🔬 Conocimiento Extremo", nivel: 1 }
+        ];
+
+        // Nivel de batalla inicial (aleatorio entre 10% y 30%)
+        let nivelBatalla = Math.floor(Math.random() * 3) + 1; // 1, 2 o 3
+        let porcentajeBatalla = nivelBatalla * 10; // Convertir a porcentaje
+
+        // Crear el personaje
+        const personaje = {
+            nombre: nombrePersonaje,
+            habilidades: habilidadesSenku,
+            nivel: 1,
+            experiencia: 0,
+            experienciaSiguienteNivel: 500,
+            nivelBatalla: nivelBatalla, // Subirá aleatoriamente al subir de nivel
+            exclusivo: true, // Marca este personaje como exclusivo
+            dueño: userId // Guarda el dueño del personaje
+        };
+
+        // Agregar el personaje al usuario
+        if (!cartera[userId].personajes) {
+            cartera[userId].personajes = [];
+        }
+        cartera[userId].personajes.push(personaje);
+
+        // Guardar en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Convertir el nivel de batalla en barra visual
+        const barraNivelBatalla = "■".repeat(nivelBatalla) + "□".repeat(10 - nivelBatalla);
+
+        // Mensaje de confirmación con imagen
+        const mensaje = `
+🎉 *¡Has comprado a Senku!* 🎉  
+
+🧪 *Nombre:* Senku Ishigami  
+🆙 *Nivel:* 1  
+✨ *Experiencia:* 0 / 500  
+💥 *Nivel de Batalla:*  
+${barraNivelBatalla} ${porcentajeBatalla}%  
+
+🌟 *Habilidades Iniciales:*  
+${habilidadesSenku.map(h => `🔹 ${h.nombre} (Nivel 1)`).join("\n")}  
+
+⚠️ *Este personaje es exclusivo. No puede ser comprado por otro usuario hasta que lo pongas a la venta.*  
+💡 *Usa el comando* \`.verpersonajes\` *para ver todos tus personajes adquiridos.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/88a1ee9d4cc1ba589276d42f0b0c61e6" },
+                caption: mensaje
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .senku:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar a Senku. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+		
+//personaje exclucivo 
+
 case 'naruto': {
     try {
         await m.react('✅'); // Reacción al usar el comando
