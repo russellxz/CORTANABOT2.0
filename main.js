@@ -729,6 +729,59 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'alaventa': {
+    try {
+        await m.react('🛒'); // Reacción al usar el comando
+
+        // Verificar si hay una sección de ventas en el JSON
+        if (!cartera.ventas || !Array.isArray(cartera.ventas) || cartera.ventas.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No hay personajes exclusivos en venta actualmente.*\n\n📌 Usa `.venderpersonaje` para poner uno en venta." },
+                { quoted: m }
+            );
+        }
+
+        let menuVenta = `🎭 *Lista de Personajes en Venta* 🎭\n`;
+        menuVenta += `━━━━━━━━━━━━━━━━━━━━\n`;
+
+        // Recorrer los personajes en venta y mostrarlos en formato bonito
+        cartera.ventas.forEach((venta, index) => {
+            let vendedor = venta.vendedor || "Desconocido";
+            let precio = venta.precio ? `🪙 *${venta.precio} Cortana Coins*` : "💰 *Precio no especificado*";
+            let habilidadesText = venta.personaje.habilidades && venta.personaje.habilidades.length > 0
+                ? venta.personaje.habilidades.map(hab => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`).join('\n')
+                : "⚠️ Sin habilidades registradas";
+
+            let barraNivelBatalla = "■".repeat(venta.personaje.nivelBatalla) + "□".repeat(10 - venta.personaje.nivelBatalla);
+            let porcentajeBatalla = venta.personaje.nivelBatalla * 10;
+
+            menuVenta += `🛒 *#${index + 1} - ${venta.personaje.nombre}*\n`;
+            menuVenta += `🆙 *Nivel:* ${venta.personaje.nivel}\n`;
+            menuVenta += `💥 *Nivel de Batalla:* ${barraNivelBatalla} ${porcentajeBatalla}%\n`;
+            menuVenta += `${precio}\n`;
+            menuVenta += `🌟 *Habilidades:*\n${habilidadesText}\n`;
+            menuVenta += `👤 *Vendedor:* @${vendedor.replace(/@s.whatsapp.net/, '')}\n`;
+            menuVenta += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+        });
+
+        // Enviar menú de personajes en venta
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: menuVenta,
+                mentions: cartera.ventas.map(venta => venta.vendedor)
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .alaventa:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar ver los personajes en venta. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
 case 'estadopersonaje': {
     try {
         await m.react('📊'); // Reacción al usar el comando
@@ -2568,54 +2621,7 @@ case 'toppersonajes': {
 }
 break;
 
-case 'alaventa': {
-    try {
-        await m.react('🛒'); // Reacción al usar el comando
 
-        // Verificar si hay personajes en venta
-        if (!cartera.ventas || cartera.ventas.length === 0) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *No hay personajes exclusivos en venta actualmente.* Vuelve más tarde o usa `.venderpersonaje` para poner uno en venta." },
-                { quoted: m }
-            );
-        }
-
-        let menuVenta = `🎭 *Lista de Personajes en Venta* 🎭\n`;
-        menuVenta += `━━━━━━━━━━━━━━━━━━━━\n`;
-
-        cartera.ventas.forEach((venta, index) => {
-            let vendedor = venta.vendedor || "Desconocido";
-            let precio = venta.precio ? `🪙 *${venta.precio} Cortana Coins*` : "Precio no especificado";
-            let habilidadesText = venta.personaje.habilidades
-                .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
-                .join('\n');
-
-            menuVenta += `🛒 *#${index + 1} - ${venta.personaje.nombre}*\n`;
-            menuVenta += `🆙 *Nivel:* ${venta.personaje.nivel}\n`;
-            menuVenta += `💥 *Nivel de Batalla:* ${venta.personaje.nivelBatalla}\n`;
-            menuVenta += `${precio}\n`;
-            menuVenta += `🌟 *Habilidades:*\n${habilidadesText}\n`;
-            menuVenta += `👤 *Vendedor:* @${vendedor.replace(/@s.whatsapp.net/, '')}\n`;
-            menuVenta += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-        });
-
-        // Enviar menú de personajes en venta
-        await conn.sendMessage(
-            m.chat,
-            {
-                text: menuVenta,
-                mentions: cartera.ventas.map(venta => venta.vendedor)
-            },
-            { quoted: m }
-        );
-
-    } catch (error) {
-        console.error('❌ Error en el comando .alaventa:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar ver los personajes en venta. Intenta nuevamente.*' }, { quoted: m });
-    }
-}
-break;
 
 case 'verpersonajes': {
     try {
