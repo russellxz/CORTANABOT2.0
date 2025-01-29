@@ -735,7 +735,7 @@ case 'vender': {
 
         const userId = m.sender;
         const args = text.split(" ");
-        const nombrePersonaje = args.slice(0, -1).join(" ").toLowerCase().replace(/[^a-z0-9]/gi, '');
+        const nombrePersonaje = args.slice(0, -1).join(" ").toLowerCase().replace(/[^a-z0-9]/gi, '').split(" ")[0]; // Solo el primer nombre
         const precio = parseInt(args[args.length - 1]);
 
         if (!nombrePersonaje || isNaN(precio) || precio < 1) {
@@ -746,12 +746,12 @@ case 'vender': {
             );
         }
 
-        // Asegurar que la cartera del usuario está bien definida
+        // Verificar que el usuario tenga la cartera correctamente
         if (!cartera[userId]) {
             cartera[userId] = { coins: 0, personajes: [], personajesExclusivos: [], personajesEnVenta: [] };
         }
 
-        // Asegurar que tiene personajes exclusivos
+        // Verificar que tenga personajes exclusivos
         if (!cartera[userId].personajesExclusivos || cartera[userId].personajesExclusivos.length === 0) {
             return conn.sendMessage(
                 m.chat,
@@ -760,9 +760,9 @@ case 'vender': {
             );
         }
 
-        // Buscar el personaje con comparación flexible
+        // Buscar el personaje con solo el primer nombre
         let personajeIndex = cartera[userId].personajesExclusivos.findIndex(p =>
-            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje
+            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '').split(" ")[0] === nombrePersonaje
         );
 
         if (personajeIndex === -1) {
@@ -781,10 +781,11 @@ case 'vender': {
         }
 
         // Verificar si ya está en venta
-        if (cartera.personajesEnVenta.some(p => p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '') === nombrePersonaje)) {
+        if (cartera.personajesEnVenta.some(p =>
+            p.nombre.toLowerCase().replace(/[^a-z0-9]/gi, '').split(" ")[0] === nombrePersonaje)) {
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *${nombrePersonaje} ya está en venta.* Usa \`.quitarventa ${nombrePersonaje}\` si quieres quitarlo.` },
+                { text: `⚠️ *${personajeEncontrado.nombre} ya está en venta.* Usa \`.quitarventa ${nombrePersonaje}\` si quieres quitarlo.` },
                 { quoted: m }
             );
         }
