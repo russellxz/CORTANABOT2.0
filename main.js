@@ -732,8 +732,8 @@ break
 // Comando para poner en venta un personaje exclusivo
 case 'addpersonaje': {
     try {
-        // Verificar si se está respondiendo a un mensaje con imagen
-        if (!m.quoted || !m.quoted.mimetype || !m.quoted.mimetype.startsWith('image/')) {
+        // Verificar si el usuario está respondiendo a un mensaje con imagen
+        if (!m.quoted || !m.quoted.message || !m.quoted.message.imageMessage) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *Debes responder a una imagen con el comando:* `.addpersonaje (nombre) (habilidad) (habilidad) (habilidad) (precio)`." },
@@ -741,14 +741,9 @@ case 'addpersonaje': {
             );
         }
 
-        // Descargar la imagen y guardarla en base64
-        const mediaType = m.quoted.mimetype;
-        const mediaStream = await downloadContentFromMessage(m.quoted, 'image');
-
-        let mediaBuffer = Buffer.alloc(0);
-        for await (const chunk of mediaStream) {
-            mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
-        }
+        // Descargar la imagen correctamente
+        const mediaMessage = m.quoted.message.imageMessage;
+        const mediaBuffer = await conn.downloadMediaMessage(m.quoted);
 
         // Extraer los argumentos del mensaje
         const args = text.match(/(.*?)/g)?.map(arg => arg.replace(/[()]/g, ''));
@@ -782,7 +777,7 @@ case 'addpersonaje': {
                 { nombre: habilidad3, nivel: 1 }
             ],
             precio: parseInt(precio),
-            imagen: mediaBuffer.toString('base64'), // Guardar la imagen en base64
+            imagen: mediaBuffer.toString('base64'), // Guardar imagen en base64
             enVenta: true
         };
 
