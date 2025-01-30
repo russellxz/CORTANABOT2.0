@@ -851,6 +851,7 @@ break;
 
 
 
+
 case 'comprar': {
     try {
         // Verificar que el usuario proporcionó un nombre de personaje
@@ -901,7 +902,9 @@ case 'comprar': {
         if (personaje.dueño) {
             return conn.sendMessage(
                 m.chat,
-                { text: `❌ *El personaje "${personaje.nombre}" ya ha sido comprado por @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.*\nSi lo quieres, debes esperar a que lo ponga a la venta.` },
+                { 
+                    text: `❌ *El personaje "${personaje.nombre}" ya ha sido comprado por @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.*\nSi lo quieres, debes esperar a que lo ponga a la venta.` 
+                },
                 { mentions: [personaje.dueño], quoted: m }
             );
         }
@@ -929,14 +932,19 @@ case 'comprar': {
             cartera.personajesEnVenta = cartera.personajesEnVenta.filter(p => p.nombre.toLowerCase() !== text.toLowerCase());
         }
 
+        // **GUARDAR LA IMAGEN BASE64 COMO UN ARCHIVO TEMPORAL**
+        const imageBuffer = Buffer.from(personaje.imagen, 'base64');
+        const imagePath = path.join(__dirname, 'temp', `${personaje.nombre.replace(/\s/g, '_')}.jpg`);
+        fs.writeFileSync(imagePath, imageBuffer);
+
         // Guardar cambios en el JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Enviar mensaje de confirmación con la imagen del personaje
+        // **Enviar mensaje con la imagen guardada**
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: `data:${personaje.mimetype};base64,${personaje.imagen}` },
+                image: { url: imagePath },
                 caption: `📢 *¡Personaje Desbloqueado!* 🚀\n\n📌 *Ficha de Personaje:*  \n🎭 *Nombre:* ${personaje.nombre}  \n⚔️ *Nivel:* ${personaje.stats.nivel}  \n💖 *Vida:* ${personaje.stats.vida}/100  \n🧬 *EXP:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}  \n\n🎯 *Habilidades Iniciales:*  \n⚡ ${personaje.habilidades[0].nombre} (Nivel ${personaje.habilidades[0].nivel})  \n⚡ ${personaje.habilidades[1].nombre} (Nivel ${personaje.habilidades[1].nivel})  \n⚡ ${personaje.habilidades[2].nombre} (Nivel ${personaje.habilidades[2].nivel})  \n\n⚠️ *Este personaje ya es tuyo. No puede ser adquirido por otro jugador.*  \n📜 *Consulta tus personajes con:* \`.verpersonajes\``,
                 mentions: [usuario]
             },
@@ -952,7 +960,7 @@ case 'comprar': {
         );
     }
 }
-break;        
+break;
 
  
 
