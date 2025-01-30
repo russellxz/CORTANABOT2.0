@@ -852,101 +852,114 @@ break;
 
 
 
+
+
 case 'comprar': {
     try {
-        // Verificar que el usuario proporcionó un nombre de personaje
-        if (!text) {
+        const userId = m.sender;
+        const personajeNombre = args.join(' ').toLowerCase();
+
+        // Verificar si el usuario ingresó un nombre
+        if (!personajeNombre) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Debes especificar el nombre del personaje que deseas comprar.*\nEjemplo: `.comprar goku`" },
+                { text: "⚠️ *Error:* Debes escribir el nombre del personaje que deseas comprar.\n📌 *Ejemplo:* `.comprar Goku Ultra`" },
                 { quoted: m }
             );
         }
 
-        const usuario = m.sender;
+        // Verificar si el personaje existe en la tienda
+        const personaje = cartera.personajesEnVenta.find(p => p.nombre.toLowerCase() === personajeNombre);
 
-        // Verificar si el usuario tiene saldo en el sistema de mascotas
-        if (!cartera[usuario] || typeof cartera[usuario].coins === 'undefined') {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *No tienes un saldo disponible en Cortana Coins.*" },
-                { quoted: m }
-            );
-        }
-
-        const saldoUsuario = cartera[usuario].coins;
-
-        // Buscar el personaje en la tienda del sistema
-        let personaje = cartera.personajesEnVenta.find(p => p.nombre.toLowerCase() === text.toLowerCase());
-
-        // Si no está en la tienda del sistema, buscar en personajes vendidos por usuarios
-        let vendedor = null;
         if (!personaje) {
-            const venta = cartera.personajesVendidos.find(p => p.nombre.toLowerCase() === text.toLowerCase());
-            if (venta) {
-                personaje = venta;
-                vendedor = venta.vendedor;
+            // Buscar si el personaje ya fue comprado
+            const personajeComprado = Object.entries(cartera).find(([key, user]) =>
+                user.personajes?.some(p => p.nombre.toLowerCase() === personajeNombre)
+            );
+
+            if (personajeComprado) {
+                // Obtener el dueño del personaje
+                const dueñoId = personajeComprado[0];
+                return conn.sendMessage(
+                    m.chat,
+                    { 
+                        text: `❌ *El personaje ${personajeNombre} ya ha sido comprado por* @${dueñoId.replace(/@s.whatsapp.net/, '')}.\n📌 *Si lo quieres, debes esperar a que lo ponga a la venta.*`, 
+                        mentions: [dueñoId] 
+                    },
+                    { quoted: m }
+                );
             }
-        }
 
-        // Si no se encuentra el personaje, enviar mensaje de error
-        if (!personaje) {
             return conn.sendMessage(
                 m.chat,
-                { text: `⚠️ *El personaje "${text}" no está en venta actualmente.*` },
+                { text: `⚠️ *Error:* No se encontró el personaje *${personajeNombre}* en la tienda.` },
                 { quoted: m }
             );
         }
 
-        // Verificar si el personaje ya tiene dueño
+        // Verificar si el personaje ya ha sido comprado
         if (personaje.dueño) {
             return conn.sendMessage(
                 m.chat,
                 { 
-                    text: `❌ *El personaje "${personaje.nombre}" ya ha sido comprado por @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.*\nSi lo quieres, debes esperar a que lo ponga a la venta.` 
+                    text: `❌ *El personaje ${personaje.nombre} ya ha sido comprado por* @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.\n📌 *Si lo quieres, debes esperar a que lo ponga a la venta.*`, 
+                    mentions: [personaje.dueño] 
                 },
-                { mentions: [personaje.dueño], quoted: m }
-            );
-        }
-
-        // Verificar si el usuario tiene suficiente saldo
-        if (saldoUsuario < personaje.precio) {
-            return conn.sendMessage(
-                m.chat,
-                { text: `❌ *No tienes suficientes Cortana Coins para comprar a "${personaje.nombre}".*\n💰 *Tu saldo:* 🪙 ${saldoUsuario} Coins\n🛒 *Precio:* 🪙 ${personaje.precio} Coins` },
                 { quoted: m }
             );
         }
 
-        // Restar saldo del usuario
-        cartera[usuario].coins -= personaje.precio;
-
-        // Asignar el personaje al usuario comprador
-        personaje.dueño = usuario;
-
-        // Si el personaje estaba en venta por otro usuario, eliminarlo de la lista de venta
-        if (vendedor) {
-            cartera.personajesVendidos = cartera.personajesVendidos.filter(p => p.nombre.toLowerCase() !== text.toLowerCase());
-        } else {
-            // Si era un personaje del sistema, eliminarlo de la tienda del sistema
-            cartera.personajesEnVenta = cartera.personajesEnVenta.filter(p => p.nombre.toLowerCase() !== text.toLowerCase());
+        // Verificar si el usuario tiene suficientes Cortana Coins del sistema de mascotas
+        if (!cartera[userId] || cartera[userId].coins < personaje.precio) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💰 *No tienes suficientes Cortana Coins para comprar a ${personaje.nombre}.*\n📌 *Precio:* 🪙 ${personaje.precio} Cortana Coins\n💳 *Tu saldo:* 🪙 ${cartera[userId]?.coins || 0} Coins` },
+                { quoted: m }
+            );
         }
 
-        // **GUARDAR LA IMAGEN BASE64 COMO UN ARCHIVO TEMPORAL**
-        const imageBuffer = Buffer.from(personaje.imagen, 'base64');
-        const imagePath = path.join(__dirname, 'temp', `${personaje.nombre.replace(/\s/g, '_')}.jpg`);
-        fs.writeFileSync(imagePath, imageBuffer);
+        // Restar el precio del personaje a las Coins del usuario
+        cartera[userId].coins -= personaje.precio;
 
-        // Guardar cambios en el JSON
+        // Asignar el personaje al usuario
+        personaje.dueño = userId;
+
+        // Asegurar que el usuario tenga un array para personajes adquiridos
+        if (!Array.isArray(cartera[userId].personajes)) {
+            cartera[userId].personajes = [];
+        }
+        cartera[userId].personajes.push(personaje);
+
+        // Guardar cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // **Enviar mensaje con la imagen guardada**
+        // 📝 **Mensaje de confirmación con diseño bonito**
+        let mensajeCompra = `
+📢 *¡Personaje Desbloqueado!* 🚀  
+
+📌 *Ficha de Personaje:*  
+🎭 *Nombre:* ${personaje.nombre}  
+⚔️ *Nivel:* 1  
+💖 *Vida:* 100/100  
+🧬 *EXP:* 0 / 500  
+
+🎯 *Habilidades Iniciales:*  
+⚡ ${personaje.habilidades[0].nombre} (Nivel 1)  
+⚡ ${personaje.habilidades[1].nombre} (Nivel 1)  
+⚡ ${personaje.habilidades[2].nombre} (Nivel 1)  
+
+⚠️ *Este personaje ya es tuyo. No puede ser adquirido por otro jugador.*  
+📜 *Consulta tus personajes con:* \`.verpersonajes\`
+        `;
+
+        // Enviar mensaje con la imagen del personaje
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: imagePath },
-                caption: `📢 *¡Personaje Desbloqueado!* 🚀\n\n📌 *Ficha de Personaje:*  \n🎭 *Nombre:* ${personaje.nombre}  \n⚔️ *Nivel:* ${personaje.stats.nivel}  \n💖 *Vida:* ${personaje.stats.vida}/100  \n🧬 *EXP:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}  \n\n🎯 *Habilidades Iniciales:*  \n⚡ ${personaje.habilidades[0].nombre} (Nivel ${personaje.habilidades[0].nivel})  \n⚡ ${personaje.habilidades[1].nombre} (Nivel ${personaje.habilidades[1].nivel})  \n⚡ ${personaje.habilidades[2].nombre} (Nivel ${personaje.habilidades[2].nivel})  \n\n⚠️ *Este personaje ya es tuyo. No puede ser adquirido por otro jugador.*  \n📜 *Consulta tus personajes con:* \`.verpersonajes\``,
-                mentions: [usuario]
+                image: Buffer.from(personaje.imagen, 'base64'),
+                mimetype: personaje.mimetype,
+                caption: mensajeCompra,
+                mentions: [userId]
             },
             { quoted: m }
         );
