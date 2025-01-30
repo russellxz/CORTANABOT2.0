@@ -760,8 +760,7 @@ case 'menupersonajes': {
 	menuTexto += `🗑️ *.deletepersonaje2 [nombre]* → Eliminar un personaje de tu colección y devolverlo a la tienda.\n`;
         
 	menuTexto += `🗑️ *.deletepersonaje [nombre]* → (Admin/Owner) Eliminar un personaje de la tienda.\n\n`;
-       
-	menuTexto += `➕ *.addpersonaje [nombre] [hab1] [hab2] [hab3] [precio]* → Agregar un nuevo personaje a la tienda (Responde con imagen).\n\n`;
+        menuTexto += `➕ *.addpersonaje [nombre] [hab1] [hab2] [hab3] [precio]* → Agregar un nuevo personaje a la tienda (Responde con imagen).\n\n`;
 
         menuTexto += `✨ *¡Mejora y administra tus personajes!* ✨`;
 
