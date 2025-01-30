@@ -731,6 +731,61 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'menupersonajes': {
+    try {
+        await m.react('📜'); // Reacción al usar el comando
+
+        let menuTexto = `🎭 *Menú de Personajes* 🎭\n`;
+        menuTexto += `━━━━━━━━━━━━━━━━━━━━\n`;
+        menuTexto += `📌 *Lista de Comandos Disponibles:* 📌\n\n`;
+
+        menuTexto += `🛒 *.alaventa* → Ver personajes en venta (Sistema y jugadores).\n`;
+       
+	menuTexto += `💰 *.comprar [nombre]* → Comprar un personaje de la tienda del sistema.\n`;
+      
+	menuTexto += `💰 *.comprar2 [nombre]* → Comprar un personaje puesto en venta por otro jugador.\n`;
+      
+	menuTexto += `📜 *.verpersonajes* → Ver tu lista de personajes adquiridos y sus estadísticas.\n`;
+      
+	menuTexto += `📊 *.estadopersonaje* → Ver las estadísticas de tu personaje principal.\n`;
+   
+	menuTexto += `🔄 *.personaje [nombre]* → Cambiar de personaje principal.\n`;
+      
+	menuTexto += `🏆 *.toppersonajes* → Ver los jugadores con más personajes adquiridos.\n`;
+       
+	menuTexto += `🛍️ *.vender [nombre]* → Poner a la venta uno de tus personajes.\n`;
+       
+	menuTexto += `❌ *.quitarventa [nombre]* → Retirar un personaje de la venta y volverlo a tu colección.\n`;
+   
+	menuTexto += `🗑️ *.deletepersonaje2 [nombre]* → Eliminar un personaje de tu colección y devolverlo a la tienda.\n`;
+        
+	menuTexto += `🗑️ *.deletepersonaje [nombre]* → (Admin/Owner) Eliminar un personaje de la tienda.\n\n`;
+       
+	menuTexto += `➕ *.addpersonaje [nombre] [hab1] [hab2] [hab3] [precio]* → Agregar un nuevo personaje a la tienda (Responde con imagen).\n\n`;
+
+        menuTexto += `✨ *¡Mejora y administra tus personajes!* ✨`;
+
+        // Enviar mensaje con la imagen del menú de personajes
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/7986395fc5f3e38b3d5511741dba7b21" },
+                caption: menuTexto
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .menupersonajes:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar mostrar el menú. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
 case 'personaje': {
     try {
         await m.react('🔄'); // Reacción al usar el comando
