@@ -732,20 +732,25 @@ break
 // Comando para poner en venta un personaje exclusivo
 case 'addpersonaje': {
     try {
-        // Verificar si el mensaje tiene una imagen adjunta
-        if (!m.message.imageMessage) {
+        // Verificar si se está respondiendo a un mensaje con imagen
+        if (!m.quoted || !m.quoted.mimetype || !m.quoted.mimetype.startsWith('image/')) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Debes responder a una imagen con el comando `.addpersonaje (nombre) (habilidad) (habilidad) (habilidad) (precio)`.*" },
+                { text: "⚠️ *Debes responder a una imagen con el comando:* `.addpersonaje (nombre) (habilidad) (habilidad) (habilidad) (precio)`." },
                 { quoted: m }
             );
         }
 
-        // Obtener la imagen como archivo
-        const imageMessage = m.message.imageMessage;
-        const imageUrl = await conn.downloadMediaMessage(imageMessage);
+        // Descargar la imagen y guardarla en base64
+        const mediaType = m.quoted.mimetype;
+        const mediaStream = await downloadContentFromMessage(m.quoted, 'image');
 
-        // Extraer los datos del mensaje
+        let mediaBuffer = Buffer.alloc(0);
+        for await (const chunk of mediaStream) {
+            mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+        }
+
+        // Extraer los argumentos del mensaje
         const args = text.match(/(.*?)/g)?.map(arg => arg.replace(/[()]/g, ''));
         if (!args || args.length < 5) {
             return conn.sendMessage(
@@ -777,11 +782,11 @@ case 'addpersonaje': {
                 { nombre: habilidad3, nivel: 1 }
             ],
             precio: parseInt(precio),
-            imagen: imageUrl, // Guardamos la imagen sin modificarla
+            imagen: mediaBuffer.toString('base64'), // Guardar la imagen en base64
             enVenta: true
         };
 
-        // Cargar el archivo cartera.json
+        // Cargar el archivo cartera.json y agregar el personaje
         cartera.personajesEnVenta = cartera.personajesEnVenta || [];
         cartera.personajesEnVenta.push(nuevoPersonaje);
 
@@ -805,7 +810,6 @@ case 'addpersonaje': {
     }
 }
 break;
-
 		
 		
 //sistema nuevo de mascota
