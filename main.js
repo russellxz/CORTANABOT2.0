@@ -797,7 +797,12 @@ case 'addpersonaje': {
             );
         }
 
-        // 📌 5. Crear el objeto del personaje
+        // 📌 5. Verificar si `cartera.json` ya tiene la tienda creada, si no, la crea
+        if (!cartera.personajesEnVenta) {
+            cartera.personajesEnVenta = [];
+        }
+
+        // 📌 6. Crear el objeto del personaje en venta
         const nuevoPersonaje = {
             id: Date.now().toString(),
             nombre,
@@ -820,17 +825,16 @@ case 'addpersonaje': {
             }
         };
 
-        // 📌 6. Agregar el personaje a la tienda sin afectar otros datos
-        cartera.personajesEnVenta = cartera.personajesEnVenta || [];
+        // 📌 7. Agregar el personaje a la tienda del sistema
         cartera.personajesEnVenta.push(nuevoPersonaje);
 
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 📌 7. Confirmación al usuario
+        // 📌 8. Confirmación al usuario
         await conn.sendMessage(
             m.chat,
             {
-                text: `✅ *${nombre}* ha sido agregado por *${precio} Coins*.\n🎯 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}`
+                text: `✅ *${nombre}* ha sido agregado a la tienda del sistema por *${precio} Coins*.\n🎯 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}`
             },
             { quoted: m }
         );
@@ -845,7 +849,6 @@ case 'addpersonaje': {
     }
 }
 break;
-
 
  
 		
