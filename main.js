@@ -1248,6 +1248,8 @@ case 'verpersonajes': {
 }
 break;		
 
+
+
 case 'comprar2': {
     try {
         const userId = m.sender;
@@ -1313,7 +1315,7 @@ case 'comprar2': {
         // **✅ Guardar los cambios en `cartera.json`**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // **📢 Mensaje de compra exitosa**
+        // **📢 Mensaje de compra exitosa en el grupo**
         let mensajeCompra = `
 📢 *¡Has adquirido un personaje exclusivo!* 🚀  
 
@@ -1334,7 +1336,7 @@ case 'comprar2': {
 📜 *Consulta tus personajes con:* \`.verpersonajes\`
         `;
 
-        // **Enviar mensaje con la imagen del personaje al comprador**
+        // **Enviar mensaje con la imagen del personaje en el grupo**
         await conn.sendMessage(
             m.chat,
             {
@@ -1344,20 +1346,6 @@ case 'comprar2': {
                 mentions: [userId, vendedorId]
             },
             { quoted: m }
-        );
-
-        // **📢 Notificación al Vendedor**
-        let mensajeVendedor = `🎉 *¡Tu personaje ha sido vendido!* 🎉\n\n` +
-                              `👤 *Comprador:* @${userId.replace(/@s.whatsapp.net/, '')}\n` +
-                              `🎭 *Personaje:* ${personaje.nombre}\n` +
-                              `🪙 *Ganaste:* ${personaje.precio} Cortana Coins\n\n` +
-                              `💳 *Tu nuevo saldo:* 🪙 ${cartera[vendedorId].coins} Cortana Coins\n` +
-                              `📜 *Consulta tus personajes en venta con:* \`.alaventa\``;
-
-        // **Enviar mensaje de confirmación al vendedor**
-        await conn.sendMessage(
-            vendedorId,
-            { text: mensajeVendedor, mentions: [userId, vendedorId] }
         );
 
     } catch (error) {
