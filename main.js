@@ -732,72 +732,66 @@ break
 // Comando para poner en venta un personaje exclusivo
 
  
+
+
 case 'addpersonaje': {
     try {
-        // 1) Asegúrate de que el usuario incluyó algo de texto
-        if (!text) {
+        // 1️⃣ Verificar que el usuario haya ingresado todos los parámetros necesarios
+        const args = text.split(' ');
+        if (args.length < 5) {
             return conn.sendMessage(
                 m.chat,
-                { text: "Formato: .addpersonaje [Nombre] [Hab1] [Hab2] [Hab3] [Precio]" },
+                { text: "⚠️ *Formato incorrecto.*\nEjemplo: `.addpersonaje Goku Kamehameha Genkidama SaiyanPower 3000`" },
                 { quoted: m }
             );
         }
 
-        // 2) Asegúrate de que esté respondiendo a un mensaje con multimedia
+        // 2️⃣ Extraer los argumentos del comando
+        const [nombre, habilidad1, habilidad2, habilidad3, precio] = args;
+
+        if (isNaN(precio)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *El precio debe ser un número válido.*" },
+                { quoted: m }
+            );
+        }
+
+        // 3️⃣ Verificar que el usuario respondió a un archivo multimedia
         if (!m.quoted || !m.quoted.mimetype) {
             return conn.sendMessage(
                 m.chat,
-                { text: "Responde a una imagen/video/sticker con el comando." },
+                { text: "⚠️ *Debes responder a una imagen, video o sticker para asignarlo al personaje.*" },
                 { quoted: m }
             );
         }
 
-        // 3) Identifica el tipo de archivo (imagen, video, sticker)
-        let mime = m.quoted.mimetype.toLowerCase();
-        let mediaType;
-        if (mime.includes('image')) {
+        // 4️⃣ Detectar el tipo de archivo multimedia
+        let mimeType = m.quoted.mimetype.toLowerCase();
+        let mediaType = '';
+
+        if (mimeType.includes('image')) {
             mediaType = 'image';
-        } else if (mime.includes('video')) {
+        } else if (mimeType.includes('video')) {
             mediaType = 'video';
-        } else if (mime.includes('webp') || mime.includes('sticker')) {
+        } else if (mimeType.includes('webp') || mimeType.includes('sticker')) {
             mediaType = 'sticker';
         } else {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ El mensaje citado no es imagen, video ni sticker soportado." },
+                { text: "⚠️ *El mensaje citado no es una imagen, video ni sticker soportado.*" },
                 { quoted: m }
             );
         }
 
-        // 4) Descargar el contenido
+        // 5️⃣ Descargar el contenido multimedia
         const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
             mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
         }
 
-        // 5) Extraer los 5 argumentos [nombre] [hab1] [hab2] [hab3] [precio]
-        // Cambiamos la regex para buscar corchetes [ ... ]
-        const args = text.match(/([^]+)/g)?.map(str => str.replace(/[]/g, ''));
-
-        if (!args || args.length !== 5) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ Formato incorrecto.\nEjemplo: .addpersonaje [Goku] [Kamehameha] [Genkidama] [SaiyanPower] [3000]" },
-                { quoted: m }
-            );
-        }
-
-        const [nombre, hab1, hab2, hab3, precio] = args;
-        if (isNaN(precio)) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "❌ El precio debe ser un número válido." },
-                { quoted: m }
-            );
-        }
-
-        // 6) Crear el objeto del personaje
+        // 6️⃣ Crear el objeto del personaje
         const nuevoPersonaje = {
             id: Date.now().toString(),
             nombre,
@@ -805,9 +799,9 @@ case 'addpersonaje': {
             imagen: mediaBuffer.toString('base64'), // Guardar la imagen/video/sticker en base64
             mimetype: m.quoted.mimetype,
             habilidades: [
-                { nombre: hab1, nivel: 1 },
-                { nombre: hab2, nivel: 1 },
-                { nombre: hab3, nivel: 1 }
+                { nombre: habilidad1, nivel: 1 },
+                { nombre: habilidad2, nivel: 1 },
+                { nombre: habilidad3, nivel: 1 }
             ],
             stats: {
                 nivel: 1,
@@ -818,21 +812,23 @@ case 'addpersonaje': {
             dueño: null
         };
 
-        // 7) Agregarlo al array en cartera.json
+        // 7️⃣ Asegurar que la tienda de personajes exista en cartera.json
         if (!Array.isArray(cartera.personajesEnVenta)) {
             cartera.personajesEnVenta = [];
         }
+
+        // 8️⃣ Agregar el personaje a la tienda
         cartera.personajesEnVenta.push(nuevoPersonaje);
 
-        // 8) Guardar en el JSON
-        fs.writeFileSync(pathCartera, JSON.stringify(cartera, null, 2));
+        // 9️⃣ Guardar en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 9) Responder confirmación
-        const mensajeConfirm = `✅ *${nombre}* fue agregado a la tienda.\n` +
+        // 🔟 Enviar confirmación
+        const mensajeConfirm = `✅ *${nombre}* ha sido agregado a la tienda.\n` +
                                `💰 *Precio:* ${precio} Coins\n` +
-                               `🔥 *Habilidades:* ${hab1}, ${hab2}, ${hab3}\n` +
-                               `❤️ *Vida:* 100\n` +
-                               `¡Listo!`;
+                               `🔥 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}\n` +
+                               `❤️ *Vida:* 100\n\n` +
+                               `🎭 *Este personaje ya está disponible en la tienda.*`;
 
         return conn.sendMessage(
             m.chat,
@@ -844,13 +840,12 @@ case 'addpersonaje': {
         console.error('❌ Error en .addpersonaje:', error);
         return conn.sendMessage(
             m.chat,
-            { text: "❌ Ocurrió un error al agregar el personaje. Revisa la consola." },
+            { text: "❌ Ocurrió un error al agregar el personaje. Intenta nuevamente." },
             { quoted: m }
         );
     }
 }
-break;        
-
+break;
         
  
 		
