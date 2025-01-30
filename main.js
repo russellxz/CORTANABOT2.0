@@ -731,7 +731,6 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
-
 case 'comprar': {
     try {
         const userId = m.sender;
@@ -751,20 +750,20 @@ case 'comprar': {
 
         if (!personaje) {
             // Buscar si el personaje ya fue comprado
-            const personajeComprado = Object.values(cartera).find(user =>
+            const personajeComprado = Object.entries(cartera).find(([key, user]) =>
                 user.personajes?.some(p => p.nombre.toLowerCase() === personajeNombre)
             );
 
             if (personajeComprado) {
                 // Obtener el dueño del personaje
-                const dueño = Object.keys(cartera).find(key =>
-                    cartera[key].personajes?.some(p => p.nombre.toLowerCase() === personajeNombre)
-                );
-
+                const dueñoId = personajeComprado[0];
                 return conn.sendMessage(
                     m.chat,
-                    { text: `❌ *El personaje ${personajeNombre} ya ha sido comprado por @${dueño.replace(/@s.whatsapp.net/, '')}.*` },
-                    { quoted: m, mentions: [dueño] }
+                    { 
+                        text: `❌ *El personaje ${personajeNombre} ya ha sido comprado por* @${dueñoId.replace(/@s.whatsapp.net/, '')}.\n📌 *Si lo quieres, debes esperar a que lo ponga a la venta.*`, 
+                        mentions: [dueñoId] 
+                    },
+                    { quoted: m }
                 );
             }
 
@@ -779,8 +778,11 @@ case 'comprar': {
         if (personaje.dueño) {
             return conn.sendMessage(
                 m.chat,
-                { text: `❌ *Este personaje ya ha sido comprado por @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.*` },
-                { quoted: m, mentions: [personaje.dueño] }
+                { 
+                    text: `❌ *El personaje ${personaje.nombre} ya ha sido comprado por* @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.\n📌 *Si lo quieres, debes esperar a que lo ponga a la venta.*`, 
+                    mentions: [personaje.dueño] 
+                },
+                { quoted: m }
             );
         }
 
@@ -849,6 +851,7 @@ case 'comprar': {
     }
 }
 break;
+
  
 
 
