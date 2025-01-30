@@ -731,83 +731,75 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
-	
+case 'addpersonaje': {
+    try {
+        // Verificar si el usuario respondió a una imagen
+        if (!m.quoted || !m.quoted.message.imageMessage) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Debes responder a una imagen para agregar un personaje.*" },
+                { quoted: m }
+            );
+        }
 
+        // Obtener la imagen del mensaje original
+        let mensajeImagen = m.quoted.message.imageMessage;
+        let imagenID = m.quoted.id; // Identificador único del mensaje
+       
+        // Extraer los datos del comando
+        let args = text.match(/(.*?)/g);
+        if (!args || args.length < 5) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Formato incorrecto.* Usa `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`." },
+                { quoted: m }
+            );
+        }
 
+        let nombre = args[0].replace(/[()]/g, '').trim();
+        let habilidades = args.slice(1, 4).map(hab => hab.replace(/[()]/g, '').trim());
+        let precio = parseInt(args[4].replace(/[()]/g, '').trim());
 
+        if (isNaN(precio) || precio < 1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *El precio debe ser un número válido y mayor a 0.*" },
+                { quoted: m }
+            );
+        }
 
-        
-	
+        // Crear el objeto del personaje
+        let nuevoPersonaje = {
+            nombre: nombre,
+            habilidades: habilidades.map(hab => ({ nombre: hab, nivel: 1 })),
+            nivel: 1,
+            vida: 100,
+            experiencia: 0,
+            experienciaSiguienteNivel: 500,
+            precio: precio,
+            compradoPor: null, // Nadie lo ha comprado aún
+            imagenID: imagenID // Guardar el ID del mensaje con la imagen
+        };
 
-        
+        // Cargar el archivo JSON y guardar el personaje
+        let datos = JSON.parse(fs.readFileSync('./cartera.json', 'utf-8'));
+        datos.tiendaPersonajes = datos.tiendaPersonajes || [];
+        datos.tiendaPersonajes.push(nuevoPersonaje);
+        fs.writeFileSync('./cartera.json', JSON.stringify(datos, null, 2));
 
+        // Confirmación
+        await conn.sendMessage(
+            m.chat,
+            { text: `✅ *Personaje agregado correctamente a la tienda:* ${nombre}\n💰 *Precio:* ${precio} Cortana Coins` },
+            { quoted: m }
+        );
 
-
-        
-
-
-
-
-
-        
-        
-
-
-
-
-    
-
-
-
-        
-
-
-
-
-
-	
-
-        	
-
-
-
-	
-
-
-
-
-
-	
-
-
-
-
-	
-
-
-
-
-	
-
-
- 
-
-
-            
-
-
-        
-		
-
-
-        
-	
-
-
-	
-		
-
-        
+    } catch (error) {
+        console.error('❌ Error en el comando .addpersonaje:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar agregar el personaje. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;      
 		
 		
 //sistema nuevo de mascota
