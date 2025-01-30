@@ -730,6 +730,89 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
+case 'personaje': {
+    try {
+        await m.react('🔄'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const personajeNombre = args.join(' ').toLowerCase();
+
+        // Verificar si el usuario tiene personajes
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.alaventa` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario ingresó un nombre
+        if (!personajeNombre) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Debes escribir el nombre del personaje que deseas seleccionar como principal.*\n📌 *Ejemplo:* `.personaje Gojo`" },
+                { quoted: m }
+            );
+        }
+
+        // Buscar el personaje dentro de la lista del usuario
+        const personajeIndex = cartera[userId].personajes.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
+
+        if (personajeIndex === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No tienes al personaje ${personajeNombre} en tu colección.*\n📜 *Usa:* \`.verpersonajes\` *para ver tu lista de personajes.*` },
+                { quoted: m }
+            );
+        }
+
+        // Cambiar el personaje principal (Mover al inicio del array)
+        const personajeSeleccionado = cartera[userId].personajes.splice(personajeIndex, 1)[0];
+        cartera[userId].personajes.unshift(personajeSeleccionado);
+
+        // Guardar cambios en `cartera.json`
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // 📝 **Mensaje de confirmación**
+        let mensajeCambio = `
+✅ *¡Has cambiado tu personaje principal!*  
+🎭 *Nuevo Personaje:* ${personajeSeleccionado.nombre}  
+⚔️ *Nivel:* ${personajeSeleccionado.stats.nivel}  
+❤️ *Vida:* ${personajeSeleccionado.stats.vida}/100  
+
+🎯 *Habilidades:*  
+⚡ ${personajeSeleccionado.habilidades[0].nombre} (Nivel ${personajeSeleccionado.habilidades[0].nivel})  
+⚡ ${personajeSeleccionado.habilidades[1].nombre} (Nivel ${personajeSeleccionado.habilidades[1].nivel})  
+⚡ ${personajeSeleccionado.habilidades[2].nombre} (Nivel ${personajeSeleccionado.habilidades[2].nivel})  
+
+📌 *Tu nuevo personaje principal ahora es:* ${personajeSeleccionado.nombre}  
+📜 *Consulta tus personajes con:* \`.verpersonajes\`
+        `;
+
+        // Enviar mensaje con la imagen del nuevo personaje principal
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: Buffer.from(personajeSeleccionado.imagen, 'base64'),
+                mimetype: personajeSeleccionado.mimetype,
+                caption: mensajeCambio,
+                mentions: [userId]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .personaje:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar cambiar de personaje. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;	
+
 case 'estadopersonaje': {
     try {
         await m.react('📊'); // Reacción al usar el comando
