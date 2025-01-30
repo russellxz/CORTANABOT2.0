@@ -734,35 +734,35 @@ break
  
 case 'addpersonaje': {
     try {
-        // 🛑 Verificar si se está respondiendo a un mensaje
-        if (!m.quoted) {
+        // 1️⃣ Verificar si se está respondiendo a un mensaje
+        if (!m.quoted || !m.quoted.message) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Error:* Debes responder a un archivo multimedia (imagen, video, sticker, audio, documento) con el comando." },
+                { text: "⚠️ *Error:* Debes responder a un *archivo multimedia* (imagen, video, sticker...) con el comando." },
                 { quoted: m }
             );
         }
 
-        // 📌 Detectar el tipo de multimedia en el mensaje citado
+        // 2️⃣ Detectar el tipo de mensaje multimedia en m.quoted
         const quotedMsg = m.quoted.message;
-        let mediaType = null;       // Para usar en downloadContentFromMessage
-        let mimeType  = null;       // Guardaremos el mimetype real
+        let mediaType = null;
+        let mimeType = null;
 
         if (quotedMsg.imageMessage) {
-            mediaType = 'image'; 
-            mimeType  = quotedMsg.imageMessage.mimetype;
+            mediaType = 'image';
+            mimeType = quotedMsg.imageMessage.mimetype;
         } else if (quotedMsg.videoMessage) {
             mediaType = 'video';
-            mimeType  = quotedMsg.videoMessage.mimetype;
+            mimeType = quotedMsg.videoMessage.mimetype;
         } else if (quotedMsg.stickerMessage) {
             mediaType = 'sticker';
-            mimeType  = 'image/webp'; // Stickers son webp
+            mimeType = 'image/webp'; // Stickers son webp
         } else if (quotedMsg.documentMessage) {
             mediaType = 'document';
-            mimeType  = quotedMsg.documentMessage.mimetype;
+            mimeType = quotedMsg.documentMessage.mimetype;
         } else if (quotedMsg.audioMessage) {
             mediaType = 'audio';
-            mimeType  = quotedMsg.audioMessage.mimetype;
+            mimeType = quotedMsg.audioMessage.mimetype;
         } else {
             return conn.sendMessage(
                 m.chat,
@@ -771,7 +771,7 @@ case 'addpersonaje': {
             );
         }
 
-        // 🖼️ Descargar el archivo citado
+        // 3️⃣ Descargar el contenido multimedia
         const messageContent = quotedMsg[mediaType + 'Message'] || quotedMsg.stickerMessage;
         const mediaStream = await downloadContentFromMessage(messageContent, mediaType);
 
@@ -780,12 +780,12 @@ case 'addpersonaje': {
             mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
         }
 
-        // 🔍 Extraer argumentos del comando
-        const args = text.match(/(.*?)/g)?.map(m => m.replace(/[()]/g, ''));
+        // 4️⃣ Extraer los argumentos (nombre, habilidades y precio)
+        const args = text.match(/(.*?)/g)?.map(arg => arg.replace(/[()]/g, ''));
         if (!args || args.length !== 5) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`." },
+                { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (nombre completo) (habilidad1) (habilidad2) (habilidad3) (precio)`." },
                 { quoted: m }
             );
         }
@@ -800,17 +800,12 @@ case 'addpersonaje': {
             );
         }
 
-        // 🏪 Asegurar que la tienda de personajes exista en el JSON
-        if (!cartera.tiendaPersonajes) {
-            cartera.tiendaPersonajes = [];
-        }
-
-        // 🆕 Crear el objeto del personaje con su multimedia
+        // 5️⃣ Crear el objeto del personaje
         const nuevoPersonaje = {
             id: Date.now().toString(),
             nombre,
             precio: parseInt(precio),
-            archivoBase64: mediaBuffer.toString('base64'), // Guardamos el archivo en base64
+            archivoBase64: mediaBuffer.toString('base64'), // Guarda el multimedia en base64
             mimetype: mimeType,
             habilidades: [
                 { nombre: habilidad1, nivel: 1 },
@@ -822,19 +817,20 @@ case 'addpersonaje': {
                 experiencia: 0,
                 experienciaSiguienteNivel: 500,
                 vida: 100,
-                dueno: null // null = disponible para compra
+                dueno: null
             }
         };
 
-        // 📌 Agregar el personaje a la tienda
-        cartera.tiendaPersonajes.push(nuevoPersonaje);
+        // 6️⃣ Asegurar que la tienda exista en cartera.json
+        cartera.personajesEnVenta = cartera.personajesEnVenta || [];
+        cartera.personajesEnVenta.push(nuevoPersonaje);
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // ✅ Confirmación de personaje agregado
+        // 7️⃣ Confirmación al usuario
         await conn.sendMessage(
             m.chat,
             {
-                text: `✅ *${nombre}* ha sido agregado a la tienda por *${precio} Coins*.\n🎯 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}`
+                text: `✅ *${nombre}* ha sido agregado por *${precio} Coins*.\n🎯 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}`
             },
             { quoted: m }
         );
@@ -849,6 +845,8 @@ case 'addpersonaje': {
     }
 }
 break;
+
+        
 
  
 		
