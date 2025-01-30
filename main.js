@@ -730,6 +730,70 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'alaventa': {
+    try {
+        await m.react('🛒'); // Reacción al usar el comando
+
+        let menuVenta = `🛒 *Mercado de Personajes* 🛒\n━━━━━━━━━━━━━━━━━━━━\n`;
+
+        // 📌 **1️⃣ Apartado de Personajes en Venta por el Sistema**
+        if (cartera.personajesEnVenta && cartera.personajesEnVenta.length > 0) {
+            menuVenta += `📢 *Personajes en Venta por el Sistema* 📢\n\n`;
+            cartera.personajesEnVenta.forEach((personaje, index) => {
+                menuVenta += `🎭 *#${index + 1} - ${personaje.nombre}*\n`;
+                menuVenta += `🆙 *Nivel:* ${personaje.stats.nivel}\n`;
+                menuVenta += `🧬 *Experiencia:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}\n`;
+                menuVenta += `❤️ *Vida:* ${personaje.stats.vida}/100\n`;
+                menuVenta += `🪙 *Precio:* 🪙 ${personaje.precio} Cortana Coins\n`;
+                menuVenta += `🎯 *Habilidades:*\n`;
+                personaje.habilidades.forEach(hab => {
+                    menuVenta += `⚡ ${hab.nombre} (Nivel ${hab.nivel})\n`;
+                });
+                menuVenta += `🛒 *Compra con:* \`.comprar ${personaje.nombre}\`\n`;
+                menuVenta += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            });
+        } else {
+            menuVenta += `❌ *No hay personajes disponibles en la tienda del sistema.*\n\n`;
+        }
+
+        // 📌 **2️⃣ Apartado de Personajes en Venta por Usuarios**
+        if (cartera.personajesVendidos && cartera.personajesVendidos.length > 0) {
+            menuVenta += `🪙 *Personajes en Venta por Jugadores* 🪙\n\n`;
+            cartera.personajesVendidos.forEach((venta, index) => {
+                let vendedorId = venta.vendedor;
+                menuVenta += `🛒 *#${index + 1} - ${venta.nombre}*\n`;
+                menuVenta += `🆙 *Nivel:* ${venta.stats.nivel}\n`;
+                menuVenta += `🧬 *Experiencia:* ${venta.stats.experiencia} / ${venta.stats.experienciaSiguienteNivel}\n`;
+                menuVenta += `❤️ *Vida:* ${venta.stats.vida}/100\n`;
+                menuVenta += `🪙 *Precio:* 🪙 ${venta.precio} Cortana Coins\n`;
+                menuVenta += `🎯 *Habilidades:*\n`;
+                venta.habilidades.forEach(hab => {
+                    menuVenta += `⚡ ${hab.nombre} (Nivel ${hab.nivel})\n`;
+                });
+                menuVenta += `👤 *Vendedor:* @${vendedorId.replace(/@s.whatsapp.net/, '')}\n`;
+                menuVenta += `🛒 *Compra con:* \`.comprar ${venta.nombre}\`\n`;
+                menuVenta += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            });
+        } else {
+            menuVenta += `❌ *No hay personajes en venta por jugadores.*\n\n`;
+        }
+
+        // Enviar el mensaje con los personajes en venta
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: menuVenta,
+                mentions: cartera.personajesVendidos ? cartera.personajesVendidos.map(venta => venta.vendedor) : []
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .alaventa:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar ver los personajes en venta. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
 
 case 'comprar': {
     try {
@@ -946,7 +1010,7 @@ case 'addpersonaje': {
 
         // 🔟 Enviar confirmación
         const mensajeConfirm = `✅ *${nombre}* ha sido agregado a la tienda.\n` +
-                               `💰 *Precio:* ${precio} Coins\n` +
+                               `🪙 *Precio:* ${precio} Coins\n` +
                                `🔥 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}\n` +
                                `❤️ *Vida:* 100\n\n` +
                                `🎭 *Este personaje ya está disponible en la tienda.*`;
