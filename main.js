@@ -733,56 +733,88 @@ break
 
 case 'vender': {
     try {
-        const personajeNombre = text.trim().toLowerCase();
-        if (!personajeNombre) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Error:* Debes indicar el nombre del personaje que deseas vender." }, { quoted: m });
+        const userId = m.sender;
+        const argsText = args.join(' ').trim();
+        const lastSpaceIndex = argsText.lastIndexOf(" "); // Último espacio para separar nombre y precio
+        if (lastSpaceIndex === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* Usa el formato correcto:\n📌 `.vender NombrePersonaje Precio`" },
+                { quoted: m }
+            );
         }
 
-        // Buscar el personaje en la lista de personajes comprados
-        let personajeIndex = cartera.personajesEnVenta.findIndex(p => p.nombre.toLowerCase() === personajeNombre && p.dueño === m.sender);
-        
+        const personajeNombre = argsText.substring(0, lastSpaceIndex).toLowerCase();
+        const precioVenta = parseInt(argsText.substring(lastSpaceIndex + 1));
+
+        if (isNaN(precioVenta) || precioVenta <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* Debes ingresar un precio válido en Cortana Coins.\n📌 *Ejemplo:* `.vender Goku Ultra 2500`" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario tiene el personaje
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *No tienes personajes para vender.* Usa `.verpersonajes` para ver tu colección." },
+                { quoted: m }
+            );
+        }
+
+        const personajeIndex = cartera[userId].personajes.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
         if (personajeIndex === -1) {
-            return conn.sendMessage(m.chat, { text: `⚠️ *Error:* No tienes un personaje llamado *${personajeNombre}* para vender.` }, { quoted: m });
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No tienes el personaje "${personajeNombre}" en tu colección.* Usa \`.verpersonajes\` para verificar.` },
+                { quoted: m }
+            );
         }
 
-        let personaje = cartera.personajesEnVenta[personajeIndex];
+        // Obtener el personaje
+        const personaje = cartera[userId].personajes[personajeIndex];
 
-        // Preguntar el precio de venta
-        if (!args[1] || isNaN(args[1])) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Error:* Debes especificar un precio válido. Ejemplo: `.vender Goku 3000`" }, { quoted: m });
-        }
-
-        let precioVenta = parseInt(args[1]);
-
-        // Crear el objeto de personaje en venta
-        let personajeEnVenta = {
+        // Crear objeto de venta
+        const personajeEnVenta = {
             ...personaje,
-            precio: precioVenta,
-            vendedor: m.sender // Se registra el vendedor
+            vendedor: userId,
+            precio: precioVenta
         };
 
-        // Agregarlo a la lista de personajes en venta por jugadores
-        if (!cartera.personajesVendidos) cartera.personajesVendidos = [];
+        // Asegurar que el apartado de personajes en venta exista
+        if (!Array.isArray(cartera.personajesVendidos)) {
+            cartera.personajesVendidos = [];
+        }
+
+        // Mover personaje a la tienda de venta por usuarios
         cartera.personajesVendidos.push(personajeEnVenta);
+        cartera[userId].personajes.splice(personajeIndex, 1); // Eliminarlo de la cartera del usuario
 
-        // Eliminarlo de la lista de personajes comprados
-        cartera.personajesEnVenta.splice(personajeIndex, 1);
-
-        // Guardar los cambios
+        // Guardar cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Confirmación al usuario
-        return conn.sendMessage(m.chat, {
-            text: `✅ *${personaje.nombre}* ha sido puesto a la venta por 🪙 *${precioVenta} Cortana Coins*.\n🛒 *Otros jugadores pueden comprarlo con:* \`.comprar ${personaje.nombre}\``,
-            mentions: [m.sender]
-        }, { quoted: m });
+        // Confirmación de venta
+        return conn.sendMessage(
+            m.chat,
+            { text: `🛒 *¡Has puesto a la venta a ${personaje.nombre} por ${precioVenta} Cortana Coins!*` },
+            { quoted: m }
+        );
 
     } catch (error) {
-        console.error("❌ Error en el comando .vender:", error);
-        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al intentar vender el personaje. Intenta nuevamente.*" }, { quoted: m });
+        console.error('❌ Error en el comando .vender:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar vender el personaje. Intenta nuevamente.*" },
+            { quoted: m }
+        );
     }
 }
 break;
+
+
+
 
 case 'alaventa': {
     try {
@@ -812,7 +844,7 @@ case 'alaventa': {
 
         // 📌 **2️⃣ Apartado de Personajes en Venta por Usuarios**
         if (cartera.personajesVendidos && cartera.personajesVendidos.length > 0) {
-            menuVenta += `🪙 *Personajes en Venta por Jugadores* 🪙\n\n`;
+            menuVenta += `🛒 *Personajes en Venta por Jugadores* 🛒\n\n`;
             cartera.personajesVendidos.forEach((venta, index) => {
                 let vendedorId = venta.vendedor;
                 menuVenta += `🛒 *#${index + 1} - ${venta.nombre}*\n`;
@@ -848,9 +880,6 @@ case 'alaventa': {
     }
 }
 break;
-
-
-
 
 
 
