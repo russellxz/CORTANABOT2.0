@@ -730,34 +730,64 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
-case 'addpersonaje': {
+
+ case 'addpersonaje': {
     try {
-        // 1️⃣ Verificar si el mensaje citado existe
-        if (!m.quoted || !m.quoted.mimetype) {
+        // 1. Verificar si se está respondiendo a un mensaje
+        if (!m.quoted) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Error:* Responde a un *multimedia* (imagen, sticker o video) con el comando:\n\n `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`" },
+                { text: "⚠️ *Error:* Debes responder a un *archivo multimedia* (imagen, video, sticker...) con el comando." },
+                { quoted: m }
+            );
+        }
+        
+        // 2. Detectar el tipo de mensaje multimedia en m.quoted
+        const quotedMsg = m.quoted.message;
+        let mediaType = null;       // Para usar en downloadContentFromMessage
+        let mimeType  = null;       // Guardaremos el mimetype real
+
+        if (quotedMsg.imageMessage) {
+            mediaType = 'image'; 
+            mimeType  = quotedMsg.imageMessage.mimetype;
+        } else if (quotedMsg.videoMessage) {
+            mediaType = 'video';
+            mimeType  = quotedMsg.videoMessage.mimetype;
+        } else if (quotedMsg.stickerMessage) {
+            mediaType = 'sticker';
+            // El sticker normalmente usa 'image/webp'
+            mimeType  = 'image/webp';
+        } else if (quotedMsg.documentMessage) {
+            mediaType = 'document';
+            mimeType  = quotedMsg.documentMessage.mimetype;
+        } else if (quotedMsg.audioMessage) {
+            mediaType = 'audio';
+            mimeType  = quotedMsg.audioMessage.mimetype;
+        } else {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* El mensaje citado no es un archivo multimedia soportado." },
                 { quoted: m }
             );
         }
 
-        // 2️⃣ Extraer el tipo de archivo citado
-        const mediaType = m.quoted.mimetype;
-        const mediaExt = mediaType.split('/')[1]; // jpg, png, mp4, webp, etc.
+        // 3. Descargar el contenido usando la parte específica del mensaje
+        const messageContent = quotedMsg[mediaType + 'Message'] || quotedMsg.stickerMessage;
+        const mediaStream = await downloadContentFromMessage(messageContent, mediaType);
 
-        // 3️⃣ Descargar el archivo multimedia
-        const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
             mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
         }
 
-        // 4️⃣ Extraer argumentos entre paréntesis
-        const args = text.match(/([^)]+)/g)?.map(arg => arg.replace(/[()]/g, ''));
+        // 4. Extraer los argumentos
+        //    Cambia el regex de acuerdo a tu formato 
+        //    (por ejemplo, si usas algo como .addpersonaje (nombre) (hab1) (hab2) ...)
+        const args = text.match(/([^]+)/g)?.map(arg => arg.replace(/[()]/g, ''));
         if (!args || args.length !== 5) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Formato incorrecto.* Usa:\n\n `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`" },
+                { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (nombre completo) (habilidad1) (habilidad2) (habilidad3) (precio)`." },
                 { quoted: m }
             );
         }
@@ -772,16 +802,14 @@ case 'addpersonaje': {
             );
         }
 
-        // 5️⃣ Crear el objeto del personaje con el multimedia en base64
+        // 5. Crear el objeto del personaje (o lo que quieras guardar)
         const nuevoPersonaje = {
             id: Date.now().toString(),
             nombre,
             precio: parseInt(precio),
-            multimedia: {
-                buffer: mediaBuffer.toString('base64'), // Guardamos el archivo en base64
-                mimetype: mediaType,
-                extension: mediaExt
-            },
+            // Guarda el contenido como base64
+            archivoBase64: mediaBuffer.toString('base64'),
+            mimetype: mimeType,
             habilidades: [
                 { nombre: habilidad1, nivel: 1 },
                 { nombre: habilidad2, nivel: 1 },
@@ -792,20 +820,21 @@ case 'addpersonaje': {
                 experiencia: 0,
                 experienciaSiguienteNivel: 500,
                 vida: 100,
-                dueno: null // null = disponible para compra
+                dueno: null
             }
         };
 
-        // 6️⃣ Agregar el personaje a la tienda
+        // 6. Agregar a la "cartera" y guardar
         cartera.personajesEnVenta = cartera.personajesEnVenta || [];
         cartera.personajesEnVenta.push(nuevoPersonaje);
+
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 7️⃣ Confirmación al usuario
+        // 7. Confirmación al usuario
         await conn.sendMessage(
             m.chat,
             {
-                text: `✅ *${nombre}* ha sido agregado a la tienda por *${precio} Coins*.\n🎯 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}`
+                text: `✅ *${nombre}* ha sido agregado por *${precio} Coins*.\n🎯 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}`
             },
             { quoted: m }
         );
@@ -819,7 +848,7 @@ case 'addpersonaje': {
         );
     }
 }
-break;
+break;     
 		
 		
 //sistema nuevo de mascota
