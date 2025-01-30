@@ -1539,28 +1539,10 @@ case 'comprar': {
             );
         }
 
-        // Verificar si el personaje existe en la tienda
-        const personaje = cartera.personajesEnVenta.find(p => p.nombre.toLowerCase() === personajeNombre);
+        // Buscar el personaje en la tienda
+        const indexPersonaje = cartera.personajesEnVenta.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
 
-        if (!personaje) {
-            // Buscar si el personaje ya fue comprado
-            const personajeComprado = Object.entries(cartera).find(([key, user]) =>
-                user.personajes?.some(p => p.nombre.toLowerCase() === personajeNombre)
-            );
-
-            if (personajeComprado) {
-                // Obtener el dueño del personaje
-                const dueñoId = personajeComprado[0];
-                return conn.sendMessage(
-                    m.chat,
-                    { 
-                        text: `❌ *El personaje ${personajeNombre} ya ha sido comprado por* @${dueñoId.replace(/@s.whatsapp.net/, '')}.\n📌 *Si lo quieres, debes esperar a que lo ponga a la venta.*`, 
-                        mentions: [dueñoId] 
-                    },
-                    { quoted: m }
-                );
-            }
-
+        if (indexPersonaje === -1) {
             return conn.sendMessage(
                 m.chat,
                 { text: `⚠️ *Error:* No se encontró el personaje *${personajeNombre}* en la tienda.` },
@@ -1568,19 +1550,9 @@ case 'comprar': {
             );
         }
 
-        // Verificar si el personaje ya ha sido comprado
-        if (personaje.dueño) {
-            return conn.sendMessage(
-                m.chat,
-                { 
-                    text: `❌ *El personaje ${personaje.nombre} ya ha sido comprado por* @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.\n📌 *Si lo quieres, debes esperar a que lo ponga a la venta.*`, 
-                    mentions: [personaje.dueño] 
-                },
-                { quoted: m }
-            );
-        }
+        const personaje = cartera.personajesEnVenta[indexPersonaje];
 
-        // Verificar si el usuario tiene suficientes Cortana Coins del sistema de mascotas
+        // Verificar si el usuario tiene suficientes Cortana Coins
         if (!cartera[userId] || cartera[userId].coins < personaje.precio) {
             return conn.sendMessage(
                 m.chat,
@@ -1601,6 +1573,9 @@ case 'comprar': {
         }
         cartera[userId].personajes.push(personaje);
 
+        // Eliminar el personaje de la tienda
+        cartera.personajesEnVenta.splice(indexPersonaje, 1);
+
         // Guardar cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
@@ -1619,7 +1594,6 @@ case 'comprar': {
 ⚡ ${personaje.habilidades[1].nombre} (Nivel 1)  
 ⚡ ${personaje.habilidades[2].nombre} (Nivel 1)  
 
-⚠️ *Este personaje ya es tuyo. No puede ser adquirido por otro jugador.*  
 📜 *Consulta tus personajes con:* \`.verpersonajes\`
         `;
 
