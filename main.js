@@ -1611,14 +1611,28 @@ break;
  
 
 
+
 case 'addpersonaje': {
     try {
+        const userId = m.sender;
+        const isAdmin = m.isGroup ? m.isAdmin || m.isSuperAdmin : false;
+        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, ''));
+
+        // 🔐 Verificar si el usuario es Admin o Owner
+        if (!isAdmin && !isOwner) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "🚫 *No tienes permisos para agregar personajes.* Solo los administradores del grupo o el dueño del bot pueden usar este comando." },
+                { quoted: m }
+            );
+        }
+
         // 1️⃣ Verificar que el usuario haya ingresado todos los parámetros necesarios
         const args = text.split(' ');
         if (args.length < 5) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Formato incorrecto.*\nEjemplo: `.addpersonaje Goku Kamehameha Genkidama SaiyanPower 3000`" },
+                { text: "⚠️ *Formato incorrecto.*\n📌 *Ejemplo:* `.addpersonaje Goku Kamehameha Genkidama SaiyanPower 3000`" },
                 { quoted: m }
             );
         }
@@ -1634,7 +1648,16 @@ case 'addpersonaje': {
             );
         }
 
-        // 3️⃣ Verificar que el usuario respondió a un archivo multimedia
+        // 3️⃣ Verificar si el personaje ya existe en la tienda
+        if (cartera.personajesEnVenta?.some(p => p.nombre.toLowerCase() === nombre.toLowerCase())) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *El personaje "${nombre}" ya está en la tienda. No puedes agregar duplicados.*` },
+                { quoted: m }
+            );
+        }
+
+        // 4️⃣ Verificar que el usuario respondió a un archivo multimedia
         if (!m.quoted || !m.quoted.mimetype) {
             return conn.sendMessage(
                 m.chat,
@@ -1643,7 +1666,7 @@ case 'addpersonaje': {
             );
         }
 
-        // 4️⃣ Detectar el tipo de archivo multimedia
+        // 5️⃣ Detectar el tipo de archivo multimedia
         let mimeType = m.quoted.mimetype.toLowerCase();
         let mediaType = '';
 
@@ -1661,14 +1684,14 @@ case 'addpersonaje': {
             );
         }
 
-        // 5️⃣ Descargar el contenido multimedia
+        // 6️⃣ Descargar el contenido multimedia
         const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
             mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
         }
 
-        // 6️⃣ Crear el objeto del personaje
+        // 7️⃣ Crear el objeto del personaje
         const nuevoPersonaje = {
             id: Date.now().toString(),
             nombre,
@@ -1689,20 +1712,20 @@ case 'addpersonaje': {
             dueño: null
         };
 
-        // 7️⃣ Asegurar que la tienda de personajes exista en cartera.json
+        // 8️⃣ Asegurar que la tienda de personajes exista en cartera.json
         if (!Array.isArray(cartera.personajesEnVenta)) {
             cartera.personajesEnVenta = [];
         }
 
-        // 8️⃣ Agregar el personaje a la tienda
+        // 9️⃣ Agregar el personaje a la tienda
         cartera.personajesEnVenta.push(nuevoPersonaje);
 
-        // 9️⃣ Guardar en el archivo JSON
+        // 🔟 Guardar en el archivo JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // 🔟 Enviar confirmación
         const mensajeConfirm = `✅ *${nombre}* ha sido agregado a la tienda.\n` +
-                               `🪙 *Precio:* ${precio} Coins\n` +
+                               `🪙 *Precio:* ${precio} Cortana Coins\n` +
                                `🔥 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}\n` +
                                `❤️ *Vida:* 100\n\n` +
                                `🎭 *Este personaje ya está disponible en la tienda.*`;
@@ -1723,6 +1746,7 @@ case 'addpersonaje': {
     }
 }
 break;
+ 
         
  
 		
