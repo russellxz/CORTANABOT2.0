@@ -731,6 +731,147 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'deletepersonaje': {
+    try {
+        await m.react('🗑️'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const personajeNombre = args.join(' ').toLowerCase();
+
+        // Verificar si el usuario ingresó un nombre
+        if (!personajeNombre) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* Debes escribir el nombre del personaje que deseas eliminar de la tienda.\n📌 *Ejemplo:* `.eliminarpersonaje Goku Ultra`" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario es Owner o Administrador del grupo
+        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, ''));
+        const isAdmin = m.isGroup && (await conn.groupMetadata(m.chat)).participants
+            .some(p => p.id === userId && p.admin);
+
+        if (!isOwner && !isAdmin) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⛔ *Permiso Denegado:* Solo los administradores del grupo o el dueño del bot pueden eliminar personajes de la tienda." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está en la tienda del sistema
+        if (!cartera.personajesEnVenta || cartera.personajesEnVenta.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* No hay personajes en la tienda actualmente." },
+                { quoted: m }
+            );
+        }
+
+        // Buscar el personaje en la lista de la tienda del sistema
+        const index = cartera.personajesEnVenta.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
+
+        if (index === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *Error:* No se encontró un personaje llamado *${personajeNombre}* en la tienda.` },
+                { quoted: m }
+            );
+        }
+
+        // Eliminar el personaje de la tienda del sistema
+        const personajeEliminado = cartera.personajesEnVenta.splice(index, 1)[0];
+
+        // Guardar cambios en `cartera.json`
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Enviar confirmación al usuario
+        return conn.sendMessage(
+            m.chat,
+            { text: `✅ *${personajeEliminado.nombre} ha sido eliminado de la tienda del sistema.* 🗑️` },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .eliminarpersonaje:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar eliminar el personaje. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+		
+case 'quitarventa': {
+    try {
+        await m.react('❌'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const personajeNombre = args.join(' ').toLowerCase();
+
+        // Verificar si el usuario ingresó un nombre
+        if (!personajeNombre) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* Debes escribir el nombre del personaje que deseas quitar de la venta.\n📌 *Ejemplo:* `.quitarventa Goku Ultra`" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está en venta por el usuario
+        if (!cartera.personajesVendidos || cartera.personajesVendidos.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* No hay personajes en venta actualmente." },
+                { quoted: m }
+            );
+        }
+
+        // Buscar el personaje en la lista de personajes en venta por usuarios
+        const index = cartera.personajesVendidos.findIndex(p => p.nombre.toLowerCase() === personajeNombre && p.vendedor === userId);
+
+        if (index === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *Error:* No tienes un personaje llamado *${personajeNombre}* en venta.` },
+                { quoted: m }
+            );
+        }
+
+        // Recuperar el personaje
+        const personajeRetirado = cartera.personajesVendidos.splice(index, 1)[0];
+
+        // Asegurar que el usuario tenga el array de personajes
+        if (!Array.isArray(cartera[userId].personajes)) {
+            cartera[userId].personajes = [];
+        }
+
+        // Devolver el personaje al usuario
+        cartera[userId].personajes.push(personajeRetirado);
+
+        // Guardar cambios en `cartera.json`
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Enviar confirmación al usuario
+        return conn.sendMessage(
+            m.chat,
+            { text: `✅ *Has retirado a ${personajeRetirado.nombre} de la venta.* Ahora está de vuelta en tu inventario.` },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .quitarventa:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar quitar el personaje de la venta. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
 case 'verpersonajes': {
     try {
         await m.react('📜'); // Reacción al usar el comando
