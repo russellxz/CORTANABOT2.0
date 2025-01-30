@@ -3081,7 +3081,8 @@ case 'vermascotas': {
             `- *.darcariño* (5 min intervalo)\n` +
             `- *.estadomascota* (mira el estado de tu mascota principal)\n` +
             `- *.supermascota* (24 horas intervalo)\n` +
-            `- *.curar* (cuesta 100 Cortana Coins)\n` +
+            `- *.mascota* (para cambiar de mascota principal a otra)\n` +
+	    `- *.curar* (cuesta 100 Cortana Coins)\n` +
             `- *.lanzarpelota* (5 min intervalo)\n\n` +
             `💡 *Usa estos comandos para mejorar tus mascotas y ganar monedas.*`;
 
