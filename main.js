@@ -732,34 +732,50 @@ break
 // Comando para poner en venta un personaje exclusivo
 case 'addpersonaje': {
     try {
-        // Verificar si el usuario respondió a una imagen
         if (!m.quoted || !m.quoted.mimetype) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Debes responder a una imagen con el comando:* `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`." }, { quoted: m });
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* Debes responder a una imagen con el comando `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`." },
+                { quoted: m }
+            );
         }
 
-        // Extraer los argumentos entre paréntesis
+        const mediaType = m.quoted.mimetype;
+        const mediaExt = mediaType.split('/')[1]; // Obtener la extensión del archivo
+        const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
+
+        let mediaBuffer = Buffer.alloc(0);
+        for await (const chunk of mediaStream) {
+            mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+        }
+
+        // Extraer argumentos correctamente
         const args = text.match(/([^)]+)/g)?.map(arg => arg.replace(/[()]/g, ''));
         if (!args || args.length !== 5) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (nombre completo) (habilidad1) (habilidad2) (habilidad3) (precio)`." }, { quoted: m });
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (nombre completo) (habilidad1) (habilidad2) (habilidad3) (precio)`." },
+                { quoted: m }
+            );
         }
 
         const [nombre, habilidad1, habilidad2, habilidad3, precio] = args;
 
-        // Validar que el precio sea un número
         if (isNaN(precio)) {
-            return conn.sendMessage(m.chat, { text: "❌ *El precio debe ser un número válido.*" }, { quoted: m });
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *El precio debe ser un número válido.*" },
+                { quoted: m }
+            );
         }
-
-        // Descargar la imagen citada
-        const mediaData = await downloadAndConvertToBase64(m.quoted);
 
         // Crear el personaje con sus datos
         const nuevoPersonaje = {
             id: Date.now().toString(),
             nombre,
             precio: parseInt(precio),
-            imagen: mediaData.base64, // Guardar imagen en base64
-            mimetype: mediaData.mimetype, // Tipo de archivo
+            imagen: mediaBuffer.toString('base64'), // Guardar imagen como base64
+            mimetype: mediaType, // Tipo de archivo
             habilidades: [
                 { nombre: habilidad1, nivel: 1 },
                 { nombre: habilidad2, nivel: 1 },
@@ -770,7 +786,7 @@ case 'addpersonaje': {
                 experiencia: 0,
                 experienciaSiguienteNivel: 500,
                 vida: 100,
-                dueno: null  // `null` significa que aún no ha sido comprado
+                dueno: null // null = disponible para compra
             }
         };
 
@@ -788,7 +804,11 @@ case 'addpersonaje': {
 
     } catch (error) {
         console.error('❌ Error en el comando .addpersonaje:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar agregar el personaje. Intenta nuevamente.*' }, { quoted: m });
+        return conn.sendMessage(
+            m.chat,
+            { text: '❌ *Ocurrió un error al intentar agregar el personaje. Intenta nuevamente.*' },
+            { quoted: m }
+        );
     }
 }
 break;
