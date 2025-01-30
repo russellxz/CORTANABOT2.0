@@ -730,6 +730,62 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'estadopersonaje': {
+    try {
+        await m.react('📊'); // Reacción al usar el comando
+
+        const userId = m.sender;
+
+        // Verificar si el usuario tiene personajes
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.alaventa` para comprar uno." },
+                { quoted: m }
+            );
+        }
+
+        let personaje = cartera[userId].personajes[0]; // Primer personaje como principal
+
+        let mensajeEstado = `
+📌 *Estado de tu Personaje Principal*  
+
+🎭 *Nombre:* ${personaje.nombre}  
+⚔️ *Nivel:* ${personaje.stats.nivel}  
+🧬 *Experiencia:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}  
+❤️ *Vida:* ${personaje.stats.vida}/100  
+
+🎯 *Habilidades:*  
+⚡ ${personaje.habilidades[0].nombre} (Nivel ${personaje.habilidades[0].nivel})  
+⚡ ${personaje.habilidades[1].nombre} (Nivel ${personaje.habilidades[1].nivel})  
+⚡ ${personaje.habilidades[2].nombre} (Nivel ${personaje.habilidades[2].nivel})  
+
+💡 *Puedes mejorar a tu personaje luchando y entrenando.*  
+📜 *Para ver todos tus personajes usa:* \`.verpersonajes\`
+        `;
+
+        // Enviar mensaje con la imagen del personaje
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: Buffer.from(personaje.imagen, 'base64'),
+                mimetype: personaje.mimetype,
+                caption: mensajeEstado,
+                mentions: [userId]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .estadopersonaje:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar ver el estado de tu personaje. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
 
 case 'deletepersonaje2': {
     try {
