@@ -733,29 +733,24 @@ break
 case 'addpersonaje': {
     try {
         // Verificar si el usuario respondió a una imagen
-        if (!m.quoted) {
+        if (!m.quoted || !m.quoted.mimetype) {
             return conn.sendMessage(m.chat, { text: "⚠️ *Debes responder a una imagen con el comando:* `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`." }, { quoted: m });
         }
 
-        // Verificar si el mensaje citado es una imagen
-        const quoted = m.quoted.message;
-        const isImage = quoted.imageMessage || (quoted.documentMessage?.mimetype?.startsWith('image/'));
-        if (!isImage) {
-            return conn.sendMessage(m.chat, { text: "❌ *Solo se permiten imágenes.*" }, { quoted: m });
-        }
-
         // Extraer los argumentos entre paréntesis
-        const args = text.match(/(.*?)/g)?.map(arg => arg.replace(/[()]/g, ''));
-        if (!args || args.length < 5) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`." }, { quoted: m });
+        const args = text.match(/([^)]+)/g)?.map(arg => arg.replace(/[()]/g, ''));
+        if (!args || args.length !== 5) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (nombre completo) (habilidad1) (habilidad2) (habilidad3) (precio)`." }, { quoted: m });
         }
 
         const [nombre, habilidad1, habilidad2, habilidad3, precio] = args;
+
+        // Validar que el precio sea un número
         if (isNaN(precio)) {
             return conn.sendMessage(m.chat, { text: "❌ *El precio debe ser un número válido.*" }, { quoted: m });
         }
 
-        // Descargar la imagen citada y convertirla en base64
+        // Descargar la imagen citada
         const mediaData = await downloadAndConvertToBase64(m.quoted);
 
         // Crear el personaje con sus datos
@@ -763,8 +758,8 @@ case 'addpersonaje': {
             id: Date.now().toString(),
             nombre,
             precio: parseInt(precio),
-            imagen: mediaData.base64,
-            mimetype: mediaData.mimetype,
+            imagen: mediaData.base64, // Guardar imagen en base64
+            mimetype: mediaData.mimetype, // Tipo de archivo
             habilidades: [
                 { nombre: habilidad1, nivel: 1 },
                 { nombre: habilidad2, nivel: 1 },
@@ -787,7 +782,7 @@ case 'addpersonaje': {
         // Confirmación del personaje agregado
         await conn.sendMessage(
             m.chat,
-            { text: `✅ *${nombre}* ha sido agregado a la tienda por *${precio} Coins*.\nHabilidades: ${habilidad1}, ${habilidad2}, ${habilidad3}` },
+            { text: `✅ *${nombre}* ha sido agregado a la tienda por *${precio} Coins*.\n🎯 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}` },
             { quoted: m }
         );
 
