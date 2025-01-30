@@ -732,7 +732,7 @@ break
 // Comando para poner en venta un personaje exclusivo
 case 'addpersonaje': {
     try {
-        // Verificar si el usuario responde a una imagen
+        // Verificar si el usuario respondió a una imagen
         if (!m.quoted || !m.quoted.mimetype || !m.quoted.mimetype.includes('image')) {
             return conn.sendMessage(
                 m.chat,
@@ -761,8 +761,9 @@ case 'addpersonaje': {
         }
 
         // Descargar la imagen desde el mensaje citado
-        const mediaType = m.quoted.mimetype.split('/')[0]; // Tipo de archivo (image/video)
-        const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
+        const mediaType = m.quoted.mimetype;
+        const mediaExt = mediaType.split('/')[1]; // Obtener extensión (jpg, png, etc.)
+        const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
 
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
@@ -782,7 +783,11 @@ case 'addpersonaje': {
                 { nombre: habilidad3, nivel: 1 }
             ],
             precio: parseInt(precio),
-            imagen: mediaBuffer.toString('base64'), // Guardar imagen en base64
+            imagen: {
+                buffer: mediaBuffer.toString('base64'), // Guardar imagen en base64
+                mimetype: mediaType,
+                extension: mediaExt
+            },
             enVenta: true
         };
 
