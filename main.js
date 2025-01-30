@@ -731,6 +731,7 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+
 case 'comprar2': {
     try {
         const userId = m.sender;
@@ -745,7 +746,7 @@ case 'comprar2': {
             );
         }
 
-        // Verificar si el personaje está en venta por jugadores
+        // Buscar el personaje en venta por jugadores
         const personajeIndex = cartera.personajesVendidos.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
         if (personajeIndex === -1) {
             return conn.sendMessage(
@@ -776,31 +777,27 @@ case 'comprar2': {
             );
         }
 
-        // Restar el precio del personaje al comprador
-        cartera[userId].coins -= personaje.precio;
+        // **✅ Transferencia de saldo**
+        cartera[userId].coins -= personaje.precio; // Restar al comprador
+        if (!cartera[vendedorId]) cartera[vendedorId] = { coins: 0, personajes: [] };
+        cartera[vendedorId].coins += personaje.precio; // Sumar al vendedor
 
-        // Dar el dinero al vendedor
-        if (!cartera[vendedorId]) {
-            cartera[vendedorId] = { coins: 0, personajes: [] };
-        }
-        cartera[vendedorId].coins += personaje.precio;
+        // **✅ Asignar el personaje al comprador**
+        personaje.dueño = userId; // Cambiar el dueño
 
-        // Asignar el personaje al comprador
-        personaje.dueño = userId;
-
-        // Asegurar que el usuario tenga un array para personajes adquiridos
+        // Asegurar que el usuario tenga su lista de personajes
         if (!Array.isArray(cartera[userId].personajes)) {
             cartera[userId].personajes = [];
         }
         cartera[userId].personajes.push(personaje);
 
-        // Eliminar el personaje de la tienda de jugadores
+        // **✅ Eliminar el personaje de la venta de jugadores**
         cartera.personajesVendidos.splice(personajeIndex, 1);
 
-        // Guardar cambios en `cartera.json`
+        // **✅ Guardar los cambios en `cartera.json`**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 📢 **Mensaje de confirmación con estadísticas**
+        // **📢 Mensaje de compra exitosa**
         let mensajeCompra = `
 📢 *¡Has adquirido un personaje exclusivo!* 🚀  
 
@@ -821,7 +818,7 @@ case 'comprar2': {
 📜 *Consulta tus personajes con:* \`.verpersonajes\`
         `;
 
-        // Enviar mensaje con la imagen del personaje al comprador
+        // **Enviar mensaje con la imagen del personaje al comprador**
         await conn.sendMessage(
             m.chat,
             {
@@ -833,7 +830,7 @@ case 'comprar2': {
             { quoted: m }
         );
 
-        // **Mensaje para el Vendedor**
+        // **📢 Notificación al Vendedor**
         let mensajeVendedor = `🎉 *¡Tu personaje ha sido vendido!* 🎉\n\n` +
                               `👤 *Comprador:* @${userId.replace(/@s.whatsapp.net/, '')}\n` +
                               `🎭 *Personaje:* ${personaje.nombre}\n` +
@@ -841,7 +838,7 @@ case 'comprar2': {
                               `💳 *Tu nuevo saldo:* 🪙 ${cartera[vendedorId].coins} Cortana Coins\n` +
                               `📜 *Consulta tus personajes en venta con:* \`.alaventa\``;
 
-        // Enviar mensaje de confirmación al vendedor
+        // **Enviar mensaje de confirmación al vendedor**
         await conn.sendMessage(
             vendedorId,
             { text: mensajeVendedor, mentions: [userId, vendedorId] }
@@ -856,7 +853,7 @@ case 'comprar2': {
         );
     }
 }
-break;
+break;        
 
 
 case 'vender': {
