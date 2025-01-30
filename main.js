@@ -982,7 +982,7 @@ case 'alaventa': {
                     menuVenta += `⚡ ${hab.nombre} (Nivel ${hab.nivel})\n`;
                 });
                 menuVenta += `👤 *Vendedor:* @${vendedorId.replace(/@s.whatsapp.net/, '')}\n`;
-                menuVenta += `🛒 *Compra con:* \`.comprar ${venta.nombre}\`\n`;
+                menuVenta += `🛒 *Compra con:* \`.comprar2 ${venta.nombre}\`\n`;
                 menuVenta += `━━━━━━━━━━━━━━━━━━━━\n\n`;
             });
         } else {
