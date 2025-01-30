@@ -730,6 +730,94 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'vender': {
+    try {
+        await m.react('💰'); // Reacción al usar el comando
+
+        // 📌 **Verificar sintaxis correcta**
+        const args = text.split(' ');
+        if (args.length < 2) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Formato incorrecto.* Usa: `.vender [nombre del personaje] [precio]`\nEjemplo: `.vender Goku 3000`" },
+                { quoted: m }
+            );
+        }
+
+        // 📌 **Extraer nombre y precio**
+        const nombrePersonaje = args.slice(0, -1).join(' ');
+        const precio = parseInt(args[args.length - 1]);
+
+        if (isNaN(precio) || precio <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *El precio debe ser un número válido y mayor a 0.*" },
+                { quoted: m }
+            );
+        }
+
+        const userId = m.sender;
+
+        // 📌 **Verificar si el usuario posee el personaje**
+        if (!cartera.usuarios[userId] || !cartera.usuarios[userId].personajes) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes ningún personaje en tu inventario.* Usa `.verpersonajes` para ver tu colección." },
+                { quoted: m }
+            );
+        }
+
+        let personajesUsuario = cartera.usuarios[userId].personajes;
+        let personajeIndex = personajesUsuario.findIndex(p => p.nombre.toLowerCase() === nombrePersonaje.toLowerCase());
+
+        if (personajeIndex === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No tienes a ${nombrePersonaje} en tu lista de personajes.*` },
+                { quoted: m }
+            );
+        }
+
+        // 📌 **Remover personaje del usuario y agregarlo a la tienda**
+        let personaje = personajesUsuario.splice(personajeIndex, 1)[0];
+        personaje.precio = precio;
+        personaje.vendedor = userId; // Guardamos quién lo vende
+
+        // 📌 **Guardar en la sección de personajes en venta por jugadores**
+        cartera.personajesVendidos = cartera.personajesVendidos || [];
+        cartera.personajesVendidos.push(personaje);
+
+        // 📌 **Actualizar la cartera**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // 📌 **Confirmación**
+        let mensajeVenta = `🛒 *¡Pusiste en venta a ${personaje.nombre}!* 🎭\n\n`;
+        mensajeVenta += `💰 *Precio:* 🪙 ${precio} Cortana Coins\n`;
+        mensajeVenta += `👤 *Vendedor:* @${userId.replace(/@s.whatsapp.net/, '')}\n`;
+        mensajeVenta += `📢 *Ahora está disponible en* \`.alaventa\`\n`;
+        mensajeVenta += `━━━━━━━━━━━━━━━━━━━━\n`;
+
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: mensajeVenta,
+                mentions: [userId]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .vender:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar vender tu personaje. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
+
 case 'alaventa': {
     try {
         await m.react('🛒'); // Reacción al usar el comando
