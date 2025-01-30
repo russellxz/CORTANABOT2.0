@@ -857,9 +857,13 @@ case 'comprar': {
             return conn.sendMessage(m.chat, { text: "⚠️ *Error:* Debes indicar el nombre del personaje que deseas comprar." }, { quoted: m });
         }
 
+        // Asegurar que `personajesEnVenta` está definido
+        if (!cartera.personajesEnVenta || cartera.personajesEnVenta.length === 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Error:* No hay personajes en venta actualmente." }, { quoted: m });
+        }
+
         // Buscar el personaje en la tienda del sistema
         let personajeIndex = cartera.personajesEnVenta.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
-        
         if (personajeIndex === -1) {
             return conn.sendMessage(m.chat, { text: `⚠️ *Error:* El personaje *${personajeNombre}* no está disponible en la tienda.` }, { quoted: m });
         }
@@ -868,22 +872,43 @@ case 'comprar': {
 
         // Verificar si ya tiene dueño
         if (personaje.dueño) {
-            return conn.sendMessage(m.chat, { text: `⚠️ *Error:* El personaje *${personaje.nombre}* ya ha sido comprado por @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.`, mentions: [personaje.dueño] }, { quoted: m });
+            return conn.sendMessage(m.chat, {
+                text: `⚠️ *Error:* El personaje *${personaje.nombre}* ya ha sido comprado por @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.`,
+                mentions: [personaje.dueño]
+            }, { quoted: m });
         }
 
-        // Verificar si el usuario tiene suficiente dinero
+        // Verificar si `cartera.usuarios` existe
+        if (!cartera.usuarios) {
+            cartera.usuarios = [];
+        }
+
+        // Buscar o crear el usuario en `cartera.usuarios`
         let usuario = cartera.usuarios.find(u => u.id === m.sender);
-        if (!usuario || usuario.monedas < personaje.precio) {
+        if (!usuario) {
+            usuario = { id: m.sender, monedas: 0, personajes: [] };
+            cartera.usuarios.push(usuario);
+        }
+
+        // Verificar si el usuario tiene suficientes Cortana Coins
+        if (usuario.monedas < personaje.precio) {
             return conn.sendMessage(m.chat, { text: "❌ *No tienes suficientes Cortana Coins para comprar este personaje.*" }, { quoted: m });
         }
 
         // Restar el dinero del usuario
         usuario.monedas -= personaje.precio;
 
-        // Asignar dueño y moverlo a los personajes comprados
+        // Asignar dueño al personaje
         personaje.dueño = m.sender;
 
-        // Guardar cambios
+        // Mover personaje a la lista de personajes comprados del usuario
+        if (!usuario.personajes) usuario.personajes = [];
+        usuario.personajes.push(personaje);
+
+        // Eliminar el personaje de la tienda del sistema
+        cartera.personajesEnVenta.splice(personajeIndex, 1);
+
+        // Guardar los cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // Enviar confirmación con el personaje comprado
