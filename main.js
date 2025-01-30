@@ -732,63 +732,94 @@ break
 // Comando para poner en venta un personaje exclusivo
 
  
-case 'addpersonaje': {
+
+ case 'addpersonaje': {
     try {
-        // 1. Verificar que se está respondiendo a un mensaje multimedia
+        // -----------------------------------------------------------------
+        // 3) Verificar que respondiste a un mensaje.
+        // -----------------------------------------------------------------
         if (!m.quoted) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Error:* Responde a un *archivo multimedia* (imagen, sticker, video, etc.) con el comando." },
+                { text: "⚠️ *Error:* Responde a un archivo multimedia (imagen, sticker o video) con el comando." },
                 { quoted: m }
             );
         }
 
-        // 2. Detectar si es imagen, video o sticker
-        const quotedMsg = m.quoted.message;
+        // -----------------------------------------------------------------
+        // 4) Depurar: imprime en consola para ver la estructura de m.quoted
+        // -----------------------------------------------------------------
+        console.log("DEBUG m.quoted:", m.quoted);
+
+        // -----------------------------------------------------------------
+        // 5) Intentar encontrar el contenido multimedia
+        // -----------------------------------------------------------------
+        let quotedMsg = m.quoted.message;
+        if (!quotedMsg) {
+            // A veces la info está dentro de extendedTextMessage
+            quotedMsg = m.quoted?.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        }
+
+        // Si aún así no tenemos nada, error
+        if (!quotedMsg) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* No pude leer el mensaje citado correctamente. ¿Era imagen/sticker/video?" },
+                { quoted: m }
+            );
+        }
+
+        // Variables donde guardaremos la referencia del archivo
         let mediaKey, mediaType, mimeType;
 
+        // Buscar imagen, video o sticker
         if (quotedMsg.imageMessage) {
             mediaKey  = quotedMsg.imageMessage;
             mediaType = 'image';
-            mimeType  = mediaKey.mimetype;
+            mimeType  = quotedMsg.imageMessage.mimetype;
         } else if (quotedMsg.videoMessage) {
             mediaKey  = quotedMsg.videoMessage;
             mediaType = 'video';
-            mimeType  = mediaKey.mimetype;
+            mimeType  = quotedMsg.videoMessage.mimetype;
         } else if (quotedMsg.stickerMessage) {
             mediaKey  = quotedMsg.stickerMessage;
             mediaType = 'sticker';
-            // Normalmente es 'image/webp'
+            // Usualmente los stickers vienen con "image/webp"
             mimeType  = 'image/webp';
         } else {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Error:* El mensaje citado no es un archivo multimedia soportado (imagen, video o sticker)." },
+                { text: "⚠️ *Error:* El mensaje citado no es imagen, video o sticker." },
                 { quoted: m }
             );
         }
 
-        // 3. Descargar el contenido
+        // -----------------------------------------------------------------
+        // 6) Descargar el contenido multimedia
+        // -----------------------------------------------------------------
         const mediaStream = await downloadContentFromMessage(mediaKey, mediaType);
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
             mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
         }
 
-        // 4. Extraer los 5 argumentos entre paréntesis
-        //    (nombre) (hab1) (hab2) (hab3) (precio)
+        // -----------------------------------------------------------------
+        // 7) Extraer los argumentos (nombre, hab1, hab2, hab3, precio)
+        // -----------------------------------------------------------------
+        // Usamos regex para encontrar texto entre paréntesis
         const args = text.match(/([^]+)/g)?.map(arg => arg.replace(/[()]/g, ''));
+        // Deben ser exactamente 5
         if (!args || args.length !== 5) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (Nombre) (Habilidad1) (Habilidad2) (Habilidad3) (Precio)`." },
+                { text: "⚠️ *Formato incorrecto.*\nUsa: `.addpersonaje (Nombre) (Habilidad1) (Habilidad2) (Habilidad3) (Precio)`" },
                 { quoted: m }
             );
         }
 
         const [nombre, hab1, hab2, hab3, precio] = args;
 
-        // 4.1 Verificar que el precio sea un número
+        // 7.1. Validar que precio sea numérico
         if (isNaN(precio)) {
             return conn.sendMessage(
                 m.chat,
@@ -797,12 +828,14 @@ case 'addpersonaje': {
             );
         }
 
-        // 5. Construir el objeto del nuevo personaje
+        // -----------------------------------------------------------------
+        // 8) Construir el objeto del personaje
+        // -----------------------------------------------------------------
         const nuevoPersonaje = {
-            id: Date.now().toString(),
+            id: Date.now().toString(),    // ID único
             nombre: nombre,
             precio: parseInt(precio),
-            imagen: mediaBuffer.toString('base64'),  // Guardar multimedia en Base64
+            imagen: mediaBuffer.toString('base64'), // guardamos el contenido en base64
             mimetype: mimeType,
             habilidades: [
                 { nombre: hab1, nivel: 1 },
@@ -813,32 +846,36 @@ case 'addpersonaje': {
                 nivel: 1,
                 experiencia: 0,
                 experienciaSiguienteNivel: 500,
-                vida: 100  // Vida inicial
+                vida: 100
             },
-            dueño: null  // Aún no comprado
+            dueño: null  // nadie lo ha comprado todavía
         };
 
-        // 6. Asegurar que `personajesEnVenta` exista
+        // -----------------------------------------------------------------
+        // 9) Asegurar que personajesEnVenta sea un array y pushear
+        // -----------------------------------------------------------------
         if (!Array.isArray(cartera.personajesEnVenta)) {
             cartera.personajesEnVenta = [];
         }
-
-        // Agregar el personaje
         cartera.personajesEnVenta.push(nuevoPersonaje);
 
-        // 7. Guardar cambios en el archivo
+        // -----------------------------------------------------------------
+        // 10) Guardar cambios en cartera.json
+        // -----------------------------------------------------------------
         fs.writeFileSync(pathCartera, JSON.stringify(cartera, null, 2));
 
-        // 8. Enviar confirmación al usuario
-        const mensaje = `✅ *${nombre}* fue agregado a la tienda.\n` +
-                        `💰 *Precio:* ${precio} Coins\n` +
-                        `🔥 *Habilidades:* ${hab1}, ${hab2}, ${hab3}\n` +
-                        `❤️ *Vida:* 100\n\n` +
-                        `¡Listo!`;
+        // -----------------------------------------------------------------
+        // 11) Mensaje de confirmación
+        // -----------------------------------------------------------------
+        const mensajeConfirm = `✅ *${nombre}* fue agregado a la tienda.\n` +
+                               `💰 *Precio:* ${precio} Coins\n` +
+                               `🔥 *Habilidades:* ${hab1}, ${hab2}, ${hab3}\n` +
+                               `❤️ *Vida:* 100\n\n` +
+                               `¡Listo!`;
 
         return conn.sendMessage(
             m.chat,
-            { text: mensaje },
+            { text: mensajeConfirm },
             { quoted: m }
         );
 
@@ -846,14 +883,12 @@ case 'addpersonaje': {
         console.error('❌ Error en .addpersonaje:', error);
         return conn.sendMessage(
             m.chat,
-            { text: '❌ Ocurrió un error al intentar agregar el personaje. Revisa la consola.' },
+            { text: "❌ Ocurrió un error al agregar el personaje. Revisa la consola." },
             { quoted: m }
         );
     }
 }
-break;
-
-        
+break;       
  
 		
 		
