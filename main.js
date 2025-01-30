@@ -731,112 +731,83 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
- 
-
  case 'addpersonaje': {
     try {
-        // -----------------------------------------------------------------
-        // 3) Verificar que respondiste a un mensaje.
-        // -----------------------------------------------------------------
+        // 1) Asegurarnos de que hay texto (el comando con paréntesis)
+        if (!text) {
+            return conn.sendMessage(m.chat, { text: "Formato: .addpersonaje (Nombre) (Hab1) (Hab2) (Hab3) (Precio)" }, { quoted: m });
+        }
+
+        // 2) Asegurarnos de que haya un mensaje citado
         if (!m.quoted) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Error:* Responde a un archivo multimedia (imagen, sticker o video) con el comando." },
+                { text: "Responde a una imagen/video/sticker con el comando" },
                 { quoted: m }
             );
         }
 
-        // -----------------------------------------------------------------
-        // 4) Depurar: imprime en consola para ver la estructura de m.quoted
-        // -----------------------------------------------------------------
-        console.log("DEBUG m.quoted:", m.quoted);
+        // 3) Revisar el tipo de m.quoted directamente
+        //    (En tu debug se ve que m.quoted ya es un ImageMessage)
+        let mediaType, mimeType;
+        let quoted = m.quoted;
 
-        // -----------------------------------------------------------------
-        // 5) Intentar encontrar el contenido multimedia
-        // -----------------------------------------------------------------
-        let quotedMsg = m.quoted.message;
-        if (!quotedMsg) {
-            // A veces la info está dentro de extendedTextMessage
-            quotedMsg = m.quoted?.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-        }
+        // Hagamos un debug en consola para verificar
+        console.log("DEBUG: m.quoted =>", quoted);
 
-        // Si aún así no tenemos nada, error
-        if (!quotedMsg) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *Error:* No pude leer el mensaje citado correctamente. ¿Era imagen/sticker/video?" },
-                { quoted: m }
-            );
-        }
-
-        // Variables donde guardaremos la referencia del archivo
-        let mediaKey, mediaType, mimeType;
-
-        // Buscar imagen, video o sticker
-        if (quotedMsg.imageMessage) {
-            mediaKey  = quotedMsg.imageMessage;
+        // En algunas configuraciones, la info viene en "quoted.mtype"
+        // con un valor como "imageMessage" o "videoMessage".
+        if (quoted.mtype === 'imageMessage') {
             mediaType = 'image';
-            mimeType  = quotedMsg.imageMessage.mimetype;
-        } else if (quotedMsg.videoMessage) {
-            mediaKey  = quotedMsg.videoMessage;
+            mimeType = quoted.mimetype || 'image/jpeg';
+        } else if (quoted.mtype === 'videoMessage') {
             mediaType = 'video';
-            mimeType  = quotedMsg.videoMessage.mimetype;
-        } else if (quotedMsg.stickerMessage) {
-            mediaKey  = quotedMsg.stickerMessage;
+            mimeType = quoted.mimetype || 'video/mp4';
+        } else if (quoted.mtype === 'stickerMessage') {
             mediaType = 'sticker';
-            // Usualmente los stickers vienen con "image/webp"
-            mimeType  = 'image/webp';
+            mimeType = 'image/webp';
         } else {
+            // Si no es uno de estos, no lo reconocemos
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Error:* El mensaje citado no es imagen, video o sticker." },
+                { text: "⚠️ El mensaje citado no es imagen, video o sticker." },
                 { quoted: m }
             );
         }
 
-        // -----------------------------------------------------------------
-        // 6) Descargar el contenido multimedia
-        // -----------------------------------------------------------------
-        const mediaStream = await downloadContentFromMessage(mediaKey, mediaType);
+        // 4) Descargar el contenido
+        const mediaStream = await downloadContentFromMessage(quoted, mediaType);
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
             mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
         }
 
-        // -----------------------------------------------------------------
-        // 7) Extraer los argumentos (nombre, hab1, hab2, hab3, precio)
-        // -----------------------------------------------------------------
-        // Usamos regex para encontrar texto entre paréntesis
-        const args = text.match(/([^]+)/g)?.map(arg => arg.replace(/[()]/g, ''));
-        // Deben ser exactamente 5
+        // 5) Extraer argumentos (nombre, hab1, hab2, hab3, precio)
+        const args = text.match(/([^]+)/g)?.map(str => str.replace(/[()]/g, ''));
         if (!args || args.length !== 5) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Formato incorrecto.*\nUsa: `.addpersonaje (Nombre) (Habilidad1) (Habilidad2) (Habilidad3) (Precio)`" },
+                { text: "⚠️ Formato incorrecto.\nEjemplo: .addpersonaje (Goku) (Kamehameha) (Genkidama) (SuperSaiyan) (3000)" },
                 { quoted: m }
             );
         }
 
         const [nombre, hab1, hab2, hab3, precio] = args;
-
-        // 7.1. Validar que precio sea numérico
         if (isNaN(precio)) {
             return conn.sendMessage(
                 m.chat,
-                { text: "❌ *El precio debe ser un número válido.*" },
+                { text: "❌ El precio debe ser un número." },
                 { quoted: m }
             );
         }
 
-        // -----------------------------------------------------------------
-        // 8) Construir el objeto del personaje
-        // -----------------------------------------------------------------
+        // 6) Crear el nuevo personaje
         const nuevoPersonaje = {
-            id: Date.now().toString(),    // ID único
-            nombre: nombre,
+            id: Date.now().toString(),
+            nombre,
             precio: parseInt(precio),
-            imagen: mediaBuffer.toString('base64'), // guardamos el contenido en base64
-            mimetype: mimeType,
+            imagen: mediaBuffer.toString('base64'),
+            mimetype,
             habilidades: [
                 { nombre: hab1, nivel: 1 },
                 { nombre: hab2, nivel: 1 },
@@ -848,30 +819,24 @@ break
                 experienciaSiguienteNivel: 500,
                 vida: 100
             },
-            dueño: null  // nadie lo ha comprado todavía
+            dueño: null // Nadie lo ha comprado
         };
 
-        // -----------------------------------------------------------------
-        // 9) Asegurar que personajesEnVenta sea un array y pushear
-        // -----------------------------------------------------------------
+        // 7) Insertarlo en personajesEnVenta
         if (!Array.isArray(cartera.personajesEnVenta)) {
             cartera.personajesEnVenta = [];
         }
         cartera.personajesEnVenta.push(nuevoPersonaje);
 
-        // -----------------------------------------------------------------
-        // 10) Guardar cambios en cartera.json
-        // -----------------------------------------------------------------
+        // 8) Guardar en el JSON
         fs.writeFileSync(pathCartera, JSON.stringify(cartera, null, 2));
 
-        // -----------------------------------------------------------------
-        // 11) Mensaje de confirmación
-        // -----------------------------------------------------------------
-        const mensajeConfirm = `✅ *${nombre}* fue agregado a la tienda.\n` +
-                               `💰 *Precio:* ${precio} Coins\n` +
-                               `🔥 *Habilidades:* ${hab1}, ${hab2}, ${hab3}\n` +
-                               `❤️ *Vida:* 100\n\n` +
-                               `¡Listo!`;
+        // 9) Responder con confirmación
+        const mensajeConfirm = `✅ *${nombre}* ha sido agregado a la tienda.\n` +
+                               `Precio: ${precio} Coins\n` +
+                               `Habilidades: ${hab1}, ${hab2}, ${hab3}\n` +
+                               `Vida: 100\n` +
+                               `Nivel: 1`;
 
         return conn.sendMessage(
             m.chat,
@@ -888,7 +853,8 @@ break
         );
     }
 }
-break;       
+break;
+
  
 		
 		
