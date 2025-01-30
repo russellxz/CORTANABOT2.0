@@ -735,7 +735,7 @@ break
 case 'addpersonaje': {
     try {
         // 1️⃣ Verificar si se está respondiendo a un mensaje
-        if (!m.quoted || !m.quoted.message) {
+        if (!m.quoted || !m.quoted.mtype) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *Error:* Debes responder a un *archivo multimedia* (imagen, video, sticker...) con el comando." },
@@ -744,25 +744,19 @@ case 'addpersonaje': {
         }
 
         // 2️⃣ Detectar el tipo de mensaje multimedia en m.quoted
-        const quotedMsg = m.quoted.message;
         let mediaType = null;
-        let mimeType = null;
+        let mimeType = m.quoted.mimetype || "";
 
-        if (quotedMsg.imageMessage) {
-            mediaType = 'image';
-            mimeType = quotedMsg.imageMessage.mimetype;
-        } else if (quotedMsg.videoMessage) {
-            mediaType = 'video';
-            mimeType = quotedMsg.videoMessage.mimetype;
-        } else if (quotedMsg.stickerMessage) {
-            mediaType = 'sticker';
-            mimeType = 'image/webp'; // Stickers son webp
-        } else if (quotedMsg.documentMessage) {
-            mediaType = 'document';
-            mimeType = quotedMsg.documentMessage.mimetype;
-        } else if (quotedMsg.audioMessage) {
-            mediaType = 'audio';
-            mimeType = quotedMsg.audioMessage.mimetype;
+        if (mimeType.startsWith("image/")) {
+            mediaType = "image";
+        } else if (mimeType.startsWith("video/")) {
+            mediaType = "video";
+        } else if (mimeType.startsWith("audio/")) {
+            mediaType = "audio";
+        } else if (mimeType === "image/webp") {
+            mediaType = "sticker";
+        } else if (mimeType.startsWith("application/")) {
+            mediaType = "document";
         } else {
             return conn.sendMessage(
                 m.chat,
@@ -772,8 +766,7 @@ case 'addpersonaje': {
         }
 
         // 3️⃣ Descargar el contenido multimedia
-        const messageContent = quotedMsg[mediaType + 'Message'] || quotedMsg.stickerMessage;
-        const mediaStream = await downloadContentFromMessage(messageContent, mediaType);
+        const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
 
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
@@ -845,9 +838,6 @@ case 'addpersonaje': {
     }
 }
 break;
-
-        
-
  
 		
 		
