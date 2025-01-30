@@ -1611,18 +1611,27 @@ break;
  
 
 
-
+        
+            
 case 'addpersonaje': {
     try {
         const userId = m.sender;
-        const isAdmin = m.isGroup ? m.isAdmin || m.isSuperAdmin : false;
-        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, ''));
+        const chat = await conn.groupMetadata(m.chat).catch(() => null); // Obtener info del grupo
+        const isGroup = !!chat; // Verificar si el comando se usa en grupo
+        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, '')); // Verificar si es owner
+        let isAdmin = false;
 
-        // 🔐 Verificar si el usuario es Admin o Owner
+        // 🔹 Si está en grupo, verificar si es admin
+        if (isGroup) {
+            const groupAdmins = chat.participants.filter(p => p.admin);
+            isAdmin = groupAdmins.some(admin => admin.id === userId);
+        }
+
+        // 🔐 **Verificar si el usuario es Admin o Owner**
         if (!isAdmin && !isOwner) {
             return conn.sendMessage(
                 m.chat,
-                { text: "🚫 *No tienes permisos para agregar personajes.* Solo los administradores del grupo o el dueño del bot pueden usar este comando." },
+                { text: "🚫 *No tienes permisos para agregar personajes.*\n⚠️ *Solo los administradores del grupo o el dueño del bot pueden usar este comando.*" },
                 { quoted: m }
             );
         }
@@ -1745,8 +1754,7 @@ case 'addpersonaje': {
         );
     }
 }
-break;
- 
+break; 
         
  
 		
