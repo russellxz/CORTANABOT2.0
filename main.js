@@ -965,11 +965,16 @@ case 'deletepersonaje2': {
         // Remover dueño y pasarlo a la venta en la tienda del sistema
         personajeEliminado.dueño = null;
 
-        // Asegurar que la tienda de personajes exista y agregarlo
+        // Asegurar que la tienda de personajes exista
         if (!Array.isArray(cartera.personajesEnVenta)) {
             cartera.personajesEnVenta = [];
         }
-        cartera.personajesEnVenta.push(personajeEliminado);
+
+        // Verificar si el personaje ya está en la tienda
+        const existeEnVenta = cartera.personajesEnVenta.some(p => p.nombre.toLowerCase() === personajeNombre);
+        if (!existeEnVenta) {
+            cartera.personajesEnVenta.push(personajeEliminado);
+        }
 
         // Guardar cambios en el archivo cartera.json
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
