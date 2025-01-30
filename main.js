@@ -730,6 +730,8 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
+
 case 'comprar': {
     try {
         const userId = m.sender;
@@ -745,8 +747,27 @@ case 'comprar': {
         }
 
         // Verificar si el personaje existe en la tienda
-        const personajeIndex = cartera.personajesEnVenta.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
-        if (personajeIndex === -1) {
+        const personaje = cartera.personajesEnVenta.find(p => p.nombre.toLowerCase() === personajeNombre);
+
+        if (!personaje) {
+            // Buscar si el personaje ya fue comprado
+            const personajeComprado = Object.values(cartera).find(user =>
+                user.personajes?.some(p => p.nombre.toLowerCase() === personajeNombre)
+            );
+
+            if (personajeComprado) {
+                // Obtener el dueño del personaje
+                const dueño = Object.keys(cartera).find(key =>
+                    cartera[key].personajes?.some(p => p.nombre.toLowerCase() === personajeNombre)
+                );
+
+                return conn.sendMessage(
+                    m.chat,
+                    { text: `❌ *El personaje ${personajeNombre} ya ha sido comprado por @${dueño.replace(/@s.whatsapp.net/, '')}.*` },
+                    { quoted: m, mentions: [dueño] }
+                );
+            }
+
             return conn.sendMessage(
                 m.chat,
                 { text: `⚠️ *Error:* No se encontró el personaje *${personajeNombre}* en la tienda.` },
@@ -754,15 +775,12 @@ case 'comprar': {
             );
         }
 
-        let personaje = cartera.personajesEnVenta[personajeIndex];
-
         // Verificar si el personaje ya ha sido comprado
         if (personaje.dueño) {
             return conn.sendMessage(
                 m.chat,
                 { text: `❌ *Este personaje ya ha sido comprado por @${personaje.dueño.replace(/@s.whatsapp.net/, '')}.*` },
-                { quoted: m },
-                { mentions: [personaje.dueño] }
+                { quoted: m, mentions: [personaje.dueño] }
             );
         }
 
@@ -786,9 +804,6 @@ case 'comprar': {
             cartera[userId].personajes = [];
         }
         cartera[userId].personajes.push(personaje);
-
-        // Remover el personaje de la tienda
-        cartera.personajesEnVenta.splice(personajeIndex, 1);
 
         // Guardar cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
