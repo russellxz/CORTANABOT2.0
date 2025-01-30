@@ -731,6 +731,64 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'verpersonajes': {
+    try {
+        await m.react('📜'); // Reacción al usar el comando
+
+        const userId = m.sender;
+
+        // Verificar si el usuario tiene personajes comprados
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Compra uno con `.alaventa` y usa `.comprar <nombre>`." },
+                { quoted: m }
+            );
+        }
+
+        const personajesUsuario = cartera[userId].personajes;
+
+        let textoPersonajes = `🎮 *Tus Personajes Adquiridos* 🎮\n`;
+        textoPersonajes += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        personajesUsuario.forEach((personaje, index) => {
+            textoPersonajes += `🎭 *#${index + 1} - ${personaje.nombre}*\n`;
+            textoPersonajes += `⚔️ *Nivel:* ${personaje.stats.nivel}\n`;
+            textoPersonajes += `💖 *Vida:* ${personaje.stats.vida}/100\n`;
+            textoPersonajes += `🧬 *EXP:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}\n`;
+            textoPersonajes += `🎯 *Habilidades:*\n`;
+
+            personaje.habilidades.forEach(hab => {
+                textoPersonajes += `⚡ ${hab.nombre} (Nivel ${hab.nivel})\n`;
+            });
+
+            textoPersonajes += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+        });
+
+        textoPersonajes += `📌 *Usa* \`.vender <nombre> <precio>\` *para vender un personaje.*\n`;
+        textoPersonajes += `📢 *Para ver la tienda de personajes, usa* \`.alaventa\`\n`;
+
+        // Enviar mensaje con imagen de portada
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/78babdb6743223da053e8d19f40f2784" },
+                caption: textoPersonajes,
+                mentions: [m.sender]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .verpersonajes:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: '❌ *Ocurrió un error al intentar ver tus personajes. Intenta nuevamente.*' },
+            { quoted: m }
+        );
+    }
+}
+break;		
 
 case 'comprar2': {
     try {
