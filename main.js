@@ -731,6 +731,134 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'comprar2': {
+    try {
+        const userId = m.sender;
+        const personajeNombre = args.join(' ').toLowerCase();
+
+        // Verificar si el usuario ingresó un nombre
+        if (!personajeNombre) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* Debes escribir el nombre del personaje que deseas comprar.\n📌 *Ejemplo:* `.comprar2 Goku Ultra`" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está en venta por jugadores
+        const personajeIndex = cartera.personajesVendidos.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
+        if (personajeIndex === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *Error:* No se encontró el personaje *${personajeNombre}* en la venta de jugadores.` },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera.personajesVendidos[personajeIndex];
+        const vendedorId = personaje.vendedor;
+
+        // Verificar si el usuario ya posee el personaje
+        if (cartera[userId]?.personajes?.some(p => p.nombre.toLowerCase() === personajeNombre)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *Ya tienes a ${personaje.nombre} en tu colección.* Usa \`.verpersonajes\` para verlos.` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario tiene suficiente saldo
+        if (!cartera[userId] || cartera[userId].coins < personaje.precio) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💰 *No tienes suficientes Cortana Coins para comprar a ${personaje.nombre}.*\n📌 *Precio:* 🪙 ${personaje.precio} Cortana Coins\n💳 *Tu saldo:* 🪙 ${cartera[userId]?.coins || 0} Cortana Coins` },
+                { quoted: m }
+            );
+        }
+
+        // Restar el precio del personaje al comprador
+        cartera[userId].coins -= personaje.precio;
+
+        // Dar el dinero al vendedor
+        if (!cartera[vendedorId]) {
+            cartera[vendedorId] = { coins: 0, personajes: [] };
+        }
+        cartera[vendedorId].coins += personaje.precio;
+
+        // Asignar el personaje al comprador
+        personaje.dueño = userId;
+
+        // Asegurar que el usuario tenga un array para personajes adquiridos
+        if (!Array.isArray(cartera[userId].personajes)) {
+            cartera[userId].personajes = [];
+        }
+        cartera[userId].personajes.push(personaje);
+
+        // Eliminar el personaje de la tienda de jugadores
+        cartera.personajesVendidos.splice(personajeIndex, 1);
+
+        // Guardar cambios en `cartera.json`
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // 📢 **Mensaje de confirmación con estadísticas**
+        let mensajeCompra = `
+📢 *¡Has adquirido un personaje exclusivo!* 🚀  
+
+📌 *Ficha de Personaje:*  
+🎭 *Nombre:* ${personaje.nombre}  
+⚔️ *Nivel:* ${personaje.stats.nivel}  
+💖 *Vida:* ${personaje.stats.vida}/100  
+🧬 *EXP:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}  
+
+🎯 *Habilidades Iniciales:*  
+⚡ ${personaje.habilidades[0].nombre} (Nivel ${personaje.habilidades[0].nivel})  
+⚡ ${personaje.habilidades[1].nombre} (Nivel ${personaje.habilidades[1].nivel})  
+⚡ ${personaje.habilidades[2].nombre} (Nivel ${personaje.habilidades[2].nivel})  
+
+💰 *Has pagado:* 🪙 ${personaje.precio} Cortana Coins  
+👤 *Vendedor:* @${vendedorId.replace(/@s.whatsapp.net/, '')}  
+
+📜 *Consulta tus personajes con:* \`.verpersonajes\`
+        `;
+
+        // Enviar mensaje con la imagen del personaje al comprador
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: Buffer.from(personaje.imagen, 'base64'),
+                mimetype: personaje.mimetype,
+                caption: mensajeCompra,
+                mentions: [userId, vendedorId]
+            },
+            { quoted: m }
+        );
+
+        // **Mensaje para el Vendedor**
+        let mensajeVendedor = `🎉 *¡Tu personaje ha sido vendido!* 🎉\n\n` +
+                              `👤 *Comprador:* @${userId.replace(/@s.whatsapp.net/, '')}\n` +
+                              `🎭 *Personaje:* ${personaje.nombre}\n` +
+                              `🪙 *Ganaste:* ${personaje.precio} Cortana Coins\n\n` +
+                              `💳 *Tu nuevo saldo:* 🪙 ${cartera[vendedorId].coins} Cortana Coins\n` +
+                              `📜 *Consulta tus personajes en venta con:* \`.alaventa\``;
+
+        // Enviar mensaje de confirmación al vendedor
+        await conn.sendMessage(
+            vendedorId,
+            { text: mensajeVendedor, mentions: [userId, vendedorId] }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .comprar2:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar comprar el personaje. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+
+
 case 'vender': {
     try {
         const userId = m.sender;
