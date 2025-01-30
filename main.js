@@ -732,25 +732,28 @@ break
 // Comando para poner en venta un personaje exclusivo
 case 'addpersonaje': {
     try {
-        // Verificar si el usuario está respondiendo a un mensaje con imagen
-        if (!m.quoted || !m.quoted.message || !m.quoted.message.imageMessage) {
+        // Verificar si el usuario responde a una imagen
+        if (!m.quoted || !m.quoted.mimetype || !m.quoted.mimetype.startsWith('image/')) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Debes responder a una imagen con el comando:* `.addpersonaje (nombre) (habilidad) (habilidad) (habilidad) (precio)`." },
+                { text: "⚠️ *Debes responder a una imagen con el comando:* `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`." },
                 { quoted: m }
             );
         }
 
-        // Descargar la imagen correctamente
-        const mediaMessage = m.quoted.message.imageMessage;
-        const mediaBuffer = await conn.downloadMediaMessage(m.quoted);
+        // Descargar la imagen desde el mensaje citado
+        const mediaStream = await downloadContentFromMessage(m.quoted, 'image');
+        let mediaBuffer = Buffer.alloc(0);
+        for await (const chunk of mediaStream) {
+            mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+        }
 
-        // Extraer los argumentos del mensaje
+        // Extraer argumentos del mensaje
         const args = text.match(/(.*?)/g)?.map(arg => arg.replace(/[()]/g, ''));
         if (!args || args.length < 5) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (nombre) (habilidad) (habilidad) (habilidad) (precio)`." },
+                { text: "⚠️ *Formato incorrecto.* Usa: `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`." },
                 { quoted: m }
             );
         }
@@ -777,18 +780,16 @@ case 'addpersonaje': {
                 { nombre: habilidad3, nivel: 1 }
             ],
             precio: parseInt(precio),
-            imagen: mediaBuffer.toString('base64'), // Guardar imagen en base64
+            imagen: mediaBuffer.toString('base64'), // Guardar imagen como base64
             enVenta: true
         };
 
-        // Cargar el archivo cartera.json y agregar el personaje
+        // Cargar y actualizar `cartera.json`
         cartera.personajesEnVenta = cartera.personajesEnVenta || [];
         cartera.personajesEnVenta.push(nuevoPersonaje);
-
-        // Guardar los cambios en el JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Confirmación de que el personaje se agregó
+        // Confirmación del personaje agregado
         await conn.sendMessage(
             m.chat,
             { text: `✅ *El personaje "${nombre}" ha sido agregado a la tienda por ${precio} Coins.*` },
