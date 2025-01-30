@@ -732,24 +732,44 @@ break
 // Comando para poner en venta un personaje exclusivo
 case 'addpersonaje': {
     try {
-        if (!m.quoted || !m.quoted.mimetype) {
+        // 1. Verificar que se haya citado un mensaje
+        if (!m.quoted) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Error:* Debes responder a una imagen con el comando `.addpersonaje (nombre) (habilidad1) (habilidad2) (habilidad3) (precio)`." },
+                { text: "⚠️ *Error:* Debes responder a una *imagen* con el comando." },
                 { quoted: m }
             );
         }
 
-        const mediaType = m.quoted.mimetype;
-        const mediaExt = mediaType.split('/')[1]; // Obtener la extensión del archivo
-        const mediaStream = await downloadContentFromMessage(m.quoted, mediaType.split('/')[0]);
+        // 2. Verificar que el mensaje citado sea efectivamente una imagen
+        const quotedMsg = m.quoted.message;
+        const imageMessage = quotedMsg?.imageMessage;
+        if (!imageMessage) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* El mensaje citado no es una imagen." },
+                { quoted: m }
+            );
+        }
 
+        // 3. Extraer mimetype y verificar
+        const mediaType = imageMessage.mimetype || '';
+        if (!mediaType.startsWith('image/')) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* Debes responder a una *imagen* con el comando." },
+                { quoted: m }
+            );
+        }
+
+        // 4. Descargar la imagen citada
+        const mediaStream = await downloadContentFromMessage(imageMessage, 'image');
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
             mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
         }
 
-        // Extraer argumentos correctamente
+        // 5. Extraer argumentos del comando
         const args = text.match(/([^)]+)/g)?.map(arg => arg.replace(/[()]/g, ''));
         if (!args || args.length !== 5) {
             return conn.sendMessage(
@@ -769,13 +789,13 @@ case 'addpersonaje': {
             );
         }
 
-        // Crear el personaje con sus datos
+        // 6. Construir objeto del nuevo personaje
         const nuevoPersonaje = {
             id: Date.now().toString(),
             nombre,
             precio: parseInt(precio),
-            imagen: mediaBuffer.toString('base64'), // Guardar imagen como base64
-            mimetype: mediaType, // Tipo de archivo
+            imagen: mediaBuffer.toString('base64'), // Guardamos la imagen como base64
+            mimetype: mediaType,
             habilidades: [
                 { nombre: habilidad1, nivel: 1 },
                 { nombre: habilidad2, nivel: 1 },
@@ -790,15 +810,17 @@ case 'addpersonaje': {
             }
         };
 
-        // Guardar en `cartera.json`
+        // 7. Agregar a la cartera y guardar
         cartera.personajesEnVenta = cartera.personajesEnVenta || [];
         cartera.personajesEnVenta.push(nuevoPersonaje);
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Confirmación del personaje agregado
+        // 8. Confirmación al usuario
         await conn.sendMessage(
             m.chat,
-            { text: `✅ *${nombre}* ha sido agregado a la tienda por *${precio} Coins*.\n🎯 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}` },
+            {
+                text: `✅ *${nombre}* ha sido agregado a la tienda por *${precio} Coins*.\n🎯 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}`
+            },
             { quoted: m }
         );
 
