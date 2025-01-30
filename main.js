@@ -730,6 +730,7 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
 case 'vender': {
     try {
         await m.react('💰'); // Reacción al usar el comando
@@ -758,8 +759,20 @@ case 'vender': {
 
         const userId = m.sender;
 
-        // 📌 **Verificar si el usuario posee el personaje**
-        if (!cartera.usuarios[userId] || !cartera.usuarios[userId].personajes) {
+        // 📌 **Asegurar que la estructura de usuarios en cartera exista**
+        if (!cartera.usuarios) {
+            cartera.usuarios = {};
+        }
+
+        if (!cartera.usuarios[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes ningún personaje en tu inventario.* Usa `.verpersonajes` para ver tu colección." },
+                { quoted: m }
+            );
+        }
+
+        if (!cartera.usuarios[userId].personajes || cartera.usuarios[userId].personajes.length === 0) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *No tienes ningún personaje en tu inventario.* Usa `.verpersonajes` para ver tu colección." },
@@ -773,7 +786,7 @@ case 'vender': {
         if (personajeIndex === -1) {
             return conn.sendMessage(
                 m.chat,
-                { text: `❌ *No tienes a ${nombrePersonaje} en tu lista de personajes.*` },
+                { text: `❌ *No tienes a ${nombrePersonaje} en tu lista de personajes.* Usa \`.verpersonajes\` para ver tu inventario.` },
                 { quoted: m }
             );
         }
@@ -783,14 +796,16 @@ case 'vender': {
         personaje.precio = precio;
         personaje.vendedor = userId; // Guardamos quién lo vende
 
-        // 📌 **Guardar en la sección de personajes en venta por jugadores**
-        cartera.personajesVendidos = cartera.personajesVendidos || [];
+        // 📌 **Asegurar que la lista de personajes en venta por jugadores exista**
+        if (!cartera.personajesVendidos) {
+            cartera.personajesVendidos = [];
+        }
         cartera.personajesVendidos.push(personaje);
 
-        // 📌 **Actualizar la cartera**
+        // 📌 **Guardar cambios en cartera.json**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 📌 **Confirmación**
+        // 📌 **Mensaje de confirmación**
         let mensajeVenta = `🛒 *¡Pusiste en venta a ${personaje.nombre}!* 🎭\n\n`;
         mensajeVenta += `💰 *Precio:* 🪙 ${precio} Cortana Coins\n`;
         mensajeVenta += `👤 *Vendedor:* @${userId.replace(/@s.whatsapp.net/, '')}\n`;
@@ -815,7 +830,7 @@ case 'vender': {
         );
     }
 }
-break;
+break;        
 	
 
 case 'alaventa': {
