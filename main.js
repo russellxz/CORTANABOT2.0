@@ -732,20 +732,19 @@ break
 // Comando para poner en venta un personaje exclusivo
 
  
-        
 case 'addpersonaje': {
     try {
-        // 1) Asegurarnos de que haya texto con paréntesis
+        // 1) Asegúrate de que el usuario incluyó algo de texto
         if (!text) {
             return conn.sendMessage(
                 m.chat,
-                { text: "Formato: .addpersonaje (Nombre) (Hab1) (Hab2) (Hab3) (Precio)" },
+                { text: "Formato: .addpersonaje [Nombre] [Hab1] [Hab2] [Hab3] [Precio]" },
                 { quoted: m }
             );
         }
 
-        // 2) Asegurarnos de que respondimos a un mensaje multimedia
-        if (!m.quoted) {
+        // 2) Asegúrate de que esté respondiendo a un mensaje con multimedia
+        if (!m.quoted || !m.quoted.mimetype) {
             return conn.sendMessage(
                 m.chat,
                 { text: "Responde a una imagen/video/sticker con el comando." },
@@ -753,18 +752,9 @@ case 'addpersonaje': {
             );
         }
 
-        // 3) Revisar si el objeto m.quoted tiene mimetype
-        if (!m.quoted.mimetype) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "El mensaje citado no tiene mimetype (no parece ser imagen, video o sticker)." },
-                { quoted: m }
-            );
-        }
-
-        // 4) Determinar el tipo según su mimetype
+        // 3) Identifica el tipo de archivo (imagen, video, sticker)
         let mime = m.quoted.mimetype.toLowerCase();
-        let mediaType = '';
+        let mediaType;
         if (mime.includes('image')) {
             mediaType = 'image';
         } else if (mime.includes('video')) {
@@ -779,19 +769,21 @@ case 'addpersonaje': {
             );
         }
 
-        // 5) Descargar el contenido
+        // 4) Descargar el contenido
         const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
             mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
         }
 
-        // 6) Extraer los 5 argumentos: (nombre) (hab1) (hab2) (hab3) (precio)
-        const args = text.match(/([^]+)/g)?.map(str => str.replace(/[()]/g, ''));
+        // 5) Extraer los 5 argumentos [nombre] [hab1] [hab2] [hab3] [precio]
+        // Cambiamos la regex para buscar corchetes [ ... ]
+        const args = text.match(/([^]+)/g)?.map(str => str.replace(/[]/g, ''));
+
         if (!args || args.length !== 5) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ Formato incorrecto.\nEjemplo: .addpersonaje (Goku) (Kamehameha) (Genkidama) (SaiyanPower) (3000)" },
+                { text: "⚠️ Formato incorrecto.\nEjemplo: .addpersonaje [Goku] [Kamehameha] [Genkidama] [SaiyanPower] [3000]" },
                 { quoted: m }
             );
         }
@@ -805,7 +797,7 @@ case 'addpersonaje': {
             );
         }
 
-        // 7) Crear el objeto de personaje
+        // 6) Crear el objeto del personaje
         const nuevoPersonaje = {
             id: Date.now().toString(),
             nombre,
@@ -826,20 +818,20 @@ case 'addpersonaje': {
             dueño: null
         };
 
-        // 8) Asegurar que personajesEnVenta sea un array y pushear
+        // 7) Agregarlo al array en cartera.json
         if (!Array.isArray(cartera.personajesEnVenta)) {
             cartera.personajesEnVenta = [];
         }
         cartera.personajesEnVenta.push(nuevoPersonaje);
 
-        // 9) Guardar en el archivo
+        // 8) Guardar en el JSON
         fs.writeFileSync(pathCartera, JSON.stringify(cartera, null, 2));
 
-        // 10) Responder con confirmación
+        // 9) Responder confirmación
         const mensajeConfirm = `✅ *${nombre}* fue agregado a la tienda.\n` +
                                `💰 *Precio:* ${precio} Coins\n` +
                                `🔥 *Habilidades:* ${hab1}, ${hab2}, ${hab3}\n` +
-                               `❤️ *Vida:* 100\n\n` +
+                               `❤️ *Vida:* 100\n` +
                                `¡Listo!`;
 
         return conn.sendMessage(
@@ -857,7 +849,8 @@ case 'addpersonaje': {
         );
     }
 }
-break;
+break;        
+
         
  
 		
