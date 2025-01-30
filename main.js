@@ -731,6 +731,125 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'deletepersonaje2': {
+    try {
+        await m.react('🗑️'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const personajeNombre = args.join(' ').toLowerCase();
+
+        // Verificar si el usuario ingresó un nombre
+        if (!personajeNombre) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Error:* Debes escribir el nombre del personaje que deseas eliminar.\n📌 *Ejemplo:* `.deletepersonaje2 Goku Ultra`" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario tiene el personaje
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No tienes personajes registrados para eliminar.*` },
+                { quoted: m }
+            );
+        }
+
+        const indexPersonaje = cartera[userId].personajes.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
+
+        if (indexPersonaje === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No tienes el personaje "${personajeNombre}" en tu inventario.*` },
+                { quoted: m }
+            );
+        }
+
+        // Extraer el personaje eliminado
+        const personajeEliminado = cartera[userId].personajes.splice(indexPersonaje, 1)[0];
+
+        // Remover dueño y pasarlo a la venta en la tienda del sistema
+        personajeEliminado.dueño = null;
+
+        // Asegurar que la tienda de personajes exista y agregarlo
+        if (!Array.isArray(cartera.personajesEnVenta)) {
+            cartera.personajesEnVenta = [];
+        }
+        cartera.personajesEnVenta.push(personajeEliminado);
+
+        // Guardar cambios en el archivo cartera.json
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        let mensajeEliminacion = `🗑️ *Has eliminado a ${personajeEliminado.nombre}.*\n\n`;
+        mensajeEliminacion += `🛒 *Ahora está disponible nuevamente en la tienda del sistema.*\n`;
+        mensajeEliminacion += `📌 Usa \`.alaventa\` para verlo en la lista de personajes disponibles.\n`;
+
+        return conn.sendMessage(
+            m.chat,
+            { text: mensajeEliminacion },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .deletepersonaje2:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar eliminar el personaje. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
+case 'toppersonajes': {
+    try {
+        await m.react('🏆'); // Reacción al usar el comando
+
+        // Crear un ranking de jugadores con más personajes
+        let ranking = Object.entries(cartera)
+            .filter(([userId, userData]) => userData.personajes && userData.personajes.length > 0)
+            .map(([userId, userData]) => ({
+                userId,
+                cantidad: userData.personajes.length,
+                personajes: userData.personajes.map(p => `🎭 ${p.nombre} (Nivel ${p.stats.nivel})`).join('\n')
+            }))
+            .sort((a, b) => b.cantidad - a.cantidad) // Ordenar de mayor a menor cantidad de personajes
+            .slice(0, 10); // Mostrar solo el top 10
+
+        // Construir el mensaje
+        let mensajeTop = `🏆 *Ranking de Jugadores con Más Personajes* 🏆\n━━━━━━━━━━━━━━━━━━━━\n`;
+
+        if (ranking.length > 0) {
+            ranking.forEach((usuario, index) => {
+                mensajeTop += `🥇 *#${index + 1} - @${usuario.userId.replace(/@s.whatsapp.net/, '')}*\n`;
+                mensajeTop += `🎮 *Personajes:* ${usuario.cantidad}\n`;
+                mensajeTop += `${usuario.personajes}\n`;
+                mensajeTop += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            });
+        } else {
+            mensajeTop += `❌ *No hay jugadores con personajes registrados todavía.*\n`;
+        }
+
+        // Enviar el mensaje con imagen
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/b4eb9035e5757eb952cbd84c3fd6da25" },
+                caption: mensajeTop,
+                mentions: ranking.map(user => user.userId)
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .toppersonajes:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar ver el ranking. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+		
 case 'deletepersonaje': {
     try {
         await m.react('🗑️'); // Reacción al usar el comando
@@ -1188,11 +1307,12 @@ case 'alaventa': {
             menuVenta += `❌ *No hay personajes en venta por jugadores.*\n\n`;
         }
 
-        // Enviar el mensaje con los personajes en venta
+        // Enviar el mensaje con imagen
         await conn.sendMessage(
             m.chat,
             {
-                text: menuVenta,
+                image: { url: "https://cloud.dorratz.com/files/bee243b58acda41bcc05d68cd9d84067" },
+                caption: menuVenta,
                 mentions: cartera.personajesVendidos ? cartera.personajesVendidos.map(venta => venta.vendedor) : []
             },
             { quoted: m }
