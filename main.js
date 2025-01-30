@@ -1848,31 +1848,15 @@ _Veloz y recolectora._
 _Poderoso y letal._
 
 ━─━────༺༻────━─━
-
-🎭 *Personajes Comunes:* 🎭  
-
-🟠 *.goku* (Dragon Ball Z)  
-💰 Precio: 🪙 250 Cortana Coins  
-
-🏴‍☠️ *.luffy* (One Piece)  
-💰 Precio: 🪙 250 Cortana Coins  
-
-🍥 *.naruto* (Naruto Shippuden)  
-💰 Precio: 🪙 250 Cortana Coins  
-
-━─━────༺༻────━─━
-
-👑 *Personajes Exclusivos:* 👑 *(Solo 1 usuario puede poseerlos)*  
-
-🧪 *.senku* (Dr. Stone)  
-💰 Precio: 🪙 1000 Cortana Coins  
-
-🔵 *.gojo* (Jujutsu Kaisen)  
-💰 Precio: 🪙 2000 Cortana Coins  
-
-⚔️ *.asta* (Black Clover)  
-💰 Precio: 🪙 3000 Cortana Coins  
-
+hola usa el comando: .alaventa
+para ir a ver la tienda de personaje 
+anime si no ningun personaje debes agregarlos
+tu mismo con el comando *.addpersonaje.*
+⚠️ *Formato incorrecto.*
+Ejemplo: .addpersonaje Goku Kamehameha Genkidama SaiyanPower 3000
+seria nombre 3 avilidades y el precio. 
+muy pronto el .menupersonajes para saber como usar el sistema
+y subir tus personajes de nivel. eso seria todo gracias. 
 ━─━────༺༻────━─━
 
 💡 *Próximamente más personajes, mascotas y sorpresas para ti.*  
@@ -3247,14 +3231,17 @@ case 'saldo': {
 👤 *Usuario:* @${userId.split('@')[0]}
 🪙 *Saldo Actual:* ${coins} Cortana Coins
 
-✨ *¡Usa tus monedas para comprar y mejorar tus mascotas!*  
+✨ *¡Usa tus monedas para comprar y mejorar tus mascotas! y comprar personajes anime* ✨️ 
+📊comando: .alaventa para ver los peronajes anime a la venta👀
 💡 *Comandos útiles:*  
 - \`.vermascotas\`  
 - \`.tiendamall\`  
+- \`.alaventa\`
+- \`.menupersonajes\`
 
 🌟 *¡Sigue ganando monedas completando actividades con tus mascotas!*
 ━━━━━━━━━━━━━━━━━━
-📌 *Desarrollado por CORTANA 2.0*
+📌 *Desarrollado por RUSSELL XZ*
 ━━━━━━━━━━━━━━━━━━`;
 
         // Enviar el mensaje
