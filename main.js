@@ -748,10 +748,17 @@ case 'damelo': {
         // 🎭 Tomar el PRIMER personaje disponible en la tienda Free
         const personaje = cartera.tiendaFree.shift(); // Sacamos el primer personaje y lo eliminamos de la lista
 
-        // ✅ Asignar el personaje al usuario
+        // ✅ Asegurar que el usuario tenga una cartera
         if (!cartera[userId]) {
             cartera[userId] = { coins: 0, personajes: [] };
         }
+
+        // ✅ Asegurar que el usuario tenga una lista de personajes
+        if (!Array.isArray(cartera[userId].personajes)) {
+            cartera[userId].personajes = [];
+        }
+
+        // ✅ Agregar el personaje a la cartera del usuario
         cartera[userId].personajes.push(personaje);
 
         // ✅ Guardar los cambios en `cartera.json`
