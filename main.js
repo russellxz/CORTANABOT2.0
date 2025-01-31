@@ -730,6 +730,215 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
+	
+case 'go': {
+    try {
+        const userId = m.sender;
+        const challenger = Object.keys(cartera).find(
+            (key) => cartera[key].battleRequest?.target === userId
+        );
+
+        if (!challenger) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes ninguna solicitud de batalla pendiente.*" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si la solicitud ha expirado
+        const requestTime = cartera[challenger].battleRequest.time;
+        const now = Date.now();
+        if (now - requestTime > 120000) {
+            delete cartera[challenger].battleRequest;
+            fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+            return conn.sendMessage(
+                m.chat,
+                { text: "⏳ *La solicitud de batalla ha expirado.*" },
+                { quoted: m }
+            );
+        }
+
+        // Obtener personajes
+        const personaje1 = cartera[challenger].personajes[0];
+        const personaje2 = cartera[userId].personajes[0];
+
+        // 🏆 **Batalla con edición progresiva**
+        const animaciones = [
+            `⚔️ *¡${personaje1.nombre} vs ${personaje2.nombre}!* 🏆`,
+            `🔥 *${personaje1.nombre} lanza el primer ataque!*`,
+            `🌀 *${personaje2.nombre} esquiva y responde con una contra!*`,
+            `💥 *Ambos personajes luchan con intensidad... ¡esto está parejo!*`,
+            `⚡ *${personaje1.nombre} usa una habilidad especial!*`,
+            `🔥 *${personaje2.nombre} responde con una técnica letal!*`,
+            `🏁 *¡El combate está a punto de terminar! ¿Quién será el ganador?*`
+        ];
+
+        let mensajeAnimado = await conn.sendMessage(m.chat, { text: animaciones[0] }, { quoted: m });
+        for (let i = 1; i < animaciones.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Esperar 1.5 segundos
+            await conn.sendMessage(
+                m.chat,
+                { text: animaciones[i], edit: mensajeAnimado.key }, // Editar mensaje existente
+                { quoted: m }
+            );
+        }
+
+        // **Determinar ganador y perdedor**
+        const statsPersonaje1 = personaje1.stats.nivel * 5 + personaje1.habilidades.reduce((total, h) => total + h.nivel * 2, 0);
+        const statsPersonaje2 = personaje2.stats.nivel * 5 + personaje2.habilidades.reduce((total, h) => total + h.nivel * 2, 0);
+
+        let ganadorId, perdedorId;
+        if (statsPersonaje1 > statsPersonaje2) {
+            ganadorId = challenger;
+            perdedorId = userId;
+        } else if (statsPersonaje1 < statsPersonaje2) {
+            ganadorId = userId;
+            perdedorId = challenger;
+        } else {
+            return conn.sendMessage(m.chat, { text: "🤝 *¡La batalla terminó en empate!*" });
+        }
+
+        // Reducir vida de los personajes
+        const ganadorPersonaje = cartera[ganadorId].personajes[0];
+        const perdedorPersonaje = cartera[perdedorId].personajes[0];
+        ganadorPersonaje.stats.vida -= Math.floor(Math.random() * 10) + 5;
+        perdedorPersonaje.stats.vida -= Math.floor(Math.random() * 20) + 10;
+
+        if (ganadorPersonaje.stats.vida < 0) ganadorPersonaje.stats.vida = 0;
+        if (perdedorPersonaje.stats.vida < 0) perdedorPersonaje.stats.vida = 0;
+
+        // **Recompensas**
+        const xpGanador = Math.floor(Math.random() * 500) + 500;
+        const coinsGanador = Math.floor(Math.random() * 200) + 300;
+        const xpPerdedor = Math.floor(Math.random() * 300) + 100;
+        const coinsPerdedor = Math.floor(Math.random() * 100) + 50;
+
+        ganadorPersonaje.stats.experiencia += xpGanador;
+        cartera[ganadorId].coins += coinsGanador;
+
+        perdedorPersonaje.stats.experiencia += xpPerdedor;
+        cartera[perdedorId].coins += coinsPerdedor;
+
+        // **Subida de nivel automática sin notificación**
+        const personajes = [ganadorPersonaje, perdedorPersonaje];
+        for (const personaje of personajes) {
+            while (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+                personaje.stats.nivel++;
+                personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+                personaje.stats.experienciaSiguienteNivel += 500;
+            }
+        }
+
+        // **Mensaje final con menciones**
+        const mensajeFinal = `🎭 *¡La batalla ha concluido!* 🎭  
+🏆 *Ganador:* @${ganadorId.replace(/@s.whatsapp.net/, '')}  
+💀 *Perdedor:* @${perdedorId.replace(/@s.whatsapp.net/, '')}  
+
+🎖️ *Recompensas:*  
+🏅 *Ganador:* +${xpGanador} XP, +${coinsGanador} 🪙 Cortana Coins  
+🔹 *Perdedor:* +${xpPerdedor} XP, +${coinsPerdedor} 🪙 Cortana Coins  
+
+❤️ *Estado de los personajes:*  
+- ${ganadorPersonaje.nombre}: ${ganadorPersonaje.stats.vida} HP  
+- ${perdedorPersonaje.nombre}: ${perdedorPersonaje.stats.vida} HP`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeFinal, mentions: [ganadorId, perdedorId] },
+            { quoted: m }
+        );
+
+        // **Eliminar solicitud y guardar cambios**
+        delete cartera[challenger].battleRequest;
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+    } catch (error) {
+        console.error('❌ Error en el comando .go:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al procesar la batalla.*' }, { quoted: m });
+    }
+}
+break;	
+	
+case 'batallaanime': {
+    try {
+        const userId = m.sender; // ID del usuario que envía el reto
+        const mentioned = m.mentionedJid[0]; // Usuario mencionado
+
+        if (!mentioned) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚔️ *Debes mencionar a otro usuario para iniciar una batalla.*" },
+                { quoted: m }
+            );
+        }
+
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        if (!cartera[mentioned] || !Array.isArray(cartera[mentioned].personajes) || cartera[mentioned].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *@${mentioned.split('@')[0]}* no tiene personajes en su cartera.` },
+                { quoted: m, mentions: [mentioned] }
+            );
+        }
+
+        const now = Date.now();
+        if (cartera[userId].lastBattle && now - cartera[userId].lastBattle < 600000) {
+            const remainingTime = Math.ceil((600000 - (now - cartera[userId].lastBattle)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de iniciar otra batalla.*` },
+                { quoted: m }
+            );
+        }
+
+        // Guardar solicitud de batalla
+        cartera[userId].lastBattle = now;
+        cartera[userId].battleRequest = {
+            target: mentioned,
+            time: now,
+        };
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Notificar al usuario mencionado
+        const mensaje = `⚔️ *@${mentioned.split('@')[0]}* ha sido retado a una batalla anime.  
+🛡️ *Responde con* \`.go\` *para aceptar.*  
+⏳ *Tienes 2 minutos para aceptar antes de que la solicitud expire.*`;
+        await conn.sendMessage(
+            m.chat,
+            { text: mensaje, mentions: [mentioned] },
+            { quoted: m }
+        );
+
+        // Configurar expiración de la solicitud
+        setTimeout(() => {
+            if (cartera[userId].battleRequest && cartera[userId].battleRequest.target === mentioned) {
+                delete cartera[userId].battleRequest;
+                fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+                conn.sendMessage(
+                    m.chat,
+                    { text: "⏳ *La solicitud de batalla ha expirado porque no fue aceptada a tiempo.*" },
+                    { quoted: m }
+                );
+            }
+        }, 120000); // 2 minutos
+
+    } catch (error) {
+        console.error('❌ Error en el comando .batallaanime:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al enviar la solicitud de batalla.*' }, { quoted: m });
+    }
+}
+break;
+	
+	
 case 'bolasdeldragon': {
     try {
         await m.react('🟠'); // Reacción al usar el comando
@@ -2110,7 +2319,6 @@ case 'free': {
 break;        
         
         
-	
 case 'menupersonajes': {
     try {
         await m.react('📜'); // Reacción al usar el comando
@@ -2120,31 +2328,38 @@ case 'menupersonajes': {
         menuTexto += `📌 *Lista de Comandos Disponibles:* 📌\n\n`;
 
         menuTexto += `🛒 *.alaventa* → Ver personajes en venta (Sistema y jugadores).\n`;
-       
-	menuTexto += `💰 *.comprar [nombre]* → Comprar un personaje de la tienda del sistema.\n`;
-      
-	menuTexto += `💰 *.comprar2 [nombre]* → Comprar un personaje puesto en venta por otro jugador.\n`;
-      
-	menuTexto += `📜 *.verpersonajes* → Ver tu lista de personajes adquiridos y sus estadísticas.\n`;
-      
-	menuTexto += `📊 *.estadopersonaje* → Ver las estadísticas de tu personaje principal.\n`;
-   
-	menuTexto += `🔄 *.personaje [nombre]* → Cambiar de personaje principal.\n`;
-      
-	menuTexto += `🏆 *.toppersonajes* → Ver los jugadores con más personajes adquiridos.\n`;
-       
-	menuTexto += `🛍️ *.vender [nombre]* → Poner a la venta uno de tus personajes.\n`;
-       
-	menuTexto += `❌ *.quitarventa [nombre]* → Retirar un personaje de la venta y volverlo a tu colección.\n`;
-   
-	menuTexto += `🗑️ *.deletepersonaje2 [nombre]* → Eliminar un personaje de tu colección y devolverlo a la tienda.\n`;
-        
-	menuTexto += `🗑️ *.deletepersonaje [nombre]* → (Admin/Owner) Eliminar un personaje de la tienda.\n\n`;
+        menuTexto += `💰 *.comprar [nombre]* → Comprar un personaje de la tienda del sistema.\n`;
+        menuTexto += `💰 *.comprar2 [nombre]* → Comprar un personaje puesto en venta por otro jugador.\n`;
+        menuTexto += `📜 *.verpersonajes* → Ver tu lista de personajes adquiridos y sus estadísticas.\n`;
+        menuTexto += `📊 *.estadopersonaje* → Ver las estadísticas de tu personaje principal.\n`;
+        menuTexto += `🔄 *.personaje [nombre]* → Cambiar de personaje principal.\n`;
+        menuTexto += `🏆 *.toppersonajes* → Ver los jugadores con más personajes adquiridos.\n`;
+        menuTexto += `🛍️ *.vender [nombre]* → Poner a la venta uno de tus personajes.\n`;
+        menuTexto += `❌ *.quitarventa [nombre]* → Retirar un personaje de la venta y volverlo a tu colección.\n`;
+        menuTexto += `🗑️ *.deletepersonaje2 [nombre]* → Eliminar un personaje de tu colección y devolverlo a la tienda.\n`;
+        menuTexto += `🗑️ *.deletepersonaje [nombre]* → (Admin/Owner) Eliminar un personaje de la tienda.\n\n`;
         menuTexto += `➕ *.addpersonaje [nombre] [hab1] [hab2] [hab3] [precio]* → Agregar un nuevo personaje a la tienda (Responde con imagen).\n\n`;
 
-        menuTexto += `✨ *¡Mejora y administra tus personajes!* ✨`;
+        menuTexto += `✨ *¡Mejora y administra tus personajes!* ✨\n\n`;
 
-        // Enviar mensaje con la imagen del menú de personajes
+        // **➕ Nuevo Apartado: Cómo Subir de Nivel los Personajes**
+        menuTexto += `🚀 *📈 Cómo Subir de Nivel a tu Personaje* 📈\n`;
+        menuTexto += `━━━━━━━━━━━━━━━━━━━━\n`;
+        menuTexto += `⚔️ *.luchar* → Enfréntate a enemigos y gana XP y Cortana Coins.\n`;
+        menuTexto += `🛸 *.volar* → Tu personaje vuela y gana XP.\n`;
+        menuTexto += `🔮 *.poder* → Usa tu poder y obtén recompensas.\n`;
+        menuTexto += `🔥 *.mododiablo* → Multiplica tu poder, pero con riesgo.\n`;
+        menuTexto += `⚡ *.mododios* → Desata un poder divino para obtener grandes recompensas.\n`;
+        menuTexto += `🌌 *.otrouniverso* → Viaja a otro universo y gana XP.\n`;
+        menuTexto += `👾 *.enemigos* → Derrota enemigos y obtén recompensas.\n`;
+        menuTexto += `🌍 *.otromundo* → Explora otros mundos en busca de XP y Coins.\n`;
+        menuTexto += `💥 *.podermaximo* → Desata tu poder máximo (Disponible cada 24 horas).\n\n`;
+
+        menuTexto += `🐉 *.bolasdeldragon* → Usa 300 🪙 Cortana Coins para restaurar la vida de tu personaje al 100%.\n\n`;
+
+        menuTexto += `🎭 *¡Mejora a tu personaje y conviértete en el más fuerte!* 🔥\n`;
+
+        // **Enviar mensaje con la imagen del menú de personajes**
         await conn.sendMessage(
             m.chat,
             {
@@ -2163,7 +2378,8 @@ case 'menupersonajes': {
         );
     }
 }
-break;
+break;	
+
 	
 case 'personaje': {
     try {
@@ -3283,13 +3499,8 @@ _Poderoso y letal._
 ━─━────༺༻────━─━
 hola usa el comando: .alaventa
 para ir a ver la tienda de personaje 
-anime si no ningun personaje debes agregarlos
-tu mismo con el comando *.addpersonaje.*
-⚠️ *Formato incorrecto.*
-Ejemplo: .addpersonaje Goku Kamehameha Genkidama SaiyanPower 3000
-seria nombre 3 avilidades y el precio. 
-muy pronto el .menupersonajes para saber como usar el sistema
-y subir tus personajes de nivel. eso seria todo gracias. 
+anime.😎
+usa el comando: .menupersonajes 👀
 ━─━────༺༻────━─━
 
 💡 *Próximamente más personajes, mascotas y sorpresas para ti.*  
@@ -3383,6 +3594,7 @@ case 'batalla1': {
 }
 break;
 
+
 case 'siquiero': {
     try {
         const userId = m.sender;
@@ -3447,7 +3659,8 @@ case 'siquiero': {
             opponentMascota.habilidades.reduce((total, h) => total + h.nivel * 2, 0);
 
         let ganadorId, perdedorId;
-        if (statsChallenger > statsOpponent) {
+
+if (statsChallenger > statsOpponent) {
             ganadorId = challengerId;
             perdedorId = userId;
         } else if (statsChallenger < statsOpponent) {
@@ -3516,7 +3729,7 @@ case 'siquiero': {
         return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al procesar la batalla.*' }, { quoted: m });
     }
 }
-break;        
+break;                
 
 
         
