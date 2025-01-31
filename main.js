@@ -731,6 +731,137 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'luchar': {
+    try {
+        const userId = m.sender;
+
+        // Verificar si el usuario tiene una cartera y personajes
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes actualmente.* Usa `.verpersonajes` para verlos o compra uno con `.comprar`." },
+                { quoted: m }
+            );
+        }
+
+        // Obtener el personaje principal del usuario
+        let personaje = cartera[userId].personajes.find(p => p.principal);
+        if (!personaje) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes un personaje principal seleccionado.* Usa `.personaje [nombre]` para elegir uno." },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está muerto
+        if (personaje.stats.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${personaje.nombre} está muerto.* Usa \`.bolasdeldragon\` para revivirlo.` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar el tiempo de reutilización (5 minutos)
+        const now = Date.now();
+        if (personaje.ultimoLuchar && now - personaje.ultimoLuchar < 300000) { 
+            let tiempoRestante = Math.ceil((300000 - (now - personaje.ultimoLuchar)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${tiempoRestante} minutos antes de luchar nuevamente.*` },
+                { quoted: m }
+            );
+        }
+        personaje.ultimoLuchar = now; // Actualizar el tiempo de la última lucha
+
+        // Generar XP y Coins aleatorios
+        let xpGanada = Math.floor(Math.random() * 500) + 300; // 300 - 800 XP
+        let coinsGanadas = Math.floor(Math.random() * 500) + 300; // 300 - 800 Coins
+
+        // Reducir vida aleatoriamente
+        let vidaPerdida = Math.floor(Math.random() * 11) + 5; // 5 - 15 de vida perdida
+        personaje.stats.vida -= vidaPerdida;
+        if (personaje.stats.vida < 0) personaje.stats.vida = 0; // No permitir vida negativa
+
+        // Subir nivel de habilidades aleatoriamente
+        let habilidadesSubidas = [];
+        personaje.habilidades.forEach(hab => {
+            if (Math.random() < 0.5) { // 50% de probabilidad de subir una habilidad
+                hab.nivel++;
+                habilidadesSubidas.push(hab.nombre);
+            }
+        });
+
+        // Subir nivel si alcanza la XP requerida
+        let subioNivel = false;
+        personaje.stats.experiencia += xpGanada;
+        if (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 500 * personaje.stats.nivel;
+            subioNivel = true;
+        }
+
+        // Guardar cambios en `cartera.json`
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // 📝 **Mensajes aleatorios de batalla**
+        const frases = [
+            `⚔️ *${personaje.nombre} peleó con gran valentía y salió victorioso!*`,
+            `🔥 *Después de una intensa batalla, ${personaje.nombre} se siente más fuerte.*`,
+            `💥 *${personaje.nombre} enfrentó a un enemigo temible y aprendió nuevas técnicas.*`,
+            `⚡ *Una pelea rápida pero intensa, ${personaje.nombre} demuestra su entrenamiento.*`,
+            `🌀 *${personaje.nombre} usó todo su poder y salió más fuerte de la batalla.*`,
+            `⚔️ *Golpes certeros y estrategia, ${personaje.nombre} gana experiencia en combate.*`,
+            `🔥 *${personaje.nombre} ha luchado con determinación y ha mejorado sus habilidades.*`,
+            `💪 *A pesar de las dificultades, ${personaje.nombre} sigue mejorando en cada batalla.*`,
+            `🌟 *Un combate desafiante, pero ${personaje.nombre} ha demostrado su crecimiento.*`,
+            `⚡ *El entrenamiento de ${personaje.nombre} está dando frutos, es más fuerte que nunca.*`
+        ];
+        let fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
+
+        // Mensaje final
+        let mensaje = `${fraseAleatoria}\n\n🪙 *Ganaste:* ${coinsGanadas} Cortana Coins\n✨ *Experiencia obtenida:* +${xpGanada} XP`;
+
+        // Notificar si subió de nivel
+        if (subioNivel) {
+            mensaje += `\n🎉 *¡Felicidades! ${personaje.nombre} ha subido al nivel ${personaje.stats.nivel}.*`;
+        }
+
+        // Notificar habilidades mejoradas
+        if (habilidadesSubidas.length > 0) {
+            mensaje += `\n🌟 *Habilidades mejoradas:* ${habilidadesSubidas.map(h => `⚡ ${h}`).join(', ')}`;
+        }
+
+        // Si el personaje muere, notificar
+        if (personaje.stats.vida <= 0) {
+            mensaje += `\n💀 *${personaje.nombre} ha muerto.* Usa \`.bolasdeldragon\` para revivirlo.`;
+        }
+
+        // Enviar mensaje final con la imagen del personaje
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: Buffer.from(personaje.imagen, 'base64'),
+                mimetype: personaje.mimetype,
+                caption: mensaje,
+                mentions: [userId]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .luchar:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar luchar. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
 case 'damelo': {
     try {
         const userId = m.sender;
