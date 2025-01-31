@@ -736,33 +736,41 @@ case 'go': {
     try {
         const userId = m.sender;
         const challenger = Object.keys(cartera).find(
-            (key) => cartera[key].battleRequest?.target === userId
+            (key) => cartera[key].personajeBattleRequest?.target === userId
         );
 
         if (!challenger) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No tienes ninguna solicitud de batalla pendiente.*" },
+                { text: "⚠️ *No tienes ninguna solicitud de batalla de personajes pendiente.*" },
                 { quoted: m }
             );
         }
 
         // Verificar si la solicitud ha expirado
-        const requestTime = cartera[challenger].battleRequest.time;
+        const requestTime = cartera[challenger].personajeBattleRequest.time;
         const now = Date.now();
         if (now - requestTime > 120000) {
-            delete cartera[challenger].battleRequest;
+            delete cartera[challenger].personajeBattleRequest;
             fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
             return conn.sendMessage(
                 m.chat,
-                { text: "⏳ *La solicitud de batalla ha expirado.*" },
+                { text: "⏳ *La solicitud de batalla de personajes ha expirado.*" },
                 { quoted: m }
             );
         }
 
-        // Obtener personajes
-        const personaje1 = cartera[challenger].personajes[0];
-        const personaje2 = cartera[userId].personajes[0];
+        // **Verificar que ambos jugadores tienen personajes**
+        if (!cartera[challenger].personajes || cartera[challenger].personajes.length === 0) {
+            return conn.sendMessage(m.chat, { text: `⚠️ *${challenger} no tiene personajes en su cartera.*` }, { quoted: m });
+        }
+        if (!cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(m.chat, { text: `⚠️ *${userId} no tiene personajes en su cartera.*` }, { quoted: m });
+        }
+
+        // **Obtener personajes**
+        const personaje1 = cartera[challenger].personajes[0]; // Retador
+        const personaje2 = cartera[userId].personajes[0]; // Oponente
 
         // 🏆 **Batalla con edición progresiva**
         const animaciones = [
@@ -800,14 +808,15 @@ case 'go': {
             return conn.sendMessage(m.chat, { text: "🤝 *¡La batalla terminó en empate!*" });
         }
 
-        // Reducir vida de los personajes
+        // **Reducir vida de los personajes (evitar valores negativos)**
         const ganadorPersonaje = cartera[ganadorId].personajes[0];
         const perdedorPersonaje = cartera[perdedorId].personajes[0];
-        ganadorPersonaje.stats.vida -= Math.floor(Math.random() * 10) + 5;
-        perdedorPersonaje.stats.vida -= Math.floor(Math.random() * 20) + 10;
 
-        if (ganadorPersonaje.stats.vida < 0) ganadorPersonaje.stats.vida = 0;
-        if (perdedorPersonaje.stats.vida < 0) perdedorPersonaje.stats.vida = 0;
+        const vidaPerdidaGanador = Math.floor(Math.random() * 10) + 5;
+        const vidaPerdidaPerdedor = Math.floor(Math.random() * 20) + 10;
+
+        ganadorPersonaje.stats.vida = Math.max(ganadorPersonaje.stats.vida - vidaPerdidaGanador, 0);
+        perdedorPersonaje.stats.vida = Math.max(perdedorPersonaje.stats.vida - vidaPerdidaPerdedor, 0);
 
         // **Recompensas**
         const xpGanador = Math.floor(Math.random() * 500) + 500;
@@ -832,7 +841,8 @@ case 'go': {
         }
 
         // **Mensaje final con menciones**
-        const mensajeFinal = `🎭 *¡La batalla ha concluido!* 🎭  
+        const mensajeFinal = `🎭 *¡La batalla de personajes ha concluido!* 🎭  
+
 🏆 *Ganador:* @${ganadorId.replace(/@s.whatsapp.net/, '')}  
 💀 *Perdedor:* @${perdedorId.replace(/@s.whatsapp.net/, '')}  
 
@@ -851,15 +861,16 @@ case 'go': {
         );
 
         // **Eliminar solicitud y guardar cambios**
-        delete cartera[challenger].battleRequest;
+        delete cartera[challenger].personajeBattleRequest;
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
     } catch (error) {
         console.error('❌ Error en el comando .go:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al procesar la batalla.*' }, { quoted: m });
+        return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al procesar la batalla de personajes.*' }, { quoted: m });
     }
 }
-break;	
+break;
+
 	
 case 'batallaanime': {
     try {
@@ -891,25 +902,25 @@ case 'batallaanime': {
         }
 
         const now = Date.now();
-        if (cartera[userId].lastBattle && now - cartera[userId].lastBattle < 600000) {
-            const remainingTime = Math.ceil((600000 - (now - cartera[userId].lastBattle)) / 60000);
+        if (cartera[userId].lastPersonajeBattle && now - cartera[userId].lastPersonajeBattle < 600000) {
+            const remainingTime = Math.ceil((600000 - (now - cartera[userId].lastPersonajeBattle)) / 60000);
             return conn.sendMessage(
                 m.chat,
-                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de iniciar otra batalla.*` },
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de iniciar otra batalla de personajes.*` },
                 { quoted: m }
             );
         }
 
-        // Guardar solicitud de batalla
-        cartera[userId].lastBattle = now;
-        cartera[userId].battleRequest = {
+        // Guardar solicitud de batalla (Separado de mascotaBattleRequest)
+        cartera[userId].lastPersonajeBattle = now;
+        cartera[userId].personajeBattleRequest = {
             target: mentioned,
             time: now,
         };
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // Notificar al usuario mencionado
-        const mensaje = `⚔️ *@${mentioned.split('@')[0]}* ha sido retado a una batalla anime.  
+        const mensaje = `⚔️ *@${mentioned.split('@')[0]}* ha sido retado a una *batalla anime* con personajes.  
 🛡️ *Responde con* \`.go\` *para aceptar.*  
 ⏳ *Tienes 2 minutos para aceptar antes de que la solicitud expire.*`;
         await conn.sendMessage(
@@ -920,12 +931,12 @@ case 'batallaanime': {
 
         // Configurar expiración de la solicitud
         setTimeout(() => {
-            if (cartera[userId].battleRequest && cartera[userId].battleRequest.target === mentioned) {
-                delete cartera[userId].battleRequest;
+            if (cartera[userId].personajeBattleRequest && cartera[userId].personajeBattleRequest.target === mentioned) {
+                delete cartera[userId].personajeBattleRequest;
                 fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
                 conn.sendMessage(
                     m.chat,
-                    { text: "⏳ *La solicitud de batalla ha expirado porque no fue aceptada a tiempo.*" },
+                    { text: "⏳ *La solicitud de batalla de personajes ha expirado porque no fue aceptada a tiempo.*" },
                     { quoted: m }
                 );
             }
