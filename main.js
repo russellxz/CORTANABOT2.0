@@ -3659,8 +3659,7 @@ case 'siquiero': {
             opponentMascota.habilidades.reduce((total, h) => total + h.nivel * 2, 0);
 
         let ganadorId, perdedorId;
-
-if (statsChallenger > statsOpponent) {
+        if (statsChallenger > statsOpponent) {
             ganadorId = challengerId;
             perdedorId = userId;
         } else if (statsChallenger < statsOpponent) {
@@ -3729,7 +3728,8 @@ if (statsChallenger > statsOpponent) {
         return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al procesar la batalla.*' }, { quoted: m });
     }
 }
-break;                
+break;        
+
 
 
         
