@@ -731,48 +731,24 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
-
 case 'damelo': {
     try {
         const userId = m.sender;
 
-        // Verificar si el usuario respondió a un mensaje con imagen
-        if (!m.quoted || !m.quoted.mtype || !m.quoted.mtype.includes('image')) {
+        // 📌 Verificar si hay personajes en la tienda Free
+        if (!cartera.tiendaFree || cartera.tiendaFree.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Debes responder al mensaje del personaje Free para reclamarlo.*" },
+                { text: "⚠️ *No hay personajes disponibles para reclamar en este momento.*" },
                 { quoted: m }
             );
         }
 
-        // Extraer el nombre del personaje desde el mensaje citado
-        const quotedText = m.quoted.text || '';
-        const match = quotedText.match(/🎭 \*Nombre:\* (.+)/);
-        if (!match) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *No se pudo identificar el personaje. Asegúrate de responder al mensaje correcto.*" },
-                { quoted: m }
-            );
-        }
-
-        const personajeNombre = match[1].trim().toLowerCase();
-
-        // Buscar el personaje en la tienda Free
-        const indexPersonaje = cartera.tiendaFree.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
-
-        if (indexPersonaje === -1) {
-            return conn.sendMessage(
-                m.chat,
-                { text: `❌ *El personaje "${personajeNombre}" ya fue reclamado o expiró.*` },
-                { quoted: m }
-            );
-        }
-
-        const personaje = cartera.tiendaFree[indexPersonaje];
+        // 🎭 Tomar el PRIMER personaje disponible en la tienda Free
+        const personaje = cartera.tiendaFree.shift(); // Sacamos el primer personaje y lo eliminamos de la lista
 
         // Verificar si el usuario ya tiene este personaje
-        if (cartera[userId]?.personajes?.some(p => p.nombre.toLowerCase() === personajeNombre)) {
+        if (cartera[userId]?.personajes?.some(p => p.nombre.toLowerCase() === personaje.nombre.toLowerCase())) {
             return conn.sendMessage(
                 m.chat,
                 { text: `❌ *Ya tienes a ${personaje.nombre} en tu colección.* Usa \`.verpersonajes\` para verlos.` },
@@ -780,21 +756,18 @@ case 'damelo': {
             );
         }
 
-        // **✅ Asignar el personaje al usuario**
+        // ✅ Asignar el personaje al usuario
         if (!cartera[userId]) {
             cartera[userId] = { coins: 0, personajes: [] };
         }
         cartera[userId].personajes.push(personaje);
 
-        // **✅ Eliminar el personaje de la Tienda Free**
-        cartera.tiendaFree.splice(indexPersonaje, 1);
-
-        // **✅ Guardar los cambios en `cartera.json`**
+        // ✅ Guardar los cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // **📢 Mensaje de confirmación**
+        // 📢 **Mensaje de confirmación**
         let mensajeReclamo = `
-🎉 *¡Has reclamado un personaje GRATIS!* 🎉  
+🎉 *¡${await conn.getName(userId)} ha reclamado un personaje GRATIS!* 🎉  
 
 📌 *Ficha de Personaje:*  
 🎭 *Nombre:* ${personaje.nombre}  
@@ -810,7 +783,7 @@ case 'damelo': {
 📜 *Consulta tus personajes con:* \`.verpersonajes\`
         `;
 
-        // Enviar mensaje con la imagen del personaje
+        // 📢 Anunciar en el grupo quién lo reclamó
         await conn.sendMessage(
             m.chat,
             {
@@ -831,6 +804,7 @@ case 'damelo': {
     }
 }
 break;
+
         
 
 
