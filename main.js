@@ -736,20 +736,19 @@ case 'damelo': {
     try {
         const userId = m.sender;
 
-        // 1️⃣ Verificar si el usuario ha respondido a un mensaje
-        if (!m.quoted) {
+        // Verificar si el usuario respondió a un mensaje con imagen
+        if (!m.quoted || !m.quoted.mtype || !m.quoted.mtype.includes('image')) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Debes responder al mensaje del personaje para reclamarlo.*" },
+                { text: "⚠️ *Debes responder al mensaje del personaje Free para reclamarlo.*" },
                 { quoted: m }
             );
         }
 
-        // 2️⃣ Extraer el nombre del personaje desde el mensaje citado
-        const mensajeTexto = m.quoted.text || "";
-        const personajeNombre = mensajeTexto.match(/🎭 *Nombre:* (.+)/)?.[1];
-
-        if (!personajeNombre) {
+        // Extraer el nombre del personaje desde el mensaje citado
+        const quotedText = m.quoted.text || '';
+        const match = quotedText.match(/🎭 \*Nombre:\* (.+)/);
+        if (!match) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *No se pudo identificar el personaje. Asegúrate de responder al mensaje correcto.*" },
@@ -757,32 +756,45 @@ case 'damelo': {
             );
         }
 
-        // 3️⃣ Buscar el personaje en la tienda Free
-        const personajeIndex = cartera.tiendaFree.findIndex(p => p.nombre === personajeNombre);
-        if (personajeIndex === -1) {
+        const personajeNombre = match[1].trim().toLowerCase();
+
+        // Buscar el personaje en la tienda Free
+        const indexPersonaje = cartera.tiendaFree.findIndex(p => p.nombre.toLowerCase() === personajeNombre);
+
+        if (indexPersonaje === -1) {
             return conn.sendMessage(
                 m.chat,
-                { text: `❌ *El personaje "${personajeNombre}" ya fue reclamado o no está disponible.*` },
+                { text: `❌ *El personaje "${personajeNombre}" ya fue reclamado o expiró.*` },
                 { quoted: m }
             );
         }
 
-        const personaje = cartera.tiendaFree.splice(personajeIndex, 1)[0];
+        const personaje = cartera.tiendaFree[indexPersonaje];
 
-        // 4️⃣ Asegurar que el usuario tenga una cartera creada
-        if (!cartera[userId]) {
-            cartera[userId] = { personajes: [], coins: 0 };
+        // Verificar si el usuario ya tiene este personaje
+        if (cartera[userId]?.personajes?.some(p => p.nombre.toLowerCase() === personajeNombre)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *Ya tienes a ${personaje.nombre} en tu colección.* Usa \`.verpersonajes\` para verlos.` },
+                { quoted: m }
+            );
         }
 
-        // 5️⃣ Agregar el personaje a la cartera del usuario
+        // **✅ Asignar el personaje al usuario**
+        if (!cartera[userId]) {
+            cartera[userId] = { coins: 0, personajes: [] };
+        }
         cartera[userId].personajes.push(personaje);
 
-        // 6️⃣ Guardar los cambios
+        // **✅ Eliminar el personaje de la Tienda Free**
+        cartera.tiendaFree.splice(indexPersonaje, 1);
+
+        // **✅ Guardar los cambios en `cartera.json`**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 7️⃣ Enviar mensaje de confirmación con la imagen del personaje
-        let mensajeConfirm = `
-🎉 *¡Has reclamado un personaje gratuito!* 🎉  
+        // **📢 Mensaje de confirmación**
+        let mensajeReclamo = `
+🎉 *¡Has reclamado un personaje GRATIS!* 🎉  
 
 📌 *Ficha de Personaje:*  
 🎭 *Nombre:* ${personaje.nombre}  
@@ -790,21 +802,21 @@ case 'damelo': {
 💖 *Vida:* ${personaje.stats.vida}/100  
 🧬 *EXP:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}  
 
-🎯 *Habilidades Iniciales:*  
-⚡ ${personaje.habilidades[0].nombre} (Nivel ${personaje.habilidades[0].nivel})  
-⚡ ${personaje.habilidades[1].nombre} (Nivel ${personaje.habilidades[1].nivel})  
-⚡ ${personaje.habilidades[2].nombre} (Nivel ${personaje.habilidades[2].nivel})  
+🎯 *Habilidades:*  
+⚡ ${personaje.habilidades[0].nombre} (Nivel 1)  
+⚡ ${personaje.habilidades[1].nombre} (Nivel 1)  
+⚡ ${personaje.habilidades[2].nombre} (Nivel 1)  
 
-📜 *Consulta todos tus personajes con:* \`.verpersonajes\`
+📜 *Consulta tus personajes con:* \`.verpersonajes\`
         `;
 
+        // Enviar mensaje con la imagen del personaje
         await conn.sendMessage(
             m.chat,
             {
                 image: Buffer.from(personaje.imagen, 'base64'),
                 mimetype: personaje.mimetype,
-                caption: mensajeConfirm,
-                mentions: [userId]
+                caption: mensajeReclamo
             },
             { quoted: m }
         );
@@ -818,8 +830,8 @@ case 'damelo': {
         );
     }
 }
-break;	
-
+break;
+        
 
 
 case 'free': {
