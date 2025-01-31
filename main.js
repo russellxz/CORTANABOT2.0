@@ -2368,6 +2368,12 @@ case 'menupersonajes': {
 
         menuTexto += `🐉 *.bolasdeldragon* → Usa 300 🪙 Cortana Coins para restaurar la vida de tu personaje al 100%.\n\n`;
 
+        // **➕ Comandos de Personajes Gratis y Batallas**
+        menuTexto += `🎁 *.free* → Un administrador lanza un personaje gratis para que alguien lo reclame.\n`;
+        menuTexto += `✋ *.damelo* → Reclama un personaje gratis antes de que desaparezca.\n`;
+        menuTexto += `⚔️ *.batallaanime @usuario* → Reta a otro jugador a una batalla anime.\n`;
+        menuTexto += `🏆 *.go* → Acepta un reto de batalla anime y pelea con tu personaje.\n\n`;
+
         menuTexto += `🎭 *¡Mejora a tu personaje y conviértete en el más fuerte!* 🔥\n`;
 
         // **Enviar mensaje con la imagen del menú de personajes**
@@ -2389,7 +2395,7 @@ case 'menupersonajes': {
         );
     }
 }
-break;	
+break;
 
 	
 case 'personaje': {
