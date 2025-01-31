@@ -730,7 +730,112 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'volar': {
+    try {
+        await m.react('🕊️'); // Reacción al usar el comando
 
+        const userId = m.sender;
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera[userId].personajes[0]; // Usar el primer personaje de la lista
+        const now = Date.now();
+
+        // Verificar intervalo de tiempo (5 min)
+        if (personaje.lastVolar && now - personaje.lastVolar < 5 * 60 * 1000) {
+            const remaining = Math.ceil((5 * 60 * 1000 - (now - personaje.lastVolar)) / 1000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remaining} segundos antes de usar este comando nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está muerto
+        if (personaje.stats.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${personaje.nombre} ha muerto.* Usa \`.bolasdeldragon\` para revivirlo.` },
+                { quoted: m }
+            );
+        }
+
+        // Generar XP y monedas aleatorias
+        const xpGanada = Math.floor(Math.random() * 700) + 300; // Entre 300 y 1000 XP
+        const coinsGanadas = Math.floor(Math.random() * 200) + 100; // Entre 100 y 300 Coins
+        const vidaPerdida = Math.floor(Math.random() * 10) + 5; // Entre 5 y 15 de vida perdida
+
+        personaje.stats.experiencia += xpGanada;
+        personaje.stats.vida -= vidaPerdida;
+
+        // Asegurar que la vida no sea menor a 0
+        if (personaje.stats.vida < 0) {
+            personaje.stats.vida = 0;
+        }
+
+        // Sumar Cortana Coins al usuario
+        cartera[userId].coins += coinsGanadas;
+
+        // Subir de nivel si alcanza la experiencia necesaria
+        if (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 500; // Aumenta la XP necesaria para subir de nivel
+
+            // Notificar subida de nivel
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! ${personaje.nombre} ha subido al nivel ${personaje.stats.nivel}.*  
+                    📊 *Nueva XP requerida para el siguiente nivel:* ${personaje.stats.experienciaSiguienteNivel}  
+                    💖 *Vida restante:* ${personaje.stats.vida}/100`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // Subir nivel de habilidades aleatoriamente
+        const habilidadAleatoria = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadAleatoria.nivel++;
+
+        // Guardar la última vez que usó el comando
+        personaje.lastVolar = now;
+
+        // Guardar cambios en el archivo
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Textos aleatorios con emojis
+        const textos = [
+            `🚀 *${personaje.nombre} voló por los cielos y mejoró su entrenamiento.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🕊️ *${personaje.nombre} surcó los cielos con gran velocidad.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `☁️ *${personaje.nombre} se elevó entre las nubes y sintió una gran energía.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🔥 *${personaje.nombre} voló a toda potencia y mejoró su resistencia.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `💨 *${personaje.nombre} esquivó rayos mientras volaba rápidamente.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🌠 *${personaje.nombre} atravesó la atmósfera con un poderoso impulso.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🌀 *${personaje.nombre} practicó maniobras aéreas y mejoró su técnica.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `⚡ *${personaje.nombre} aceleró a una velocidad increíble y aumentó su energía.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `💥 *${personaje.nombre} realizó un vuelo supersónico con éxito.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🔮 *${personaje.nombre} experimentó un misterioso poder en el aire.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+        ];
+
+        // Respuesta al comando
+        const mensajeAleatorio = textos[Math.floor(Math.random() * textos.length)];
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeAleatorio },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .volar:', error);
+        m.reply('❌ *Ocurrió un error al intentar usar el comando. Intenta nuevamente.*');
+    }
+}
+break;
 
 case 'luchar': {
     try {
