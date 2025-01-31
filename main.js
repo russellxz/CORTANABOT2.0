@@ -731,6 +731,7 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+
 case 'damelo': {
     try {
         const userId = m.sender;
@@ -744,7 +745,7 @@ case 'damelo': {
             );
         }
 
-        // 2️⃣ Obtener el nombre del personaje desde el mensaje citado
+        // 2️⃣ Extraer el nombre del personaje desde el mensaje citado
         const mensajeTexto = m.quoted.text || "";
         const personajeNombre = mensajeTexto.match(/🎭 *Nombre:* (.+)/)?.[1];
 
@@ -766,7 +767,7 @@ case 'damelo': {
             );
         }
 
-        const personaje = cartera.tiendaFree[personajeIndex];
+        const personaje = cartera.tiendaFree.splice(personajeIndex, 1)[0];
 
         // 4️⃣ Asegurar que el usuario tenga una cartera creada
         if (!cartera[userId]) {
@@ -776,13 +777,10 @@ case 'damelo': {
         // 5️⃣ Agregar el personaje a la cartera del usuario
         cartera[userId].personajes.push(personaje);
 
-        // 6️⃣ Eliminar el personaje de la tienda Free
-        cartera.tiendaFree.splice(personajeIndex, 1);
-
-        // 7️⃣ Guardar los cambios
+        // 6️⃣ Guardar los cambios
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 8️⃣ Enviar mensaje de confirmación con la imagen del personaje
+        // 7️⃣ Enviar mensaje de confirmación con la imagen del personaje
         let mensajeConfirm = `
 🎉 *¡Has reclamado un personaje gratuito!* 🎉  
 
@@ -820,109 +818,101 @@ case 'damelo': {
         );
     }
 }
-break;        
-	
+break;	
+
 case 'free': {
     try {
         const userId = m.sender;
-        const isOwner = global.owner?.some(([id]) => id === userId.replace(/@s.whatsapp.net/, ''));
-        const isAdmin = m.isGroup ? (await conn.groupMetadata(m.chat)).participants.find(p => p.id === userId && (p.admin || p.superAdmin)) : false;
 
-        // 🛑 Verificar si el usuario es admin o owner
-        if (!isOwner && !isAdmin) {
+        // 1️⃣ Verificar si el usuario es admin o owner
+        const isAdmin = isUserAdmin(userId, m.chat); // Debes tener una función que verifique si es admin
+        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, ''));
+        
+        if (!isAdmin && !isOwner) {
             return conn.sendMessage(
                 m.chat,
-                { text: "🚫 *Este comando solo puede ser usado por administradores del grupo o el Owner.*" },
+                { text: "🚫 *Solo los administradores o el owner pueden usar este comando.*" },
                 { quoted: m }
             );
         }
 
-        // 🛒 Verificar si hay personajes en la tienda del sistema
+        // 2️⃣ Verificar si hay personajes en la tienda
         if (!cartera.personajesEnVenta || cartera.personajesEnVenta.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No hay personajes disponibles en la tienda en este momento.*" },
+                { text: "⚠️ *No hay personajes disponibles en la tienda para regalar.*" },
                 { quoted: m }
             );
         }
 
-        // 🎲 Elegir un personaje aleatorio de la tienda
+        // 3️⃣ Elegir un personaje aleatorio
         const personajeIndex = Math.floor(Math.random() * cartera.personajesEnVenta.length);
-        const personajeAleatorio = cartera.personajesEnVenta[personajeIndex];
+        const personaje = cartera.personajesEnVenta.splice(personajeIndex, 1)[0];
 
-        // 🏪 Asegurar que la Tienda Free exista
+        // 4️⃣ Agregarlo a la tienda temporal de personajes gratis
         if (!cartera.tiendaFree) {
             cartera.tiendaFree = [];
         }
+        cartera.tiendaFree.push(personaje);
 
-        // 🚀 Agregar el personaje a la Tienda Free con tiempo de expiración
-        const tiempoExpiracion = Date.now() + 20000; // Expira en 20 segundos
-        cartera.tiendaFree.push({ ...personajeAleatorio, tiempoExpiracion });
-
-        // Guardar cambios
+        // 5️⃣ Guardar los cambios
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 📢 **Anuncio del personaje disponible en Free**
+        // 6️⃣ Enviar mensaje con la imagen del personaje
         let mensajeFree = `
-🎁 *¡Un personaje está disponible GRATIS!* 🎁
+🎁 *¡Un personaje gratis está disponible!* 🎁  
 
-📌 *Ficha de Personaje:*  
-🎭 *Nombre:* ${personajeAleatorio.nombre}  
-⚔️ *Nivel:* ${personajeAleatorio.stats.nivel}  
-💖 *Vida:* ${personajeAleatorio.stats.vida}/100  
-🧬 *EXP:* ${personajeAleatorio.stats.experiencia} / ${personajeAleatorio.stats.experienciaSiguienteNivel}  
+📌 *Ficha del Personaje:*  
+🎭 *Nombre:* ${personaje.nombre}  
+⚔️ *Nivel:* ${personaje.stats.nivel}  
+💖 *Vida:* ${personaje.stats.vida}/100  
+🧬 *EXP:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}  
 
 🎯 *Habilidades:*  
-⚡ ${personajeAleatorio.habilidades[0].nombre} (Nivel 1)  
-⚡ ${personajeAleatorio.habilidades[1].nombre} (Nivel 1)  
-⚡ ${personajeAleatorio.habilidades[2].nombre} (Nivel 1)  
+⚡ ${personaje.habilidades[0].nombre} (Nivel ${personaje.habilidades[0].nivel})  
+⚡ ${personaje.habilidades[1].nombre} (Nivel ${personaje.habilidades[1].nivel})  
+⚡ ${personaje.habilidades[2].nombre} (Nivel ${personaje.habilidades[2].nivel})  
 
-⏳ *Tiempo límite para reclamar: 20 segundos*  
-📜 *Para reclamarlo, responde a este mensaje con:* \`.damelo\`
+⏳ *Tienes 30 segundos para reclamarlo respondiendo con* \`.damelo\`
         `;
 
-        // Enviar mensaje con la imagen del personaje
         await conn.sendMessage(
             m.chat,
             {
-                image: Buffer.from(personajeAleatorio.imagen, 'base64'),
-                mimetype: personajeAleatorio.mimetype,
+                image: Buffer.from(personaje.imagen, 'base64'),
+                mimetype: personaje.mimetype,
                 caption: mensajeFree
             },
             { quoted: m }
         );
 
-        // 🕒 **Esperar 20 segundos y verificar si alguien lo reclamó**
+        // 7️⃣ Devolver el personaje a la tienda si no es reclamado en 30 segundos
         setTimeout(() => {
-            // Buscar el personaje en la Tienda Free
-            const indexFree = cartera.tiendaFree.findIndex(p => p.nombre === personajeAleatorio.nombre);
+            const indexFree = cartera.tiendaFree.findIndex(p => p.nombre === personaje.nombre);
             if (indexFree !== -1) {
-                // Si aún está en Tienda Free, regresarlo a la tienda normal
-                cartera.personajesEnVenta.push(personajeAleatorio);
-                cartera.tiendaFree.splice(indexFree, 1); // Eliminar de la Tienda Free
-
-                // Guardar los cambios
+                cartera.tiendaFree.splice(indexFree, 1);
+                cartera.personajesEnVenta.push(personaje);
                 fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-
-                // Notificar que el personaje regresó a la tienda
                 conn.sendMessage(
                     m.chat,
-                    { text: `⏳ *Nadie reclamó a ${personajeAleatorio.nombre}. Ha sido devuelto a la tienda.*\n📜 *Usa* \`.alaventa\` *para ver los personajes en venta.*` },
+                    { text: `⏳ *El personaje ${personaje.nombre} no fue reclamado y ha vuelto a la tienda.*` },
                     { quoted: m }
                 );
             }
-        }, 20000); // 20 segundos
+        }, 30000); // 30 segundos
 
     } catch (error) {
         console.error('❌ Error en el comando .free:', error);
         return conn.sendMessage(
             m.chat,
-            { text: "❌ *Ocurrió un error al intentar seleccionar un personaje gratis. Intenta nuevamente.*" },
+            { text: "❌ *Ocurrió un error al intentar regalar un personaje.*" },
             { quoted: m }
         );
     }
 }
 break;
+        
+        
 	
 case 'menupersonajes': {
     try {
