@@ -730,6 +730,980 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'bolasdeldragon': {
+    try {
+        await m.react('🟠'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera[userId].personajes[0]; // Usar el primer personaje de la lista
+
+        // Verificar si el usuario tiene suficientes Cortana Coins
+        if (cartera[userId].coins < 300) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💰 *No tienes suficientes Cortana Coins para usar las bolas del dragón.*\n📌 *Costo:* 🪙 300 Cortana Coins\n💳 *Tu saldo:* 🪙 ${cartera[userId].coins} Cortana Coins` },
+                { quoted: m }
+            );
+        }
+
+        // Restar el costo de 300 Cortana Coins
+        cartera[userId].coins -= 300;
+
+        // Restaurar la vida del personaje al 100%
+        personaje.stats.vida = 100;
+
+        // **Guardar cambios en el archivo**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // 📢 **Mensaje de confirmación con efecto épico**
+        let mensajeRevivir = `
+🐉 *¡Has invocado a Shenlong!* 🌟  
+
+📌 *${personaje.nombre} ha sido restaurado con energía divina.*  
+❤️ *Vida restaurada:* 100/100  
+💰 *Costo:* 🪙 300 Cortana Coins  
+
+📜 *Las bolas del dragón han desaparecido… pero volverán a reunirse.* 🟠`;
+
+        // **Enviar mensaje de confirmación**
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeRevivir },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .bolasdeldragon:', error);
+        m.reply('❌ *Ocurrió un error al intentar restaurar la vida del personaje. Intenta nuevamente.*');
+    }
+}
+break;
+	
+case 'podermaximo': {
+    try {
+        await m.react('💥'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera[userId].personajes[0]; // Usar el primer personaje de la lista
+        const now = Date.now();
+
+        // Verificar intervalo de tiempo (24 horas)
+        if (personaje.lastPoderMaximo && now - personaje.lastPoderMaximo < 24 * 60 * 60 * 1000) {
+            const remaining = Math.ceil((24 * 60 * 60 * 1000 - (now - personaje.lastPoderMaximo)) / 1000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${Math.floor(remaining / 3600)} horas y ${Math.floor((remaining % 3600) / 60)} minutos antes de usar este comando nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está muerto
+        if (personaje.stats.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${personaje.nombre} ha muerto.* Usa \`.bolasdeldragon\` para revivirlo.` },
+                { quoted: m }
+            );
+        }
+
+        // 💥 **Generar XP y Coins aleatorios**
+        const xpGanada = Math.floor(Math.random() * 14001) + 1000; // Entre 1000 y 15000 XP
+        const coinsGanadas = Math.floor(Math.random() * 1001) + 1000; // Entre 1000 y 2000 Coins
+        const vidaPerdida = Math.floor(Math.random() * 25) + 10; // Pierde entre 10 y 35 de vida
+
+        personaje.stats.experiencia += xpGanada;
+        cartera[userId].coins += coinsGanadas;
+        personaje.stats.vida -= vidaPerdida;
+
+        if (personaje.stats.vida < 0) personaje.stats.vida = 0;
+
+        // 🔥 **Textos aleatorios con emojis**
+        const textosPoderMaximo = [
+            `💥 *${personaje.nombre} desató su máximo poder, sacudiendo el universo con su energía!*  
+            ✨ *Ganó ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *Pero el desgaste le quitó ${vidaPerdida} de vida.*`,
+
+            `⚡ *${personaje.nombre} alcanzó un nuevo nivel de fuerza inimaginable!*  
+            🏆 *Obtuvo ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ☠️ *El exceso de poder lo debilitó, perdiendo ${vidaPerdida} de vida.*`,
+
+            `🔥 *${personaje.nombre} despertó una energía oculta dentro de su ser!*  
+            🎯 *XP obtenida: ${xpGanada}, Coins: ${coinsGanadas}.*  
+            ⚠️ *La transformación drenó ${vidaPerdida} de vida.*`,
+
+            `🌟 *${personaje.nombre} liberó su ki al máximo, iluminando todo a su alrededor.*  
+            🏅 *Ganó ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💔 *Pero la fatiga lo dejó con ${vidaPerdida} de vida menos.*`,
+
+            `🌪️ *${personaje.nombre} alcanzó un estado supremo, más allá de lo imaginable!*  
+            💡 *XP obtenida: ${xpGanada}, Coins: ${coinsGanadas}.*  
+            🩸 *La energía consumida redujo su vida en ${vidaPerdida} puntos.*`,
+
+            `⚔️ *${personaje.nombre} superó los límites de su existencia, alcanzando la perfección.*  
+            🏆 *Subió de nivel con ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ⚠️ *El esfuerzo lo dejó con ${vidaPerdida} de vida menos.*`,
+
+            `💫 *${personaje.nombre} fusionó todo su poder en un solo ataque devastador!*  
+            🏅 *Obtuvo ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *La energía liberada lo dejó agotado, perdiendo ${vidaPerdida} de vida.*`,
+
+            `🌌 *${personaje.nombre} sintió una conexión cósmica, multiplicando su fuerza exponencialmente.*  
+            🎯 *XP obtenida: ${xpGanada}, Coins: ${coinsGanadas}.*  
+            ☠️ *El esfuerzo desgarró su cuerpo, reduciendo su vida en ${vidaPerdida}.*`,
+
+            `🔮 *${personaje.nombre} absorbió la energía del universo, elevando su poder a niveles divinos.*  
+            🏆 *Ganó ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💔 *Pero el impacto redujo su vida en ${vidaPerdida}.*`,
+
+            `🚀 *${personaje.nombre} alcanzó su máximo nivel y ahora es una leyenda viviente!*  
+            ✨ *XP obtenida: ${xpGanada}, Coins: ${coinsGanadas}.*  
+            🩸 *Pero el poder abrumador le restó ${vidaPerdida} de vida.*`
+        ];
+
+        let mensajePoderMaximo = textosPoderMaximo[Math.floor(Math.random() * textosPoderMaximo.length)];
+
+        // 📈 **Subir de nivel si alcanza la XP necesaria**
+        if (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 1500; // Aumenta la XP necesaria para subir de nivel
+
+            // Notificar subida de nivel
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! ${personaje.nombre} ha subido al nivel ${personaje.stats.nivel}.*  
+                    📊 *Nueva XP requerida para el siguiente nivel:* ${personaje.stats.experienciaSiguienteNivel}  
+                    💖 *Vida restante:* ${personaje.stats.vida}/100`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // **Subir nivel de habilidades aleatoriamente**
+        const habilidadAleatoria = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadAleatoria.nivel++;
+
+        // **Guardar la última vez que usó el comando**
+        personaje.lastPoderMaximo = now;
+
+        // **Guardar cambios en el archivo**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // **Enviar mensaje del comando**
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajePoderMaximo },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .podermaximo:', error);
+        m.reply('❌ *Ocurrió un error al intentar desatar el poder máximo. Intenta nuevamente.*');
+    }
+}
+break;
+	
+case 'otromundo': {
+    try {
+        await m.react('🌍'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera[userId].personajes[0]; // Usar el primer personaje de la lista
+        const now = Date.now();
+
+        // Verificar intervalo de tiempo (20 min)
+        if (personaje.lastOtroMundo && now - personaje.lastOtroMundo < 20 * 60 * 1000) {
+            const remaining = Math.ceil((20 * 60 * 1000 - (now - personaje.lastOtroMundo)) / 1000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remaining} segundos antes de usar este comando nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está muerto
+        if (personaje.stats.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${personaje.nombre} ha muerto.* Usa \`.bolasdeldragon\` para revivirlo.` },
+                { quoted: m }
+            );
+        }
+
+        // 🌍 **Generar XP y Coins aleatorios**
+        const xpGanada = Math.floor(Math.random() * 5001) + 1500; // Entre 1500 y 6500 XP
+        const coinsGanadas = Math.floor(Math.random() * 701) + 300; // Entre 300 y 1000 Coins
+        const vidaPerdida = Math.floor(Math.random() * 15) + 5; // Pierde entre 5 y 20 de vida
+
+        personaje.stats.experiencia += xpGanada;
+        cartera[userId].coins += coinsGanadas;
+        personaje.stats.vida -= vidaPerdida;
+
+        if (personaje.stats.vida < 0) personaje.stats.vida = 0;
+
+        // 📜 **Textos aleatorios con emojis**
+        const textosOtroMundo = [
+            `🌍 *${personaje.nombre} fue transportado a un mundo desconocido y aprendió nuevas habilidades.*  
+            ✨ *Ganó ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *Pero la adaptación le costó ${vidaPerdida} de vida.*`,
+
+            `🚀 *${personaje.nombre} atravesó un portal y encontró un reino de criaturas mágicas.*  
+            🏆 *Obtuvo ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ⚠️ *El cambio de atmósfera le quitó ${vidaPerdida} de vida.*`,
+
+            `🌀 *${personaje.nombre} quedó atrapado en un ciclo de mundos infinitos.*  
+            💡 *Descubrió un secreto y ganó ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ☠️ *Pero su cuerpo sufrió una pérdida de ${vidaPerdida} de vida.*`,
+
+            `⚡ *${personaje.nombre} se encontró con un ser celestial que le otorgó poder.*  
+            🔮 *XP obtenida: ${xpGanada}, Coins: ${coinsGanadas}.*  
+            💀 *El ritual le drenó ${vidaPerdida} de vida.*`,
+
+            `🛡️ *${personaje.nombre} exploró un castillo maldito y encontró una fuente de energía.*  
+            🏅 *Ganó ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ⚠️ *Pero quedó debilitado y perdió ${vidaPerdida} de vida.*`,
+
+            `🔥 *${personaje.nombre} fue desafiado por un guerrero legendario en un mundo alterno.*  
+            🏆 *Obtuvo ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *El combate lo dejó con ${vidaPerdida} de vida menos.*`,
+
+            `🦸‍♂️ *${personaje.nombre} absorbió la esencia de los héroes caídos en otro mundo.*  
+            🌟 *XP obtenida: ${xpGanada}, Coins ganados: ${coinsGanadas}.*  
+            💔 *Pero su espíritu se resintió y perdió ${vidaPerdida} de vida.*`,
+
+            `✨ *${personaje.nombre} se convirtió en el elegido en una tierra desconocida.*  
+            🏆 *Subió de nivel con ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ⚠️ *Pero el entrenamiento lo dejó con ${vidaPerdida} de vida menos.*`,
+
+            `⏳ *${personaje.nombre} viajó a un mundo donde el tiempo fluye diferente.*  
+            🎯 *XP obtenida: ${xpGanada}, Coins: ${coinsGanadas}.*  
+            ☠️ *Pero pagó un precio de ${vidaPerdida} de vida.*`,
+
+            `👁️ *${personaje.nombre} vio la verdad oculta de otro mundo y aumentó su poder.*  
+            🏆 *Ganó ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *Pero quedó exhausto y perdió ${vidaPerdida} de vida.*`
+        ];
+
+        let mensajeOtroMundo = textosOtroMundo[Math.floor(Math.random() * textosOtroMundo.length)];
+
+        // 📈 **Subir de nivel si alcanza la XP necesaria**
+        if (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 900; // Aumenta la XP necesaria para subir de nivel
+
+            // Notificar subida de nivel
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! ${personaje.nombre} ha subido al nivel ${personaje.stats.nivel}.*  
+                    📊 *Nueva XP requerida para el siguiente nivel:* ${personaje.stats.experienciaSiguienteNivel}  
+                    💖 *Vida restante:* ${personaje.stats.vida}/100`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // **Subir nivel de habilidades aleatoriamente**
+        const habilidadAleatoria = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadAleatoria.nivel++;
+
+        // **Guardar la última vez que usó el comando**
+        personaje.lastOtroMundo = now;
+
+        // **Guardar cambios en el archivo**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // **Enviar mensaje del comando**
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeOtroMundo },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .otromundo:', error);
+        m.reply('❌ *Ocurrió un error al intentar viajar a otro mundo. Intenta nuevamente.*');
+    }
+}
+break;
+	
+case 'enemigos': {
+    try {
+        await m.react('⚔️'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera[userId].personajes[0]; // Usar el primer personaje de la lista
+        const now = Date.now();
+
+        // Verificar intervalo de tiempo (10 min)
+        if (personaje.lastEnemigos && now - personaje.lastEnemigos < 10 * 60 * 1000) {
+            const remaining = Math.ceil((10 * 60 * 1000 - (now - personaje.lastEnemigos)) / 1000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remaining} segundos antes de usar este comando nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está muerto
+        if (personaje.stats.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${personaje.nombre} ha muerto.* Usa \`.bolasdeldragon\` para revivirlo.` },
+                { quoted: m }
+            );
+        }
+
+        // 🎭 **Lista de enemigos aleatorios**
+        const enemigos = [
+            { nombre: "Goblin Asesino", fuerza: "🗡️ Bajo", recompensa: 100 },
+            { nombre: "Orco Brutal", fuerza: "🛡️ Medio", recompensa: 200 },
+            { nombre: "Nigromante Oscuro", fuerza: "🔮 Alto", recompensa: 350 },
+            { nombre: "Dragón Ancestral", fuerza: "🔥 Épico", recompensa: 500 },
+            { nombre: "Espectro Sombrío", fuerza: "👻 Alto", recompensa: 300 },
+            { nombre: "Demonio Infernal", fuerza: "😈 Muy Alto", recompensa: 400 },
+            { nombre: "Titán Colosal", fuerza: "🗿 Épico", recompensa: 450 }
+        ];
+
+        // 🔥 **Seleccionar un enemigo aleatorio**
+        const enemigoAleatorio = enemigos[Math.floor(Math.random() * enemigos.length)];
+        const xpGanada = Math.floor(Math.random() * 1200) + 500; // Entre 500 y 1700 XP
+        const coinsGanadas = Math.floor(Math.random() * enemigoAleatorio.recompensa) + 50; // Máximo 500 coins
+        const vidaPerdida = Math.floor(Math.random() * 20) + 5; // Pierde entre 5 y 25 de vida
+
+        personaje.stats.experiencia += xpGanada;
+        cartera[userId].coins += coinsGanadas;
+        personaje.stats.vida -= vidaPerdida;
+
+        if (personaje.stats.vida < 0) personaje.stats.vida = 0;
+
+        // **📝 Mensajes de batalla**
+        let mensajeEnemigo = `⚔️ *${personaje.nombre} se enfrentó a un ${enemigoAleatorio.nombre} (${enemigoAleatorio.fuerza}) y salió victorioso.* 🎖️  
+        ✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*  
+        💀 *Tu personaje perdió ${vidaPerdida} de vida.*`;
+
+        // **📈 Subir de nivel si alcanza la XP necesaria**
+        if (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 800; // Aumenta la XP necesaria para subir de nivel
+
+            // Notificar subida de nivel
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! ${personaje.nombre} ha subido al nivel ${personaje.stats.nivel}.*  
+                    📊 *Nueva XP requerida para el siguiente nivel:* ${personaje.stats.experienciaSiguienteNivel}  
+                    💖 *Vida restante:* ${personaje.stats.vida}/100`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // **📈 Subir nivel de habilidades aleatoriamente**
+        const habilidadAleatoria = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadAleatoria.nivel++;
+
+        // **🕒 Guardar la última vez que usó el comando**
+        personaje.lastEnemigos = now;
+
+        // **💾 Guardar cambios en el archivo**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // **📢 Enviar mensaje del comando**
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeEnemigo },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .enemigos:', error);
+        m.reply('❌ *Ocurrió un error al intentar luchar contra un enemigo. Intenta nuevamente.*');
+    }
+}
+break;
+
+		
+
+case 'otrouniverso': {
+    try {
+        await m.react('🌌'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera[userId].personajes[0]; // Usar el primer personaje de la lista
+        const now = Date.now();
+
+        // Verificar intervalo de tiempo (20 min)
+        if (personaje.lastOtroUniverso && now - personaje.lastOtroUniverso < 20 * 60 * 1000) {
+            const remaining = Math.ceil((20 * 60 * 1000 - (now - personaje.lastOtroUniverso)) / 1000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remaining} segundos antes de usar este comando nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está muerto
+        if (personaje.stats.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${personaje.nombre} ha muerto.* Usa \`.bolasdeldragon\` para revivirlo.` },
+                { quoted: m }
+            );
+        }
+
+        // 🌌 **Generar XP y Coins aleatorios**
+        const xpGanada = Math.floor(Math.random() * 6001) + 1000; // Entre 1000 y 7000 XP
+        const coinsGanadas = Math.floor(Math.random() * 801) + 200; // Entre 200 y 1000 Coins
+        const vidaPerdida = Math.floor(Math.random() * 20) + 10; // Pierde entre 10 y 30 de vida
+
+        personaje.stats.experiencia += xpGanada;
+        cartera[userId].coins += coinsGanadas;
+        personaje.stats.vida -= vidaPerdida;
+
+        if (personaje.stats.vida < 0) personaje.stats.vida = 0;
+
+        // 🌠 **Posibilidad de efecto negativo** (15% de chance de perder XP o Coins)
+        let mensajeOtroUniverso = `🌌 *${personaje.nombre} viajó a otro universo y volvió con más poder.* 🚀  
+        ✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*  
+        💀 *Tu personaje perdió ${vidaPerdida} de vida.*`;
+
+        const efectoNegativo = Math.random() < 0.15; // 15% de probabilidad
+        if (efectoNegativo) {
+            const perdidaXp = Math.floor(Math.random() * 500) + 200; // Pierde entre 200 y 500 XP
+            const perdidaCoins = Math.floor(Math.random() * 300) + 100; // Pierde entre 100 y 300 Coins
+
+            personaje.stats.experiencia -= perdidaXp;
+            if (cartera[userId].coins >= perdidaCoins) {
+                cartera[userId].coins -= perdidaCoins;
+            } else {
+                cartera[userId].coins = 0;
+            }
+
+            mensajeOtroUniverso += `\n\n⚠️ *Un evento extraño ocurrió en el otro universo...*  
+            ❌ *Perdiste ${perdidaXp} XP y 🪙 ${perdidaCoins} Cortana Coins.*`;
+        }
+
+        // 📜 **Textos aleatorios con emojis**
+        const textosOtroUniverso = [
+            `🌠 *${personaje.nombre} viajó a una realidad alterna donde el tiempo no existe.*  
+            🔮 *Regresó con ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ⚠️ *Pero la distorsión le costó ${vidaPerdida} de vida.*`,
+
+            `🚀 *${personaje.nombre} atravesó un portal dimensional y trajo conocimientos nuevos.*  
+            ✨ *Gana ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *El viaje le drenó ${vidaPerdida} de vida.*`,
+
+            `🌌 *${personaje.nombre} encontró un universo donde todo es posible…*  
+            🏆 *Obtuvo ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ⚠️ *Pero pagó un precio con ${vidaPerdida} de vida.*`,
+
+            `🌀 *${personaje.nombre} ha roto las barreras del espacio-tiempo!*  
+            🏅 *Se trajo ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ☠️ *El impacto le restó ${vidaPerdida} de vida.*`,
+
+            `⚡ *${personaje.nombre} descubrió una nueva dimensión de energía infinita.*  
+            🎖️ *XP obtenida: ${xpGanada}, Coins recibidos: ${coinsGanadas}.*  
+            ⚠️ *Pero sufre una pérdida de ${vidaPerdida} de vida.*`,
+
+            `🔮 *${personaje.nombre} vio un futuro alternativo y ganó poder cósmico!*  
+            🏆 *XP: ${xpGanada}, Coins: ${coinsGanadas}.*  
+            💀 *Pero su cuerpo sufrió una distorsión y perdió ${vidaPerdida} de vida.*`,
+
+            `🛸 *Una nave interdimensional llevó a ${personaje.nombre} a los confines del universo.*  
+            💰 *Obtuvo ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *Pero el regreso le restó ${vidaPerdida} de vida.*`,
+
+            `⏳ *${personaje.nombre} quedó atrapado en un bucle temporal…*  
+            🌟 *Regresó con ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ⚠️ *El colapso redujo su vida en ${vidaPerdida} puntos.*`,
+
+            `💠 *${personaje.nombre} experimentó una realidad paralela y absorbió su conocimiento.*  
+            🎯 *XP obtenida: ${xpGanada}, Coins ganados: ${coinsGanadas}.*  
+            💔 *El shock dimensional le costó ${vidaPerdida} de vida.*`,
+
+            `🌟 *Los dioses del otro universo bendijeron a ${personaje.nombre}.*  
+            🏆 *Recompensa: ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            ☠️ *Pero la bendición tuvo un precio de ${vidaPerdida} de vida.*`
+        ];
+
+        mensajeOtroUniverso = textosOtroUniverso[Math.floor(Math.random() * textosOtroUniverso.length)];
+
+        // 📈 **Subir de nivel si alcanza la XP necesaria**
+        if (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 800; // Aumenta la XP necesaria para subir de nivel
+
+            // Notificar subida de nivel
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! ${personaje.nombre} ha subido al nivel ${personaje.stats.nivel}.*  
+                    📊 *Nueva XP requerida para el siguiente nivel:* ${personaje.stats.experienciaSiguienteNivel}  
+                    💖 *Vida restante:* ${personaje.stats.vida}/100`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // **Subir nivel de habilidades aleatoriamente**
+        const habilidadAleatoria = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadAleatoria.nivel++;
+
+        // **Guardar la última vez que usó el comando**
+        personaje.lastOtroUniverso = now;
+
+        // **Guardar cambios en el archivo**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // **Enviar mensaje del comando**
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeOtroUniverso },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .otrouniverso:', error);
+        m.reply('❌ *Ocurrió un error al intentar viajar a otro universo. Intenta nuevamente.*');
+    }
+}
+break;
+            
+	
+
+case 'mododios': {
+    try {
+        await m.react('⚡'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera[userId].personajes[0]; // Usar el primer personaje de la lista
+        const now = Date.now();
+
+        // Verificar intervalo de tiempo (5 min)
+        if (personaje.lastModoDios && now - personaje.lastModoDios < 5 * 60 * 1000) {
+            const remaining = Math.ceil((5 * 60 * 1000 - (now - personaje.lastModoDios)) / 1000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remaining} segundos antes de usar este comando nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está muerto
+        if (personaje.stats.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${personaje.nombre} ha muerto.* Usa \`.bolasdeldragon\` para revivirlo.` },
+                { quoted: m }
+            );
+        }
+
+        // 🔥 **Generar XP y Coins aleatorios**
+        const xpGanada = Math.floor(Math.random() * 4801) + 200; // Entre 200 y 5000 XP
+        const coinsGanadas = Math.floor(Math.random() * 1701) + 300; // Entre 300 y 2000 Coins
+        const vidaPerdida = Math.floor(Math.random() * 15) + 5; // Pierde entre 5 y 20 de vida
+
+        personaje.stats.experiencia += xpGanada;
+        cartera[userId].coins += coinsGanadas;
+        personaje.stats.vida -= vidaPerdida;
+
+        if (personaje.stats.vida < 0) personaje.stats.vida = 0;
+
+        // 📜 **Textos aleatorios con emojis**
+        const textosModoDios = [
+            `⚡ *${personaje.nombre} ascendió a un nivel divino!*  
+            ✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*  
+            💫 *Pero perdiste ${vidaPerdida} de vida en el proceso.*`,
+
+            `🌟 *${personaje.nombre} despertó un poder celestial desconocido!*  
+            🏆 *Recibiste ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💔 *Tu resistencia bajó ${vidaPerdida} de vida.*`,
+
+            `⚔️ *${personaje.nombre} ha desbloqueado el poder de los dioses!*  
+            🔥 *XP obtenida: ${xpGanada}, Coins ganados: ${coinsGanadas}.*  
+            💀 *Costo de poder: -${vidaPerdida} de vida.*`,
+
+            `☀️ *Una luz dorada envuelve a ${personaje.nombre}…*  
+            🎖️ *XP ganada: ${xpGanada}, Coins obtenidos: ${coinsGanadas}.*  
+            ⚠️ *El desgaste reduce ${vidaPerdida} de vida.*`,
+
+            `✨ *${personaje.nombre} se fusiona con la energía cósmica!*  
+            🚀 *Gana ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *Pierde ${vidaPerdida} de vida por la sobrecarga.*`,
+
+            `🔱 *${personaje.nombre} se convierte en un ser supremo!*  
+            🏅 *Premio: ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💔 *Sacrificio: -${vidaPerdida} de vida.*`,
+
+            `⚡ *Los cielos rugen mientras ${personaje.nombre} alcanza su forma divina!*  
+            💪 *XP obtenida: ${xpGanada}, Coins recibidos: ${coinsGanadas}.*  
+            ☠️ *Pero sufre ${vidaPerdida} de daño físico.*`,
+
+            `🛡️ *${personaje.nombre} se alza como el elegido de los dioses!*  
+            🎇 *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *Tu energía vital se reduce en ${vidaPerdida}.*`,
+
+            `🔮 *${personaje.nombre} recibe la bendición de los ancestros celestiales.*  
+            🏆 *XP +${xpGanada}, Coins +${coinsGanadas}.*  
+            ⚠️ *Advertencia: -${vidaPerdida} de vida perdida.*`,
+
+            `💠 *El poder infinito fluye a través de ${personaje.nombre}…*  
+            🌟 *Se otorgan ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💔 *El desgaste de la transformación reduce ${vidaPerdida} de vida.*`
+        ];
+
+        const mensajeModoDios = textosModoDios[Math.floor(Math.random() * textosModoDios.length)];
+
+        // 📈 **Subir de nivel si alcanza la XP necesaria**
+        if (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 500; // Aumenta la XP necesaria para subir de nivel
+
+            // Notificar subida de nivel
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! ${personaje.nombre} ha subido al nivel ${personaje.stats.nivel}.*  
+                    📊 *Nueva XP requerida para el siguiente nivel:* ${personaje.stats.experienciaSiguienteNivel}  
+                    💖 *Vida restante:* ${personaje.stats.vida}/100`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // **Subir nivel de habilidades aleatoriamente**
+        const habilidadAleatoria = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadAleatoria.nivel++;
+
+        // **Guardar la última vez que usó el comando**
+        personaje.lastModoDios = now;
+
+        // **Guardar cambios en el archivo**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // **Enviar mensaje del comando**
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeModoDios },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .mododios:', error);
+        m.reply('❌ *Ocurrió un error al intentar usar el comando. Intenta nuevamente.*');
+    }
+}
+break;
+        
+
+
+case 'mododiablo': {
+    try {
+        await m.react('😈'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera[userId].personajes[0]; // Usar el primer personaje de la lista
+        const now = Date.now();
+
+        // Verificar intervalo de tiempo (15 min)
+        if (personaje.lastModoDiablo && now - personaje.lastModoDiablo < 15 * 60 * 1000) {
+            const remaining = Math.ceil((15 * 60 * 1000 - (now - personaje.lastModoDiablo)) / 1000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remaining} segundos antes de usar este comando nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está muerto
+        if (personaje.stats.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${personaje.nombre} ha muerto.* Usa \`.bolasdeldragon\` para revivirlo.` },
+                { quoted: m }
+            );
+        }
+
+        // **Posibilidad del 25% de perder XP y Coins**
+        const perderRecursos = Math.random() < 0.25; // 25% de probabilidad
+
+        // **Valores de XP y Coins**
+        let xpGanada = Math.floor(Math.random() * 2500) + 500; // Entre 500 y 3000 XP
+        let coinsGanadas = Math.floor(Math.random() * 450) + 50; // Entre 50 y 500 Coins
+        let vidaPerdida = Math.floor(Math.random() * 30) + 10; // Pierde entre 10 y 40 de vida
+
+        if (perderRecursos) {
+            xpGanada = -Math.floor(Math.random() * 300) - 200; // Pierde entre 200 y 500 XP
+            coinsGanadas = -Math.floor(Math.random() * 400) - 100; // Pierde entre 100 y 500 Coins
+        }
+
+        personaje.stats.experiencia += xpGanada;
+        cartera[userId].coins += coinsGanadas;
+        personaje.stats.vida -= vidaPerdida;
+
+        if (personaje.stats.vida < 0) personaje.stats.vida = 0;
+
+        // **📜 Textos aleatorios con emojis**
+        const textosPositivos = [
+            `🔥 *${personaje.nombre} desató el poder del infierno y se volvió más fuerte!*  
+            ✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*  
+            💀 *Tu personaje perdió ${vidaPerdida} de vida.*`,
+            
+            `👹 *${personaje.nombre} ha alcanzado un estado demoníaco supremo.*  
+            💪 *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*  
+            🩸 *El precio del poder es perder ${vidaPerdida} de vida.*`,
+            
+            `⚡ *${personaje.nombre} invoca un rayo infernal y aniquila a sus enemigos.*  
+            🎖️ *+${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins obtenidos.*  
+            💔 *Pero sufrió ${vidaPerdida} de daño.*`,
+            
+            `😈 *${personaje.nombre} libera su lado oscuro...*  
+            ⚔️ *Su sed de poder le da ${xpGanada} XP y 🪙 ${coinsGanadas} Coins.*  
+            💀 *Pero ha perdido ${vidaPerdida} de vida en el proceso.*`,
+            
+            `🔥 *La transformación demoníaca de ${personaje.nombre} es completa.*  
+            💥 *El poder aumenta en +${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*  
+            ❤️‍🔥 *Pero ha sacrificado ${vidaPerdida} de vida.*`
+        ];
+
+        const textosNegativos = [
+            `⚠️ *${personaje.nombre} intentó entrar en Modo Diablo, pero fue absorbido por las sombras.*  
+            ❌ *Perdió ${Math.abs(xpGanada)} XP y 🪙 ${Math.abs(coinsGanadas)} Coins.*  
+            💀 *Sufrió ${vidaPerdida} de daño.*`,
+            
+            `😵‍💫 *${personaje.nombre} fue consumido por una energía oscura descontrolada.*  
+            ❌ *Ha perdido ${Math.abs(xpGanada)} XP y 🪙 ${Math.abs(coinsGanadas)} Coins.*  
+            💀 *El poder lo debilitó y perdió ${vidaPerdida} de vida.*`,
+            
+            `👁️ *El pacto demoníaco salió mal... ${personaje.nombre} ha pagado el precio.*  
+            🔻 *Se drenó ${Math.abs(xpGanada)} XP y 🪙 ${Math.abs(coinsGanadas)} Coins de su cuerpo.*  
+            💀 *Su vida bajó en ${vidaPerdida}.*`,
+            
+            `⚰️ *${personaje.nombre} no pudo controlar el Modo Diablo y sufrió graves heridas.*  
+            ❌ *Ha perdido ${Math.abs(xpGanada)} XP y 🪙 ${Math.abs(coinsGanadas)} Coins.*  
+            💔 *Ha quedado con ${personaje.stats.vida}/100 de vida.*`,
+            
+            `🕳️ *Las tinieblas han consumido a ${personaje.nombre}...*  
+            🩸 *Perdió ${Math.abs(xpGanada)} XP y 🪙 ${Math.abs(coinsGanadas)} Coins.*  
+            💀 *Su poder ha disminuido considerablemente.*`
+        ];
+
+        const mensajeModoDiablo = perderRecursos 
+            ? textosNegativos[Math.floor(Math.random() * textosNegativos.length)]
+            : textosPositivos[Math.floor(Math.random() * textosPositivos.length)];
+
+        // **📈 Subir de nivel si alcanza la XP necesaria**
+        if (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 1000; // Aumenta la XP necesaria para subir de nivel
+
+            // Notificar subida de nivel
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! ${personaje.nombre} ha subido al nivel ${personaje.stats.nivel}.*  
+                    📊 *Nueva XP requerida para el siguiente nivel:* ${personaje.stats.experienciaSiguienteNivel}  
+                    💖 *Vida restante:* ${personaje.stats.vida}/100`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // **📈 Subir nivel de habilidades aleatoriamente**
+        const habilidadAleatoria = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadAleatoria.nivel++;
+
+        // **🕒 Guardar la última vez que usó el comando**
+        personaje.lastModoDiablo = now;
+
+        // **💾 Guardar cambios en el archivo**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // **📢 Enviar mensaje del comando**
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeModoDiablo },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .mododiablo:', error);
+        m.reply('❌ *Ocurrió un error al intentar usar Modo Diablo. Intenta nuevamente.*');
+    }
+}
+break;
+        
+	
+case 'poder': {
+    try {
+        await m.react('⚡'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId] || !Array.isArray(cartera[userId].personajes) || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes personajes en tu cartera.* Usa `.comprar` para obtener uno." },
+                { quoted: m }
+            );
+        }
+
+        const personaje = cartera[userId].personajes[0]; // Usar el primer personaje de la lista
+        const now = Date.now();
+
+        // Verificar intervalo de tiempo (5 min)
+        if (personaje.lastPoder && now - personaje.lastPoder < 5 * 60 * 1000) {
+            const remaining = Math.ceil((5 * 60 * 1000 - (now - personaje.lastPoder)) / 1000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remaining} segundos antes de usar este comando nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el personaje está muerto
+        if (personaje.stats.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${personaje.nombre} ha muerto.* Usa \`.bolasdeldragon\` para revivirlo.` },
+                { quoted: m }
+            );
+        }
+
+        // Generar XP y monedas aleatorias
+        const xpGanada = Math.floor(Math.random() * 800) + 200; // Entre 200 y 1000 XP
+        const coinsGanadas = Math.floor(Math.random() * 300) + 1; // Entre 1 y 300 Coins
+        const vidaPerdida = Math.floor(Math.random() * 10) + 5; // Entre 5 y 15 de vida perdida
+
+        personaje.stats.experiencia += xpGanada;
+        personaje.stats.vida -= vidaPerdida;
+
+        // Asegurar que la vida no sea menor a 0
+        if (personaje.stats.vida < 0) {
+            personaje.stats.vida = 0;
+        }
+
+        // Sumar Cortana Coins al usuario
+        cartera[userId].coins += coinsGanadas;
+
+        // Subir de nivel si alcanza la experiencia necesaria
+        if (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 500; // Aumenta la XP necesaria para subir de nivel
+
+            // Notificar subida de nivel
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! ${personaje.nombre} ha subido al nivel ${personaje.stats.nivel}.*  
+                    📊 *Nueva XP requerida para el siguiente nivel:* ${personaje.stats.experienciaSiguienteNivel}  
+                    💖 *Vida restante:* ${personaje.stats.vida}/100`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // Subir nivel de habilidades aleatoriamente
+        const habilidadAleatoria = personaje.habilidades[Math.floor(Math.random() * personaje.habilidades.length)];
+        habilidadAleatoria.nivel++;
+
+        // Guardar la última vez que usó el comando
+        personaje.lastPoder = now;
+
+        // Guardar cambios en el archivo
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Textos aleatorios con emojis
+        const textos = [
+            `⚡ *${personaje.nombre} desató un ataque de energía colosal.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🔥 *${personaje.nombre} liberó una explosión de poder devastador.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `💥 *${personaje.nombre} cargó su aura al máximo y se sintió más fuerte.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🌪️ *${personaje.nombre} invocó un huracán de energía que sacudió todo a su alrededor.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `💠 *${personaje.nombre} sintió cómo su cuerpo se llenaba de una energía mística.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🌟 *${personaje.nombre} canalizó una fuerza divina y aumentó su poder.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🔮 *${personaje.nombre} absorbió la energía del entorno y se volvió más fuerte.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `💣 *${personaje.nombre} liberó una onda de choque destructiva.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `☄️ *${personaje.nombre} arrojó un meteorito de energía hacia su enemigo.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+            `🌌 *${personaje.nombre} entró en un estado de máxima concentración y su aura brilló intensamente.*\n✨ *Ganaste ${xpGanada} XP y 🪙 ${coinsGanadas} Cortana Coins.*`,
+        ];
+
+        // Respuesta al comando
+        const mensajeAleatorio = textos[Math.floor(Math.random() * textos.length)];
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeAleatorio },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .poder:', error);
+        m.reply('❌ *Ocurrió un error al intentar usar el comando. Intenta nuevamente.*');
+    }
+}
+break;
+	
 case 'volar': {
     try {
         await m.react('🕊️'); // Reacción al usar el comando
