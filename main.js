@@ -731,7 +731,6 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
-
 case 'damelo': {
     try {
         const userId = m.sender;
@@ -768,9 +767,9 @@ case 'damelo': {
         // Guardar los cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 📢 Mensaje de confirmación
+        // 📢 Mensaje de confirmación con mención correcta
         let mensajeReclamo = `
-🎉 *¡${userId.replace(/@s.whatsapp.net/, '')} ha reclamado un personaje GRATIS!* 🎉  
+🎉 *¡@${userId.replace(/@s.whatsapp.net/, '')} ha reclamado un personaje GRATIS!* 🎉  
 
 📌 *Ficha de Personaje:*  
 🎭 *Nombre:* ${personajeReclamado.nombre}  
@@ -786,7 +785,7 @@ case 'damelo': {
 📜 *Consulta tus personajes con:* \`.verpersonajes\`
         `;
 
-        // Enviar mensaje con la imagen del personaje
+        // Enviar mensaje con la imagen del personaje y mención del usuario correctamente
         await conn.sendMessage(
             m.chat,
             {
@@ -808,6 +807,7 @@ case 'damelo': {
     }
 }
 break;
+
 
 
 case 'free': {
