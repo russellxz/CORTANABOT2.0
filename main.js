@@ -736,7 +736,7 @@ case 'damelo': {
     try {
         const userId = m.sender;
 
-        // 📌 Verificar si hay personajes en la tienda Free
+        // Verificar si hay personajes en la tienda free
         if (!cartera.tiendaFree || cartera.tiendaFree.length === 0) {
             return conn.sendMessage(
                 m.chat,
@@ -745,49 +745,53 @@ case 'damelo': {
             );
         }
 
-        // 🎭 Tomar el PRIMER personaje disponible en la tienda Free
-        const personaje = cartera.tiendaFree.shift(); // Sacamos el primer personaje y lo eliminamos de la lista
+        // Obtener el primer personaje de la tienda free
+        const personajeReclamado = cartera.tiendaFree.shift(); // Saca el primer personaje disponible
 
-        // ✅ Asegurar que el usuario tenga una cartera
+        // Verificar si el usuario tiene una cartera, si no, crearla
         if (!cartera[userId]) {
-            cartera[userId] = { coins: 0, personajes: [] };
+            cartera[userId] = {
+                coins: 0,
+                mascotas: [],
+                personajes: []
+            };
         }
 
-        // ✅ Asegurar que el usuario tenga una lista de personajes
+        // Asegurar que el usuario tenga el array de personajes
         if (!Array.isArray(cartera[userId].personajes)) {
             cartera[userId].personajes = [];
         }
 
-        // ✅ Agregar el personaje a la cartera del usuario
-        cartera[userId].personajes.push(personaje);
+        // Agregar el personaje a la cartera del usuario
+        cartera[userId].personajes.push(personajeReclamado);
 
-        // ✅ Guardar los cambios en `cartera.json`
+        // Guardar los cambios en `cartera.json`
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 📢 **Mensaje de confirmación**
+        // 📢 Mensaje de confirmación
         let mensajeReclamo = `
-🎉 *¡@${userId.replace(/@s.whatsapp.net/, '')} ha reclamado un personaje GRATIS!* 🎉  
+🎉 *¡${userId.replace(/@s.whatsapp.net/, '')} ha reclamado un personaje GRATIS!* 🎉  
 
 📌 *Ficha de Personaje:*  
-🎭 *Nombre:* ${personaje.nombre}  
-⚔️ *Nivel:* ${personaje.stats.nivel}  
-💖 *Vida:* ${personaje.stats.vida}/100  
-🧬 *EXP:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}  
+🎭 *Nombre:* ${personajeReclamado.nombre}  
+⚔️ *Nivel:* ${personajeReclamado.stats.nivel}  
+💖 *Vida:* ${personajeReclamado.stats.vida}/100  
+🧬 *EXP:* ${personajeReclamado.stats.experiencia} / ${personajeReclamado.stats.experienciaSiguienteNivel}  
 
 🎯 *Habilidades:*  
-⚡ ${personaje.habilidades[0].nombre} (Nivel 1)  
-⚡ ${personaje.habilidades[1].nombre} (Nivel 1)  
-⚡ ${personaje.habilidades[2].nombre} (Nivel 1)  
+⚡ ${personajeReclamado.habilidades[0].nombre} (Nivel 1)  
+⚡ ${personajeReclamado.habilidades[1].nombre} (Nivel 1)  
+⚡ ${personajeReclamado.habilidades[2].nombre} (Nivel 1)  
 
 📜 *Consulta tus personajes con:* \`.verpersonajes\`
         `;
 
-        // 📢 Anunciar en el grupo quién lo reclamó
+        // Enviar mensaje con la imagen del personaje
         await conn.sendMessage(
             m.chat,
             {
-                image: Buffer.from(personaje.imagen, 'base64'),
-                mimetype: personaje.mimetype,
+                image: Buffer.from(personajeReclamado.imagen, 'base64'),
+                mimetype: personajeReclamado.mimetype,
                 caption: mensajeReclamo,
                 mentions: [userId]
             },
@@ -804,7 +808,6 @@ case 'damelo': {
     }
 }
 break;
-        
 
 
 case 'free': {
@@ -3127,7 +3130,6 @@ case 'casar': {
 }
 break;		
 
-	
 case 'crearcartera': {
     try {
         await m.react('✅'); // Reacción al usar el comando
@@ -3206,7 +3208,8 @@ ${habilidadesText}
         m.reply('❌ *Ocurrió un error al intentar crear la cartera. Intenta nuevamente.*');
     }
 }
-break;
+break;	
+
 //ver mascota				
 case 'vermascotas': {
     try {
