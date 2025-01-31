@@ -731,6 +731,7 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+
 case 'damelo': {
     try {
         const userId = m.sender;
@@ -747,15 +748,6 @@ case 'damelo': {
         // 🎭 Tomar el PRIMER personaje disponible en la tienda Free
         const personaje = cartera.tiendaFree.shift(); // Sacamos el primer personaje y lo eliminamos de la lista
 
-        // Verificar si el usuario ya tiene este personaje
-        if (cartera[userId]?.personajes?.some(p => p.nombre.toLowerCase() === personaje.nombre.toLowerCase())) {
-            return conn.sendMessage(
-                m.chat,
-                { text: `❌ *Ya tienes a ${personaje.nombre} en tu colección.* Usa \`.verpersonajes\` para verlos.` },
-                { quoted: m }
-            );
-        }
-
         // ✅ Asignar el personaje al usuario
         if (!cartera[userId]) {
             cartera[userId] = { coins: 0, personajes: [] };
@@ -767,7 +759,7 @@ case 'damelo': {
 
         // 📢 **Mensaje de confirmación**
         let mensajeReclamo = `
-🎉 *¡${await conn.getName(userId)} ha reclamado un personaje GRATIS!* 🎉  
+🎉 *¡@${userId.replace(/@s.whatsapp.net/, '')} ha reclamado un personaje GRATIS!* 🎉  
 
 📌 *Ficha de Personaje:*  
 🎭 *Nombre:* ${personaje.nombre}  
@@ -789,7 +781,8 @@ case 'damelo': {
             {
                 image: Buffer.from(personaje.imagen, 'base64'),
                 mimetype: personaje.mimetype,
-                caption: mensajeReclamo
+                caption: mensajeReclamo,
+                mentions: [userId]
             },
             { quoted: m }
         );
@@ -804,7 +797,6 @@ case 'damelo': {
     }
 }
 break;
-
         
 
 
