@@ -820,82 +820,94 @@ case 'damelo': {
 }
 break;	
 
+
+
 case 'free': {
     try {
         const userId = m.sender;
+        const isOwner = global.owner?.some(([id]) => id === userId.replace(/@s.whatsapp.net/, ''));
+        const isAdmin = m.isGroup ? (await conn.groupMetadata(m.chat)).participants.find(p => p.id === userId && (p.admin || p.superAdmin)) : false;
 
-        // 1️⃣ Verificar si el usuario es admin o owner
-        const isAdmin = isUserAdmin(userId, m.chat); // Debes tener una función que verifique si es admin
-        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, ''));
-        
-        if (!isAdmin && !isOwner) {
+        // 🛑 Verificar si el usuario es admin o owner
+        if (!isOwner && !isAdmin) {
             return conn.sendMessage(
                 m.chat,
-                { text: "🚫 *Solo los administradores o el owner pueden usar este comando.*" },
+                { text: "🚫 *Este comando solo puede ser usado por administradores del grupo o el Owner.*" },
                 { quoted: m }
             );
         }
 
-        // 2️⃣ Verificar si hay personajes en la tienda
+        // 🛒 Verificar si hay personajes en la tienda del sistema
         if (!cartera.personajesEnVenta || cartera.personajesEnVenta.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No hay personajes disponibles en la tienda para regalar.*" },
+                { text: "⚠️ *No hay personajes disponibles en la tienda en este momento.*" },
                 { quoted: m }
             );
         }
 
-        // 3️⃣ Elegir un personaje aleatorio
+        // 🎲 Elegir un personaje aleatorio de la tienda y eliminarlo temporalmente
         const personajeIndex = Math.floor(Math.random() * cartera.personajesEnVenta.length);
-        const personaje = cartera.personajesEnVenta.splice(personajeIndex, 1)[0];
+        const personajeAleatorio = cartera.personajesEnVenta.splice(personajeIndex, 1)[0]; // Eliminar de la tienda
 
-        // 4️⃣ Agregarlo a la tienda temporal de personajes gratis
+        // 🏪 Asegurar que la Tienda Free exista
         if (!cartera.tiendaFree) {
             cartera.tiendaFree = [];
         }
-        cartera.tiendaFree.push(personaje);
 
-        // 5️⃣ Guardar los cambios
+        // 🚀 Agregar el personaje a la Tienda Free con tiempo de expiración
+        const tiempoExpiracion = Date.now() + 30000; // Expira en 30 segundos
+        cartera.tiendaFree.push({ ...personajeAleatorio, tiempoExpiracion });
+
+        // Guardar cambios
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 6️⃣ Enviar mensaje con la imagen del personaje
+        // 📢 **Anuncio del personaje disponible en Free**
         let mensajeFree = `
-🎁 *¡Un personaje gratis está disponible!* 🎁  
+🎁 *¡Un personaje está disponible GRATIS!* 🎁
 
-📌 *Ficha del Personaje:*  
-🎭 *Nombre:* ${personaje.nombre}  
-⚔️ *Nivel:* ${personaje.stats.nivel}  
-💖 *Vida:* ${personaje.stats.vida}/100  
-🧬 *EXP:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}  
+📌 *Ficha de Personaje:*  
+🎭 *Nombre:* ${personajeAleatorio.nombre}  
+⚔️ *Nivel:* ${personajeAleatorio.stats.nivel}  
+💖 *Vida:* ${personajeAleatorio.stats.vida}/100  
+🧬 *EXP:* ${personajeAleatorio.stats.experiencia} / ${personajeAleatorio.stats.experienciaSiguienteNivel}  
 
 🎯 *Habilidades:*  
-⚡ ${personaje.habilidades[0].nombre} (Nivel ${personaje.habilidades[0].nivel})  
-⚡ ${personaje.habilidades[1].nombre} (Nivel ${personaje.habilidades[1].nivel})  
-⚡ ${personaje.habilidades[2].nombre} (Nivel ${personaje.habilidades[2].nivel})  
+⚡ ${personajeAleatorio.habilidades[0].nombre} (Nivel 1)  
+⚡ ${personajeAleatorio.habilidades[1].nombre} (Nivel 1)  
+⚡ ${personajeAleatorio.habilidades[2].nombre} (Nivel 1)  
 
-⏳ *Tienes 30 segundos para reclamarlo respondiendo con* \`.damelo\`
+⏳ *Tiempo límite para reclamar: 30 segundos*  
+📜 *Para reclamarlo, responde a este mensaje con:* \`.damelo\`
         `;
 
+        // Enviar mensaje con la imagen del personaje
         await conn.sendMessage(
             m.chat,
             {
-                image: Buffer.from(personaje.imagen, 'base64'),
-                mimetype: personaje.mimetype,
+                image: Buffer.from(personajeAleatorio.imagen, 'base64'),
+                mimetype: personajeAleatorio.mimetype,
                 caption: mensajeFree
             },
             { quoted: m }
         );
 
-        // 7️⃣ Devolver el personaje a la tienda si no es reclamado en 30 segundos
+        // 🕒 **Esperar 30 segundos y verificar si alguien lo reclamó**
         setTimeout(() => {
-            const indexFree = cartera.tiendaFree.findIndex(p => p.nombre === personaje.nombre);
+            // Buscar el personaje en la Tienda Free
+            const indexFree = cartera.tiendaFree.findIndex(p => p.nombre === personajeAleatorio.nombre);
             if (indexFree !== -1) {
-                cartera.tiendaFree.splice(indexFree, 1);
-                cartera.personajesEnVenta.push(personaje);
+                // Si aún está en Tienda Free, regresarlo a la tienda normal
+                cartera.personajesEnVenta.push(personajeAleatorio);
+                cartera.tiendaFree.splice(indexFree, 1); // Eliminar de la Tienda Free
+
+                // Guardar los cambios
                 fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+                // Notificar que el personaje regresó a la tienda
                 conn.sendMessage(
                     m.chat,
-                    { text: `⏳ *El personaje ${personaje.nombre} no fue reclamado y ha vuelto a la tienda.*` },
+                    { text: `⏳ *Nadie reclamó a ${personajeAleatorio.nombre}. Ha sido devuelto a la tienda.*\n📜 *Usa* \`.alaventa\` *para ver los personajes en venta.*` },
                     { quoted: m }
                 );
             }
@@ -905,12 +917,12 @@ case 'free': {
         console.error('❌ Error en el comando .free:', error);
         return conn.sendMessage(
             m.chat,
-            { text: "❌ *Ocurrió un error al intentar regalar un personaje.*" },
+            { text: "❌ *Ocurrió un error al intentar seleccionar un personaje gratis. Intenta nuevamente.*" },
             { quoted: m }
         );
     }
 }
-break;
+break;        
         
         
 	
