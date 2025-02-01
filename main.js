@@ -765,12 +765,20 @@ case 'mascota': {
         // Convertir la imagen base64 a buffer para enviarla como imagen
         const bufferImagen = Buffer.from(nuevaMascotaPrincipal.imagen, 'base64');
 
-        // Confirmar cambio
+        // Formatear las habilidades de la mascota
+        let habilidadesText = nuevaMascotaPrincipal.habilidades
+            .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+            .join('\n');
+
+        // Confirmar cambio con mensaje y habilidades
         const mensaje = `🎉 *Has cambiado tu mascota principal a:*  
 🐾 *${nuevaMascotaPrincipal.nombre}*  
 📊 *Rango:* ${nuevaMascotaPrincipal.rango}  
 🆙 *Nivel:* ${nuevaMascotaPrincipal.nivel}  
-❤️ *Vida:* ${nuevaMascotaPrincipal.vida}`;
+❤️ *Vida:* ${nuevaMascotaPrincipal.vida}  
+
+✨ *Habilidades:*  
+${habilidadesText}`;
 
         await conn.sendMessage(
             m.chat,
