@@ -730,7 +730,66 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'mascota': {
+    try {
+        const userId = m.sender;
+        const args = m.text.split(' ')[1]; // Obtener el número de la mascota (ejemplo: .mascota 2)
 
+        // Verificar si el usuario tiene una cartera
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el argumento es válido
+        const mascotaIndex = parseInt(args);
+        if (isNaN(mascotaIndex) || mascotaIndex < 1 || mascotaIndex > cartera[userId].mascotas.length) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *Debes ingresar un número válido entre 1 y ${cartera[userId].mascotas.length}.*` },
+                { quoted: m }
+            );
+        }
+
+        // Cambiar la mascota principal
+        const mascotas = cartera[userId].mascotas;
+        const nuevaMascotaPrincipal = mascotas.splice(mascotaIndex - 1, 1)[0]; // Eliminar y obtener la mascota seleccionada
+        mascotas.unshift(nuevaMascotaPrincipal); // Moverla al inicio del arreglo
+
+        // Guardar cambios en cartera.json
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Convertir la imagen base64 a buffer para enviarla como imagen
+        const bufferImagen = Buffer.from(nuevaMascotaPrincipal.imagen, 'base64');
+
+        // Confirmar cambio
+        const mensaje = `🎉 *Has cambiado tu mascota principal a:*  
+🐾 *${nuevaMascotaPrincipal.nombre}*  
+📊 *Rango:* ${nuevaMascotaPrincipal.rango}  
+🆙 *Nivel:* ${nuevaMascotaPrincipal.nivel}  
+❤️ *Vida:* ${nuevaMascotaPrincipal.vida}`;
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: bufferImagen,
+                mimetype: nuevaMascotaPrincipal.mimetype || 'image/jpeg', // Asegurar que tenga un tipo de imagen válido
+                caption: mensaje
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .mascota:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar cambiar de mascota. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+
+	
 case 'deletemascota': {
     try {
         const userId = m.sender;
@@ -916,69 +975,67 @@ ${nuevaMascota.habilidades.map(h => `🔹 ${h.nombre} (Nivel ${h.nivel})`).join(
 }
 break;	
 
-        
 case 'topmascotas': {
     try {
         await m.react('🏆'); // Reacción al usar el comando
 
-        let rankingMascotas = [];
+        // Verificar si hay usuarios con mascotas
+        const usuariosConMascotas = Object.entries(cartera)
+            .filter(([_, datos]) => datos.mascotas && datos.mascotas.length > 0)
+            .map(([userId, datos]) => ({
+                userId,
+                nombre: datos.nombre || `@${userId.split('@')[0]}`,
+                mascotas: datos.mascotas.map(m => ({
+                    nombre: m.nombre,
+                    nivel: m.nivel
+                })),
+                nivelTotal: datos.mascotas.reduce((acc, m) => acc + m.nivel, 0) // Sumar niveles de todas sus mascotas
+            }));
 
-        // 📌 Recorrer la cartera y agregar usuarios con mascotas al ranking
-        for (const userId in cartera) {
-            if (cartera[userId].mascotas && cartera[userId].mascotas.length > 0) {
-                cartera[userId].mascotas.forEach(mascota => {
-                    rankingMascotas.push({
-                        usuario: userId,
-                        nombre: mascota.nombre,
-                        nivel: mascota.nivel
-                    });
-                });
-            }
-        }
-
-        // 📌 Verificar si hay mascotas registradas
-        if (rankingMascotas.length === 0) {
+        if (usuariosConMascotas.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No hay mascotas registradas en el grupo.*" },
+                { text: "⚠️ *No hay usuarios con mascotas registradas.*" },
                 { quoted: m }
             );
         }
 
-        // 📊 Ordenar el ranking por nivel (de mayor a menor)
-        rankingMascotas.sort((a, b) => b.nivel - a.nivel);
+        // Ordenar por nivel total de todas sus mascotas
+        usuariosConMascotas.sort((a, b) => b.nivelTotal - a.nivelTotal);
 
-        // 🏆 Construir el mensaje del ranking
-        let mensajeRanking = `🏆 *Top Ranking de Mascotas* 🏆\n\n`;
-        let menciones = [];
+        // Construir el mensaje del ranking
+        let topTexto = `🏆 *Top Ranking de Mascotas* 🏆\n\n`;
 
-        rankingMascotas.forEach((mascota, index) => {
-            let posicion = index + 1;
-            let usuarioMencion = `@${mascota.usuario.replace(/@s.whatsapp.net/, '')}`;
-            mensajeRanking += `🔹 *#${posicion}* - ${usuarioMencion}  
-   🐾 *${mascota.nombre}*  
-   🆙 Nivel: ${mascota.nivel}  
-━━━━━━━━━━━━━━\n`;
-            menciones.push(mascota.usuario);
+        usuariosConMascotas.forEach((usuario, index) => {
+            topTexto += `🔹 *#${index + 1}* - @${usuario.userId.split('@')[0]}\n`;
+            usuario.mascotas.forEach(mascota => {
+                topTexto += `   🐾 *${mascota.nombre}*  🆙 Nivel: ${mascota.nivel}\n`;
+            });
+            topTexto += `━━━━━━━━━━━━━━\n`;
         });
 
-        // 📸 Enviar mensaje con imagen del ranking
+        // Enviar mensaje con la imagen del ranking
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://cloud.dorratz.com/files/6a997043e24e581da56bcc6e15ee0820" },
-                caption: mensajeRanking,
-                mentions: menciones
+                text: topTexto,
+                mentions: usuariosConMascotas.map(u => u.userId),
+                image: { url: "https://cloud.dorratz.com/files/6a997043e24e581da56bcc6e15ee0820" }, // Imagen del ranking
             },
             { quoted: m }
         );
 
     } catch (error) {
         console.error('❌ Error en el comando .topmascotas:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al generar el ranking de mascotas.*' }, { quoted: m });
+        return conn.sendMessage(
+            m.chat,
+            { text: '❌ *Ocurrió un error al obtener el ranking de mascotas. Intenta nuevamente.*' },
+            { quoted: m }
+        );
     }
 }
-break;
+break;        
+
 	
 case 'crearcartera': {
     try {
@@ -3943,56 +4000,6 @@ ${habilidadesText}
 }
 break;
 	
-case 'mascota': {
-    try {
-        const userId = m.sender;
-        const args = m.text.split(' ')[1]; // Obtener el número de la mascota (ejemplo: .mascota 2)
-
-        // Verificar si el usuario tiene una cartera
-        if (!cartera[userId]) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
-                { quoted: m }
-            );
-        }
-
-        // Verificar si el argumento es válido
-        const mascotaIndex = parseInt(args);
-        if (isNaN(mascotaIndex) || mascotaIndex < 1 || mascotaIndex > cartera[userId].mascotas.length) {
-            return conn.sendMessage(
-                m.chat,
-                { text: `⚠️ *Debes ingresar un número válido entre 1 y ${cartera[userId].mascotas.length}.*` },
-                { quoted: m }
-            );
-        }
-
-        // Cambiar la mascota principal
-        const mascotas = cartera[userId].mascotas;
-        const nuevaMascotaPrincipal = mascotas.splice(mascotaIndex - 1, 1)[0]; // Eliminar y obtener la mascota seleccionada
-        mascotas.unshift(nuevaMascotaPrincipal); // Moverla al inicio del arreglo
-
-        // Guardar cambios en cartera.json
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-
-        // Confirmar cambio
-        const mensaje = `🎉 *Has cambiado tu mascota principal a:*  
-🦴 *${nuevaMascotaPrincipal.nombre}*  
-📊 *Rango:* ${nuevaMascotaPrincipal.rango}  
-🆙 *Nivel:* ${nuevaMascotaPrincipal.nivel}  
-❤️ *Vida:* ${nuevaMascotaPrincipal.vida}`;
-
-        await conn.sendMessage(
-            m.chat,
-            { text: mensaje },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error('❌ Error en el comando .mascota:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar cambiar de mascota. Intenta nuevamente.*' }, { quoted: m });
-    }
-}
-break;
 	
 case 'tiendamall': {
     try {
