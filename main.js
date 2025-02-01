@@ -3622,8 +3622,8 @@ case 'estadomascota': {
 
         const userId = m.sender;
 
-        // Verificar si el usuario tiene una cartera creada
-        if (!cartera[userId]) {
+        // Verificar si el usuario tiene una cartera con al menos una mascota
+        if (!cartera[userId] || !cartera[userId].mascotas || cartera[userId].mascotas.length === 0) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
@@ -3631,9 +3631,19 @@ case 'estadomascota': {
             );
         }
 
-        const mascotaPrincipal = cartera[userId].mascotas[0]; // La primera mascota es la principal
+        // Obtener la mascota principal del usuario (primera en la lista)
+        const mascotaPrincipal = cartera[userId].mascotas[0];
 
-        // Crear texto con las estadísticas de la mascota principal
+        // Verificar si la mascota tiene una imagen guardada
+        if (!mascotaPrincipal.imagen) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No se encontró una imagen asociada a tu mascota.*" },
+                { quoted: m }
+            );
+        }
+
+        // Crear texto con las estadísticas de la mascota
         let habilidadesText = mascotaPrincipal.habilidades
             .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
             .join('\n');
@@ -3652,16 +3662,14 @@ ${habilidadesText}
 
 💡 *Usa los comandos de interacción para mejorar sus habilidades y subir de nivel.*`;
 
-        // URL de la imagen correspondiente
-        const imageUrl = 'https://cloud.dorratz.com/files/0f1eacbf814e1342e424de1b3ab0fd3b'; // Reemplaza con la URL de la imagen que quieras enviar
-
-        // Enviar mensaje al usuario con la imagen y las estadísticas
+        // Enviar mensaje con la imagen de la mascota almacenada en la cartera del usuario
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: imageUrl }, // Enviar la imagen con la URL
-                caption: textoEstado, // Texto que acompaña a la imagen
-                mentions: [m.sender], // Menciones si aplica
+                image: Buffer.from(mascotaPrincipal.imagen, 'base64'), // Imagen en base64 desde la cartera
+                mimetype: mascotaPrincipal.mimetype, // Tipo de archivo
+                caption: textoEstado, // Texto con estadísticas
+                mentions: [m.sender], // Mención al usuario
             },
             { quoted: m }
         );
