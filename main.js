@@ -912,14 +912,68 @@ ${nuevaMascota.habilidades.map(h => `🔹 ${h.nombre} (Nivel ${h.nivel})`).join(
 }
 break;
         
-		
+case 'topmascotas': {
+    try {
+        await m.react('🏆'); // Reacción al usar el comando
+
+        // Verificar si hay usuarios con mascotas
+        const usuariosConMascotas = Object.entries(cartera).filter(([userId, data]) => data.mascotas && data.mascotas.length > 0);
+
+        if (usuariosConMascotas.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No hay usuarios con mascotas registradas en el sistema.* Usa `.crearcartera` para obtener tu primera mascota." },
+                { quoted: m }
+            );
+        }
+
+        // Ordenar por nivel de la mascota principal
+        const ranking = usuariosConMascotas
+            .map(([userId, data]) => ({
+                userId,
+                mascota: data.mascotas[0], // Tomar la primera mascota como principal
+            }))
+            .sort((a, b) => b.mascota.nivel - a.mascota.nivel) // Ordenar de mayor a menor nivel
+            .slice(0, 10); // Tomar el Top 10
+
+        // Construir mensaje del ranking
+        let mensajeRanking = `🏆 *Top 10 Mascotas más Fuertes* 🏆\n\n`;
+        mensajeRanking += `━━━━━━━━━━━━━━━━━━\n`;
+
+        ranking.forEach((usuario, index) => {
+            const puestoEmoji = ["🥇", "🥈", "🥉"][index] || `🔹 *#${index + 1}*`;
+            mensajeRanking += `${puestoEmoji} *@${usuario.userId.split('@')[0]}* con *${usuario.mascota.nombre}*\n`;
+            mensajeRanking += `📊 *Nivel:* ${usuario.mascota.nivel}\n`;
+            mensajeRanking += `━━━━━━━━━━━━━━━━━━\n`;
+        });
+
+        mensajeRanking += `🏅 *¿Quieres entrar en el ranking?* 🏅\n`;
+        mensajeRanking += `🎭 Usa los comandos de entrenamiento y sube de nivel tu mascota.`;
+
+        // Enviar mensaje con la nueva imagen del ranking
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cloud.dorratz.com/files/6a997043e24e581da56bcc6e15ee0820" }, // Nueva imagen del Top Ranking Mascotas
+                caption: mensajeRanking,
+                mentions: ranking.map(usuario => usuario.userId),
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .topmascotas:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al mostrar el ranking. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
 case 'crearcartera': {
     try {
         await m.react('✅'); // Reacción al usar el comando
 
         const userId = m.sender;
         
-        // Verificar si el usuario ya tiene una cartera creada
+        // ✅ **Verificar si el usuario ya tiene una cartera creada**
         if (cartera[userId]) {
             return conn.sendMessage(
                 m.chat,
@@ -932,7 +986,20 @@ case 'crearcartera': {
         if (!cartera.mascotasEnVenta || cartera.mascotasEnVenta.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No hay mascotas disponibles en la tienda en este momento.*" },
+                { 
+                    text: `⚠️ *No hay mascotas disponibles en la tienda en este momento.*  
+                    
+💡 *Para agregar mascotas a la tienda, los administradores deben usar:*  
+\`.addmascota [emoji][nombre] [habilidad1] [habilidad2] [habilidad3] [precio]\`  
+
+📌 *Ejemplo:*  
+\`.addmascota 🐕Perro Fuerza Agilidad Lealtad 500\`  
+
+⚠️ *IMPORTANTE:* El *emoji debe ir pegado al nombre* para que el sistema lo reconozca correctamente.  
+
+🔹 *Este comando permite agregar una nueva mascota con su imagen, habilidades y precio a la tienda.*  
+🔹 *Las mascotas en la tienda pueden ser compradas por los usuarios con Cortana Coins.*` 
+                },
                 { quoted: m }
             );
         }
@@ -997,7 +1064,8 @@ ${habilidadesText}
         m.reply('❌ *Ocurrió un error al intentar crear la cartera. Intenta nuevamente.*');
     }
 }
-break;
+break;		
+
 	
 case 'addmascota': {
     try {
