@@ -3426,7 +3426,6 @@ case 'verpersonajes': {
         // 📢 **Opciones de gestión**
         textoPersonajes += `❌ *.quitarventa [nombre]* → Retirar un personaje de la venta y volverlo a tu colección.\n`;
         textoPersonajes += `🐉 *.bolasdeldragon* → Usa 300 🪙 Cortana Coins para restaurar la vida de tu personaje al 100%.\n\n`;
-        textoPersonajes += `✋ *.damelo* → Reclama un personaje gratis antes de que desaparezca.\n`;
         textoPersonajes += `⚔️ *.batallaanime @usuario* → Reta a otro jugador a una batalla anime.\n`;
         textoPersonajes += `🏆 *.go* → Acepta un reto de batalla anime y pelea con tu personaje.\n\n`;
         textoPersonajes += `🔄 *.personaje [nombre]* → Cambiar de personaje principal.\n`;
