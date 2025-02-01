@@ -3412,7 +3412,27 @@ case 'verpersonajes': {
 
         textoPersonajes += `📌 *Usa* \`.vender <nombre> <precio>\` *para vender un personaje.*\n`;
         textoPersonajes += `📢 *Para ver la tienda de personajes, usa* \`.alaventa\`\n`;
+        menuTexto += `🚀 *📈 Cómo Subir de Nivel a tu Personaje* 📈\n`;
+        menuTexto += `━━━━━━━━━━━━━━━━━━━━\n`;
+        menuTexto += `⚔️ *.luchar* → Enfréntate a enemigos y gana XP y Cortana Coins.\n`;
+        menuTexto += `🛸 *.volar* → Tu personaje vuela y gana XP.\n`;
+        menuTexto += `🔮 *.poder* → Usa tu poder y obtén recompensas.\n`;
+        menuTexto += `🔥 *.mododiablo* → Multiplica tu poder, pero con riesgo.\n`;
+        menuTexto += `⚡ *.mododios* → Desata un poder divino para obtener grandes recompensas.\n`;
+        menuTexto += `🌌 *.otrouniverso* → Viaja a otro universo y gana XP.\n`;
+        menuTexto += `👾 *.enemigos* → Derrota enemigos y obtén recompensas.\n`;
+        menuTexto += `🌍 *.otromundo* → Explora otros mundos en busca de XP y Coins.\n`;
+        menuTexto += `💥 *.podermaximo* → Desata tu poder máximo (Disponible cada 24 horas).\n\n`;
 
+        menuTexto += `🐉 *.bolasdeldragon* → Usa 300 🪙 Cortana Coins para restaurar la vida de tu personaje al 100%.\n\n`;
+
+        // **➕ Comandos de Personajes Gratis y Batallas**
+        menuTexto += `🎁 *.free* → Un administrador lanza un personaje gratis para que alguien lo reclame.\n`;
+        menuTexto += `✋ *.damelo* → Reclama un personaje gratis antes de que desaparezca.\n`;
+        menuTexto += `⚔️ *.batallaanime @usuario* → Reta a otro jugador a una batalla anime.\n`;
+        menuTexto += `🏆 *.go* → Acepta un reto de batalla anime y pelea con tu personaje.\n\n`;
+        menuTexto += `🔄 *.personaje [nombre]* → Cambiar de personaje principal.\n`;
+        menuTexto += `🎭 *¡Mejora a tu personaje y conviértete en el más fuerte!* 🔥\n`;
         // Enviar mensaje con imagen de portada
         await conn.sendMessage(
             m.chat,
