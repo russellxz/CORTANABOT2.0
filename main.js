@@ -3734,7 +3734,7 @@ break;
 case 'tiendamall': {
     try {
         // Verificar si hay mascotas en la tienda
-        if (!cartera.tiendaMascotas || cartera.tiendaMascotas.length === 0) {
+        if (!cartera.mascotasEnVenta || cartera.mascotasEnVenta.length === 0) {
             return conn.sendMessage(
                 m.chat,
                 { text: "⚠️ *No hay mascotas disponibles en la tienda en este momento.*" },
@@ -3744,7 +3744,7 @@ case 'tiendamall': {
 
         // Construir la lista de mascotas disponibles
         let listaMascotas = "🐾 *Mascotas Disponibles:* 🐾\n\n";
-        cartera.tiendaMascotas.forEach((mascota) => {
+        cartera.mascotasEnVenta.forEach((mascota) => {
             let habilidadesText = mascota.habilidades
                 .map((hab) => `🔹 ${hab.nombre} (Nivel 1)`)
                 .join('\n');
@@ -3763,7 +3763,7 @@ case 'tiendamall': {
 🍒｡･ﾟ♡ﾟ･｡🍓｡･ﾟ♡ﾟ･｡
 
 🛒 *¡Bienvenido a la Tienda Mall!* 🛍️
-Aquí puedes comprar nuevas mascotas y personajes con tus *Cortana Coins* 🪙
+Aquí puedes comprar nuevas mascotas con tus *Cortana Coins* 🪙
 
 ━─━────༺༻────━─━
 
@@ -4061,6 +4061,7 @@ case 'curar': {
 break;
 		
 //batalla 	
+
 case 'lanzarpelota': {
     try {
         await m.react('🎾'); // Reacción al usar el comando
@@ -4078,32 +4079,45 @@ case 'lanzarpelota': {
         const currentTime = Date.now();
         const lastUsed = userMascota.lastLanzarPelota || 0;
 
-        // Verificar intervalo de 5 minutos (300000ms)
+        // 🕒 **Verificar tiempo de uso (5 min)**
         if (currentTime - lastUsed < 300000) {
             const remainingTime = Math.ceil((300000 - (currentTime - lastUsed)) / 1000);
             return conn.sendMessage(
                 m.chat,
-                { text: `⏳ *Espera ${remainingTime} segundos antes de usar este comando nuevamente.*` },
+                { text: `⏳ *Debes esperar ${remainingTime} segundos antes de usar este comando nuevamente.*` },
                 { quoted: m }
             );
         }
 
-        // Generar monedas y experiencia aleatorias
-        const coinsGanados = Math.floor(Math.random() * 100) + 1;
-        const xpGanada = Math.floor(Math.random() * 100) + 50;
+        // 💀 **Verificar si la mascota está sin vida**
+        if (userMascota.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *${userMascota.nombre} está sin vida.* Usa \`.curar\` para revivirla y poder jugar de nuevo.` },
+                { quoted: m }
+            );
+        }
 
-        // Actualizar experiencia, monedas y tiempo del último uso
+        // 🎖️ **Generar recompensas aleatorias**
+        const coinsGanados = Math.floor(Math.random() * 801); // Máximo 800 Coins
+        const xpGanada = Math.floor(Math.random() * 1000) + 100; // Entre 100 y 1000 XP
+        const vidaPerdida = Math.floor(Math.random() * 15) + 5; // Pierde entre 5 y 20 de vida
+
+        // 📈 **Actualizar estadísticas**
         cartera[userId].coins += coinsGanados;
         userMascota.experiencia += xpGanada;
+        userMascota.vida -= vidaPerdida;
         userMascota.lastLanzarPelota = currentTime;
 
-        // Subir de nivel si alcanza la experiencia necesaria
+        if (userMascota.vida < 0) userMascota.vida = 0; // Evitar valores negativos
+
+        // 🆙 **Subir de nivel si alcanza la experiencia necesaria**
         if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
             userMascota.nivel++;
             userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
             userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
 
-            // Actualizar rango
+            // 📊 **Actualizar rango**
             const rangos = [
                 '🐾 Principiante',
                 '🐾 Intermedio',
@@ -4114,172 +4128,70 @@ case 'lanzarpelota': {
             const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
             userMascota.rango = nuevoRango;
 
-            // Notificar subida de nivel
+            // 📢 **Notificación de subida de nivel**
             await conn.sendMessage(
                 m.chat,
                 {
-                    text: `🎉 *¡Felicidades! Tu mascota ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
+                    text: `🎉 *¡Felicidades! ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
 📊 *Nuevo rango:* ${nuevoRango}  
-🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel - userMascota.experiencia}`,
+🆙 *Experiencia necesaria para el siguiente nivel:* ${userMascota.experienciaSiguienteNivel}  
+💖 *Vida restante:* ${userMascota.vida}/100`,
                 },
                 { quoted: m }
             );
         }
 
-        // Subir nivel de habilidades aleatoriamente
+        // 🏆 **Subir nivel de una habilidad aleatoriamente**
         const habilidadMejorada = userMascota.habilidades[Math.floor(Math.random() * userMascota.habilidades.length)];
         habilidadMejorada.nivel++;
 
-        // Guardar cambios
+        // 💾 **Guardar cambios**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Mensajes aleatorios
+        // 🎾 **Mensajes aleatorios personalizados**
         const mensajesAleatorios = [
-            "🎾 Tu mascota atrapó la pelota en el aire y lució increíble.",
-            "🎾 ¡Qué lanzamiento perfecto! Tu mascota parece estar en las grandes ligas.",
-            "🎾 Tu mascota persiguió la pelota y ganó aplausos de todos.",
-            "🎾 ¡Increíble habilidad! Tu mascota atrapó la pelota con un giro.",
-            "🎾 Tu mascota se divirtió y demostró que es la mejor.",
-            // Agrega más mensajes aquí
+            `🎾 *${userMascota.nombre} atrapó la pelota en el aire con gran habilidad!*`,
+            `🎾 *¡Impresionante! ${userMascota.nombre} saltó alto y atrapó la pelota como un profesional.*`,
+            `🎾 *${userMascota.nombre} corrió tras la pelota y la recuperó en un instante.*`,
+            `🎾 *¡Gran agilidad! ${userMascota.nombre} atrapó la pelota antes de que tocara el suelo.*`,
+            `🎾 *Parece que ${userMascota.nombre} disfruta mucho jugar con la pelota.*`,
+            `🎾 *${userMascota.nombre} hizo un movimiento increíble para atrapar la pelota.*`,
+            `🎾 *Increíble reflejo de ${userMascota.nombre}, no deja que la pelota se escape.*`,
+            `🎾 *Con velocidad y destreza, ${userMascota.nombre} atrapó la pelota como un campeón.*`,
+            `🎾 *La pelota voló lejos, pero ${userMascota.nombre} la trajo de vuelta con energía.*`,
+            `🎾 *¡Qué resistencia! ${userMascota.nombre} no se cansa de jugar con la pelota.*`
         ];
 
         const mensajeAleatorio = mensajesAleatorios[Math.floor(Math.random() * mensajesAleatorios.length)];
 
-        // Responder al usuario
+        // 📢 **Mensaje final al usuario**
         await conn.sendMessage(
             m.chat,
             {
                 text: `${mensajeAleatorio}\n\n🎖️ *Recompensas:*  
 🪙 ${coinsGanados} Cortana Coins  
 🆙 ${xpGanada} XP  
+💖 *Vida restante:* ${userMascota.vida}/100  
 ✨ *Habilidad mejorada:* ${habilidadMejorada.nombre} (Nivel ${habilidadMejorada.nivel})`,
             },
             { quoted: m }
         );
+
     } catch (error) {
-        console.error('❌ Error al usar el comando lanzarpelota:', error);
+        console.error('❌ Error en el comando .lanzarpelota:', error);
         m.reply('❌ *Ocurrió un error al intentar usar este comando. Intenta nuevamente.*');
     }
 }
 break;
 	
+
 case 'daragua': {
     try {
         await m.react('💧'); // Reacción al usar el comando
 
         const userId = m.sender;
-        if (!cartera[userId]) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
-                { quoted: m }
-            );
-        }
 
-        const userMascota = cartera[userId].mascotas[0]; // Usamos la primera mascota por defecto
-        const lastUsed = userMascota.lastDarAgua || 0;
-        const now = Date.now();
-
-        // Verificar intervalo de 2 horas (7200000 ms)
-        if (now - lastUsed < 7200000) {
-            const timeLeft = Math.ceil((7200000 - (now - lastUsed)) / 60000);
-            return conn.sendMessage(
-                m.chat,
-                { text: `⏳ *Espera ${timeLeft} minutos antes de usar este comando nuevamente.*` },
-                { quoted: m }
-            );
-        }
-
-        const xpGanada = Math.floor(Math.random() * 150) + 50; // XP aleatoria entre 50 y 200
-
-        // Incrementar experiencia de la mascota
-        userMascota.experiencia += xpGanada;
-
-        // Subir habilidades aleatoriamente
-        const habilidadIndex = Math.floor(Math.random() * userMascota.habilidades.length);
-        userMascota.habilidades[habilidadIndex].nivel++;
-
-        // Revisar si la mascota sube de nivel
-        if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
-            userMascota.nivel++;
-            userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
-            userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
-
-            // Actualizar rango según el nivel
-            const rangos = [
-                '🐾 Principiante',
-                '🐾 Intermedio',
-                '🐾 Avanzado',
-                '🐾 Experto',
-                '🐾 Leyenda',
-            ];
-            const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
-            userMascota.rango = nuevoRango;
-
-            // Notificar subida de nivel
-            await conn.sendMessage(
-                m.chat,
-                {
-                    text: `🎉 *¡Felicidades! Tu mascota ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
-📊 *Nuevo rango:* ${nuevoRango}  
-🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel - userMascota.experiencia}`,
-                },
-                { quoted: m }
-            );
-        }
-
-        // Guardar cambios
-        userMascota.lastDarAgua = now; // Actualizar el tiempo del último uso
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-
-        // Respuestas aleatorias
-        const respuestas = [
-            "🐾 *Tu mascota disfrutó del agua fresca.* 🏞️",
-            "💧 *Le diste agua pura y fresca, ¡qué buen dueño eres!*",
-            "🌊 *Tu mascota chapoteó en el agua y ganó energía.*",
-            "🏡 *Un rato de agua y relax hizo muy feliz a tu mascota.*",
-            "💦 *Tu mascota tomó agua y ahora está más fuerte.*",
-            "🌟 *La hidratación es clave: ¡tu mascota está feliz!*",
-            "🐕‍🦺 *Tu perro bebió agua y ahora tiene más energía.*",
-            "🐈 *Tu gato agradeció el agua fresca con un ronroneo.*",
-            "🐇 *El conejo saltó de felicidad después de beber agua.*",
-            "🐁 *El ratón aprovechó cada gota del agua fresca.*",
-            "🏞️ *Tu mascota está lista para nuevas aventuras.*",
-            "🍀 *Un poco de agua hace maravillas: ¡tu mascota está radiante!*",
-            "🌴 *La hidratación en su mejor momento: tu mascota está encantada.*",
-            "🦴 *El agua revitalizó completamente a tu amigo peludo.*",
-            "🎉 *Tu mascota se siente renovada después del agua.*",
-            "🏖️ *Un trago de agua y tu mascota está lista para jugar.*",
-            "🧼 *El agua pura ayudó a tu mascota a refrescarse.*",
-            "🌊 *Tu mascota ahora está hidratada y enérgica.*",
-            "💧 *El agua fresca revitalizó la energía de tu mascota.*",
-            "🐾 *Hidratación completa: ¡tu mascota está lista para más aventuras!*",
-        ];
-        const textoAleatorio = respuestas[Math.floor(Math.random() * respuestas.length)];
-
-        // Responder al usuario
-        await conn.sendMessage(
-            m.chat,
-            {
-                text: `${textoAleatorio}\n\n✨ *Has ganado:*\n🆙 ${xpGanada} XP\n\n💡 *Usa otros comandos para continuar mejorando a tu mascota.*`,
-            },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error('❌ Error al dar agua:', error);
-        m.reply('❌ *Ocurrió un error al intentar dar agua a tu mascota. Intenta nuevamente.*');
-    }
-}
-break;
-	
-	
-case 'darcomida': {
-    try {
-        await m.react('🍖'); // Reacción al usar el comando
-
-        const userId = m.sender;
-
-        // Verificar si el usuario tiene cartera
+        // Verificar si el usuario tiene una cartera
         if (!cartera[userId]) {
             return conn.sendMessage(
                 m.chat,
@@ -4290,103 +4202,241 @@ case 'darcomida': {
 
         const userMascota = cartera[userId].mascotas[0];
 
-        // Intervalo de 1 hora
-        const lastTime = userMascota.lastFeedTime || 0;
+        // ⏳ **Verificar tiempo de espera (10 minutos)**
+        const lastTime = userMascota.lastDrinkTime || 0;
         const now = Date.now();
-        const interval = 60 * 60 * 1000; // 1 hora en milisegundos
+        const interval = 10 * 60 * 1000; // 10 minutos en milisegundos
 
         if (now - lastTime < interval) {
             const remainingTime = Math.ceil((interval - (now - lastTime)) / (60 * 1000));
             return conn.sendMessage(
                 m.chat,
-                {
-                    text: `⏳ *Espera ${remainingTime} minutos antes de volver a usar este comando.*`,
-                },
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de volver a darle agua a tu mascota.*` },
                 { quoted: m }
             );
         }
 
-        // Actualizar tiempo del último uso
-        userMascota.lastFeedTime = now;
+        // 💧 **Actualizar tiempo del último uso**
+        userMascota.lastDrinkTime = now;
 
-        // Ganancias aleatorias
-        const coinsGanados = Math.floor(Math.random() * 50) + 10; // Entre 10 y 50
-        const xpGanada = Math.floor(Math.random() * 500) + 200; // Entre 200 y 500
+        // 🎖️ **Generar recompensas aleatorias**
+        const coinsGanados = Math.floor(Math.random() * 1000) + 1; // Entre 1 y 1000
+        const xpGanada = Math.floor(Math.random() * 1000) + 1; // Entre 1 y 1000
 
-        // Incrementar experiencia y monedas
+        // 💰 **Incrementar experiencia y monedas**
         cartera[userId].coins += coinsGanados;
         userMascota.experiencia += xpGanada;
 
-        // Notificación automática de nivel si aplica
+        // 🆙 **Notificación automática de nivel si aplica**
         if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
             userMascota.nivel++;
             userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
             userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
 
-            // Actualizar rango según el nivel
-            const rangos = [
-                '🐾 Principiante',
-                '🐾 Intermedio',
-                '🐾 Avanzado',
-                '🐾 Experto',
-                '🐾 Leyenda',
-            ];
+            // 📊 **Actualizar rango según el nivel**
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
             const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
             userMascota.rango = nuevoRango;
 
-            // Notificar subida de nivel
+            // 📢 **Notificar subida de nivel**
             await conn.sendMessage(
                 m.chat,
                 {
-                    text: `🎉 *¡Felicidades! Tu mascota ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
+                    text: `🎉 *¡Felicidades! ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
 📊 *Nuevo rango:* ${nuevoRango}  
-🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel - userMascota.experiencia}`,
+🆙 *Experiencia necesaria para el próximo nivel:* ${userMascota.experienciaSiguienteNivel}`,
                 },
                 { quoted: m }
             );
         }
 
-        // Incrementar niveles aleatorios en habilidades
+        // 🌟 **Incrementar niveles aleatorios en habilidades**
         userMascota.habilidades.forEach((habilidad) => {
-            if (Math.random() > 0.7) {
+            if (Math.random() > 0.5) { // 50% de probabilidad de mejorar cada habilidad
                 habilidad.nivel++;
             }
         });
 
-        // Guardar cambios
+        // 💾 **Guardar cambios**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Texto aleatorio
+        // 💦 **Textos aleatorios personalizados**
         const textos = [
-            `🍗 *Tu mascota disfrutó un banquete delicioso y ganó:*  
+            `💧 *${userMascota.nombre} bebió agua fresca y se siente revitalizado.*  
 🪙 ${coinsGanados} Cortana Coins  
 🆙 ${xpGanada} XP`,
-            `🥩 *Le diste comida premium a tu mascota. Ganaste:*  
+            `🌊 *Un trago de agua y ${userMascota.nombre} está lleno de energía.*  
 🪙 ${coinsGanados} Cortana Coins  
 🆙 ${xpGanada} XP`,
-            `🦴 *Tu mascota está satisfecha. Recompensa:*  
+            `🏞️ *${userMascota.nombre} se refrescó con agua y está más feliz que nunca.*  
 🪙 ${coinsGanados} Cortana Coins  
 🆙 ${xpGanada} XP`,
-            `🌭 *Tu mascota comió y se siente con más energía. Obtuviste:*  
+            `🐾 *${userMascota.nombre} disfrutó de una buena hidratación y ahora está más activo.*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `💦 *Después de tomar agua, ${userMascota.nombre} parece más enérgico.*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🎉 *¡Tu mascota está agradecida por el agua fresca y se siente genial!*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🏖️ *${userMascota.nombre} tomó agua y se siente renovado. ¡Ahora está listo para nuevas aventuras!*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🧼 *El agua pura ayudó a ${userMascota.nombre} a mantenerse saludable y fuerte.*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `💡 *Una buena hidratación es clave para el bienestar de ${userMascota.nombre}.*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🍀 *Ahora ${userMascota.nombre} está listo para más aventuras después de tomar agua.*  
 🪙 ${coinsGanados} Cortana Coins  
 🆙 ${xpGanada} XP`,
         ];
 
-        // Respuesta al comando
+        // 📢 **Enviar respuesta**
         const textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
         await conn.sendMessage(
             m.chat,
             { text: textoAleatorio },
             { quoted: m }
         );
+
     } catch (error) {
-        console.error('❌ Error al alimentar mascota:', error);
+        console.error('❌ Error en el comando .daragua:', error);
+        m.reply('❌ *Ocurrió un error al intentar dar agua a tu mascota. Intenta nuevamente.*');
+    }
+}
+break;
+        
+	
+	
+
+case 'darcomida': {
+    try {
+        await m.react('🍖'); // Reacción al usar el comando
+
+        const userId = m.sender;
+
+        // Verificar si el usuario tiene una cartera
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        const userMascota = cartera[userId].mascotas[0];
+
+        // ⏳ **Verificar tiempo de espera (10 minutos)**
+        const lastTime = userMascota.lastFeedTime || 0;
+        const now = Date.now();
+        const interval = 10 * 60 * 1000; // 10 minutos en milisegundos
+
+        if (now - lastTime < interval) {
+            const remainingTime = Math.ceil((interval - (now - lastTime)) / (60 * 1000));
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de volver a alimentar a tu mascota.*` },
+                { quoted: m }
+            );
+        }
+
+        // 🍗 **Actualizar tiempo del último uso**
+        userMascota.lastFeedTime = now;
+
+        // 🎖️ **Generar recompensas aleatorias**
+        const coinsGanados = Math.floor(Math.random() * 701) + 100; // Entre 100 y 800
+        const xpGanada = Math.floor(Math.random() * 7901) + 100; // Entre 100 y 8000
+
+        // 💰 **Incrementar experiencia y monedas**
+        cartera[userId].coins += coinsGanados;
+        userMascota.experiencia += xpGanada;
+
+        // 🆙 **Notificación automática de nivel si aplica**
+        if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
+            userMascota.nivel++;
+            userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
+            userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
+
+            // 📊 **Actualizar rango según el nivel**
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
+            const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
+            userMascota.rango = nuevoRango;
+
+            // 📢 **Notificar subida de nivel**
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
+📊 *Nuevo rango:* ${nuevoRango}  
+🆙 *Experiencia necesaria para el próximo nivel:* ${userMascota.experienciaSiguienteNivel}`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // 🌟 **Incrementar niveles aleatorios en habilidades**
+        userMascota.habilidades.forEach((habilidad) => {
+            if (Math.random() > 0.5) { // 50% de probabilidad de mejorar cada habilidad
+                habilidad.nivel++;
+            }
+        });
+
+        // 💾 **Guardar cambios**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // 🍖 **Textos aleatorios personalizados**
+        const textos = [
+            `🍗 *${userMascota.nombre} disfrutó un banquete delicioso y ganó:*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🥩 *Le diste comida premium a ${userMascota.nombre}. Ganaste:*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🦴 *${userMascota.nombre} está satisfecho después de una gran comida. Recompensa:*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🌭 *${userMascota.nombre} comió y se siente con más energía. Obtuviste:*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🍖 *Después de una comida abundante, ${userMascota.nombre} está listo para nuevas aventuras.*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🍛 *Tu mascota disfrutó de un festín y ahora se siente más fuerte.*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🍕 *${userMascota.nombre} devoró su comida con entusiasmo. ¡Hora de entrenar!*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🍉 *Un buen almuerzo mantendrá a ${userMascota.nombre} en gran forma.*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🍗 *Tu mascota ha quedado satisfecha. Está lista para seguir mejorando.*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+            `🥩 *Tu mascota recibió la mejor comida y ahora es más fuerte que antes.*  
+🪙 ${coinsGanados} Cortana Coins  
+🆙 ${xpGanada} XP`,
+        ];
+
+        // 📢 **Enviar respuesta**
+        const textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
+        await conn.sendMessage(
+            m.chat,
+            { text: textoAleatorio },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .darcomida:', error);
         m.reply('❌ *Ocurrió un error al intentar alimentar a tu mascota. Intenta nuevamente.*');
     }
 }
 break;
+        
 		
-	
 case 'darcariño': {
     try {
         await m.react('💖'); // Reacción al usar el comando
@@ -4403,7 +4453,7 @@ case 'darcariño': {
         const userMascota = cartera[userId].mascotas[0];
         const now = Date.now();
 
-        // Verificar intervalo de tiempo
+        // ⏳ **Verificar tiempo de espera (5 minutos)**
         if (userMascota.lastCariño && now - userMascota.lastCariño < 5 * 60 * 1000) {
             const remaining = Math.ceil((5 * 60 * 1000 - (now - userMascota.lastCariño)) / 1000);
             return conn.sendMessage(
@@ -4413,79 +4463,90 @@ case 'darcariño': {
             );
         }
 
-        const xpGanada = Math.floor(Math.random() * 100) + 50; // XP aleatoria entre 50 y 150
+        // 🎖️ **Generar recompensas aleatorias**
+        const coinsGanados = Math.floor(Math.random() * 500) + 1; // Entre 1 y 500 Coins
+        const xpGanada = Math.floor(Math.random() * 1000) + 50; // Entre 50 y 1000 XP
+
+        // 💰 **Incrementar experiencia y monedas**
+        cartera[userId].coins += coinsGanados;
         userMascota.experiencia += xpGanada;
 
-        // Subir de nivel si alcanza la experiencia necesaria
+        // 🆙 **Revisión de nivel y mejora de habilidades**
         if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
             userMascota.nivel++;
             userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
             userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
 
-            // Actualizar rango según el nivel
-            const rangos = [
-                '🐾 Principiante',
-                '🐾 Intermedio',
-                '🐾 Avanzado',
-                '🐾 Experto',
-                '🐾 Leyenda',
-            ];
+            // 📊 **Actualizar rango según el nivel**
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
             const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
             userMascota.rango = nuevoRango;
 
-            // Notificar subida de nivel
+            // 📢 **Notificar subida de nivel**
             await conn.sendMessage(
                 m.chat,
                 {
-                    text: `🎉 *¡Felicidades! Tu mascota ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
+                    text: `🎉 *¡Felicidades! ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
 📊 *Nuevo rango:* ${nuevoRango}  
-🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel - userMascota.experiencia}`,
+🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel}`,
                 },
                 { quoted: m }
             );
         }
 
-        // Subir nivel de habilidades aleatoriamente
+        // 🌟 **Incrementar nivel de una habilidad aleatoriamente**
         const habilidadAleatoria = userMascota.habilidades[Math.floor(Math.random() * userMascota.habilidades.length)];
         habilidadAleatoria.nivel++;
 
-        // Guardar la última vez que usó el comando
+        // 💾 **Guardar cambios**
         userMascota.lastCariño = now;
-
-        // Guardar cambios en el archivo
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Textos aleatorios
+        // 💖 **Textos aleatorios personalizados**
         const textos = [
-            `💖 *Tu mascota ${userMascota.nombre} recibió mucho cariño.*\n✨ *Ganaste ${xpGanada} XP.*`,
-            `💖 *Tu mascota ${userMascota.nombre} se siente más querida.*\n✨ *Ganaste ${xpGanada} XP.*`,
-            `💖 *Acariciaste a ${userMascota.nombre}, ahora te ama más.*\n✨ *Ganaste ${xpGanada} XP.*`,
-            `💖 *¡Un momento especial con ${userMascota.nombre}!* ✨ *Ganaste ${xpGanada} XP.*`,
-            `💖 *Tu mascota ${userMascota.nombre} ronronea de felicidad.*\n✨ *Ganaste ${xpGanada} XP.*`,
-            `💖 *¡${userMascota.nombre} se siente en el paraíso con tanto cariño!* ✨ *Ganaste ${xpGanada} XP.*`,
-            `💖 *Tu mascota ${userMascota.nombre} ahora confía más en ti.* ✨ *Ganaste ${xpGanada} XP.*`,
-            `💖 *Acariciaste a ${userMascota.nombre}, su confianza en ti aumenta.* ✨ *Ganaste ${xpGanada} XP.*`,
-            `💖 *Un momento especial para ${userMascota.nombre}, ahora brilla más.* ✨ *Ganaste ${xpGanada} XP.*`,
-            `💖 *Tu mascota ${userMascota.nombre} mueve la cola con emoción.* ✨ *Ganaste ${xpGanada} XP.*`,
+            `💖 *Tu mascota ${userMascota.nombre} recibió mucho cariño y está feliz.*  
+✨ *Ganaste:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
+            `💖 *${userMascota.nombre} ronronea de felicidad tras recibir cariño.*  
+✨ *Recompensas:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
+            `💖 *¡Un momento especial con ${userMascota.nombre}! Se siente más unido a ti.*  
+✨ *Obtuviste:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
+            `💖 *Tu mascota ${userMascota.nombre} confía más en ti tras este gesto de amor.*  
+✨ *Premio:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
+            `💖 *Acariciaste a ${userMascota.nombre}, su vínculo contigo se hizo más fuerte.*  
+✨ *Ganaste:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
+            `💖 *Tu mascota ${userMascota.nombre} brinca de felicidad por tanto cariño.*  
+✨ *Obtuviste:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
+            `💖 *Unas caricias hicieron que ${userMascota.nombre} se sintiera más fuerte y feliz.*  
+✨ *Recompensas:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
+            `💖 *¡${userMascota.nombre} no para de mover la cola después de este cariño!*  
+✨ *Premio:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
+            `💖 *Tu mascota ${userMascota.nombre} se siente amada y cuidada.*  
+✨ *Has ganado:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
+            `💖 *Un poco de amor fue suficiente para hacer feliz a ${userMascota.nombre}.*  
+✨ *Obtuviste:* 🆙 ${xpGanada} XP, 🪙 ${coinsGanados} Coins`,
         ];
 
-        // Respuesta al comando
+        // 📢 **Enviar respuesta**
         const mensajeAleatorio = textos[Math.floor(Math.random() * textos.length)];
         await conn.sendMessage(
             m.chat,
             { text: mensajeAleatorio },
             { quoted: m }
         );
+
     } catch (error) {
-        console.error('❌ Error al dar cariño:', error);
+        console.error('❌ Error en el comando .darcariño:', error);
         m.reply('❌ *Ocurrió un error al intentar dar cariño a tu mascota. Intenta nuevamente.*');
     }
 }
-break;
-	
+break;	
+
+
+        
+
 case 'entrenar': {
     try {
-        await m.react('✅'); // Reacción al usar el comando
+        await m.react('💪'); // Reacción al usar el comando
 
         const userId = m.sender;
         if (!cartera[userId]) {
@@ -4499,13 +4560,19 @@ case 'entrenar': {
         const mascota = cartera[userId].mascotas[0];
         const tiempoActual = Date.now();
 
-        if (!mascota.ultimoEntrenamiento) {
-            mascota.ultimoEntrenamiento = 0;
+        // ⚠️ **Verificar si la mascota está KO (0 de vida)**
+        if (mascota.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `💀 *Tu mascota ${mascota.nombre} está demasiado cansada y no puede entrenar.*  
+💊 Usa \`.curar\` para restaurar su vida.` },
+                { quoted: m }
+            );
         }
 
-        const tiempoRestante = (20 * 60 * 1000) - (tiempoActual - mascota.ultimoEntrenamiento);
-        if (tiempoRestante > 0) {
-            const minutos = Math.ceil(tiempoRestante / (60 * 1000));
+        // ⏳ **Verificar tiempo de espera (5 minutos)**
+        if (mascota.ultimoEntrenamiento && tiempoActual - mascota.ultimoEntrenamiento < 5 * 60 * 1000) {
+            const minutos = Math.ceil((5 * 60 * 1000 - (tiempoActual - mascota.ultimoEntrenamiento)) / (60 * 1000));
             return conn.sendMessage(
                 m.chat,
                 { text: `⏳ *Debes esperar ${minutos} minutos para volver a entrenar a tu mascota.*` },
@@ -4513,82 +4580,96 @@ case 'entrenar': {
             );
         }
 
-        // Resultados aleatorios
-        const coinsGanados = Math.floor(Math.random() * 50) + 1; // Entre 1 y 50
-        const xpGanada = Math.floor(Math.random() * 500) + 100; // Entre 100 y 500
-        const penalizacion = Math.random() < 0.3 ? Math.floor(Math.random() * 20) + 1 : 0; // 30% de perder entre 1 y 20 coins
+        // 🎖️ **Generar recompensas aleatorias**
+        const coinsGanados = Math.floor(Math.random() * 2000) + 50; // Entre 50 y 2000 Coins
+        const xpGanada = Math.floor(Math.random() * 2000) + 100; // Entre 100 y 2000 XP
+        const penalizacion = Math.random() < 0.3 ? Math.floor(Math.random() * 100) + 1 : 0; // 30% de perder entre 1 y 100 Coins
 
-        // Actualizar estadísticas
+        // 💔 **Pérdida de vida aleatoria entre 5 y 30**
+        const vidaPerdida = Math.floor(Math.random() * 25) + 5; // Pierde entre 5 y 30 de vida
+        mascota.vida -= vidaPerdida;
+        if (mascota.vida < 0) mascota.vida = 0;
+
+        // 💰 **Actualizar estadísticas**
         cartera[userId].coins += (coinsGanados - penalizacion);
         mascota.experiencia += xpGanada;
 
-        // Aumentar niveles de habilidades aleatoriamente
+        // 🌟 **Mejorar habilidades con mayor frecuencia**
         mascota.habilidades.forEach(habilidad => {
-            if (Math.random() < 0.5) { // 50% de probabilidad de subir de nivel
+            if (Math.random() < 0.7) { // 70% de probabilidad de subir de nivel
                 habilidad.nivel++;
             }
         });
 
-        // Subir nivel de la mascota si alcanza la experiencia necesaria
+        // 🆙 **Subir nivel si alcanza la experiencia necesaria**
         if (mascota.experiencia >= mascota.experienciaSiguienteNivel) {
             mascota.nivel++;
             mascota.experiencia -= mascota.experienciaSiguienteNivel;
             mascota.experienciaSiguienteNivel += 100 * mascota.nivel;
 
-            // Actualizar rango según el nivel
-            const rangos = [
-                '🐾 Principiante',
-                '🐾 Intermedio',
-                '🐾 Avanzado',
-                '🐾 Experto',
-                '🐾 Leyenda',
-            ];
+            // 📊 **Actualizar rango según el nivel**
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
             const nuevoRango = rangos[Math.min(Math.floor(mascota.nivel / 10), rangos.length - 1)];
             mascota.rango = nuevoRango;
 
-            // Notificar subida de nivel
+            // 📢 **Notificar subida de nivel**
             await conn.sendMessage(
                 m.chat,
                 {
-                    text: `🎉 *¡Felicidades! Tu mascota ${mascota.nombre} ha subido al nivel ${mascota.nivel}.*  
+                    text: `🎉 *¡Felicidades! ${mascota.nombre} ha subido al nivel ${mascota.nivel}.*  
 📊 *Nuevo rango:* ${nuevoRango}  
-🆙 *Experiencia para el próximo nivel:* ${mascota.experienciaSiguienteNivel - mascota.experiencia}`,
+🆙 *Experiencia para el próximo nivel:* ${mascota.experienciaSiguienteNivel}`,
                 },
                 { quoted: m }
             );
         }
 
-        // Actualizar último entrenamiento
+        // 💾 **Actualizar último entrenamiento y guardar cambios**
         mascota.ultimoEntrenamiento = tiempoActual;
-
-        // Guardar cambios
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Textos aleatorios
+        // 💪 **Textos aleatorios personalizados**
         const textos = [
-            `🐾 Tu mascota ${mascota.nombre} hizo un salto increíble y ganó 🪙 ${coinsGanados} Cortana Coins y 🆙 ${xpGanada} XP.`,
-            `💪 Entrenamiento intensivo: ¡Tu mascota ganó 🪙 ${coinsGanados} y 🆙 ${xpGanada} XP!`,
-            `🏋️‍♂️ Durante el entrenamiento, tu mascota se enfrentó a un reto difícil y obtuvo 🪙 ${coinsGanados} y 🆙 ${xpGanada} XP.`,
-            `😢 Tu mascota tuvo un pequeño accidente. Perdió 🪙 ${penalizacion} Cortana Coins, pero ganó 🆙 ${xpGanada} XP.`,
-            `✨ ¡Qué entrenamiento productivo! ${mascota.nombre} ganó 🪙 ${coinsGanados} y 🆙 ${xpGanada} XP.`,
-            `😅 Mientras entrenaba, ${mascota.nombre} causó un pequeño lío. Perdiste 🪙 ${penalizacion}, pero ganaste 🆙 ${xpGanada}.`,
-            // Agregar 14 textos más aquí...
+            `🐾 *${mascota.nombre} hizo un salto increíble y ganó:*  
+🪙 ${coinsGanados} Coins  
+🆙 ${xpGanada} XP  
+💔 *Pero perdió ${vidaPerdida} de vida por el esfuerzo.*`,
+            `💪 *Entrenamiento intensivo:*  
+🏆 ¡Tu mascota ganó 🪙 ${coinsGanados} y 🆙 ${xpGanada} XP!*  
+⚠️ *Se agotó un poco y perdió ${vidaPerdida} de vida.*`,
+            `🏋️‍♂️ *${mascota.nombre} levantó pesas y aumentó su fuerza.*  
+🎖️ Recompensa: 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP  
+💔 *Pero su energía bajó ${vidaPerdida} puntos.*`,
+            `😢 *Durante el entrenamiento, ${mascota.nombre} tuvo un pequeño accidente.*  
+📉 Perdió 🪙 ${penalizacion} Coins y ${vidaPerdida} de vida, pero ganó 🆙 ${xpGanada} XP.`,
+            `✨ *¡Qué entrenamiento productivo!*  
+${mascota.nombre} ganó 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP  
+💔 *Se agotó un poco y perdió ${vidaPerdida} de vida.*`,
+            `🔥 *${mascota.nombre} demostró su máximo potencial en el entrenamiento.*  
+💰 Ganaste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP  
+⚠️ *Pero ahora está más cansado (-${vidaPerdida} vida).*`,
+            `🏆 *Después de una dura sesión, ${mascota.nombre} se siente más fuerte.*  
+Recompensa: 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP  
+⚠️ *Pero necesita descansar un poco (-${vidaPerdida} vida).*`,
         ];
 
-        const textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
-
-        // Respuesta final
+        // 📢 **Enviar respuesta**
+        const mensajeAleatorio = textos[Math.floor(Math.random() * textos.length)];
         await conn.sendMessage(
             m.chat,
-            { text: textoAleatorio },
+            { text: mensajeAleatorio },
             { quoted: m }
         );
+
     } catch (error) {
-        console.error('❌ Error al entrenar mascota:', error);
+        console.error('❌ Error en el comando .entrenar:', error);
         m.reply('❌ *Ocurrió un error al intentar entrenar a tu mascota. Intenta nuevamente.*');
     }
 }
 break;	
+
+
+        
 	
 case 'pasear': {
     try {
@@ -4605,11 +4686,22 @@ case 'pasear': {
             );
         }
 
-        const now = Date.now();
-        const cooldown = 10 * 60 * 1000; // 10 minutos en milisegundos
+        const userMascota = userCartera.mascotas[0]; // Usar la primera mascota del usuario
 
-        if (userCartera.lastPasiar && now - userCartera.lastPasiar < cooldown) {
-            const remainingTime = Math.ceil((cooldown - (now - userCartera.lastPasiar)) / 60000);
+        // 📌 **Si la mascota tiene 0 de vida, no puede pasear**
+        if (userMascota.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *Tu mascota ${userMascota.nombre} está sin vida y no puede pasear.* Usa \`.curar\` para restaurar su salud.` },
+                { quoted: m }
+            );
+        }
+
+        const now = Date.now();
+        const cooldown = 10 * 60 * 1000; // ⏳ **10 minutos de espera**
+
+        if (userCartera.lastPasear && now - userCartera.lastPasear < cooldown) {
+            const remainingTime = Math.ceil((cooldown - (now - userCartera.lastPasear)) / 60000);
             return conn.sendMessage(
                 m.chat,
                 { text: `⏳ *Debes esperar ${remainingTime} minutos para volver a pasear a tu mascota.*` },
@@ -4617,33 +4709,35 @@ case 'pasear': {
             );
         }
 
-        const userMascota = userCartera.mascotas[0]; // Usar la primera mascota del usuario
-        const xpGanada = Math.floor(Math.random() * 150) + 50; // XP aleatoria entre 50 y 200
-        const habilidadIndex = Math.floor(Math.random() * userMascota.habilidades.length); // Índice aleatorio para habilidad
+        // 🎖️ **Recompensas aleatorias**
+        const xpGanada = Math.floor(Math.random() * 700) + 100; // XP entre 100 y 800
+        const coinsGanados = Math.floor(Math.random() * 700) + 100; // Coins entre 100 y 800
+        const vidaPerdida = Math.floor(Math.random() * 10) + 1; // Pierde entre 1 y 10 de vida
 
-        // Incrementar XP de la mascota
+        // 📉 **Reducir vida de la mascota**
+        userMascota.vida -= vidaPerdida;
+        if (userMascota.vida < 0) userMascota.vida = 0; // Evitar que la vida sea negativa
+
+        // ✨ **Subir nivel de una habilidad aleatoria**
+        const habilidadIndex = Math.floor(Math.random() * userMascota.habilidades.length);
+        userMascota.habilidades[habilidadIndex].nivel++;
+
+        // 💾 **Actualizar experiencia y monedas**
+        cartera[userId].coins += coinsGanados;
         userMascota.experiencia += xpGanada;
-        const habilidadSeleccionada = userMascota.habilidades[habilidadIndex];
-        habilidadSeleccionada.nivel++;
 
-        // Revisar si la mascota sube de nivel
+        // 🆙 **Subir de nivel si alcanza la experiencia necesaria**
         if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
             userMascota.nivel++;
             userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
             userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
 
-            // Actualizar rango según el nivel
-            const rangos = [
-                '🐾 Principiante',
-                '🐾 Intermedio',
-                '🐾 Avanzado',
-                '🐾 Experto',
-                '🐾 Leyenda',
-            ];
+            // 📊 **Actualizar rango según el nivel**
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
             const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
             userMascota.rango = nuevoRango;
 
-            // Notificar subida de nivel
+            // 📢 **Notificar subida de nivel**
             await conn.sendMessage(
                 m.chat,
                 {
@@ -4655,49 +4749,44 @@ case 'pasear': {
             );
         }
 
-        // Textos aleatorios con emojis neutrales
-        const textosAleatorios = [
-            `🌳 Tu mascota disfrutó un paseo tranquilo y ganó ${xpGanada} XP.`,
-            `☀️ Tu mascota exploró al aire libre y obtuvo ${xpGanada} XP.`,
-            `🌼 Tu mascota se detuvo a oler flores y ganó ${xpGanada} XP.`,
-            `🍂 Tu mascota jugó con hojas secas y obtuvo ${xpGanada} XP.`,
-            `🌿 Tu mascota corrió por la hierba y ganó ${xpGanada} XP.`,
-            `🌊 Tu mascota disfrutó de la brisa junto al río y ganó ${xpGanada} XP.`,
-            `🍁 Tu mascota saltó entre montículos de hojas y ganó ${xpGanada} XP.`,
-            `🌟 Tu mascota descubrió un sendero secreto y obtuvo ${xpGanada} XP.`,
-            `💧 Tu mascota bebió agua fresca y ganó ${xpGanada} XP.`,
-            `🍃 Tu mascota siguió una mariposa y ganó ${xpGanada} XP.`,
-            `🌞 Tu mascota jugó bajo el sol y ganó ${xpGanada} XP.`,
-            `🌙 Tu mascota disfrutó de un paseo nocturno y ganó ${xpGanada} XP.`,
-            `🔥 Tu mascota encontró un campamento y obtuvo ${xpGanada} XP.`,
-            `🎋 Tu mascota se escondió en los arbustos y ganó ${xpGanada} XP.`,
-            `🌌 Tu mascota observó las estrellas y ganó ${xpGanada} XP.`,
-            `🌻 Tu mascota descubrió un campo de girasoles y ganó ${xpGanada} XP.`,
-            `🏞️ Tu mascota subió una colina y obtuvo ${xpGanada} XP.`,
-            `🏕️ Tu mascota exploró un campamento y ganó ${xpGanada} XP.`,
-            `🪵 Tu mascota jugó entre troncos y ganó ${xpGanada} XP.`,
-            `🍄 Tu mascota encontró hongos interesantes y ganó ${xpGanada} XP.`,
-        ];
-
-        // Guardar cambios y establecer el tiempo del último paseo
-        userCartera.lastPasiar = now;
+        // 💾 **Guardar cambios y establecer el tiempo del último paseo**
+        userCartera.lastPasear = now;
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Responder al usuario
+        // 📝 **Mensajes aleatorios**
+        const textosAleatorios = [
+            `🌳 ${userMascota.nombre} disfrutó un paseo relajante y ganó 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `☀️ ${userMascota.nombre} corrió al aire libre y obtuvo 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🍂 ${userMascota.nombre} jugó en las hojas secas y ganó 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🌊 ${userMascota.nombre} encontró un río y nadó feliz. Ganaste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🏞️ ${userMascota.nombre} exploró la montaña y obtuvo 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} encontró un nuevo amigo durante el paseo. Ganaste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🔥 ${userMascota.nombre} descubrió un campamento y se divirtió. Ganaste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🏕️ ${userMascota.nombre} exploró un bosque misterioso y encontró 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🌟 ${userMascota.nombre} vio una estrella fugaz mientras paseaba. Obtuviste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🌍 ${userMascota.nombre} exploró nuevos territorios. Ganaste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+        ];
+
         const textoRandom = textosAleatorios[Math.floor(Math.random() * textosAleatorios.length)];
+
+        // 📢 **Responder al usuario**
         await conn.sendMessage(
             m.chat,
             {
-                text: `${textoRandom}\n✨ *La habilidad ${habilidadSeleccionada.nombre} subió a nivel ${habilidadSeleccionada.nivel}.*`,
+                text: textoRandom + `\n✨ *La habilidad ${userMascota.habilidades[habilidadIndex].nombre} subió a nivel ${userMascota.habilidades[habilidadIndex].nivel}.*`,
             },
             { quoted: m }
         );
+
     } catch (error) {
         console.error('❌ Error al pasear mascota:', error);
         m.reply('❌ *Ocurrió un error al intentar pasear a tu mascota. Intenta nuevamente.*');
     }
 }
 break;
+
+
+
 
 case 'casar': {
     try {
@@ -4712,109 +4801,106 @@ case 'casar': {
             );
         }
 
-        // Revisar si ya usó el comando recientemente
-        if (global.lastCasar && global.lastCasar[userId]) {
-            const tiempoRestante = (global.lastCasar[userId] - Date.now()) / 1000;
-            if (tiempoRestante > 0) {
-                return conn.sendMessage(
-                    m.chat,
-                    { text: `⏳ *Debes esperar ${Math.ceil(tiempoRestante / 60)} minutos antes de usar este comando nuevamente.*` },
-                    { quoted: m }
-                );
-            }
-        }
-
         const userMascota = cartera[userId].mascotas[0];
 
-        // Generar recompensas aleatorias
-        const coinsGanados = Math.floor(Math.random() * 100) + 1;
-        const xpGanada = Math.floor(Math.random() * 1000) + 500;
+        // 📌 **Si la mascota tiene 0 de vida, no puede casar**
+        if (userMascota.vida <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *Tu mascota ${userMascota.nombre} está sin vida y no puede cazar.* Usa \`.curar\` para restaurar su salud.` },
+                { quoted: m }
+            );
+        }
 
-        // Incrementar experiencia y monedas
+        // ⏳ **Verificar tiempo de espera (8 minutos)**
+        const now = Date.now();
+        const cooldown = 8 * 60 * 1000; // 8 minutos
+
+        if (cartera[userId].lastCasar && now - cartera[userId].lastCasar < cooldown) {
+            const remainingTime = Math.ceil((cooldown - (now - cartera[userId].lastCasar)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de usar este comando nuevamente.*` },
+                { quoted: m }
+            );
+        }
+
+        // 🎖️ **Recompensas aleatorias**
+        const xpGanada = Math.floor(Math.random() * 1000) + 500; // XP entre 500 y 1500
+        const coinsGanados = Math.floor(Math.random() * 700) + 100; // Coins entre 100 y 800
+        const vidaPerdida = Math.floor(Math.random() * 15) + 1; // Pierde entre 1 y 15 de vida
+
+        // 📉 **Reducir vida de la mascota**
+        userMascota.vida -= vidaPerdida;
+        if (userMascota.vida < 0) userMascota.vida = 0; // Evitar vida negativa
+
+        // ✨ **Subir nivel de una habilidad aleatoria**
+        const habilidadIndex = Math.floor(Math.random() * userMascota.habilidades.length);
+        userMascota.habilidades[habilidadIndex].nivel++;
+
+        // 💾 **Actualizar experiencia y monedas**
         cartera[userId].coins += coinsGanados;
         userMascota.experiencia += xpGanada;
 
-        // Textos aleatorios para el comando
-        const textos = [
-            `🐾 Tu mascota ${userMascota.nombre} cazó un ratón y ganó ${coinsGanados} 🪙 Cortana Coins y ${xpGanada} XP.`,
-            `🐾 ¡Increíble! ${userMascota.nombre} atrapó un conejo. Ganaste ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} ayudó a limpiar el jardín. Recompensa: ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 Tu ${userMascota.nombre} resolvió un rompecabezas y ganó ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} encontró un tesoro enterrado. Obtuviste ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} ayudó en la cocina y ganó ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} protegió tu casa de un intruso. Recompensa: ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} realizó un truco impresionante. Ganaste ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} salvó a un animal perdido. Obtuviste ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} hizo un gran salto en el parque. Ganaste ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} participó en un concurso y ganó ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} cuidó de otros animales y obtuvo ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} exploró el vecindario y encontró ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} resolvió un misterio en el parque. Ganaste ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} ayudó a un niño perdido. Obtuviste ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} fue el héroe del día y ganó ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} organizó una reunión de mascotas. Recompensa: ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} recogió frutas y obtuvo ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} ayudó a un granjero y ganó ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-            `🐾 ${userMascota.nombre} realizó una carrera y ganó ${coinsGanados} 🪙 y ${xpGanada} XP.`,
-        ];
-
-        const textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
-
-        // Revisar si sube de nivel
+        // 🆙 **Subir de nivel si alcanza la experiencia necesaria**
         if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
             userMascota.nivel++;
             userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
             userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
 
-            // Actualizar rango según el nivel
-            const rangos = [
-                '🐾 Principiante',
-                '🐾 Intermedio',
-                '🐾 Avanzado',
-                '🐾 Experto',
-                '🐾 Leyenda',
-            ];
+            // 📊 **Actualizar rango según el nivel**
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
             const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
             userMascota.rango = nuevoRango;
 
-            // Subir habilidades aleatoriamente
-            const habilidadAleatoria = userMascota.habilidades[Math.floor(Math.random() * userMascota.habilidades.length)];
-            habilidadAleatoria.nivel++;
-
-            // Notificar subida de nivel
+            // 📢 **Notificar subida de nivel**
             await conn.sendMessage(
                 m.chat,
                 {
-                    text: `🎉 *¡Felicidades! Tu mascota ${userMascota.nombre} subió al nivel ${userMascota.nivel}.*  
+                    text: `🎉 *¡Felicidades! Tu mascota ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
 📊 *Nuevo rango:* ${nuevoRango}  
-🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel - userMascota.experiencia}  
-✨ *Habilidad mejorada:* ${habilidadAleatoria.nombre} (Nivel ${habilidadAleatoria.nivel})`,
+🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel - userMascota.experiencia}`,
                 },
                 { quoted: m }
             );
         }
 
-        // Guardar cambios
+        // 💾 **Guardar cambios y establecer el tiempo del último uso**
+        cartera[userId].lastCasar = now;
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Guardar tiempo del último uso
-        if (!global.lastCasar) global.lastCasar = {};
-        global.lastCasar[userId] = Date.now() + 15 * 60 * 1000; // 15 minutos
+        // 📝 **Mensajes aleatorios**
+        const textosAleatorios = [
+            `🐾 ${userMascota.nombre} cazó un ratón y ganó 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} atrapó un conejo. Ganaste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} encontró un tesoro enterrado. Obtuviste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} ayudó a limpiar el jardín y obtuvo 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} protegió tu casa de un intruso. Recompensa: 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} participó en un concurso de agilidad. Ganaste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} hizo un gran salto en el parque. Ganaste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} exploró un bosque misterioso y encontró 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} salvó a un animal perdido y obtuvo 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🐾 ${userMascota.nombre} se enfrentó a un reto en la naturaleza. Ganaste 🪙 ${coinsGanados} Coins y 🆙 ${xpGanada} XP.\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+        ];
 
-        // Respuesta al comando
+        const textoRandom = textosAleatorios[Math.floor(Math.random() * textosAleatorios.length)];
+
+        // 📢 **Responder al usuario**
         await conn.sendMessage(
             m.chat,
             {
-                text: textoAleatorio,
+                text: textoRandom + `\n✨ *La habilidad ${userMascota.habilidades[habilidadIndex].nombre} subió a nivel ${userMascota.habilidades[habilidadIndex].nivel}.*`,
             },
             { quoted: m }
         );
+
     } catch (error) {
-        console.error('❌ Error al usar el comando .casar:', error);
-        m.reply('❌ *Ocurrió un error al intentar ejecutar el comando. Intenta nuevamente.*');
+        console.error('❌ Error al casar mascota:', error);
+        m.reply('❌ *Ocurrió un error al intentar casar a tu mascota. Intenta nuevamente.*');
     }
 }
-break;		
+break;
+        
 
 
 
@@ -4825,7 +4911,6 @@ case 'vermascotas': {
 
         const userId = m.sender;
 
-        // Verificar si el usuario tiene una cartera creada
         if (!cartera[userId]) {
             return conn.sendMessage(
                 m.chat,
@@ -4844,7 +4929,6 @@ case 'vermascotas': {
             );
         }
 
-        // Construir texto con las estadísticas de las mascotas
         let textoMascotas = `🐾 *Tus Mascotas y Estadísticas:* 🐾\n\n`;
         userMascotas.forEach((mascota, index) => {
             let habilidadesText = mascota.habilidades
@@ -4860,35 +4944,33 @@ case 'vermascotas': {
                 `———————————————\n`;
         });
 
-        // Agregar lista de comandos disponibles
-        textoMascotas += `🛠️ *Comandos para Subir de Nivel y Ganar Cortana Coins:* 🪙\n` +
-            `- *.casar* (15 min intervalo)\n` +
-            `- *.darcomida* (1 hora intervalo)\n` +
-            `- *.daragua* (2 horas intervalo)\n` +
-            `- *.entrenar* (20 min intervalo)\n` +
-            `- *.pasear* (10 min intervalo)\n` +
-            `- *.presumir* (5 min intervalo)\n` +
-            `- *.batalla1* (10 min intervalo)\n` +
-            `- *.darcariño* (5 min intervalo)\n` +
-            `- *.estadomascota* (mira el estado de tu mascota principal)\n` +
-            `- *.supermascota* (24 horas intervalo)\n` +
-            `- *.mascota* (para cambiar de mascota principal a otra)\n` +
-	    `- *.curar* (cuesta 100 Cortana Coins)\n` +
-            `- *.lanzarpelota* (5 min intervalo)\n\n` +
-            `💡 *Usa estos comandos para mejorar tus mascotas y ganar monedas.*`;
+        textoMascotas += `🛠️ *Comandos Disponibles:* 🪙\n` +
+            `- ⏳ *.casar* (8 min)\n` +
+            `- ⏳ *.saldo* (mira tu cortana coins)\n` +
+	    `- ⏳ *.darcomida* (10 min)\n` +
+            `- ⏳ *.daragua* (10 min)\n` +
+            `- ⏳ *.entrenar* (5 min)\n` +
+            `- ⏳ *.pasear* (10 min)\n` +
+            `- ⏳ *.presumir* (10 min)\n` +
+            `- ⏳ *.batalla1* (10 min)\n` +
+            `- ⏳ *.darcariño* (5 min)\n` +
+            `- ⏳ *.estadomascota*\n` +
+            `- ⏳ *.supermascota* (24 horas)\n` +
+            `- ⏳ *.mascota cambia tu mascota y usa otra*\n` +
+            `- ❤️ *.curar* (100 Cortana Coins)\n` +
+            `- 🎾 *.lanzarpelota* (5 min)\n\n`;
 
-        // URL de la imagen correspondiente
-        const imageUrl = 'https://cloud.dorratz.com/files/bdc27b328f2f4c1fe018bbb0d6a5871b'; // Reemplaza con la URL de la imagen que desees mostrar
+        const imageUrl = 'https://cloud.dorratz.com/files/bdc27b328f2f4c1fe018bbb0d6a5871b';
 
-        // Enviar mensaje con la imagen y el texto
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: imageUrl }, // Enviar la imagen
-                caption: textoMascotas, // Texto que acompaña la imagen
+                image: { url: imageUrl },
+                caption: textoMascotas,
             },
             { quoted: m }
         );
+
     } catch (error) {
         console.error('❌ Error mostrando las mascotas:', error);
         m.reply('❌ *Ocurrió un error al intentar mostrar tus mascotas. Intenta nuevamente.*');
@@ -4962,8 +5044,9 @@ break;
 
 case 'presumir': {
     try {
-        const userId = m.sender;
+        await m.react('💎'); // Reacción al usar el comando
 
+        const userId = m.sender;
         if (!cartera[userId]) {
             return conn.sendMessage(
                 m.chat,
@@ -4972,77 +5055,99 @@ case 'presumir': {
             );
         }
 
-        const now = Date.now();
-        if (cartera[userId].lastPresumir && now - cartera[userId].lastPresumir < 300000) {
-            const remainingTime = Math.ceil((300000 - (now - cartera[userId].lastPresumir)) / 60000);
+        const userMascota = cartera[userId].mascotas[0];
+
+        // 📌 **Si la mascota tiene 0 de vida, no puede presumir**
+        if (userMascota.vida <= 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: `⏳ *Espera ${remainingTime} minutos antes de volver a usar el comando .presumir.*` },
+                { text: `❌ *Tu mascota ${userMascota.nombre} está sin vida y no puede presumir.* Usa \`.curar\` para restaurar su salud.` },
                 { quoted: m }
             );
         }
 
-        // Generar recompensas aleatorias
-        const xpGanada = Math.floor(Math.random() * 200) + 50; // Entre 50 y 250 XP
-        const coinsGanados = Math.floor(Math.random() * 50) + 10; // Entre 10 y 60 coins
+        // ⏳ **Verificar tiempo de espera (10 minutos)**
+        const now = Date.now();
+        const cooldown = 10 * 60 * 1000; // 10 minutos
 
-        // Aplicar recompensas
-        const userMascota = cartera[userId].mascotas[0];
-        userMascota.experiencia += xpGanada;
-        cartera[userId].coins += coinsGanados;
-
-        // Guardar última vez usado
-        cartera[userId].lastPresumir = now;
-
-        // Subida de nivel automática
-        while (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
-            userMascota.nivel++;
-            userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
-            userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
+        if (cartera[userId].lastPresumir && now - cartera[userId].lastPresumir < cooldown) {
+            const remainingTime = Math.ceil((cooldown - (now - cartera[userId].lastPresumir)) / 60000);
+            return conn.sendMessage(
+                m.chat,
+                { text: `⏳ *Debes esperar ${remainingTime} minutos antes de volver a usar el comando .presumir.*` },
+                { quoted: m }
+            );
         }
 
-        // Incrementar habilidades aleatoriamente
+        // 🎖️ **Recompensas aleatorias**
+        const xpGanada = Math.floor(Math.random() * 1500) + 500; // XP entre 500 y 2000
+        const coinsGanados = Math.floor(Math.random() * 700) + 100; // Coins entre 100 y 800
+        const vidaPerdida = Math.floor(Math.random() * 10) + 1; // Pierde entre 1 y 10 de vida
+
+        // 📉 **Reducir vida de la mascota**
+        userMascota.vida -= vidaPerdida;
+        if (userMascota.vida < 0) userMascota.vida = 0; // Evitar vida negativa
+
+        // ✨ **Subir nivel de una habilidad aleatoria**
         const habilidadIndex = Math.floor(Math.random() * userMascota.habilidades.length);
         userMascota.habilidades[habilidadIndex].nivel++;
 
+        // 💾 **Actualizar experiencia y monedas**
+        cartera[userId].coins += coinsGanados;
+        userMascota.experiencia += xpGanada;
+
+        // 🆙 **Subir de nivel si alcanza la experiencia necesaria**
+        if (userMascota.experiencia >= userMascota.experienciaSiguienteNivel) {
+            userMascota.nivel++;
+            userMascota.experiencia -= userMascota.experienciaSiguienteNivel;
+            userMascota.experienciaSiguienteNivel += 100 * userMascota.nivel;
+
+            // 📊 **Actualizar rango según el nivel**
+            const rangos = ['🐾 Principiante', '🐾 Intermedio', '🐾 Avanzado', '🐾 Experto', '🐾 Leyenda'];
+            const nuevoRango = rangos[Math.min(Math.floor(userMascota.nivel / 10), rangos.length - 1)];
+            userMascota.rango = nuevoRango;
+
+            // 📢 **Notificar subida de nivel**
+            await conn.sendMessage(
+                m.chat,
+                {
+                    text: `🎉 *¡Felicidades! Tu mascota ${userMascota.nombre} ha subido al nivel ${userMascota.nivel}.*  
+📊 *Nuevo rango:* ${nuevoRango}  
+🆙 *Experiencia para el próximo nivel:* ${userMascota.experienciaSiguienteNivel - userMascota.experiencia}`,
+                },
+                { quoted: m }
+            );
+        }
+
+        // 💾 **Guardar cambios y establecer el tiempo del último uso**
+        cartera[userId].lastPresumir = now;
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Textos aleatorios
-        const textos = [
-            "💥 *Tu mascota impresionó a todos en el parque y ganó popularidad.*",
-            "🔥 *Presumiste a tu mascota y todos quedaron asombrados.*",
-            "🎉 *La energía de tu mascota se robó las miradas del lugar.*",
-            "✨ *Un espectáculo digno de una estrella. ¡Qué gran mascota tienes!*",
-            "🏆 *Tu mascota recibió aplausos y ganó el respeto de los demás.*",
-            "🐾 *Un día increíble para presumir a tu compañero.*",
-            "🌟 *¡Tu mascota brilló como nunca antes!*",
-            "🎭 *Fue el alma del evento. ¡Un éxito total!*",
-            "🚀 *Tu mascota mostró todo su potencial. ¡Increíble!*",
-            "🏅 *Orgullo de dueño. ¡Gran día para presumir!*",
-            "💎 *Tu mascota deslumbró con sus habilidades.*",
-            "🔥 *Todos hablarán de este momento épico.*",
-            "🎶 *Un momento mágico para tu mascota y tú.*",
-            "💥 *Impresionaste a todos con el talento de tu mascota.*",
-            "✨ *Una actuación de alto nivel. ¡Felicitaciones!*",
-            "⚡ *Fue un espectáculo lleno de emoción y energía.*",
-            "🌟 *Tu mascota es una verdadera estrella.*",
-            "🎭 *Un día inolvidable para presumir a tu mascota.*",
-            "🚀 *Tu compañero mostró habilidades impresionantes.*",
-            "🏅 *¡Una mascota digna de aplausos y premios!*",
+        // 📝 **Mensajes aleatorios**
+        const textosAleatorios = [
+            `💥 *Tu mascota ${userMascota.nombre} impresionó a todos en el parque y ganó popularidad.*\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🔥 *Presumiste a tu mascota ${userMascota.nombre} y todos quedaron asombrados.*\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `✨ *Un espectáculo digno de una estrella. ¡Tu mascota ${userMascota.nombre} brilló!* 🏆\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🏅 *Tu mascota ${userMascota.nombre} recibió aplausos y ganó el respeto de todos.*\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🎭 *Fue el alma del evento. ¡Tu mascota ${userMascota.nombre} lo hizo increíble!* 🎉\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🌟 *¡Tu mascota ${userMascota.nombre} deslumbró a todos con sus habilidades!* 🏆\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🎶 *Un momento mágico para tu mascota ${userMascota.nombre} y tú. Inolvidable.* 🎊\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `⚡ *Tu mascota ${userMascota.nombre} se robó todas las miradas del lugar.* 🔥\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `💎 *Todos hablarán de este momento épico gracias a ${userMascota.nombre}.* 🌟\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
+            `🚀 *Un espectáculo sin igual. Tu mascota ${userMascota.nombre} es una leyenda.* 🏅\n❤️ *Pero perdió ${vidaPerdida} de vida.*`,
         ];
 
-        const textoAleatorio = textos[Math.floor(Math.random() * textos.length)];
+        const textoRandom = textosAleatorios[Math.floor(Math.random() * textosAleatorios.length)];
 
-        // Respuesta final
-        const mensaje = `${textoAleatorio}  
-🆙 *XP ganada:* ${xpGanada}  
-🪙 *Cortana Coins ganadas:* ${coinsGanados}`;
-
+        // 📢 **Responder al usuario**
         await conn.sendMessage(
             m.chat,
-            { text: mensaje },
+            {
+                text: `${textoRandom}\n\n✨ *Has ganado:*\n🆙 ${xpGanada} XP\n🪙 ${coinsGanados} Coins\n✨ *La habilidad ${userMascota.habilidades[habilidadIndex].nombre} subió a nivel ${userMascota.habilidades[habilidadIndex].nivel}.*`,
+            },
             { quoted: m }
         );
+
     } catch (error) {
         console.error('❌ Error en el comando .presumir:', error);
         return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al presumir tu mascota.*' }, { quoted: m });
