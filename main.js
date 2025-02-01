@@ -731,6 +731,114 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'compra': {
+    try {
+        const userId = m.sender;
+        const args = text.trim().toLowerCase(); // Convertir el texto a minúsculas y eliminar espacios
+
+        // Verificar si el usuario tiene una cartera
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si hay mascotas en la tienda
+        if (!cartera.mascotasEnVenta || cartera.mascotasEnVenta.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No hay mascotas disponibles en la tienda en este momento.*" },
+                { quoted: m }
+            );
+        }
+
+        // Normalizar los nombres de las mascotas para la comparación
+        const normalizeName = (name) => name.replace(/[^\w\s]/gi, '').trim().toLowerCase(); // Ignora emojis y caracteres especiales
+        const mascotaSolicitada = normalizeName(args);
+
+        // Buscar la mascota en la tienda
+        const mascotaEncontrada = cartera.mascotasEnVenta.find(
+            (m) => normalizeName(m.nombre) === mascotaSolicitada
+        );
+
+        if (!mascotaEncontrada) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No se encontró la mascota "${args}" en la tienda.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario ya tiene la mascota
+        const tieneMascota = cartera[userId].mascotas.some(
+            (m) => normalizeName(m.nombre) === mascotaSolicitada
+        );
+
+        if (tieneMascota) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *Ya tienes la mascota "${mascotaEncontrada.nombre}". No puedes comprarla dos veces.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar si el usuario tiene suficientes Cortana Coins
+        if (cartera[userId].coins < mascotaEncontrada.precio) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No tienes suficientes Cortana Coins para comprar "${mascotaEncontrada.nombre}".*` },
+                { quoted: m }
+            );
+        }
+
+        // Descontar las Cortana Coins
+        cartera[userId].coins -= mascotaEncontrada.precio;
+
+        // Clonar los datos de la mascota para agregarla a la colección del usuario
+        const nuevaMascota = {
+            nombre: mascotaEncontrada.nombre,
+            habilidades: mascotaEncontrada.habilidades.map(h => ({ nombre: h.nombre, nivel: 1 })), // Reiniciar habilidades
+            vida: 100,
+            nivel: 1,
+            rango: '🐾 Principiante',
+            experiencia: 0,
+            experienciaSiguienteNivel: 100,
+        };
+
+        // Agregar la mascota a la cartera del usuario
+        cartera[userId].mascotas.push(nuevaMascota);
+
+        // Guardar cambios en cartera.json
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensajeCompra = `
+🎉 *¡Felicidades! Has comprado a ${mascotaEncontrada.nombre}.*  
+
+💰 *Costo:* 🪙 ${mascotaEncontrada.precio} Cortana Coins  
+📊 *Rango inicial:* ${nuevaMascota.rango}  
+❤️ *Vida:* ${nuevaMascota.vida}  
+🆙 *Nivel:* ${nuevaMascota.nivel}  
+✨ *Habilidades:*  
+${nuevaMascota.habilidades.map(h => `🔹 ${h.nombre} (Nivel ${h.nivel})`).join('\n')}
+
+📌 *Usa el comando* \`.vermascotas\` *para ver todas tus mascotas.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeCompra },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .compra:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar la mascota. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+		
 case 'crearcartera': {
     try {
         await m.react('✅'); // Reacción al usar el comando
