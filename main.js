@@ -730,7 +730,149 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'addmascota': {
+    try {
+        const userId = m.sender;
+        const chat = await conn.groupMetadata(m.chat).catch(() => null); // Obtener info del grupo
+        const isGroup = !!chat;
+        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, ''));
+        let isAdmin = false;
 
+        // Verificar si el usuario es admin
+        if (isGroup) {
+            const groupAdmins = chat.participants.filter(p => p.admin);
+            isAdmin = groupAdmins.some(admin => admin.id === userId);
+        }
+
+        // Solo Admins y Owner pueden usar el comando
+        if (!isAdmin && !isOwner) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "🚫 *No tienes permisos para agregar mascotas.*\n⚠️ *Solo los administradores o el dueño del bot pueden usar este comando.*" },
+                { quoted: m }
+            );
+        }
+
+        // Verificar que el usuario haya ingresado todos los parámetros
+        const args = text.split(' ');
+        if (args.length < 5) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Formato incorrecto.*\n📌 *Ejemplo:* `.addmascota 🐇 Conejo Ágil Rápido Fugaz 2000`" },
+                { quoted: m }
+            );
+        }
+
+        // Extraer argumentos
+        const [emojiNombre, habilidad1, habilidad2, habilidad3, precio] = args;
+
+        if (isNaN(precio)) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *El precio debe ser un número válido.*" },
+                { quoted: m }
+            );
+        }
+
+        // Asegurar que la tienda de mascotas exista en cartera.json
+        if (!Array.isArray(cartera.mascotasEnVenta)) {
+            cartera.mascotasEnVenta = [];
+        }
+
+        // Verificar si la mascota ya existe en la tienda
+        const mascotaExistente = cartera.mascotasEnVenta.find(m => m.nombre.toLowerCase() === emojiNombre.toLowerCase());
+        if (mascotaExistente) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *La mascota "${emojiNombre}" ya está en la tienda. No puedes agregar duplicados.*` },
+                { quoted: m }
+            );
+        }
+
+        // Verificar que el usuario respondió a un archivo multimedia
+        if (!m.quoted || !m.quoted.mimetype) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Debes responder a una imagen, video o sticker para asignarlo a la mascota.*" },
+                { quoted: m }
+            );
+        }
+
+        // Detectar tipo de archivo multimedia
+        let mimeType = m.quoted.mimetype.toLowerCase();
+        let mediaType = '';
+
+        if (mimeType.includes('image')) {
+            mediaType = 'image';
+        } else if (mimeType.includes('video')) {
+            mediaType = 'video';
+        } else if (mimeType.includes('webp') || mimeType.includes('sticker')) {
+            mediaType = 'sticker';
+        } else {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *El mensaje citado no es una imagen, video ni sticker soportado.*" },
+                { quoted: m }
+            );
+        }
+
+        // Descargar el contenido multimedia
+        const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
+        let mediaBuffer = Buffer.alloc(0);
+        for await (const chunk of mediaStream) {
+            mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
+        }
+
+        // Crear el objeto de la mascota
+        const nuevaMascota = {
+            id: Date.now().toString(),
+            nombre: emojiNombre,
+            precio: parseInt(precio),
+            imagen: mediaBuffer.toString('base64'),
+            mimetype: m.quoted.mimetype,
+            habilidades: [
+                { nombre: habilidad1, nivel: 1 },
+                { nombre: habilidad2, nivel: 1 },
+                { nombre: habilidad3, nivel: 1 }
+            ],
+            stats: {
+                nivel: 1,
+                experiencia: 0,
+                experienciaSiguienteNivel: 500,
+                vida: 100
+            },
+            dueño: null
+        };
+
+        // Agregar la mascota a la tienda
+        cartera.mascotasEnVenta.push(nuevaMascota);
+
+        // Guardar en el archivo JSON
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Confirmación
+        const mensajeConfirm = `✅ *${emojiNombre}* ha sido agregado a la tienda.\n` +
+                               `🪙 *Precio:* ${precio} Cortana Coins\n` +
+                               `🔥 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}\n` +
+                               `❤️ *Vida:* 100\n\n` +
+                               `🐾 *Esta mascota ya está disponible en la tienda.*`;
+
+        return conn.sendMessage(
+            m.chat,
+            { text: mensajeConfirm },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en .addmascota:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ Ocurrió un error al agregar la mascota. Intenta nuevamente." },
+            { quoted: m }
+        );
+    }
+}
+break;
 	
 case 'go': {
     try {
