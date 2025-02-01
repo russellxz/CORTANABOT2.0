@@ -3742,8 +3742,8 @@ case 'tiendamall': {
             );
         }
 
-        // Construir la lista de mascotas disponibles
-        let listaMascotas = "🐾 *Mascotas Disponibles:* 🐾\n\n";
+        // Construir la lista de mascotas disponibles en la tienda
+        let listaMascotas = "🐾 *Mascotas Disponibles en la Tienda:* 🐾\n\n";
         cartera.mascotasEnVenta.forEach((mascota) => {
             let habilidadesText = mascota.habilidades
                 .map((hab) => `🔹 ${hab.nombre} (Nivel 1)`)
@@ -3756,16 +3756,14 @@ case 'tiendamall': {
             listaMascotas += "━━━━━━━━━━━━━━━━━━\n";
         });
 
-        // 🏪 **Texto de la tienda**
+        // Texto de la tienda con imagen incluida
         let tiendaTexto = `
-¸,ø¤º°\`°º¤ø,¸¸,ø¤º°
 ★·.·´¯\`·.·★ *TIENDA MALL* ★·.·´¯\`·.·★
-🍒｡･ﾟ♡ﾟ･｡🍓｡･ﾟ♡ﾟ･｡
 
 🛒 *¡Bienvenido a la Tienda Mall!* 🛍️
-Aquí puedes comprar nuevas mascotas con tus *Cortana Coins* 🪙
+Aquí puedes comprar nuevas mascotas con *Cortana Coins* 🪙
 
-━─━────༺༻────━─━
+━━━━━━━━━━━━━━━━━━
 
 ${listaMascotas}
 
@@ -3773,22 +3771,22 @@ ${listaMascotas}
 🔹 *.compra [nombre]*  
 📌 *Ejemplo:* \`.compra gato\`
 
-━─━────༺༻────━─━
+━━━━━━━━━━━━━━━━━━
 👀 *Para ver la tienda de personajes anime:*  
 🔹 Usa el comando: *.alaventa*
 
 🎭 *Para gestionar tus personajes:*  
 🔹 Usa el comando: *.menupersonajes*
 
-💡 *Próximamente más personajes, mascotas y sorpresas para ti.*  
+💡 *Próximamente más mascotas y sorpresas para ti.*  
 🛒 *¡Sigue ahorrando Cortana Coins para nuevas aventuras!* 🪙`;
 
-        // Enviar el mensaje de la tienda junto con la imagen
+        // Enviar el mensaje con imagen
         await conn.sendMessage(
             m.chat,
             { 
-                caption: tiendaTexto,
                 image: { url: "https://cloud.dorratz.com/files/d940ad9ae373fadc8b1589c3e88ab4f0" }, // Imagen de la tienda
+                caption: tiendaTexto 
             },
             { quoted: m }
         );
