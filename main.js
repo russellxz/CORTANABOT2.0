@@ -799,7 +799,6 @@ case 'deletemascota': {
 }
 break;
 	
-	
 case 'compra': {
     try {
         const userId = m.sender;
@@ -823,8 +822,8 @@ case 'compra': {
             );
         }
 
-        // Normalizar los nombres de las mascotas para la comparación
-        const normalizeName = (name) => name.replace(/[^\w\s]/gi, '').trim().toLowerCase(); // Ignora emojis y caracteres especiales
+        // Normalizar nombres para comparación
+        const normalizeName = (name) => name.replace(/[^\w\s]/gi, '').trim().toLowerCase();
         const mascotaSolicitada = normalizeName(args);
 
         // Buscar la mascota en la tienda
@@ -865,16 +864,17 @@ case 'compra': {
         // Descontar las Cortana Coins
         cartera[userId].coins -= mascotaEncontrada.precio;
 
-        // Clonar los datos de la mascota para agregarla a la colección del usuario
+        // Crear copia de la mascota con habilidades reiniciadas
         const nuevaMascota = {
             nombre: mascotaEncontrada.nombre,
-            habilidades: mascotaEncontrada.habilidades.map(h => ({ nombre: h.nombre, nivel: 1 })), // Reiniciar habilidades
+            habilidades: mascotaEncontrada.habilidades.map(h => ({ nombre: h.nombre, nivel: 1 })),
             vida: 100,
             nivel: 1,
             rango: '🐾 Principiante',
             experiencia: 0,
             experienciaSiguienteNivel: 100,
-            imagen: mascotaEncontrada.imagen, // Guardar la imagen asociada
+            imagen: mascotaEncontrada.imagen, // Base64 de la imagen
+            mimetype: mascotaEncontrada.mimetype, // Tipo de archivo
         };
 
         // Agregar la mascota a la cartera del usuario
@@ -896,10 +896,14 @@ ${nuevaMascota.habilidades.map(h => `🔹 ${h.nombre} (Nivel ${h.nivel})`).join(
 
 📌 *Usa el comando* \`.vermascotas\` *para ver todas tus mascotas.*`;
 
+        // Enviar la imagen correctamente convertida desde base64
+        const imagenBuffer = Buffer.from(nuevaMascota.imagen, 'base64');
+
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: nuevaMascota.imagen }, // Enviar la imagen asociada a la mascota
+                image: imagenBuffer, // Enviar la imagen convertida
+                mimetype: nuevaMascota.mimetype, // Especificar el tipo de imagen
                 caption: mensajeCompra,
             },
             { quoted: m }
@@ -910,59 +914,68 @@ ${nuevaMascota.habilidades.map(h => `🔹 ${h.nombre} (Nivel ${h.nivel})`).join(
         return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar comprar la mascota. Intenta nuevamente.*' }, { quoted: m });
     }
 }
-break;
+break;	
+
         
 case 'topmascotas': {
     try {
         await m.react('🏆'); // Reacción al usar el comando
 
-        // Verificar si hay usuarios con mascotas
-        const usuariosConMascotas = Object.entries(cartera).filter(([userId, data]) => data.mascotas && data.mascotas.length > 0);
+        let rankingMascotas = [];
 
-        if (usuariosConMascotas.length === 0) {
+        // 📌 Recorrer la cartera y agregar usuarios con mascotas al ranking
+        for (const userId in cartera) {
+            if (cartera[userId].mascotas && cartera[userId].mascotas.length > 0) {
+                cartera[userId].mascotas.forEach(mascota => {
+                    rankingMascotas.push({
+                        usuario: userId,
+                        nombre: mascota.nombre,
+                        nivel: mascota.nivel
+                    });
+                });
+            }
+        }
+
+        // 📌 Verificar si hay mascotas registradas
+        if (rankingMascotas.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *No hay usuarios con mascotas registradas en el sistema.* Usa `.crearcartera` para obtener tu primera mascota." },
+                { text: "⚠️ *No hay mascotas registradas en el grupo.*" },
                 { quoted: m }
             );
         }
 
-        // Ordenar por nivel de la mascota principal
-        const ranking = usuariosConMascotas
-            .map(([userId, data]) => ({
-                userId,
-                mascota: data.mascotas[0], // Tomar la primera mascota como principal
-            }))
-            .sort((a, b) => b.mascota.nivel - a.mascota.nivel) // Ordenar de mayor a menor nivel
-            .slice(0, 10); // Tomar el Top 10
+        // 📊 Ordenar el ranking por nivel (de mayor a menor)
+        rankingMascotas.sort((a, b) => b.nivel - a.nivel);
 
-        // Construir mensaje del ranking
-        let mensajeRanking = `🏆 *Top 10 Mascotas más Fuertes* 🏆\n\n`;
-        mensajeRanking += `━━━━━━━━━━━━━━━━━━\n`;
+        // 🏆 Construir el mensaje del ranking
+        let mensajeRanking = `🏆 *Top Ranking de Mascotas* 🏆\n\n`;
+        let menciones = [];
 
-        ranking.forEach((usuario, index) => {
-            const puestoEmoji = ["🥇", "🥈", "🥉"][index] || `🔹 *#${index + 1}*`;
-            mensajeRanking += `${puestoEmoji} *@${usuario.userId.split('@')[0]}* con *${usuario.mascota.nombre}*\n`;
-            mensajeRanking += `📊 *Nivel:* ${usuario.mascota.nivel}\n`;
-            mensajeRanking += `━━━━━━━━━━━━━━━━━━\n`;
+        rankingMascotas.forEach((mascota, index) => {
+            let posicion = index + 1;
+            let usuarioMencion = `@${mascota.usuario.replace(/@s.whatsapp.net/, '')}`;
+            mensajeRanking += `🔹 *#${posicion}* - ${usuarioMencion}  
+   🐾 *${mascota.nombre}*  
+   🆙 Nivel: ${mascota.nivel}  
+━━━━━━━━━━━━━━\n`;
+            menciones.push(mascota.usuario);
         });
 
-        mensajeRanking += `🏅 *¿Quieres entrar en el ranking?* 🏅\n`;
-        mensajeRanking += `🎭 Usa los comandos de entrenamiento y sube de nivel tu mascota.`;
-
-        // Enviar mensaje con la nueva imagen del ranking
+        // 📸 Enviar mensaje con imagen del ranking
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://cloud.dorratz.com/files/6a997043e24e581da56bcc6e15ee0820" }, // Nueva imagen del Top Ranking Mascotas
+                image: { url: "https://cloud.dorratz.com/files/6a997043e24e581da56bcc6e15ee0820" },
                 caption: mensajeRanking,
-                mentions: ranking.map(usuario => usuario.userId),
+                mentions: menciones
             },
             { quoted: m }
         );
+
     } catch (error) {
         console.error('❌ Error en el comando .topmascotas:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al mostrar el ranking. Intenta nuevamente.*' }, { quoted: m });
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al generar el ranking de mascotas.*' }, { quoted: m });
     }
 }
 break;
