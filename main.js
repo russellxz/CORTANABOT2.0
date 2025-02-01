@@ -3393,30 +3393,9 @@ case 'verpersonajes': {
 
         const personajesUsuario = cartera[userId].personajes;
 
-        // 📝 **Información general antes de mostrar los personajes**
         let textoPersonajes = `🎮 *Tus Personajes Adquiridos* 🎮\n`;
         textoPersonajes += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-        textoPersonajes += `📌 *Para mejorar y subir de nivel a tus personajes, usa estos comandos:*\n`;
-        textoPersonajes += `⚔️ *.luchar* → Enfréntate a enemigos y gana XP y Coins.\n`;
-        textoPersonajes += `🛸 *.volar* → Tu personaje vuela y gana XP.\n`;
-        textoPersonajes += `🔥 *.mododiablo* → Multiplica tu poder con riesgo.\n`;
-        textoPersonajes += `⚡ *.mododios* → Desata un poder divino para grandes recompensas.\n`;
-        textoPersonajes += `🌌 *.otrouniverso* → Viaja a otro universo y gana XP.\n`;
-        textoPersonajes += `👾 *.enemigos* → Derrota enemigos y obtén recompensas.\n`;
-        textoPersonajes += `🌍 *.otromundo* → Explora otros mundos en busca de XP y Coins.\n`;
-        textoPersonajes += `💥 *.podermaximo* → Desata tu poder máximo (Disponible cada 24h).\n\n`;
 
-        textoPersonajes += `📌 *Para gestionar tus personajes:*\n`;
-        textoPersonajes += `❌ *.quitarventa [nombre]* → Retirar un personaje de la venta.\n`;
-        textoPersonajes += `🐉 *.bolasdeldragon* → Usa 300 🪙 Cortana Coins para curar a tu personaje.\n`;
-        textoPersonajes += `✋ *.damelo* → Reclama un personaje gratis antes de que desaparezca.\n`;
-        textoPersonajes += `⚔️ *.batallaanime @usuario* → Reta a otro jugador.\n`;
-        textoPersonajes += `🏆 *.go* → Acepta un reto de batalla anime.\n`;
-        textoPersonajes += `🔄 *.personaje [nombre]* → Cambiar de personaje principal.\n`;
-        textoPersonajes += `📢 *Para más comandos, usa* \`.menupersonajes\`\n`;
-        textoPersonajes += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-
-        // 📜 **Ahora mostramos la lista de personajes**
         personajesUsuario.forEach((personaje, index) => {
             textoPersonajes += `🎭 *#${index + 1} - ${personaje.nombre}*\n`;
             textoPersonajes += `⚔️ *Nivel:* ${personaje.stats.nivel}\n`;
@@ -3430,6 +3409,28 @@ case 'verpersonajes': {
 
             textoPersonajes += `━━━━━━━━━━━━━━━━━━━━\n\n`;
         });
+
+        // 🔥 **Sección para mejorar el personaje**
+        textoPersonajes += `🚀 *📈 Cómo Subir de Nivel a tu Personaje* 📈\n`;
+        textoPersonajes += `━━━━━━━━━━━━━━━━━━━━\n`;
+        textoPersonajes += `⚔️ *.luchar* → Enfréntate a enemigos y gana XP y Cortana Coins.\n`;
+        textoPersonajes += `🛸 *.volar* → Tu personaje vuela y gana XP.\n`;
+        textoPersonajes += `🔮 *.poder* → Usa tu poder y obtén recompensas.\n`;
+        textoPersonajes += `🔥 *.mododiablo* → Multiplica tu poder, pero con riesgo.\n`;
+        textoPersonajes += `⚡ *.mododios* → Desata un poder divino para obtener grandes recompensas.\n`;
+        textoPersonajes += `🌌 *.otrouniverso* → Viaja a otro universo y gana XP.\n`;
+        textoPersonajes += `👾 *.enemigos* → Derrota enemigos y obtén recompensas.\n`;
+        textoPersonajes += `🌍 *.otromundo* → Explora otros mundos en busca de XP y Coins.\n`;
+        textoPersonajes += `💥 *.podermaximo* → Desata tu poder máximo (Disponible cada 24 horas).\n\n`;
+
+        // 📢 **Opciones de gestión**
+        textoPersonajes += `❌ *.quitarventa [nombre]* → Retirar un personaje de la venta y volverlo a tu colección.\n`;
+        textoPersonajes += `🐉 *.bolasdeldragon* → Usa 300 🪙 Cortana Coins para restaurar la vida de tu personaje al 100%.\n\n`;
+        textoPersonajes += `✋ *.damelo* → Reclama un personaje gratis antes de que desaparezca.\n`;
+        textoPersonajes += `⚔️ *.batallaanime @usuario* → Reta a otro jugador a una batalla anime.\n`;
+        textoPersonajes += `🏆 *.go* → Acepta un reto de batalla anime y pelea con tu personaje.\n\n`;
+        textoPersonajes += `🔄 *.personaje [nombre]* → Cambiar de personaje principal.\n`;
+        textoPersonajes += `📌 *Usa* \`.menupersonajes\` *para ver otros comandos útiles.*\n`;
 
         // 📸 **Enviar mensaje con imagen**
         await conn.sendMessage(
