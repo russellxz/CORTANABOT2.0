@@ -731,6 +731,75 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'deletemascota': {
+    try {
+        const userId = m.sender;
+        const args = text.trim().toLowerCase(); // Convertir entrada a minúsculas y eliminar espacios
+
+        // Verificar si el usuario tiene una cartera
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Primero necesitas crear tu cartera con `.crearcartera`.*" },
+                { quoted: m }
+            );
+        }
+
+        const userMascotas = cartera[userId].mascotas;
+
+        // Verificar que el usuario tenga más de una mascota para eliminar
+        if (userMascotas.length <= 1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *No puedes eliminar tu única mascota. Debes tener al menos otra para poder eliminar una.*" },
+                { quoted: m }
+            );
+        }
+
+        // Normalizar nombres para buscar la mascota
+        const normalizeName = (name) => name.replace(/[^\w\s]/gi, '').trim().toLowerCase(); // Ignora emojis y caracteres especiales
+        const mascotaSolicitada = normalizeName(args);
+
+        // Buscar la mascota en la cartera del usuario
+        const mascotaIndex = userMascotas.findIndex(
+            (m) => normalizeName(m.nombre) === mascotaSolicitada
+        );
+
+        if (mascotaIndex === -1) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No se encontró la mascota "${args}" en tu cartera.*` },
+                { quoted: m }
+            );
+        }
+
+        // Guardar el nombre de la mascota eliminada
+        const mascotaEliminada = userMascotas[mascotaIndex];
+
+        // Eliminar la mascota de la lista del usuario
+        userMascotas.splice(mascotaIndex, 1);
+
+        // Guardar cambios en cartera.json
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensajeEliminacion = `🗑️ *Has eliminado a "${mascotaEliminada.nombre}" de tu cartera.*  
+💡 *Si deseas obtener otra mascota, puedes comprar una en la tienda con \`.tiendamall\`.*`;
+
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeEliminacion },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .deletemascota:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar eliminar la mascota. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;
+	
+	
 case 'compra': {
     try {
         const userId = m.sender;
@@ -805,6 +874,7 @@ case 'compra': {
             rango: '🐾 Principiante',
             experiencia: 0,
             experienciaSiguienteNivel: 100,
+            imagen: mascotaEncontrada.imagen, // Guardar la imagen asociada
         };
 
         // Agregar la mascota a la cartera del usuario
@@ -828,7 +898,10 @@ ${nuevaMascota.habilidades.map(h => `🔹 ${h.nombre} (Nivel ${h.nivel})`).join(
 
         await conn.sendMessage(
             m.chat,
-            { text: mensajeCompra },
+            {
+                image: { url: nuevaMascota.imagen }, // Enviar la imagen asociada a la mascota
+                caption: mensajeCompra,
+            },
             { quoted: m }
         );
 
@@ -838,6 +911,7 @@ ${nuevaMascota.habilidades.map(h => `🔹 ${h.nombre} (Nivel ${h.nivel})`).join(
     }
 }
 break;
+        
 		
 case 'crearcartera': {
     try {
