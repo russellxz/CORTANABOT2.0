@@ -3918,7 +3918,7 @@ case 'siquiero': {
             );
         }
 
-        // Determinar estadísticas y ganador
+        // **Determinar estadísticas y ganador**
         const statsChallenger =
             challengerMascota.nivel * 5 +
             challengerMascota.habilidades.reduce((total, h) => total + h.nivel * 2, 0);
@@ -3934,10 +3934,10 @@ case 'siquiero': {
             ganadorId = userId;
             perdedorId = challengerId;
         } else {
-            return conn.sendMessage(m.chat, { text: "🤝 *La batalla terminó en empate.*" });
+            return conn.sendMessage(m.chat, { text: "🤝 *¡La batalla terminó en empate!*" });
         }
 
-        // Reducir vida de ambas mascotas
+        // **Reducir vida de ambas mascotas**
         const ganadorMascota = cartera[ganadorId].mascotas[0];
         const perdedorMascota = cartera[perdedorId].mascotas[0];
         ganadorMascota.vida -= Math.floor(Math.random() * 10) + 5;
@@ -3946,17 +3946,19 @@ case 'siquiero': {
         if (ganadorMascota.vida < 0) ganadorMascota.vida = 0;
         if (perdedorMascota.vida < 0) perdedorMascota.vida = 0;
 
-        // Recompensas
-        const xpGanadaGanador = Math.floor(Math.random() * 500) + 500;
-        const xpGanadaPerdedor = Math.floor(Math.random() * 200) + 100;
+        // **💰 Recompensas aleatorias**
+        const xpGanadaGanador = Math.floor(Math.random() * 801) + 500; // 500 - 1300 XP
+        const coinsGanador = Math.floor(Math.random() * 301) + 200; // 200 - 500 Coins
+        const xpGanadaPerdedor = Math.floor(Math.random() * 401) + 100; // 100 - 500 XP
+        const coinsPerdedor = Math.floor(Math.random() * 151) + 50; // 50 - 200 Coins
 
         ganadorMascota.experiencia += xpGanadaGanador;
-        cartera[ganadorId].coins += 200;
+        cartera[ganadorId].coins += coinsGanador;
 
         perdedorMascota.experiencia += xpGanadaPerdedor;
-        cartera[perdedorId].coins += 50;
+        cartera[perdedorId].coins += coinsPerdedor;
 
-        // Subida de nivel automática sin notificación
+        // **Subida de nivel automática sin notificación**
         const mascotas = [ganadorMascota, perdedorMascota];
         for (const mascota of mascotas) {
             while (mascota.experiencia >= mascota.experienciaSiguienteNivel) {
@@ -3969,14 +3971,14 @@ case 'siquiero': {
             }
         }
 
-        // Mensaje final con menciones
+        // **📢 Mensaje final con menciones**
         const textoResultados = `🎉 *¡La batalla ha terminado!*  
 🏆 *Ganador:* @${ganadorId.split('@')[0]}  
 💔 *Perdedor:* @${perdedorId.split('@')[0]}  
 
 ✨ *Recompensas:*  
-- *Ganador:* 🪙 200 Cortana Coins, 🆙 ${xpGanadaGanador} XP  
-- *Perdedor:* 🪙 50 Cortana Coins, 🆙 ${xpGanadaPerdedor} XP  
+- 🏅 *Ganador:* +${xpGanadaGanador} XP, 🪙 +${coinsGanador} Cortana Coins  
+- 🔹 *Perdedor:* +${xpGanadaPerdedor} XP, 🪙 +${coinsPerdedor} Cortana Coins  
 
 ❤️ *Estado de las mascotas:*  
 - ${ganadorMascota.nombre}: ${ganadorMascota.vida} HP  
@@ -3988,17 +3990,16 @@ case 'siquiero': {
             { quoted: m }
         );
 
-        // Limpiar solicitud y guardar cambios
+        // **Limpiar solicitud y guardar cambios**
         delete cartera[challengerId].battleRequest;
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
     } catch (error) {
         console.error('❌ Error en el comando .siquiero:', error);
         return conn.sendMessage(m.chat, { text: '❌ *Error inesperado al procesar la batalla.*' }, { quoted: m });
     }
 }
-break;        
-
-
+break;
 
         
 //curar        
