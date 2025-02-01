@@ -3375,7 +3375,6 @@ case 'quitarventa': {
     }
 }
 break;
-	
 
 case 'verpersonajes': {
     try {
@@ -3411,8 +3410,7 @@ case 'verpersonajes': {
             textoPersonajes += `━━━━━━━━━━━━━━━━━━━━\n\n`;
         });
 
-        textoPersonajes += `📌 *Usa* \`.vender <nombre> <precio>\` *para vender un personaje.*\n`;
-        textoPersonajes += `📢 *Para ver la tienda de personajes, usa* \`.alaventa\`\n\n`;
+        // 🔥 **Sección para mejorar el personaje**
         textoPersonajes += `🚀 *📈 Cómo Subir de Nivel a tu Personaje* 📈\n`;
         textoPersonajes += `━━━━━━━━━━━━━━━━━━━━\n`;
         textoPersonajes += `⚔️ *.luchar* → Enfréntate a enemigos y gana XP y Cortana Coins.\n`;
@@ -3424,16 +3422,17 @@ case 'verpersonajes': {
         textoPersonajes += `👾 *.enemigos* → Derrota enemigos y obtén recompensas.\n`;
         textoPersonajes += `🌍 *.otromundo* → Explora otros mundos en busca de XP y Coins.\n`;
         textoPersonajes += `💥 *.podermaximo* → Desata tu poder máximo (Disponible cada 24 horas).\n\n`;
+
+        // 📢 **Opciones de gestión**
         textoPersonajes += `❌ *.quitarventa [nombre]* → Retirar un personaje de la venta y volverlo a tu colección.\n`;
         textoPersonajes += `🐉 *.bolasdeldragon* → Usa 300 🪙 Cortana Coins para restaurar la vida de tu personaje al 100%.\n\n`;
         textoPersonajes += `✋ *.damelo* → Reclama un personaje gratis antes de que desaparezca.\n`;
         textoPersonajes += `⚔️ *.batallaanime @usuario* → Reta a otro jugador a una batalla anime.\n`;
         textoPersonajes += `🏆 *.go* → Acepta un reto de batalla anime y pelea con tu personaje.\n\n`;
         textoPersonajes += `🔄 *.personaje [nombre]* → Cambiar de personaje principal.\n`;
-        textoPersonajes += `🎭 *¡Mejora a tu personaje y conviértete en el más fuerte!* 🔥\n\n`;
-        textoPersonajes += `📌 *Pon* \`.menupersonajes\` *para ver otros comandos útiles.*\n`;
+        textoPersonajes += `📌 *Usa* \`.menupersonajes\` *para ver otros comandos útiles.*\n`;
 
-        // Enviar mensaje con imagen de portada
+        // 📸 **Enviar mensaje con imagen**
         await conn.sendMessage(
             m.chat,
             {
@@ -3453,7 +3452,7 @@ case 'verpersonajes': {
         );
     }
 }
-break;
+break;		
 
 
 case 'comprar2': {
