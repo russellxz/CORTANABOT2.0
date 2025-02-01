@@ -1,1 +1,272 @@
-{}
+{
+  "161,234,162,25,203,100,99,64,49,134,35,63,192,198,133,133,128,233,28,203,17,141,114,86,183,124,57,116,0,89,249,73": {
+    "command": ".grupo cerrar",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "197,84,207,136,94,194,150,247,232,65,42,6,29,45,254,246,45,245,210,37,225,92,118,239,145,200,12,7,170,85,82,122": {
+    "command": ".grupo abrir",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "20,105,20,105,167,42,228,21,161,34,89,88,217,93,191,118,236,95,82,213,90,143,7,122,202,108,213,156,253,179,168,203": {
+    "command": ".allmenu",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "241,137,27,219,158,108,48,229,43,43,25,235,0,152,20,7,252,15,166,150,165,98,168,37,6,95,106,57,177,40,126,122": {
+    "command": ".p",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "25,136,253,31,199,190,6,67,136,5,255,154,242,74,212,195,234,179,6,239,227,77,154,37,153,242,190,127,224,60,233,158": {
+    "command": ".clavelista",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "228,126,89,244,83,233,60,38,96,17,90,50,182,77,124,127,151,55,196,104,52,161,248,232,187,46,85,19,51,71,98,28": {
+    "command": ".topcaja",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "242,97,157,70,37,18,62,84,27,112,114,178,208,203,11,91,66,129,130,57,223,26,225,6,51,220,126,105,165,220,32,51": {
+    "command": ".menucaja",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "23,54,27,137,235,50,104,48,85,128,190,187,246,232,253,2,68,18,107,74,79,192,142,138,169,81,123,60,57,127,178,209": {
+    "command": ".menu2",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "33,104,240,143,124,255,231,47,78,75,7,133,96,42,76,114,101,79,101,119,228,6,103,66,233,54,184,87,226,70,252,232": {
+    "command": ".speedtest",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "248,40,140,162,112,14,5,211,105,226,43,24,181,145,33,42,74,192,203,209,51,238,39,225,241,227,94,255,185,21,126,157": {
+    "command": ".menuguar",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "170,56,227,186,234,61,161,144,242,55,107,180,247,241,72,234,48,71,245,27,183,50,192,148,111,219,58,70,71,236,207,216": {
+    "command": ".estadomascota",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "133,79,241,215,197,155,89,230,5,13,43,235,207,204,122,199,53,83,73,144,39,255,118,106,30,98,42,190,247,84,216,33": {
+    "command": ".vermascotas",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "16,47,207,163,197,241,77,50,55,121,199,149,229,18,199,155,212,198,216,164,125,137,143,96,74,203,52,11,22,66,23,182": {
+    "command": ".tiendamall",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "185,222,247,120,201,211,96,45,108,78,79,198,167,186,4,9,123,161,169,42,239,255,84,104,209,212,128,46,149,38,152,129": {
+    "command": ".verpersonajes",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "254,136,127,197,90,77,26,83,116,144,148,150,33,160,159,75,113,187,38,109,188,112,75,5,16,44,58,210,238,40,186,170": {
+    "command": ".toppersonajes",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "15,22,14,226,70,51,121,49,168,122,197,16,25,0,179,211,63,32,49,184,174,237,99,8,111,42,54,202,150,120,174,243": {
+    "command": ".estadopersonaje",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "4,60,160,39,53,73,226,161,83,218,109,145,240,180,179,71,65,63,168,209,190,114,67,150,236,189,131,3,155,54,74,185": {
+    "command": ".alaventa",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "28,206,188,217,106,62,113,78,184,152,170,97,88,155,103,15,218,30,127,56,1,255,62,215,149,74,87,210,188,134,194,255": {
+    "command": ".menupersonajes",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "185,31,73,52,132,21,185,39,191,236,34,255,163,147,57,171,104,13,224,189,53,158,150,173,91,252,35,63,0,167,62,237": {
+    "command": ".sticker",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "98,24,72,137,137,169,168,6,9,70,193,21,213,80,15,61,92,27,201,86,17,145,218,147,25,202,245,121,126,210,134,247": {
+    "command": ".topmascotas",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "237,21,4,188,72,191,123,246,35,132,205,223,11,20,50,250,185,95,100,237,4,73,199,156,124,121,181,69,27,132,121,44": {
+    "command": ".menupersonajes",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "233,221,191,162,223,52,242,20,129,210,19,87,65,168,83,199,9,233,133,49,243,102,182,78,14,148,175,67,82,142,230,86": {
+    "command": ".estadopersonaje",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "79,11,29,167,52,191,157,84,40,71,72,210,40,22,115,239,76,183,30,220,237,175,234,126,142,11,101,188,119,142,137,145": {
+    "command": ".verpersonajes",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "237,73,74,97,86,214,199,0,1,179,179,118,181,254,4,244,117,146,58,165,7,163,196,60,81,240,86,107,253,192,123,219": {
+    "command": ".alaventa",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "59,28,100,200,150,38,32,197,80,172,191,120,81,61,180,53,227,238,91,101,62,115,150,213,12,234,169,243,58,27,44,175": {
+    "command": ".tiendamall",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "196,172,214,254,242,4,245,55,70,162,0,9,50,117,176,121,245,136,134,18,102,204,66,164,131,177,99,71,12,185,209,255": {
+    "command": ".estadomascota",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  },
+  "243,2,18,47,238,132,41,110,133,104,84,123,37,186,145,236,88,48,27,140,113,95,206,100,69,75,68,45,93,73,174,124": {
+    "command": ".vermascotas",
+    "action": "execute",
+    "requireQuoted": true,
+    "context": {
+      "stanzaId": null,
+      "participant": null,
+      "quotedMessage": null
+    }
+  }
+}
