@@ -730,6 +730,96 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'crearcartera': {
+    try {
+        await m.react('✅'); // Reacción al usar el comando
+
+        const userId = m.sender;
+
+        // 🛑 Verificar si el usuario ya tiene una cartera creada
+        if (cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Ya tienes una cartera creada.* Usa `.vermascotas` para ver tus mascotas." },
+                { quoted: m }
+            );
+        }
+
+        // 📌 Verificar si hay mascotas en la tienda
+        if (!cartera.tiendaMascotas || cartera.tiendaMascotas.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "🚫 *No hay mascotas disponibles en la tienda en este momento.*" },
+                { quoted: m }
+            );
+        }
+
+        // 🐾 **Seleccionar una mascota aleatoria de la tienda**
+        const mascotaAleatoria = cartera.tiendaMascotas[Math.floor(Math.random() * cartera.tiendaMascotas.length)];
+
+        // 📌 **Configurar los datos de la mascota asignada**
+        const mascotaInfo = {
+            nombre: mascotaAleatoria.nombre,
+            habilidades: mascotaAleatoria.habilidades.map((hab) => ({
+                nombre: hab.nombre,
+                nivel: 1,
+            })),
+            vida: 100, // Vida inicial
+            nivel: 1,
+            rango: '🐾 Principiante', // Rango inicial
+            experiencia: 0,
+            experienciaSiguienteNivel: 100, // XP necesaria para subir de nivel
+            imagen: mascotaAleatoria.imagen, // Asignar la imagen
+            mimetype: mascotaAleatoria.mimetype, // Tipo de imagen
+        };
+
+        // 🏦 **Crear la cartera del usuario con la mascota inicial**
+        cartera[userId] = {
+            coins: 0,
+            mascotas: [mascotaInfo],
+        };
+
+        // 💾 **Guardar en el archivo cartera.json**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // 📜 **Construir mensaje de confirmación**
+        let habilidadesText = mascotaInfo.habilidades
+            .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
+            .join('\n');
+
+        let mensaje = `
+🎉 *¡Cartera creada con éxito!* 🎉
+
+🐾 *Tu mascota inicial:* ${mascotaInfo.nombre}  
+📊 *Rango:* ${mascotaInfo.rango}  
+🆙 *Nivel inicial:* ${mascotaInfo.nivel}  
+❤️ *Vida inicial:* ${mascotaInfo.vida}
+
+✨ *Habilidades iniciales:*  
+${habilidadesText}
+
+🔑 *Usa el comando* \`.vermascotas\` *para ver tus mascotas y sus estadísticas.*  
+💡 *Sube de nivel a tu mascota usando los comandos disponibles en el menú.*`;
+
+        // 📷 **Enviar la imagen de la mascota junto al mensaje**
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: Buffer.from(mascotaInfo.imagen, 'base64'),
+                mimetype: mascotaInfo.mimetype,
+                caption: mensaje,
+                mentions: [m.sender]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .crearcartera:', error);
+        m.reply('❌ *Ocurrió un error al intentar crear la cartera. Intenta nuevamente.*');
+    }
+}
+break;
+	
 case 'addmascota': {
     try {
         const userId = m.sender;
@@ -4699,85 +4789,7 @@ case 'casar': {
 }
 break;		
 
-case 'crearcartera': {
-    try {
-        await m.react('✅'); // Reacción al usar el comando
 
-        const userId = m.sender;
-        if (cartera[userId]) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *Ya tienes una cartera creada.* Usa `.vermascotas` para ver tus mascotas." },
-                { quoted: m }
-            );
-        }
-
-        // Mascotas iniciales con emojis y habilidades
-        const mascotas = {
-            raton: { emoji: '🐁', habilidades: ['Velocidad', 'Agilidad', 'Evasión'] },
-            conejo: { emoji: '🐇', habilidades: ['Saltar', 'Velocidad', 'Camuflaje'] },
-            perro: { emoji: '🐶', habilidades: ['Fuerza', 'Lealtad', 'Protección'] },
-            gato: { emoji: '🐈‍⬛', habilidades: ['Sigilo', 'Reflejos', 'Curiosidad'] },
-        };
-
-        // Seleccionar una mascota aleatoria
-        const keys = Object.keys(mascotas);
-        const randomKey = keys[Math.floor(Math.random() * keys.length)];
-        const mascotaSeleccionada = randomKey;
-
-        // Establecer la información inicial de la mascota
-        const mascotaInfo = {
-            nombre: `${mascotas[mascotaSeleccionada].emoji} ${mascotaSeleccionada.charAt(0).toUpperCase() + mascotaSeleccionada.slice(1)}`,
-            habilidades: mascotas[mascotaSeleccionada].habilidades.map((hab) => ({
-                nombre: hab,
-                nivel: 1,
-            })),
-            vida: 100, // Vida igual para todas las mascotas
-            nivel: 1,
-            rango: '🐾 Principiante', // Rango inicial
-            experiencia: 0,
-            experienciaSiguienteNivel: 100, // XP necesaria para subir al siguiente nivel
-        };
-
-        // Crear la cartera del usuario
-        cartera[userId] = {
-            coins: 0,
-            mascotas: [mascotaInfo],
-        };
-
-        // Guardar en el archivo cartera.json
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-
-        // Respuesta al usuario
-        let habilidadesText = mascotaInfo.habilidades
-            .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
-            .join('\n');
-
-        let mensaje = `
-🎉 *¡Cartera creada con éxito!* 🎉
-
-🐾 *Te ha tocado una mascota:* ${mascotas[mascotaSeleccionada].emoji} ${mascotaInfo.nombre}  
-📊 *Rango:* ${mascotaInfo.rango}  
-🆙 *Nivel inicial:* ${mascotaInfo.nivel}  
-❤️ *Vida inicial:* ${mascotaInfo.vida}
-
-✨ *Habilidades iniciales:*  
-${habilidadesText}
-
-🔑 *Usa el comando* \`.vermascotas\` *para ver tus mascotas y sus estadísticas.*  
-💡 *Sube de nivel a tu mascota usando los comandos disponibles en el menú.*`;
-
-        await conn.sendMessage(
-            m.chat,
-            { text: mensaje, mentions: [m.sender] },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error('❌ Error creando cartera:', error);
-        m.reply('❌ *Ocurrió un error al intentar crear la cartera. Intenta nuevamente.*');
-    }
-}
-break;	
 
 //ver mascota				
 case 'vermascotas': {
