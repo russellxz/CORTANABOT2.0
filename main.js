@@ -1022,11 +1022,14 @@ case 'topmascotas': {
             topTexto += `━━━━━━━━━━━━━━\n`;
         });
 
+        // 📢 **Mensaje final para motivar a mejorar sus mascotas**
+        topTexto += `📌 *Usa el comando* \`.vermascotas\` *para seguir subiendo de nivel a tus mascotas y ver todos los comandos disponibles.*`;
+
         // Enviar mensaje con la imagen del ranking
         await conn.sendMessage(
             m.chat,
             {
-                text: topTexto,
+                caption: topTexto,
                 mentions: usuariosConMascotas.map(u => u.userId),
                 image: { url: "https://cloud.dorratz.com/files/6a997043e24e581da56bcc6e15ee0820" }, // Imagen del ranking
             },
@@ -1042,7 +1045,7 @@ case 'topmascotas': {
         );
     }
 }
-break;        
+break;
 
 	
 case 'crearcartera': {
