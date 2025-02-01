@@ -730,13 +730,14 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
 case 'crearcartera': {
     try {
         await m.react('✅'); // Reacción al usar el comando
 
         const userId = m.sender;
-
-        // 🛑 Verificar si el usuario ya tiene una cartera creada
+        
+        // Verificar si el usuario ya tiene una cartera creada
         if (cartera[userId]) {
             return conn.sendMessage(
                 m.chat,
@@ -745,55 +746,52 @@ case 'crearcartera': {
             );
         }
 
-        // 📌 Verificar si hay mascotas en la tienda
-        if (!cartera.tiendaMascotas || cartera.tiendaMascotas.length === 0) {
+        // 📜 **Verificar si hay mascotas en la tienda**
+        if (!cartera.mascotasEnVenta || cartera.mascotasEnVenta.length === 0) {
             return conn.sendMessage(
                 m.chat,
-                { text: "🚫 *No hay mascotas disponibles en la tienda en este momento.*" },
+                { text: "⚠️ *No hay mascotas disponibles en la tienda en este momento.*" },
                 { quoted: m }
             );
         }
 
         // 🐾 **Seleccionar una mascota aleatoria de la tienda**
-        const mascotaAleatoria = cartera.tiendaMascotas[Math.floor(Math.random() * cartera.tiendaMascotas.length)];
+        const mascotaAleatoria = cartera.mascotasEnVenta[Math.floor(Math.random() * cartera.mascotasEnVenta.length)];
 
-        // 📌 **Configurar los datos de la mascota asignada**
-        const mascotaInfo = {
-            nombre: mascotaAleatoria.nombre,
-            habilidades: mascotaAleatoria.habilidades.map((hab) => ({
-                nombre: hab.nombre,
-                nivel: 1,
-            })),
-            vida: 100, // Vida inicial
-            nivel: 1,
-            rango: '🐾 Principiante', // Rango inicial
-            experiencia: 0,
-            experienciaSiguienteNivel: 100, // XP necesaria para subir de nivel
-            imagen: mascotaAleatoria.imagen, // Asignar la imagen
-            mimetype: mascotaAleatoria.mimetype, // Tipo de imagen
-        };
-
-        // 🏦 **Crear la cartera del usuario con la mascota inicial**
+        // 🏠 **Crear la cartera del usuario con la mascota asignada**
         cartera[userId] = {
             coins: 0,
-            mascotas: [mascotaInfo],
+            mascotas: [{
+                nombre: mascotaAleatoria.nombre,
+                habilidades: mascotaAleatoria.habilidades.map((hab) => ({
+                    nombre: hab.nombre,
+                    nivel: 1,
+                })),
+                vida: 100, // Vida inicial de la mascota
+                nivel: 1,
+                rango: '🐾 Principiante', // Rango inicial
+                experiencia: 0,
+                experienciaSiguienteNivel: 100, // XP necesaria para subir al siguiente nivel
+                imagen: mascotaAleatoria.imagen, // Imagen de la mascota
+                mimetype: mascotaAleatoria.mimetype // Tipo de imagen
+            }]
         };
 
-        // 💾 **Guardar en el archivo cartera.json**
+        // 💾 **Guardar cambios en cartera.json**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // 📜 **Construir mensaje de confirmación**
-        let habilidadesText = mascotaInfo.habilidades
+        // 📜 **Formato del mensaje de confirmación**
+        let habilidadesText = cartera[userId].mascotas[0].habilidades
             .map((hab) => `🔹 ${hab.nombre} (Nivel ${hab.nivel})`)
             .join('\n');
 
         let mensaje = `
 🎉 *¡Cartera creada con éxito!* 🎉
 
-🐾 *Tu mascota inicial:* ${mascotaInfo.nombre}  
-📊 *Rango:* ${mascotaInfo.rango}  
-🆙 *Nivel inicial:* ${mascotaInfo.nivel}  
-❤️ *Vida inicial:* ${mascotaInfo.vida}
+🐾 *Te ha tocado una mascota:* ${mascotaAleatoria.nombre}  
+📊 *Rango:* ${cartera[userId].mascotas[0].rango}  
+🆙 *Nivel inicial:* ${cartera[userId].mascotas[0].nivel}  
+❤️ *Vida inicial:* ${cartera[userId].mascotas[0].vida}
 
 ✨ *Habilidades iniciales:*  
 ${habilidadesText}
@@ -801,20 +799,19 @@ ${habilidadesText}
 🔑 *Usa el comando* \`.vermascotas\` *para ver tus mascotas y sus estadísticas.*  
 💡 *Sube de nivel a tu mascota usando los comandos disponibles en el menú.*`;
 
-        // 📷 **Enviar la imagen de la mascota junto al mensaje**
+        // 📸 **Enviar mensaje con la imagen de la mascota**
         await conn.sendMessage(
             m.chat,
             {
-                image: Buffer.from(mascotaInfo.imagen, 'base64'),
-                mimetype: mascotaInfo.mimetype,
-                caption: mensaje,
-                mentions: [m.sender]
+                image: Buffer.from(mascotaAleatoria.imagen, 'base64'),
+                mimetype: mascotaAleatoria.mimetype,
+                caption: mensaje
             },
             { quoted: m }
         );
 
     } catch (error) {
-        console.error('❌ Error en el comando .crearcartera:', error);
+        console.error('❌ Error creando cartera:', error);
         m.reply('❌ *Ocurrió un error al intentar crear la cartera. Intenta nuevamente.*');
     }
 }
@@ -824,37 +821,51 @@ case 'addmascota': {
     try {
         const userId = m.sender;
         const chat = await conn.groupMetadata(m.chat).catch(() => null); // Obtener info del grupo
-        const isGroup = !!chat;
-        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, ''));
+        const isGroup = !!chat; // Verificar si el comando se usa en grupo
+        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, '')); // Verificar si es owner
         let isAdmin = false;
 
-        // Verificar si el usuario es admin
+        // 🔹 Si está en grupo, verificar si es admin
         if (isGroup) {
             const groupAdmins = chat.participants.filter(p => p.admin);
             isAdmin = groupAdmins.some(admin => admin.id === userId);
         }
 
-        // Solo Admins y Owner pueden usar el comando
+        // 🔐 **Verificar si el usuario es Admin o Owner**
         if (!isAdmin && !isOwner) {
             return conn.sendMessage(
                 m.chat,
-                { text: "🚫 *No tienes permisos para agregar mascotas.*\n⚠️ *Solo los administradores o el dueño del bot pueden usar este comando.*" },
+                { text: "🚫 *No tienes permisos para agregar mascotas.*\n⚠️ *Solo los administradores del grupo o el dueño del bot pueden usar este comando.*" },
                 { quoted: m }
             );
         }
 
-        // Verificar que el usuario haya ingresado todos los parámetros
+        // 1️⃣ **Verificar que el usuario haya ingresado todos los parámetros necesarios**
         const args = text.split(' ');
         if (args.length < 5) {
             return conn.sendMessage(
                 m.chat,
-                { text: "⚠️ *Formato incorrecto.*\n📌 *Ejemplo:* `.addmascota 🐇 Conejo Ágil Rápido Fugaz 2000`" },
+                { text: "⚠️ *Formato incorrecto.*\n📌 *Ejemplo:* `.addmascota 🐇 Conejo Agil Rapido Fugas 2000`" },
                 { quoted: m }
             );
         }
 
-        // Extraer argumentos
+        // 2️⃣ **Extraer los argumentos del comando**
         const [emojiNombre, habilidad1, habilidad2, habilidad3, precio] = args;
+
+        // Separar el emoji y el nombre de la mascota
+        const regex = /^(\p{Emoji_Presentation}|\p{Extended_Pictographic})(.+)/u;
+        const match = emojiNombre.match(regex);
+        if (!match) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *El primer parámetro debe ser un emoji seguido del nombre de la mascota.*\n📌 *Ejemplo:* `.addmascota 🐶 Perro Fuerte Leal Valiente 2000`" },
+                { quoted: m }
+            );
+        }
+
+        const emoji = match[1];
+        const nombre = match[2].trim();
 
         if (isNaN(precio)) {
             return conn.sendMessage(
@@ -864,22 +875,16 @@ case 'addmascota': {
             );
         }
 
-        // Asegurar que la tienda de mascotas exista en cartera.json
-        if (!Array.isArray(cartera.mascotasEnVenta)) {
-            cartera.mascotasEnVenta = [];
-        }
-
-        // Verificar si la mascota ya existe en la tienda
-        const mascotaExistente = cartera.mascotasEnVenta.find(m => m.nombre.toLowerCase() === emojiNombre.toLowerCase());
-        if (mascotaExistente) {
+        // 3️⃣ **Verificar si la mascota ya existe en la tienda**
+        if (cartera.mascotasEnVenta?.some(m => m.nombre.toLowerCase() === nombre.toLowerCase())) {
             return conn.sendMessage(
                 m.chat,
-                { text: `❌ *La mascota "${emojiNombre}" ya está en la tienda. No puedes agregar duplicados.*` },
+                { text: `❌ *La mascota "${nombre}" ya está en la tienda. No puedes agregar duplicados.*` },
                 { quoted: m }
             );
         }
 
-        // Verificar que el usuario respondió a un archivo multimedia
+        // 4️⃣ **Verificar que el usuario respondió a un archivo multimedia**
         if (!m.quoted || !m.quoted.mimetype) {
             return conn.sendMessage(
                 m.chat,
@@ -888,7 +893,7 @@ case 'addmascota': {
             );
         }
 
-        // Detectar tipo de archivo multimedia
+        // 5️⃣ **Detectar el tipo de archivo multimedia**
         let mimeType = m.quoted.mimetype.toLowerCase();
         let mediaType = '';
 
@@ -906,19 +911,19 @@ case 'addmascota': {
             );
         }
 
-        // Descargar el contenido multimedia
+        // 6️⃣ **Descargar el contenido multimedia**
         const mediaStream = await downloadContentFromMessage(m.quoted, mediaType);
         let mediaBuffer = Buffer.alloc(0);
         for await (const chunk of mediaStream) {
             mediaBuffer = Buffer.concat([mediaBuffer, chunk]);
         }
 
-        // Crear el objeto de la mascota
+        // 7️⃣ **Crear el objeto de la mascota**
         const nuevaMascota = {
             id: Date.now().toString(),
-            nombre: emojiNombre,
+            nombre: `${emoji} ${nombre}`,
             precio: parseInt(precio),
-            imagen: mediaBuffer.toString('base64'),
+            imagen: mediaBuffer.toString('base64'), // Guardar la imagen/video/sticker en base64
             mimetype: m.quoted.mimetype,
             habilidades: [
                 { nombre: habilidad1, nivel: 1 },
@@ -934,14 +939,19 @@ case 'addmascota': {
             dueño: null
         };
 
-        // Agregar la mascota a la tienda
+        // 8️⃣ **Asegurar que la tienda de mascotas exista en cartera.json**
+        if (!Array.isArray(cartera.mascotasEnVenta)) {
+            cartera.mascotasEnVenta = [];
+        }
+
+        // 9️⃣ **Agregar la mascota a la tienda**
         cartera.mascotasEnVenta.push(nuevaMascota);
 
-        // Guardar en el archivo JSON
+        // 🔟 **Guardar en el archivo JSON**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Confirmación
-        const mensajeConfirm = `✅ *${emojiNombre}* ha sido agregado a la tienda.\n` +
+        // 📝 **Mensaje de confirmación**
+        const mensajeConfirm = `✅ *${emoji} ${nombre}* ha sido agregado a la tienda de mascotas.\n` +
                                `🪙 *Precio:* ${precio} Cortana Coins\n` +
                                `🔥 *Habilidades:* ${habilidad1}, ${habilidad2}, ${habilidad3}\n` +
                                `❤️ *Vida:* 100\n\n` +
@@ -963,6 +973,7 @@ case 'addmascota': {
     }
 }
 break;
+
 	
 case 'go': {
     try {
