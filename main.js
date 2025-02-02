@@ -733,31 +733,33 @@ break
 case 'deleteuser': {
     try {
         const userId = m.sender;
-        const chat = await conn.groupMetadata(m.chat);
-        const isAdmin = chat.participants.find(p => p.id === userId)?.admin === 'admin' || chat.participants.find(p => p.id === userId)?.admin === 'superadmin';
+        const chat = await conn.groupMetadata(m.chat).catch(() => null); // Obtener metadata del grupo
+        const groupAdmins = chat ? chat.participants.filter(p => p.admin).map(p => p.id) : []; // Lista de admins
+
+        // Verificar si el usuario que ejecuta el comando es admin o owner
+        const isAdmin = groupAdmins.includes(userId);
         const isOwner = userId === 'tu_numero_aqui@s.whatsapp.net'; // Reemplaza con tu número de dueño
 
-        // Verificar si el usuario es admin o el owner
         if (!isAdmin && !isOwner) {
             return conn.sendMessage(m.chat, { text: "⚠️ *No tienes permisos para usar este comando.*" }, { quoted: m });
         }
 
-        const args = m.text.split(' ')[1]; // Obtener el número del usuario
+        // Obtener el número del usuario a eliminar
+        const args = m.text.split(' ')[1];
         if (!args) {
             return conn.sendMessage(m.chat, { text: "⚠️ *Debes especificar un número de usuario.*" }, { quoted: m });
         }
 
-        const targetId = args.replace(/\D/g, '') + "@s.whatsapp.net"; // Formato correcto de WhatsApp
+        const targetId = args.replace(/\D/g, '') + "@s.whatsapp.net"; // Convertir número en formato de WhatsApp
 
-        // Verificar si el usuario existe en la cartera
+        // Verificar si el usuario tiene una cartera
         if (!cartera[targetId]) {
             return conn.sendMessage(m.chat, { text: "❌ *El usuario no tiene una cartera registrada.*" }, { quoted: m });
         }
 
-        // 📌 **Si el usuario tiene personajes, devolverlos a la tienda con todos sus atributos**
+        // 📌 **Si el usuario tiene personajes, devolverlos a la tienda**
         if (cartera[targetId].personajes && cartera[targetId].personajes.length > 0) {
             cartera[targetId].personajes.forEach(personaje => {
-                // Clonar personaje con todos sus atributos intactos
                 const personajeRestaurado = {
                     nombre: personaje.nombre,
                     nivel: personaje.nivel,
@@ -773,13 +775,13 @@ case 'deleteuser': {
                     mimetype: personaje.mimetype // Tipo de imagen
                 };
 
-                // Agregar de vuelta a la tienda de personajes
+                // Agregar el personaje nuevamente a la tienda
                 cartera.personajesEnVenta.push(personajeRestaurado);
             });
         }
 
-        // 📌 **Si el usuario tenía mascotas, simplemente eliminarlas**
-        delete cartera[targetId]; // Elimina toda la cartera
+        // 📌 **Eliminar la cartera del usuario**
+        delete cartera[targetId];
 
         // 💾 **Guardar cambios en cartera.json**
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
