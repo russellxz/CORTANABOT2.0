@@ -730,6 +730,75 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
+case 'tiendamall': {
+    try {
+        // Verificar si hay mascotas en la tienda
+        if (!cartera.mascotasEnVenta || cartera.mascotasEnVenta.length === 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No hay mascotas disponibles en la tienda en este momento.*" },
+                { quoted: m }
+            );
+        }
+
+        // Construir la lista de mascotas disponibles en la tienda
+        let listaMascotas = "🐾 *Mascotas Disponibles en la Tienda:* 🐾\n\n";
+        cartera.mascotasEnVenta.forEach((mascota) => {
+            let habilidadesText = mascota.habilidades
+                .map((hab) => `🔹 ${hab.nombre} (Nivel 1)`)
+                .join('\n');
+
+            listaMascotas += `🔸 *${mascota.nombre}*\n`;
+            listaMascotas += `💰 *Precio:* 🪙 ${mascota.precio} Cortana Coins\n`;
+            listaMascotas += `❤️ *Vida:* 100\n`;
+            listaMascotas += `✨ *Habilidades:*\n${habilidadesText}\n`;
+            listaMascotas += "━━━━━━━━━━━━━━━━━━\n";
+        });
+
+        // Texto de la tienda con imagen incluida
+        let tiendaTexto = `
+★·.·´¯\`·.·★ *TIENDA MALL* ★·.·´¯\`·.·★
+
+🛒 *¡Bienvenido a la Tienda Mall!* 🛍️
+Aquí puedes comprar nuevas mascotas con *Cortana Coins* 🪙
+
+━━━━━━━━━━━━━━━━━━
+
+${listaMascotas}
+
+🛍️ *Para comprar una mascota usa:*  
+🔹 *.compra [nombre]*  
+📌 *Ejemplo:* \`.compra gato\`
+
+━━━━━━━━━━━━━━━━━━
+👀 *Para ver la tienda de personajes anime:*  
+🔹 Usa el comando: *.alaventa*
+
+🎭 *Para gestionar tus personajes:*  
+🔹 Usa el comando: *.menupersonajes*
+
+💡 *Próximamente más mascotas y sorpresas para ti.*  
+🛒 *¡Sigue ahorrando Cortana Coins para nuevas aventuras!* 🪙`;
+
+        // Enviar el mensaje con imagen
+        await conn.sendMessage(
+            m.chat,
+            { 
+                image: { url: "https://i.postimg.cc/HWccpMnm/file-Ac-N95gn-Usu5-HR4-Nncdw72e.webp" }, // Imagen de la tienda
+                caption: tiendaTexto 
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .tiendamall:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al mostrar la tienda. Intenta nuevamente.*' }, { quoted: m });
+    }
+}
+break;	
+	
+	
 case 'deleteuser': {
     try {
         await m.react('🗑️'); // Reacción al usar el comando
@@ -1132,7 +1201,7 @@ case 'topmascotas': {
             {
                 caption: topTexto,
                 mentions: usuariosConMascotas.map(u => u.userId),
-                image: { url: "https://cloud.dorratz.com/files/6a997043e24e581da56bcc6e15ee0820" }, // Imagen del ranking
+                image: { url: "https://i.postimg.cc/HsRSPXNh/file-K7b-Q3-SKJ2u9ow-Gx-S7t-Eqjn-1.webp" }, // Imagen del ranking
             },
             { quoted: m }
         );
@@ -3322,7 +3391,7 @@ case 'toppersonajes': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://cloud.dorratz.com/files/b4eb9035e5757eb952cbd84c3fd6da25" },
+                image: { url: "https://i.postimg.cc/hj5606RX/file-EEd-Sm91h-GBh-B8-JBrh6k-QEB.webp" },
                 caption: mensajeTop,
                 mentions: ranking.map(user => user.userId)
             },
@@ -3536,7 +3605,7 @@ case 'verpersonajes': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://cloud.dorratz.com/files/78babdb6743223da053e8d19f40f2784" },
+                image: { url: "https://i.postimg.cc/NFp0jQ3K/HD-wallpaper-anime-crossover-goku-monkey-d-luffy.jpg" },
                 caption: textoPersonajes,
                 mentions: [m.sender]
             },
@@ -3802,7 +3871,7 @@ case 'alaventa': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://cloud.dorratz.com/files/bee243b58acda41bcc05d68cd9d84067" },
+                image: { url: "https://i.postimg.cc/g2DP9MP0/rodrigo-miguel-de-souza-146-sem-titulo-20220716224045.jpg" },
                 caption: menuVenta,
                 mentions: cartera.personajesVendidos ? cartera.personajesVendidos.map(venta => venta.vendedor) : []
             },
@@ -4130,72 +4199,7 @@ ${habilidadesText}
 break;
 	
 	
-case 'tiendamall': {
-    try {
-        // Verificar si hay mascotas en la tienda
-        if (!cartera.mascotasEnVenta || cartera.mascotasEnVenta.length === 0) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *No hay mascotas disponibles en la tienda en este momento.*" },
-                { quoted: m }
-            );
-        }
 
-        // Construir la lista de mascotas disponibles en la tienda
-        let listaMascotas = "🐾 *Mascotas Disponibles en la Tienda:* 🐾\n\n";
-        cartera.mascotasEnVenta.forEach((mascota) => {
-            let habilidadesText = mascota.habilidades
-                .map((hab) => `🔹 ${hab.nombre} (Nivel 1)`)
-                .join('\n');
-
-            listaMascotas += `🔸 *${mascota.nombre}*\n`;
-            listaMascotas += `💰 *Precio:* 🪙 ${mascota.precio} Cortana Coins\n`;
-            listaMascotas += `❤️ *Vida:* 100\n`;
-            listaMascotas += `✨ *Habilidades:*\n${habilidadesText}\n`;
-            listaMascotas += "━━━━━━━━━━━━━━━━━━\n";
-        });
-
-        // Texto de la tienda con imagen incluida
-        let tiendaTexto = `
-★·.·´¯\`·.·★ *TIENDA MALL* ★·.·´¯\`·.·★
-
-🛒 *¡Bienvenido a la Tienda Mall!* 🛍️
-Aquí puedes comprar nuevas mascotas con *Cortana Coins* 🪙
-
-━━━━━━━━━━━━━━━━━━
-
-${listaMascotas}
-
-🛍️ *Para comprar una mascota usa:*  
-🔹 *.compra [nombre]*  
-📌 *Ejemplo:* \`.compra gato\`
-
-━━━━━━━━━━━━━━━━━━
-👀 *Para ver la tienda de personajes anime:*  
-🔹 Usa el comando: *.alaventa*
-
-🎭 *Para gestionar tus personajes:*  
-🔹 Usa el comando: *.menupersonajes*
-
-💡 *Próximamente más mascotas y sorpresas para ti.*  
-🛒 *¡Sigue ahorrando Cortana Coins para nuevas aventuras!* 🪙`;
-
-        // Enviar el mensaje con imagen
-        await conn.sendMessage(
-            m.chat,
-            { 
-                image: { url: "https://cloud.dorratz.com/files/d940ad9ae373fadc8b1589c3e88ab4f0" }, // Imagen de la tienda
-                caption: tiendaTexto 
-            },
-            { quoted: m }
-        );
-
-    } catch (error) {
-        console.error('❌ Error en el comando .tiendamall:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al mostrar la tienda. Intenta nuevamente.*' }, { quoted: m });
-    }
-}
-break;
 	
 	
 case 'batalla1': {
