@@ -732,65 +732,64 @@ break
 // Comando para poner en venta un personaje exclusivo
 case 'deleteuser': {
     try {
-        const userId = m.sender;
-        const chat = await conn.groupMetadata(m.chat).catch(() => null); // Obtener metadata del grupo
-        const groupAdmins = chat ? chat.participants.filter(p => p.admin).map(p => p.id) : []; // Lista de admins
-
-        // Verificar si el usuario que ejecuta el comando es admin o owner
-        const isAdmin = groupAdmins.includes(userId);
-        const isOwner = userId === 'tu_numero_aqui@s.whatsapp.net'; // Reemplaza con tu número de dueño
-
-        if (!isAdmin && !isOwner) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *No tienes permisos para usar este comando.*" }, { quoted: m });
+        if (!m.isGroup) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Este comando solo se puede usar en grupos.*" }, { quoted: m });
         }
 
-        // Obtener el número del usuario a eliminar
-        const args = m.text.split(' ')[1];
+        const senderId = m.sender;
+        const isOwner = senderId === 'TU_NUMERO_AQUI@s.whatsapp.net'; // Cambia esto por tu número de dueño
+        const groupMetadata = await conn.groupMetadata(m.chat);
+        const groupAdmins = groupMetadata.participants
+            .filter(participant => participant.admin)
+            .map(admin => admin.id);
+        const isAdmin = groupAdmins.includes(senderId);
+
+        // Verificar permisos
+        if (!isOwner && !isAdmin) {
+            return conn.sendMessage(m.chat, { text: "❌ *Solo los administradores pueden usar este comando.*" }, { quoted: m });
+        }
+
+        const args = m.text.split(' ')[1]; // Obtener el número del usuario a eliminar
         if (!args) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Debes especificar un número de usuario.*" }, { quoted: m });
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes proporcionar el número del usuario.*\nEjemplo: *.deleteuser +50765000000*" }, { quoted: m });
         }
 
-        const targetId = args.replace(/\D/g, '') + "@s.whatsapp.net"; // Convertir número en formato de WhatsApp
+        const userId = args.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
 
-        // Verificar si el usuario tiene una cartera
-        if (!cartera[targetId]) {
-            return conn.sendMessage(m.chat, { text: "❌ *El usuario no tiene una cartera registrada.*" }, { quoted: m });
+        if (!cartera[userId]) {
+            return conn.sendMessage(m.chat, { text: `⚠️ *El usuario ${args} no tiene una cartera registrada.*` }, { quoted: m });
         }
 
-        // 📌 **Si el usuario tiene personajes, devolverlos a la tienda**
-        if (cartera[targetId].personajes && cartera[targetId].personajes.length > 0) {
-            cartera[targetId].personajes.forEach(personaje => {
-                const personajeRestaurado = {
+        // Verificar si el usuario tiene personajes
+        if (cartera[userId].personajes && cartera[userId].personajes.length > 0) {
+            cartera[userId].personajes.forEach(personaje => {
+                // Devolver cada personaje a la tienda con sus datos completos
+                tiendaPersonajes.push({
                     nombre: personaje.nombre,
+                    precio: personaje.precio, // Mantener el precio original
+                    habilidades: personaje.habilidades.map(h => ({ nombre: h.nombre, nivel: h.nivel })), // Mantener habilidades
                     nivel: personaje.nivel,
-                    vida: personaje.vida,
                     experiencia: personaje.experiencia,
                     experienciaSiguienteNivel: personaje.experienciaSiguienteNivel,
-                    habilidades: personaje.habilidades.map(h => ({
-                        nombre: h.nombre,
-                        nivel: h.nivel
-                    })),
-                    precio: personaje.precio,
-                    imagen: personaje.imagen, // Base64 correctamente manejada
-                    mimetype: personaje.mimetype // Tipo de imagen
-                };
-
-                // Agregar el personaje nuevamente a la tienda
-                cartera.personajesEnVenta.push(personajeRestaurado);
+                    vida: personaje.vida,
+                    imagen: personaje.imagen, // Asegurar la imagen base64
+                    mimetype: personaje.mimetype // Mantener el formato de la imagen
+                });
             });
         }
 
-        // 📌 **Eliminar la cartera del usuario**
-        delete cartera[targetId];
+        // Eliminar la cartera del usuario
+        delete cartera[userId];
 
-        // 💾 **Guardar cambios en cartera.json**
+        // Guardar los cambios en los archivos JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+        fs.writeFileSync('./tiendaPersonajes.json', JSON.stringify(tiendaPersonajes, null, 2));
 
-        return conn.sendMessage(m.chat, { text: `✅ *Se eliminó la cartera del usuario ${args} y sus personajes fueron devueltos a la tienda.*` }, { quoted: m });
+        return conn.sendMessage(m.chat, { text: `✅ *Se ha eliminado la cartera del usuario ${args} y sus personajes han sido devueltos a la tienda.*` }, { quoted: m });
 
     } catch (error) {
-        console.error('❌ Error en el comando deleteuser:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al eliminar la cartera del usuario.*' }, { quoted: m });
+        console.error('❌ Error en el comando .deleteuser:', error);
+        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar eliminar al usuario. Intenta nuevamente.*' }, { quoted: m });
     }
 }
 break;
