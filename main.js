@@ -734,6 +734,18 @@ case 'deleteuser': {
     try {
         await m.react('🗑️'); // Reacción al usar el comando
 
+        const isAdmin = m.isGroup && m.participant.isAdmin;
+        const isOwner = m.participant.isSuperAdmin || m.participant.isOwner;
+        
+        // Verificar si el usuario que ejecuta el comando es admin o owner
+        if (!isAdmin && !isOwner) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "❌ *No tienes permisos para usar este comando.* Solo los administradores pueden eliminar usuarios." },
+                { quoted: m }
+            );
+        }
+
         const args = text.trim(); // Obtener el número del usuario
         if (!args) {
             return conn.sendMessage(
@@ -755,14 +767,24 @@ case 'deleteuser': {
             );
         }
 
-        // Si el usuario tiene personajes, devolverlos a la tienda
+        // Si el usuario tiene personajes, devolverlos a la tienda asegurando que se guarden con sus datos originales
         if (cartera[userId].personajes && cartera[userId].personajes.length > 0) {
             cartera[userId].personajes.forEach((personaje) => {
                 cartera.personajesEnVenta.push({
                     nombre: personaje.nombre,
-                    habilidades: personaje.habilidades,
-                    stats: personaje.stats,
-                    precio: personaje.precio || 3000 // Valor de venta predeterminado
+                    habilidades: personaje.habilidades.map(h => ({
+                        nombre: h.nombre,
+                        nivel: h.nivel
+                    })),
+                    stats: {
+                        nivel: personaje.stats.nivel || 1,
+                        vida: personaje.stats.vida || 100,
+                        experiencia: personaje.stats.experiencia || 0,
+                        experienciaSiguienteNivel: personaje.stats.experienciaSiguienteNivel || 100,
+                    },
+                    precio: personaje.precio || 3000, // Mantener el precio original o establecer un predeterminado
+                    imagen: personaje.imagen, // Mantener la imagen original
+                    mimetype: personaje.mimetype // Mantener el tipo MIME correcto
                 });
             });
         }
@@ -770,14 +792,14 @@ case 'deleteuser': {
         // Eliminar al usuario de la cartera
         delete cartera[userId];
 
-        // Guardar los cambios
+        // Guardar los cambios en cartera.json
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // Confirmación
         await conn.sendMessage(
             m.chat,
             {
-                text: `✅ *El usuario ${args} ha sido eliminado de la base de datos.*\n🎭 *Sus personajes han sido devueltos a la tienda.*`,
+                text: `✅ *El usuario ${args} ha sido eliminado de la base de datos.*\n🎭 *Sus personajes han sido devueltos a la tienda con todas sus habilidades y precios intactos.*`,
             },
             { quoted: m }
         );
