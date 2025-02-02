@@ -751,7 +751,7 @@ case 'deleteuser': {
 
         const args = m.text.split(' ')[1]; // Obtener el número del usuario a eliminar
         if (!args) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Debes proporcionar el número del usuario.*\nEjemplo: *.deleteuser +50765000000*" }, { quoted: m });
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes proporcionar el número del usuario.*\n📌 *Ejemplo:* `.deleteuser +50765000000`" }, { quoted: m });
         }
 
         const userId = args.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
@@ -760,36 +760,47 @@ case 'deleteuser': {
             return conn.sendMessage(m.chat, { text: `⚠️ *El usuario ${args} no tiene una cartera registrada.*` }, { quoted: m });
         }
 
-        // Verificar si el usuario tiene personajes
+        // Verificar si el usuario tiene personajes y devolverlos a la tienda
         if (cartera[userId].personajes && cartera[userId].personajes.length > 0) {
             cartera[userId].personajes.forEach(personaje => {
-                // Devolver cada personaje a la tienda con sus datos completos
-                tiendaPersonajes.push({
-                    nombre: personaje.nombre,
-                    precio: personaje.precio, // Mantener el precio original
-                    habilidades: personaje.habilidades.map(h => ({ nombre: h.nombre, nivel: h.nivel })), // Mantener habilidades
-                    nivel: personaje.nivel,
-                    experiencia: personaje.experiencia,
-                    experienciaSiguienteNivel: personaje.experienciaSiguienteNivel,
-                    vida: personaje.vida,
-                    imagen: personaje.imagen, // Asegurar la imagen base64
-                    mimetype: personaje.mimetype // Mantener el formato de la imagen
-                });
+                // Asegurar que la tienda de personajes exista
+                if (!Array.isArray(cartera.personajesEnVenta)) {
+                    cartera.personajesEnVenta = [];
+                }
+
+                // Verificar si el personaje ya está en la tienda
+                const existeEnVenta = cartera.personajesEnVenta.some(p => p.nombre.toLowerCase() === personaje.nombre.toLowerCase());
+                if (!existeEnVenta) {
+                    cartera.personajesEnVenta.push({
+                        nombre: personaje.nombre,
+                        precio: personaje.precio, // Mantener el precio original
+                        habilidades: personaje.habilidades.map(h => ({ nombre: h.nombre, nivel: h.nivel })), // Mantener habilidades
+                        nivel: personaje.nivel,
+                        experiencia: personaje.experiencia,
+                        experienciaSiguienteNivel: personaje.experienciaSiguienteNivel,
+                        vida: personaje.vida,
+                        imagen: personaje.imagen, // Asegurar la imagen base64
+                        mimetype: personaje.mimetype // Mantener el formato de la imagen
+                    });
+                }
             });
         }
 
-        // Eliminar la cartera del usuario
+        // Eliminar la cartera del usuario por completo
         delete cartera[userId];
 
         // Guardar los cambios en los archivos JSON
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-        fs.writeFileSync('./tiendaPersonajes.json', JSON.stringify(tiendaPersonajes, null, 2));
 
-        return conn.sendMessage(m.chat, { text: `✅ *Se ha eliminado la cartera del usuario ${args} y sus personajes han sido devueltos a la tienda.*` }, { quoted: m });
+        return conn.sendMessage(m.chat, { text: `✅ *Se ha eliminado la cartera del usuario ${args} y sus personajes han sido devueltos a la tienda.*\n\n📌 Usa \`.alaventa\` para ver los personajes disponibles en la tienda.` }, { quoted: m });
 
     } catch (error) {
         console.error('❌ Error en el comando .deleteuser:', error);
-        return conn.sendMessage(m.chat, { text: '❌ *Ocurrió un error al intentar eliminar al usuario. Intenta nuevamente.*' }, { quoted: m });
+        return conn.sendMessage(
+            m.chat,
+            { text: '❌ *Ocurrió un error al intentar eliminar al usuario. Intenta nuevamente.*' },
+            { quoted: m }
+        );
     }
 }
 break;
