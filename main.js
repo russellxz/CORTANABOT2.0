@@ -730,6 +730,69 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'deleteuser': {
+    try {
+        await m.react('🗑️'); // Reacción al usar el comando
+
+        const args = text.trim(); // Obtener el número del usuario
+        if (!args) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Debes ingresar el número del usuario que deseas eliminar.*\n📌 *Ejemplo:* `.deleteuser +521234567890`" },
+                { quoted: m }
+            );
+        }
+
+        // Formatear el número para que coincida con la clave de la cartera
+        const userId = args.replace(/\D/g, '') + '@s.whatsapp.net';
+
+        // Verificar si el usuario tiene una cartera
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `⚠️ *El usuario ${args} no tiene una cartera registrada.*` },
+                { quoted: m }
+            );
+        }
+
+        // Si el usuario tiene personajes, devolverlos a la tienda
+        if (cartera[userId].personajes && cartera[userId].personajes.length > 0) {
+            cartera[userId].personajes.forEach((personaje) => {
+                cartera.personajesEnVenta.push({
+                    nombre: personaje.nombre,
+                    habilidades: personaje.habilidades,
+                    stats: personaje.stats,
+                    precio: personaje.precio || 3000 // Valor de venta predeterminado
+                });
+            });
+        }
+
+        // Eliminar al usuario de la cartera
+        delete cartera[userId];
+
+        // Guardar los cambios
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Confirmación
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: `✅ *El usuario ${args} ha sido eliminado de la base de datos.*\n🎭 *Sus personajes han sido devueltos a la tienda.*`,
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error en el comando .deleteuser:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: '❌ *Ocurrió un error al intentar eliminar al usuario. Intenta nuevamente.*' },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
+
 case 'mascota': {
     try {
         const userId = m.sender;
