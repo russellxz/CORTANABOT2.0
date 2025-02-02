@@ -2,7 +2,7 @@
 // @gata_dios    
 // @Skidy89  
 // @elrebelde21         
-                                   
+//russell xz                                   
 //--------------------[ IMPORTACIONES ]-----------------------          
 const baileys = require('@whiskeysockets/baileys'); // trabajar a través de descargas por Whatsapp 
 const { WaMessageStubType, WA_DEFAULT_EPHEMERAL, BufferJSON, areJidsSameUser, downloadContentFromMessage, generateWAMessageContent, generateWAMessageFromContent, generateWAMessage, prepareWAMessageMedia, getContentType,  relayMessage} = require('@whiskeysockets/baileys'); // Importa los objetos 'makeWASocket' y 'proto' desde el módulo '@whiskeysockets/baileys'        
@@ -785,7 +785,7 @@ ${listaMascotas}
         await conn.sendMessage(
             m.chat,
             { 
-                image: { url: "https://i.postimg.cc/HWccpMnm/file-Ac-N95gn-Usu5-HR4-Nncdw72e.webp" }, // Imagen de la tienda
+                image: { url: "https://cdn.dorratz.com/files/1738539378857.jpg" }, // Imagen de la tienda
                 caption: tiendaTexto 
             },
             { quoted: m }
@@ -1201,7 +1201,7 @@ case 'topmascotas': {
             {
                 caption: topTexto,
                 mentions: usuariosConMascotas.map(u => u.userId),
-                image: { url: "https://i.postimg.cc/HsRSPXNh/file-K7b-Q3-SKJ2u9ow-Gx-S7t-Eqjn-1.webp" }, // Imagen del ranking
+                image: { url: "https://cdn.dorratz.com/files/1738539448114.jpg" }, // Imagen del ranking
             },
             { quoted: m }
         );
@@ -3124,7 +3124,7 @@ case 'menupersonajes': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://cloud.dorratz.com/files/7986395fc5f3e38b3d5511741dba7b21" },
+                image: { url: "https://cdn.dorratz.com/files/1738539572812.jpg" },
                 caption: menuTexto
             },
             { quoted: m }
@@ -3391,7 +3391,7 @@ case 'toppersonajes': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://i.postimg.cc/hj5606RX/file-EEd-Sm91h-GBh-B8-JBrh6k-QEB.webp" },
+                image: { url: "https://cdn.dorratz.com/files/1738539631860.jpg" },
                 caption: mensajeTop,
                 mentions: ranking.map(user => user.userId)
             },
@@ -3605,7 +3605,7 @@ case 'verpersonajes': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://i.postimg.cc/NFp0jQ3K/HD-wallpaper-anime-crossover-goku-monkey-d-luffy.jpg" },
+                image: { url: "https://cdn.dorratz.com/files/1738539690331.jpg" },
                 caption: textoPersonajes,
                 mentions: [m.sender]
             },
@@ -3871,7 +3871,7 @@ case 'alaventa': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://i.postimg.cc/g2DP9MP0/rodrigo-miguel-de-souza-146-sem-titulo-20220716224045.jpg" },
+                image: { url: "https://cdn.dorratz.com/files/1738539782759.jpg" },
                 caption: menuVenta,
                 mentions: cartera.personajesVendidos ? cartera.personajesVendidos.map(venta => venta.vendedor) : []
             },
@@ -5361,7 +5361,7 @@ case 'vermascotas': {
             `- ❤️ *.curar* (100 Cortana Coins)\n` +
             `- 🎾 *.lanzarpelota* (5 min)\n\n`;
 
-        const imageUrl = 'https://cloud.dorratz.com/files/bdc27b328f2f4c1fe018bbb0d6a5871b';
+        const imageUrl = 'https://cdn.dorratz.com/files/1738539981910.jpg';
 
         await conn.sendMessage(
             m.chat,
