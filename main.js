@@ -743,13 +743,13 @@ case 'menu': {
 
         // 🏆 **Obtener información del usuario**
         const nombreUsuario = `@${m.sender.split('@')[0]}`;
-        const cortanaCoins = userData.coins || 0;
+        const cortanaCoins = userData?.coins !== undefined ? userData.coins : 0; // Asegurar que siempre se muestre el saldo
 
         // 🐾 **Mascota Principal (Si existe)**
         let mascotaPrincipal = '🐾 Aún no tiene mascota';
         if (userData.mascotas && Array.isArray(userData.mascotas) && userData.mascotas.length > 0) {
             const mascota = userData.mascotas[0]; // Tomar la primera mascota (la principal)
-            mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel})`;
+            mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel || 1})`;
         }
 
         // 🎭 **Personaje Principal (Si existe)**
