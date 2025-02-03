@@ -729,6 +729,134 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'menu22': {
+    try {
+        await m.react('📜'); // Reacción al usar el comando
+
+        const userId = m.sender; // ID completo del usuario
+        const userData = cartera[userId] || {}; // Obtener datos del usuario en cartera.json
+
+        const now = new Date();
+
+        // 📅 **Obtener fecha y hora actual**
+        const fecha = now.toLocaleDateString('es', { day: '2-digit', month: 'long', year: 'numeric' });
+        const hora = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        // 🏆 **Obtener información del usuario**
+        const nombreUsuario = `@${userId.split('@')[0]}`;
+        const cortanaCoins = userData.hasOwnProperty('coins') ? userData.coins : 0; // Asegurar que siempre haya un valor válido
+
+        // 🐾 **Mascota Principal (Si existe)**
+        let mascotaPrincipal = '🐾 Aún no tiene mascota';
+        if (userData.mascotas && userData.mascotas.length > 0) {
+            const mascota = userData.mascotas[0]; // Primera mascota del usuario
+            mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel || 1})`;
+        }
+
+        // 🎭 **Personaje Principal (Si existe)**
+        let personajePrincipal = '🎭 Aún no tiene personaje';
+        if (userData.personajes && userData.personajes.length > 0) {
+            const personaje = userData.personajes[0]; // Primer personaje del usuario
+            personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats?.nivel || 1})`;
+        }
+
+        // 🌍 **Deducir el país del usuario usando su número de teléfono**
+        const codigosPaises = {
+            "507": "🇵🇦 Panamá",
+            "52": "🇲🇽 México",
+            "58": "🇻🇪 Venezuela",
+            "51": "🇵🇪 Perú",
+            "1": "🇺🇸 Estados Unidos",
+            "54": "🇦🇷 Argentina",
+            "34": "🇪🇸 España",
+            "56": "🇨🇱 Chile",
+            "55": "🇧🇷 Brasil",
+            "57": "🇨🇴 Colombia",
+            "591": "🇧🇴 Bolivia",
+            "593": "🇪🇨 Ecuador",
+            "502": "🇬🇹 Guatemala",
+            "503": "🇸🇻 El Salvador",
+            "504": "🇭🇳 Honduras",
+            "505": "🇳🇮 Nicaragua",
+            "506": "🇨🇷 Costa Rica",
+            "592": "🇬🇾 Guyana",
+            "595": "🇵🇾 Paraguay",
+            "597": "🇸🇷 Surinam",
+            "598": "🇺🇾 Uruguay",
+            "599": "🇨🇼 Curazao"
+        };
+
+        let paisUsuario = '🌍 No especificado';
+        const numeroUsuario = userId.replace(/\D/g, ''); // Dejar solo los números
+        const codigoPais = Object.keys(codigosPaises).find(codigo => numeroUsuario.startsWith(codigo));
+        if (codigoPais) {
+            paisUsuario = codigosPaises[codigoPais];
+        }
+
+        // 📜 **Construcción del menú**
+        let menuTexto = `
+       (҂"_")
+         <,︻╦̵̵̿╤─ ҉     ~  •
+█۞███████]▄▄▄▄▄▄▄▄▄▄▃ ●●●
+▂▄▅█████████▅▄▃▂…
+[███████████████████]
+◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙
+╔─━━━━━░★░━━━━━─╗
+║ 📡 ʙɪᴇɴᴠᴇɴɪᴅᴏ ᴀʟ ᴍᴇɴᴜ ʟɪsᴛᴀ
+║ ★━━━━━━✩━━━━━━★
+║ ☬ *FECHA:* ${fecha}
+║ ☬ *HORA:* ${hora}
+║ ☬ *Versión:* Personalizado
+║ ★━━━━━━✩━━━━━━★
+║ 👥 *INFO DEL USUARIO*
+║ ★━━━━━━✩━━━━━━★
+║ ☬ *USUARIO:* ${nombreUsuario}
+║ ☬ *PAÍS:* ${paisUsuario}
+║ ☬ *MASCOTA PRINCIPAL:* ${mascotaPrincipal}
+║ ☬ *PERSONAJE PRINCIPAL:* ${personajePrincipal}
+║ ☬ *CORTANA COINS:* 🪙 ${cortanaCoins}
+║ ★━━━━━━✩━━━━━━★
+║ 👇 *𝑂𝑇𝑅𝑂𝑆 𝑀𝐸𝑁𝑈𝑆 𝐴𝑄𝑈𝐼 𝐴𝐵𝐴𝐽𝑂* 👇
+║ 
+║ 🔹 .menupersonajes
+║ 🔹 .menu2
+║ 🔹 .menucaja
+║ 🔹 .menuguar
+║ 🔹 .tiendamall
+║ 🔹 .alaventa
+║ 🔹 .allmenu
+║ 🔹 .menugrupo
+║
+╚─━━━━━░★░━━━━━─╝
+
+🎭 *¿𝐐𝐮𝐢𝐞𝐫𝐞𝐬 𝐨𝐛𝐭𝐞𝐧𝐞𝐫 𝐭𝐮 𝐛𝐨𝐭 𝐩𝐞𝐫𝐬𝐨𝐧𝐚𝐥𝐢𝐳𝐚𝐝𝐨?*  
+🌍 https://www.facebook.com/elrebelde21  
+
+*✦ CORTANA BOT 2.0 ✦*
+`;
+
+        // 📸 **Enviar el menú con la imagen personalizada**
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cdn.dorratz.com/files/1738558156212.jpg" }, // Imagen del menú
+                caption: menuTexto,
+                mentions: [m.sender]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .menu:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al mostrar el menú. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
 case 'menu': {
     try {
         await m.react('📜'); // Reacción al usar el comando
