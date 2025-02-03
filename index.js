@@ -993,7 +993,7 @@ await joinChannels(sock)
 
 if (!sock.user.connect) {
 await delay(3 * 1000)
-await sock.groupAcceptInvite(global.nna2)
+await sock.groupAcceptInvite(``)
 sock.user.connect = true
 return !1;
 }}});
