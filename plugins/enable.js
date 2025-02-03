@@ -5,8 +5,6 @@ const chalk = require("chalk");
 const { smsg, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom} = require('../libs/fuctions.js'); 
 
 async function enable(m, command, isGroupAdmins, text, command, args, conn, isBotAdmins, isGroupAdmins, isCreator) {
-if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
-//let user = global.db.data.users[m.sender]
 const {welcome, antilink, antiFake, antiArabe, detect, autosticker, antiNsfw, game2, modeadmin, chatbot, audios, autolevelup, antitoxic, antiprivado, anticall, antilink2, AntiTiktok, AntiTelegram, viewonce, AntiFacebook, AntInstagram, AntiYoutube, AntiTwitter, autoread} = global.db.data.chats[m.chat];
   let chat = global.db.data.chats[m.chat]
   let user = global.db.data.users[m.sender]
