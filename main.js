@@ -734,7 +734,7 @@ case 'menu': {
         await m.react('📜'); // Reacción al usar el comando
 
         const userId = m.sender;
-        const userData = cartera[userId] || null;
+        const userData = cartera[userId] || {}; // Si no existe, devuelve un objeto vacío
         const now = new Date();
 
         // 📅 **Obtener fecha y hora del usuario**
@@ -743,20 +743,27 @@ case 'menu': {
 
         // 🏆 **Obtener información del usuario**
         const nombreUsuario = `@${userId.split('@')[0]}`;
-        const cortanaCoins = userData ? userData.coins || 0 : 0;
+        const cortanaCoins = userData.coins || 0;
 
-        // 🐾 **Mascota Principal**
-        const mascotaPrincipal = userData && userData.mascotas.length > 0
-            ? `🐾 ${userData.mascotas[0].nombre} (Nivel ${userData.mascotas[0].nivel})`
-            : '🐾 Aún no tiene mascota';
+        // 🐾 **Mascota Principal (Si existe)**
+        let mascotaPrincipal = '🐾 Aún no tiene mascota';
+        if (userData.mascotas && userData.mascotas.length > 0) {
+            const mascota = userData.mascotas[0];
+            mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel})`;
+        }
 
-        // 🎭 **Personaje Principal**
-        const personajePrincipal = userData && userData.personajes.length > 0
-            ? `🎭 ${userData.personajes[0].nombre} (Nivel ${userData.personajes[0].stats.nivel})`
-            : '🎭 Aún no tiene personaje';
+        // 🎭 **Personaje Principal (Si existe)**
+        let personajePrincipal = '🎭 Aún no tiene personaje';
+        if (userData.personajes && userData.personajes.length > 0) {
+            const personaje = userData.personajes[0];
+            personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats.nivel})`;
+        }
 
-        // 🌍 **País con Emoji de Bandera**
-        const paisUsuario = userData?.pais ? `🌍 ${userData.pais}` : '🌍 Desconocido';
+        // 🌍 **País del usuario**
+        let paisUsuario = '🌍 No especificado';
+        if (userData.pais) {
+            paisUsuario = `🌍 ${userData.pais}`;
+        }
 
         // 📜 **Construcción del menú**
         let menuTexto = `
