@@ -8,7 +8,6 @@ const { toAudio, toPTT, toVideo } = require('../libs/converter.js')
 
 async function efec(conn, command, mime, quoted, exec, prefix, m, from) {
 try {  
-if (global.db.data.users[m.sender].registered < true) return  conn.sendMessage(m.chat, {video: {url: verificar}, caption: info.registra}, {quoted: m, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (global.db.data.users[m.sender].banned) return
 await conn.sendPresenceUpdate('recording', m.chat)
 let set  
