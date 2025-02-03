@@ -728,37 +728,38 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
 case 'menu': {
     try {
         await m.react('📜'); // Reacción al usar el comando
 
-        const userId = m.sender.replace(/\D/g, ''); // Extraer solo los números del ID del usuario
-        const userData = cartera[userId] || {}; // Si no tiene cartera, devolver objeto vacío
+        const userId = m.sender.replace(/\D/g, ''); // Eliminar caracteres no numéricos
+        const userData = cartera[userId] || {}; // Si no existe, devuelve un objeto vacío
         const now = new Date();
 
-        // 📅 **Fecha y hora del usuario**
+        // 📅 **Obtener fecha y hora del usuario**
         const fecha = now.toLocaleDateString('es', { day: '2-digit', month: 'long', year: 'numeric' });
         const hora = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-        // 🏆 **Información del usuario**
+        // 🏆 **Obtener información del usuario**
         const nombreUsuario = `@${m.sender.split('@')[0]}`;
         const cortanaCoins = userData.coins || 0;
 
-        // 🐾 **Mascota Principal (Si tiene)**
+        // 🐾 **Mascota Principal**
         let mascotaPrincipal = '🐾 Aún no tiene mascota';
-        if (userData.mascotas && userData.mascotas.length > 0) {
+        if (userData.mascotas && Array.isArray(userData.mascotas) && userData.mascotas.length > 0) {
             const mascota = userData.mascotas[0];
             mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel})`;
         }
 
-        // 🎭 **Personaje Principal (Si tiene)**
+        // 🎭 **Personaje Principal**
         let personajePrincipal = '🎭 Aún no tiene personaje';
-        if (userData.personajes && userData.personajes.length > 0) {
+        if (userData.personajes && Array.isArray(userData.personajes) && userData.personajes.length > 0) {
             const personaje = userData.personajes[0];
             personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats.nivel})`;
         }
 
-        // 🌍 **Detectar el país por código telefónico**
+        // 🌍 **Detectar país del usuario**
         const codigosPaises = {
             "507": "🇵🇦 Panamá",
             "52": "🇲🇽 México",
@@ -779,7 +780,6 @@ case 'menu': {
             "506": "🇨🇷 Costa Rica",
             "592": "🇬🇾 Guyana",
             "595": "🇵🇾 Paraguay",
-            "596": "🇲🇶 Martinica",
             "597": "🇸🇷 Surinam",
             "598": "🇺🇾 Uruguay",
             "599": "🇨🇼 Curazao"
