@@ -729,6 +729,100 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'menu': {
+    try {
+        await m.react('📜'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const userData = cartera[userId] || null;
+        const now = new Date();
+
+        // 📅 **Obtener fecha y hora del usuario**
+        const fecha = now.toLocaleDateString('es', { day: '2-digit', month: 'long', year: 'numeric' });
+        const hora = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        // 🏆 **Obtener información del usuario**
+        const nombreUsuario = `@${userId.split('@')[0]}`;
+        const cortanaCoins = userData ? userData.coins || 0 : 0;
+
+        // 🐾 **Mascota Principal**
+        const mascotaPrincipal = userData && userData.mascotas.length > 0
+            ? `🐾 ${userData.mascotas[0].nombre} (Nivel ${userData.mascotas[0].nivel})`
+            : '🐾 Aún no tiene mascota';
+
+        // 🎭 **Personaje Principal**
+        const personajePrincipal = userData && userData.personajes.length > 0
+            ? `🎭 ${userData.personajes[0].nombre} (Nivel ${userData.personajes[0].stats.nivel})`
+            : '🎭 Aún no tiene personaje';
+
+        // 🌍 **País con Emoji de Bandera**
+        const paisUsuario = userData?.pais ? `🌍 ${userData.pais}` : '🌍 Desconocido';
+
+        // 📜 **Construcción del menú**
+        let menuTexto = `
+       (҂"_")
+         <,︻╦̵̵̿╤─ ҉     ~  •
+█۞███████]▄▄▄▄▄▄▄▄▄▄▃ ●●●
+▂▄▅█████████▅▄▃▂…
+[███████████████████]
+◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙
+╔─━━━━━░★░━━━━━─╗
+║ 📡 ʙɪᴇɴᴠᴇɴɪᴅᴏ ᴀʟ ᴍᴇɴᴜ ʟɪsᴛᴀ
+║ ★━━━━━━✩━━━━━━★
+║ ☬ *FECHA:* ${fecha}
+║ ☬ *HORA:* ${hora}
+║ ☬ *Versión:* Personalizado
+║ ★━━━━━━✩━━━━━━★
+║ 👥 *INFO DEL USUARIO*
+║ ★━━━━━━✩━━━━━━★
+║ ☬ *USUARIO:* ${nombreUsuario}
+║ ☬ *PAÍS:* ${paisUsuario}
+║ ☬ *MASCOTA PRINCIPAL:* ${mascotaPrincipal}
+║ ☬ *PERSONAJE PRINCIPAL:* ${personajePrincipal}
+║ ☬ *CORTANA COINS:* 🪙 ${cortanaCoins}
+║ ★━━━━━━✩━━━━━━★
+║ 👇 *𝑂𝑇𝑅𝑂𝑆 𝑀𝐸𝑁𝑈𝑆 𝐴𝑄𝑈𝐼 𝐴𝐵𝐴𝐽𝑂* 👇
+║ 
+║ 🔹 .menupersonajes
+║ 🔹 .menu2
+║ 🔹 .menucaja
+║ 🔹 .menuguar
+║ 🔹 .tiendamall
+║ 🔹 .alaventa
+║ 🔹 .allmenu
+║ 🔹 .menugrupo
+║
+╚─━━━━━░★░━━━━━─╝
+
+🎭 *¿𝐐𝐮𝐢𝐞𝐫𝐞𝐬 𝐨𝐛𝐭𝐞𝐧𝐞𝐫 𝐭𝐮 𝐛𝐨𝐭 𝐩𝐞𝐫𝐬𝐨𝐧𝐚𝐥𝐢𝐳𝐚𝐝𝐨?*  
+🌍 https://www.facebook.com/elrebelde21  
+
+*✦ CORTANA BOT 2.0 ✦*
+`;
+
+        // 📸 **Enviar el menú con la imagen personalizada**
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cdn.dorratz.com/files/1738558156212.jpg" }, // Imagen del menú
+                caption: menuTexto,
+                mentions: [userId]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .menu:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al mostrar el menú. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
+	
 case 'tiendamall': {
     try {
         // Verificar si hay mascotas en la tienda
