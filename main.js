@@ -734,7 +734,7 @@ case 'menu': {
         await m.react('📜'); // Reacción al usar el comando
 
         const userId = m.sender.replace(/\D/g, ''); // Eliminar caracteres no numéricos (deja solo números)
-        const userData = cartera[userId] || {}; // Obtener datos del usuario o un objeto vacío si no tiene cartera
+        const userData = cartera[userId] || {}; // Obtener datos del usuario o devolver un objeto vacío si no tiene cartera
         const now = new Date();
 
         // 📅 **Obtener fecha y hora del usuario**
@@ -745,18 +745,18 @@ case 'menu': {
         const nombreUsuario = `@${m.sender.split('@')[0]}`;
         const cortanaCoins = userData.coins || 0;
 
-        // 🐾 **Mascota Principal (si existe)**
+        // 🐾 **Mascota Principal (Si existe)**
         let mascotaPrincipal = '🐾 Aún no tiene mascota';
         if (userData.mascotas && Array.isArray(userData.mascotas) && userData.mascotas.length > 0) {
             const mascota = userData.mascotas[0]; // Tomar la primera mascota (la principal)
             mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel})`;
         }
 
-        // 🎭 **Personaje Principal (si existe)**
+        // 🎭 **Personaje Principal (Si existe)**
         let personajePrincipal = '🎭 Aún no tiene personaje';
         if (userData.personajes && Array.isArray(userData.personajes) && userData.personajes.length > 0) {
             const personaje = userData.personajes[0]; // Tomar el primer personaje (el principal)
-            personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats ? personaje.stats.nivel : 1})`;
+            personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats?.nivel || 1})`;
         }
 
         // 🌍 **Deducir el país del usuario basándose en el código del número**
@@ -854,7 +854,6 @@ case 'menu': {
     }
 }
 break;
-
 	
 case 'tiendamall': {
     try {
