@@ -759,10 +759,32 @@ case 'menu': {
             personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats.nivel})`;
         }
 
-        // 🌍 **País del usuario**
+        // 🌍 **Deducir el país del usuario basándose en el código del número**
+        const codigosPaises = {
+            "+507": "🇵🇦 Panamá",
+            "+52": "🇲🇽 México",
+            "+58": "🇻🇪 Venezuela",
+            "+51": "🇵🇪 Perú",
+            "+1": "🇺🇸 Estados Unidos",
+            "+54": "🇦🇷 Argentina",
+            "+34": "🇪🇸 España",
+            "+56": "🇨🇱 Chile",
+            "+55": "🇧🇷 Brasil",
+            "+57": "🇨🇴 Colombia",
+            "+591": "🇧🇴 Bolivia",
+            "+593": "🇪🇨 Ecuador",
+            "+502": "🇬🇹 Guatemala",
+            "+503": "🇸🇻 El Salvador",
+            "+504": "🇭🇳 Honduras",
+            "+595": "🇵🇾 Paraguay",
+            "+598": "🇺🇾 Uruguay",
+            "+686": "🇰🇮 Kiribati"
+        };
+
         let paisUsuario = '🌍 No especificado';
-        if (userData.pais) {
-            paisUsuario = `🌍 ${userData.pais}`;
+        const codigoPais = Object.keys(codigosPaises).find(codigo => userId.startsWith(codigo));
+        if (codigoPais) {
+            paisUsuario = codigosPaises[codigoPais];
         }
 
         // 📜 **Construcción del menú**
