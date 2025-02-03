@@ -728,6 +728,54 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'totalper': {
+    try {
+        await m.react('📊'); // Reacción al usar el comando
+
+        let totalPersonajes = 0;
+        let personajesEnVenta = cartera.personajesEnVenta ? cartera.personajesEnVenta.length : 0;
+        let personajesUsuarios = 0;
+
+        // Recorrer todas las carteras de los usuarios
+        Object.keys(cartera).forEach(userId => {
+            if (cartera[userId].personajes && cartera[userId].personajes.length > 0) {
+                personajesUsuarios += cartera[userId].personajes.length;
+            }
+        });
+
+        // Total de personajes en el sistema
+        totalPersonajes = personajesEnVenta + personajesUsuarios;
+
+        // 📜 **Construcción del mensaje**
+        let mensajeTotal = `
+📊 *Total de Personajes en el Sistema* 📊
+
+🏪 *En la tienda:* ${personajesEnVenta}
+🎭 *En carteras de usuarios:* ${personajesUsuarios}
+🔹 *Total general:* ${totalPersonajes}
+
+🛍️ Usa \`.alaventa\` para ver los personajes disponibles en la tienda.
+👥 Usa \`.verpersonajes\` para ver los personajes que tienes en tu cuenta.
+        `;
+
+        // Enviar el mensaje con los datos
+        await conn.sendMessage(
+            m.chat,
+            { text: mensajeTotal },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .totalper:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al obtener el total de personajes. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
 case 'menuowner': {
     try {
         await m.react('📜'); // Reacción al usar el comando
