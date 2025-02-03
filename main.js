@@ -733,7 +733,7 @@ case 'menu': {
     try {
         await m.react('📜'); // Reacción al usar el comando
 
-        const userId = m.sender;
+        const userId = m.sender.replace(/\D/g, ''); // Eliminar caracteres no numéricos (deja solo números)
         const userData = cartera[userId] || {}; // Si no existe, devuelve un objeto vacío
         const now = new Date();
 
@@ -742,7 +742,7 @@ case 'menu': {
         const hora = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
         // 🏆 **Obtener información del usuario**
-        const nombreUsuario = `@${userId.split('@')[0]}`;
+        const nombreUsuario = `@${m.sender.split('@')[0]}`;
         const cortanaCoins = userData.coins || 0;
 
         // 🐾 **Mascota Principal (Si existe)**
@@ -761,24 +761,29 @@ case 'menu': {
 
         // 🌍 **Deducir el país del usuario basándose en el código del número**
         const codigosPaises = {
-            "+507": "🇵🇦 Panamá",
-            "+52": "🇲🇽 México",
-            "+58": "🇻🇪 Venezuela",
-            "+51": "🇵🇪 Perú",
-            "+1": "🇺🇸 Estados Unidos",
-            "+54": "🇦🇷 Argentina",
-            "+34": "🇪🇸 España",
-            "+56": "🇨🇱 Chile",
-            "+55": "🇧🇷 Brasil",
-            "+57": "🇨🇴 Colombia",
-            "+591": "🇧🇴 Bolivia",
-            "+593": "🇪🇨 Ecuador",
-            "+502": "🇬🇹 Guatemala",
-            "+503": "🇸🇻 El Salvador",
-            "+504": "🇭🇳 Honduras",
-            "+595": "🇵🇾 Paraguay",
-            "+598": "🇺🇾 Uruguay",
-            "+686": "🇰🇮 Kiribati"
+            "507": "🇵🇦 Panamá",
+            "52": "🇲🇽 México",
+            "58": "🇻🇪 Venezuela",
+            "51": "🇵🇪 Perú",
+            "1": "🇺🇸 Estados Unidos",
+            "54": "🇦🇷 Argentina",
+            "34": "🇪🇸 España",
+            "56": "🇨🇱 Chile",
+            "55": "🇧🇷 Brasil",
+            "57": "🇨🇴 Colombia",
+            "591": "🇧🇴 Bolivia",
+            "593": "🇪🇨 Ecuador",
+            "502": "🇬🇹 Guatemala",
+            "503": "🇸🇻 El Salvador",
+            "504": "🇭🇳 Honduras",
+            "505": "🇳🇮 Nicaragua",
+            "506": "🇨🇷 Costa Rica",
+            "592": "🇬🇾 Guyana",
+            "595": "🇵🇾 Paraguay",
+            "596": "🇲🇶 Martinica",
+            "597": "🇸🇷 Surinam",
+            "598": "🇺🇾 Uruguay",
+            "599": "🇨🇼 Curazao"
         };
 
         let paisUsuario = '🌍 No especificado';
@@ -835,7 +840,7 @@ case 'menu': {
             {
                 image: { url: "https://cdn.dorratz.com/files/1738558156212.jpg" }, // Imagen del menú
                 caption: menuTexto,
-                mentions: [userId]
+                mentions: [m.sender]
             },
             { quoted: m }
         );
@@ -850,7 +855,7 @@ case 'menu': {
     }
 }
 break;
-	
+        
 	
 case 'tiendamall': {
     try {
