@@ -728,6 +728,445 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'allmenu': {
+    try {
+        await m.react('📜'); // Reacción al usar el comando
+
+        const userId = m.sender; // ID completo del usuario
+        const userData = cartera[userId] || {}; // Obtener datos del usuario en cartera.json
+
+        const now = new Date();
+
+        // 📅 **Obtener fecha y hora actual**
+        const fecha = now.toLocaleDateString('es', { day: '2-digit', month: 'long', year: 'numeric' });
+        const hora = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        // 🏆 **Obtener información del usuario**
+        const nombreUsuario = `@${userId.split('@')[0]}`;
+        const cortanaCoins = userData.hasOwnProperty('coins') ? userData.coins : 0; // Asegurar que siempre haya un valor válido
+
+        // 🐾 **Mascota Principal (Si existe)**
+        let mascotaPrincipal = '🐾 Aún no tiene mascota';
+        if (userData.mascotas && userData.mascotas.length > 0) {
+            const mascota = userData.mascotas[0]; // Primera mascota del usuario
+            mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel || 1})`;
+        }
+
+        // 🎭 **Personaje Principal (Si existe)**
+        let personajePrincipal = '🎭 Aún no tiene personaje';
+        if (userData.personajes && userData.personajes.length > 0) {
+            const personaje = userData.personajes[0]; // Primer personaje del usuario
+            personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats?.nivel || 1})`;
+        }
+
+        // 🌍 **Deducir el país del usuario usando su número de teléfono**
+        const codigosPaises = {
+            "507": "🇵🇦 Panamá",
+            "52": "🇲🇽 México",
+            "58": "🇻🇪 Venezuela",
+            "51": "🇵🇪 Perú",
+            "1": "🇺🇸 Estados Unidos",
+            "54": "🇦🇷 Argentina",
+            "34": "🇪🇸 España",
+            "56": "🇨🇱 Chile",
+            "55": "🇧🇷 Brasil",
+            "57": "🇨🇴 Colombia",
+            "591": "🇧🇴 Bolivia",
+            "593": "🇪🇨 Ecuador",
+            "502": "🇬🇹 Guatemala",
+            "503": "🇸🇻 El Salvador",
+            "504": "🇭🇳 Honduras",
+            "505": "🇳🇮 Nicaragua",
+            "506": "🇨🇷 Costa Rica",
+            "592": "🇬🇾 Guyana",
+            "595": "🇵🇾 Paraguay",
+            "597": "🇸🇷 Surinam",
+            "598": "🇺🇾 Uruguay",
+            "599": "🇨🇼 Curazao"
+        };
+
+        let paisUsuario = '🌍 No especificado';
+        const numeroUsuario = userId.replace(/\D/g, ''); // Dejar solo los números
+        const codigoPais = Object.keys(codigosPaises).find(codigo => numeroUsuario.startsWith(codigo));
+        if (codigoPais) {
+            paisUsuario = codigosPaises[codigoPais];
+        }
+
+        // 📜 **Construcción del menú**
+        let menuTexto = `
+_____▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄_____
+───█▒▒░░░░░░░░░▒▒█───
+────█░░█░░░░░█░░█────
+─▄▄──█░░░▀█▀░░░█──▄▄─
+█░░█─▀▄░░░░░░░▄▀─█░░█
+╔─━━━━━░★░━━━━━─╗
+║ 📡 ʙɪᴇɴᴠᴇɴɪᴅᴏ ᴀʟ ᴍᴇɴᴜ ʟɪsᴛᴀ
+║ ★━━━━━━✩━━━━━━★
+║ ☬ *FECHA:* ${fecha}
+║ ☬ *HORA:* ${hora}
+║ ☬ *Versión:* Personalizado
+║ ★━━━━━━✩━━━━━━★
+║ 👥 *INFO DEL USUARIO*
+║ ★━━━━━━✩━━━━━━★
+║ ☬ *USUARIO:* ${nombreUsuario}
+║ ☬ *PAÍS:* ${paisUsuario}
+║ ☬ *MASCOTA PRINCIPAL:* ${mascotaPrincipal}
+║ ☬ *PERSONAJE PRINCIPAL:* ${personajePrincipal}
+║ ☬ *CORTANA COINS:* 🪙 ${cortanaCoins}
+║ ★━━━━━━✩━━━━━━★
+◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆
+
+😎 *𝑩𝑰𝑬𝑵𝑽𝑬𝑵𝑰𝑫𝑶 𝑨𝑳 𝑴𝑬𝑵𝑼𝐀𝐋𝐋*😎 
+◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐ℹ️ ＩＮＦＯＢＯＴ*️⃟ᬽ፝֟━*
+├➫ .reg _(Registrarte en el bot)_
+├➫ .unreg _(borrar su registro)_
+├➫ .myns _(numero de serie)_
+├➫ .estado _(estado del bot)_
+├➫ .menu2
+├➫ .audios 
+├➫ .nuevo _(nuevo comando)_
+├➫ .reglas _(reglas)_
+├➫ .ping
+├➫ .velocidad
+├➫ .grupos _(grupos oficiales)_
+├➫ .join _(solicita un bot para tu grupo)_
+├➫ .owner
+├➫ .creador _(contactos de mi creador)_
+├➫ .instalarbot (Tutorial del instalacion)_
+├➫ .solicitud
+├➫ .cuenta 
+├➫ .cuentaoficiales
+├➫ .status 
+├➫ .cafirexos
+├➫ .report _(reporta errores)_
+╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐🤖ＪＡＤＩＢＯＴ*️⃟ᬽ፝֟━*
+├• *(Tiene 2 opciónes para hacerte SubBot)*
+├ ◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆
+├➫ .serbot
+├➫ .qr
+├➫ .serbot --code
+├➫ .jadibot --code
+├➫ .bots 
+├➫ .stop
+├➫ .deljadibot
+╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐🔄𝘿𝙀𝙎𝘾𝘼𝙍𝙂𝘼*️⃟ᬽ፝֟━*
+├➫ .play _(descargar música)_
+├➫ .play2 _(Descargar video)_
+├➫ .play.1 _(descargar música)_
+├➫ .play.2 _(descargar video)_
+├➫ .musica
+├➫ .video
+├➫ .playdoc
+├➫ .play3 _(Descarga audio en documento)_
+├➫ .play4 _(Descarga video en documento)_
+├➫ .yts _(Buscador de youtube)_
+├➫ .ytmp3 _(link para descargar el audio)_
+├➫ .ytmp4 _(link para descargar el video)_
+├➫ .spotify
+├➫ .music _(Descarga musica de Spotify)_
+├➫ .gitclone _(descarga repositorio de GitHub)_
+├➫ .tiktok _(descargar video de tiktok)_
+├➫ .tiktokimg
+├➫ .ttimg _(descarga imagen de tiktok)_
+├➫ .igstalk _(nombre de un usuario de ig)_
+├➫ .facebook
+├➫ .fb _(Descarga videos de Facebook)_
+├➫ .instagram
+├➫ .ig _(Descarga videos de Instagram)_
+├➫ .mediafire _(descarga archivo de mediafire)_
+├➫ .gdrive _(Descarga archivos de gdrive)_
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*🔰⃐𝙂𝙍𝙐𝙋𝙊𝙎*️⃟ᬽ፝֟━*
+├• Gᵉˢᵗᶤᵒᶰᵃʳ тυ gяυρσ ¢ση ¢σятαηαвσт-2.0
+├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+├➫ .welcome _(on/off)_
+├➫ .antilink _(on/off)_
+├➫ .antienlace _(on/off)_
+├➫ .antifake _(on/off)_
+├➫ .antiarabe _(on/off)_
+├➫ .mute
+├➫ .unmute
+├➫ .antitoxic _(on/off)_
+├➫ .antilink2 _(on/off)_
+├➫ .AntiTwiter _(on/off)_
+├➫ .antitiktok _(on/off)_
+├➫ .AntiTikTok _(on/off)_
+├➫ .antitelegram _(on/off)_
+├➫ .AntiTelegram _(on/off)_
+├➫ .antifacebook _(on/off)_
+├➫ .AntiFb _(on/off)_
+├➫ .AntiFaceBook _(on/off)_
+├➫ .AntInstagram _(on/off)_
+├➫ .AntiIg _(on/off)_
+├➫ .antiyoutube _(on/off)_
+├➫ .AntiYoutube _(on/off)_
+├➫ .autosticker _(on/off)_
+├➫ .detect _(on/off)_
+├➫ .autodetect _(on/off)_
+├➫ .antinsfw _(on/off)_
+├➫ .modocaliente _(on/off)_
+├➫ .autosticker _(on/off)_
+├➫ .modoadmin _(on/off)_
+├➫ .audios _(on/off)_
+├➫ .chatbot _(on/off)_
+├➫ .autolevelup _(on/off)_
+├➫ .autonivel _(on/off)_
+├➫ .kick _(@tag)_
+├➫ .add _(@tag)_
+├➫ .invita _(@tag)_
+├➫ .promote _(@tag)_
+├➫ .demote _(@tag)_
+├➫ .infogrupo
+├➫ .groupinfo
+├➫ .grouplist
+├➫ .fantasmas
+├➫ .kickfantasmas
+├➫ .admins _(llama a los admins)_
+├➫ .grupo close/open 
+├➫ .warn _(@tag)_
+├➫ .advertencia _(@tag)_
+├➫ .unwarn _(@tag)_
+├➫ .quitardvertencia _(@tag)_
+├➫ .setppname _(cambia el nombre del grupo)_
+├➫ .setdesc _(cambia la desc del Grupo)_
+├➫ .setppgroup _(cambia la foto del Grupo)_
+├➫ .anularlink 
+├➫ .resetlink _(restablece el link del grupo)_
+├➫ .hidetag _(etiqueta a todos el un mensaje)_
+├➫ .tagall 
+├➫ .invocar _(etiqueta a todos el una listas)_
+├➫ .listonline _(usuarios que esta online)_
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*🔎⃐𝘽𝙐𝙎𝘾𝘼𝘿𝙊𝙍𝙀𝙎*️⃟ᬽ፝֟━*
+├➫ .google _(buscar información con google)_
+├➫ .chatgpt
+├➫ .ia _(buscar información con la IA)_
+├➫ .bard _(buscar información)_
+├➫ .imagen _(Imagen en google)_
+├➫ .traducir _(Traducir algun texto)_
+├➫ .wallpaper _(imagen del wallpaper)_
+├➫ .ss _(link)_
+├➫ .dall-e
+├➫ .ia2 _(Crear imagen con la (IA)_
+├➫ .horario
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐👾𝙅𝙐𝙀𝙂𝙊𝙎*️⃟ᬽ፝֟━*
+├➫ .simi _(hablar con el bot)_
+├➫ .ppt _(piedra, papel, o tijera)_
+├➫ .gay @tag
+├➫ .pareja @tag
+├➫ .love @tag
+├➫ .follar @tag
+├➫ .topgays
+├➫ .topotakus
+├➫ .top
+├➫ .pregunta
+├➫ .verdad
+├➫ .reto
+├➫ .doxear
+├➫ .math
+├➫ .matematicas
+├➫ .ttt
+├➫ .tictactoe
+├➫ .ttc
+├➫ .delttt
+├➫ .personalidad
+├➫ .racista
+├➫ .slot
+├➫ .dado
+├➫ .piropo
+├➫ .ship
+├➫ .formartrio
+├➫ .formapareja5
+┊➫ .txt _(texto)_
+├➫ .fake _(texto + tag)_
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*🎤 EFECTOS DE AUDIOS*️⃟ᬽ፝֟━*
+├❥ᰰຼ *(𝚁𝙴𝚂𝙿𝙾𝙽𝙳𝙴 𝙰 𝙰𝚄𝙳𝙸𝙾 𝙾 𝙽𝙾𝚃𝙰 𝙳𝙴 𝚅𝙾𝚉)*
+├ *✧･ﾟ: *✧･ﾟ:*✧･ﾟ: *✧･ﾟ:*✧･ﾟ: *✧･ﾟ:
+├➫ .bass
+├➫ .blown
+├➫ .deep
+├➫ .earrape
+├➫ .fast
+├➫ .fat
+├➫ .nightcore
+├➫ .reverse
+├➫ .robot
+├➫ .slow
+├➫ .smooth
+├➫ .squirrel
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ🧨𝘾𝙊𝙉𝙑𝙀𝙍𝙏𝙄𝘿𝙊𝙍𝙀𝙎*️⃟ᬽ፝֟━*
+├➫ .tourl
+├➫ .tts
+├➫ .tomp3
+├➫ .toimg
+├➫ .toaudio
+├➫ .toanime
+├➫ .hd
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫* 	
+
+╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⛩️ ⃐𝙍𝘼𝙉𝘿𝙊𝙒*️⃟ᬽ፝֟━*
+├➫ .memes
+├➫ .horny
+├➫ .simp
+├➫ .lolice
+├➫ .comentar
+├➫ .comment
+├➫ .loli
+├➫ .lolivid
+├➫ .neko
+├➫ .waifu	
+├➫ .blackpink
+├➫ .navidad
+├➫ .akira
+├➫ .akiyama
+├➫ .anna
+├➫ .asuna
+├➫ .ayuzawa
+├➫ .boruto
+├➫ .chiho
+├➫ .chitoge
+├➫ .deidara
+├➫ .erza
+├➫ .elaina
+├➫ .eba
+├➫ .emilia
+├➫ .hestia
+├➫ .hinata
+├➫ .inori
+├➫ .isuzu
+├➫ .itachi
+├➫ .itori
+├➫ .kaga
+├➫ .kagura
+├➫ .kaori':
+├➫ .keneki
+├➫ .kotori
+├➫ .kurumi
+├➫ .madara
+├➫ .mikasa
+├➫ .miku
+├➫ .minato
+├➫ .naruto
+├➫ .nezuko
+├➫ .sagiri
+├➫ .sasuke
+├➫ .sakura
+├➫ .cosplay
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+             
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐🪙 𝙀𝘾𝙊𝙉𝙊𝙈𝙄𝘼*️⃟ᬽ፝֟━*
+├➫ .minar _(Para minar exp)_
+├➫ .robar
+├➫ .rob _(Roba exp algun usuarios)_
+├➫ .crime
+├➫ .trabajar
+├➫ .work _(Trabaja y ganas exp)_
+├➫ .buy _(Comprar mas diamantes (limit)_
+├➫ .bal
+├➫ .balace _(diamante/exp tenés)_
+├➫ .claim
+├❥ᰰຼ _(Recoger tu recompensa)_
+├➫ .lb
+├➫ .leaderboard
+├➫ .cofre
+├➫ .perfil
+├➫ .nivel
+├➫ .levelup
+├➫ .transferir
+├➫ .transfer
+├➫ .afk 
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐👽𝙎𝙏𝙄𝘾𝙆𝙀𝙍*️⃟ᬽ፝֟━*
+├❥ *(¢яєαя ѕтι¢кєя ∂єѕ∂є ωнαтѕαρρ ¢ση ¢σятαηαвσт-𝟸.𝟶)*
+├ *✧･ﾟ: *✧･ﾟ:*✧･ﾟ: *✧･ﾟ:*✧･ﾟ: *✧･ﾟ:
+├➫ .s
+├➫ .sticker 
+├➫ .wm
+├➫ .attp
+├➫ .qc
+├➫ .emojimix
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*⃐👑Ø₩₦ɆⱤ*️⃟ᬽ፝֟━*
+├❥ _(¢σмαη∂σ єχ¢ℓυѕινσ ραяα ρяσριєтαяισ/σωηєя ∂єℓ вσт)_
+├ ◆ ▬▬▬▬▬▬ ❴✪❵ ▬▬▬▬▬▬ ◆
+├➫ .anticall _(on/off)_
+├➫ .antillamada _(on/off)_
+├➫ .antipv _(on/off)_
+├➫ .antiprivado _(on/off)_
+├➫ .autoread _(on/off)_
+├➫ .modojadibot _(on/off)_
+├➫ .añadirdiamantes _(@tag)_
+├➫ .addlimit _(@tag)_
+├➫ .dardiamantes _(@tag)_
+├➫ .añadirxp _(@tag)_
+├➫ .addxp _(@tag)_
+├➫ .banuser _(@tag)_
+├➫ .unbanuser _(@tag)_
+├➫ .autoadmin 
+├➫ .nuevonombre
+├➫ .botname _(cambiar el name del bot)_
+├➫ .nuevafoto
+├➫ .seppbot
+├➫ .fotobot _(cambiar la foto del bot)_
+├➫ .bc (Difusión a todos los chat)
+├➫ .bcgc (Difusión solo a grupos)
+├➫ .setpp (Cambia la foto del bot) 
+├➫ .public (Modo público) 
+├➫ .privado (Modo privado) 
+├➫ .getcase
+├➫ .fetch
+├➫ .update
+├➫ .restart 
+├➫ .reiniciar
+├➫ $ 
+├➫ >
+├➫ => 
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+🎭 *¿𝐐𝐮𝐢𝐞𝐫𝐞𝐬 𝐨𝐛𝐭𝐞𝐧𝐞𝐫 𝐭𝐮 𝐛𝐨𝐭 𝐩𝐞𝐫𝐬𝐨𝐧𝐚𝐥𝐢𝐳𝐚𝐝𝐨?*  
+🌍 https://www.facebook.com/elrebelde21  
+
+*✦ CORTANA BOT 2.0 ✦*
+`;
+
+        // 📸 **Enviar el menú con la imagen personalizada**
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cdn.dorratz.com/files/1738558156212.jpg" }, // Imagen del menú
+                caption: menuTexto,
+                mentions: [m.sender]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .menu:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al mostrar el menú. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
+	
 case 'menugrupo': {
     try {
         await m.react('📜'); // Reacción al usar el comando
