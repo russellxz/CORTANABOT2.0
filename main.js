@@ -34,9 +34,8 @@ const translate = require('@vitalets/google-translate-api')
 const { canLevelUp, xpRange } = require('./libs/levelling.js')
 const { smsg, fetchBuffer, getBuffer, buffergif, getGroupAdmins, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, jsonformat, delay, format, logic, generateProfilePicture, parseMention, getRandom, msToTime, downloadMediaMessage, convertirMsADiasHorasMinutosSegundos, pickRandom, getUserBio, asyncgetUserProfilePic} = require('./libs/fuctions') 
 const {jadibot, listJadibot, killJadibot} = require('./plugins/serbot.js')    
-const {menu} = require('./plugins/menu.js') 
 const {info} = require('./plugins/info.js')
-const {reg, rpg} = require('./plugins/rpg.js') 
+const {reg} = require('./plugins/rpg.js') 
 const {game, game2, game3} = require('./plugins/juegos.js')   
 const {buscadores} = require('./plugins/buscadores.js')
 const {efec, efect2, convertidores} = require('./plugins/convertidores.js')  
@@ -7654,12 +7653,6 @@ _Ejemplo:_ *.clavelista*
 }
 break;		
 		
-//para sacar id de los stierkz
-
-		
-//Info  
-case 'menu': case 'help': case 'menucompleto': case 'allmenu': case 'menu2': case 'audio': case 'nuevo': case 'extreno': case 'reglas': case 'menu1': case 'menu3': case 'menu4': case 'menu5': case 'menu6': case 'menu7': case 'menu8': case 'menu9': case 'menu10': case 'menu11': case 'menu18': case 'descarga': case 'menugrupos': case 'menubuscadores': case 'menujuegos': case 'menuefecto': case 'menuconvertidores': case 'Menuhony': case 'menurandow': case 'menuRPG': case 'menuSticker': case 'menuOwner': menu(m, command, conn, prefix, pushname, sender, pickRandom, fkontak)  
-break        
 case 'estado': case 'infobot': case 'owner': case 'creador': case 'contacto': case 'grupos': case 'grupoficiales': case 'instalarbot': case 'crearbot': case 'ping': case '5492266613038': case '447700179665': case '595975740803': case 'report': case 'sc': case 'donar': case 'solicitud': case 'cuenta': case 'cuentas': case 'cuentaoficiales': case 'cuentaofc': case 'cafirexos': case 'Cafirexos': case 'velocidad': case 'status': case 'speedtest': case 'speed': case 'host': case 'infohost': info(command, conn, m, speed, sender, fkontak, pickRandom, pushname, from, msg, text) 
 break      
 
