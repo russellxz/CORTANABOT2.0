@@ -728,8 +728,187 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'menugrupo': {
+    try {
+        await m.react('📜'); // Reacción al usar el comando
 
-case 'menu22': {
+        const userId = m.sender; // ID completo del usuario
+        const userData = cartera[userId] || {}; // Obtener datos del usuario en cartera.json
+
+        const now = new Date();
+
+        // 📅 **Obtener fecha y hora actual**
+        const fecha = now.toLocaleDateString('es', { day: '2-digit', month: 'long', year: 'numeric' });
+        const hora = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        // 🏆 **Obtener información del usuario**
+        const nombreUsuario = `@${userId.split('@')[0]}`;
+        const cortanaCoins = userData.hasOwnProperty('coins') ? userData.coins : 0; // Asegurar que siempre haya un valor válido
+
+        // 🐾 **Mascota Principal (Si existe)**
+        let mascotaPrincipal = '🐾 Aún no tiene mascota';
+        if (userData.mascotas && userData.mascotas.length > 0) {
+            const mascota = userData.mascotas[0]; // Primera mascota del usuario
+            mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel || 1})`;
+        }
+
+        // 🎭 **Personaje Principal (Si existe)**
+        let personajePrincipal = '🎭 Aún no tiene personaje';
+        if (userData.personajes && userData.personajes.length > 0) {
+            const personaje = userData.personajes[0]; // Primer personaje del usuario
+            personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats?.nivel || 1})`;
+        }
+
+        // 🌍 **Deducir el país del usuario usando su número de teléfono**
+        const codigosPaises = {
+            "507": "🇵🇦 Panamá",
+            "52": "🇲🇽 México",
+            "58": "🇻🇪 Venezuela",
+            "51": "🇵🇪 Perú",
+            "1": "🇺🇸 Estados Unidos",
+            "54": "🇦🇷 Argentina",
+            "34": "🇪🇸 España",
+            "56": "🇨🇱 Chile",
+            "55": "🇧🇷 Brasil",
+            "57": "🇨🇴 Colombia",
+            "591": "🇧🇴 Bolivia",
+            "593": "🇪🇨 Ecuador",
+            "502": "🇬🇹 Guatemala",
+            "503": "🇸🇻 El Salvador",
+            "504": "🇭🇳 Honduras",
+            "505": "🇳🇮 Nicaragua",
+            "506": "🇨🇷 Costa Rica",
+            "592": "🇬🇾 Guyana",
+            "595": "🇵🇾 Paraguay",
+            "597": "🇸🇷 Surinam",
+            "598": "🇺🇾 Uruguay",
+            "599": "🇨🇼 Curazao"
+        };
+
+        let paisUsuario = '🌍 No especificado';
+        const numeroUsuario = userId.replace(/\D/g, ''); // Dejar solo los números
+        const codigoPais = Object.keys(codigosPaises).find(codigo => numeroUsuario.startsWith(codigo));
+        if (codigoPais) {
+            paisUsuario = codigosPaises[codigoPais];
+        }
+
+        // 📜 **Construcción del menú**
+        let menuTexto = `
+       (҂"_")
+         <,︻╦̵̵̿╤─ ҉     ~  •
+█۞███████]▄▄▄▄▄▄▄▄▄▄▃ ●●●
+▂▄▅█████████▅▄▃▂…
+[███████████████████]
+◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙
+╔─━━━━━░★░━━━━━─╗
+║ 📡 ʙɪᴇɴᴠᴇɴɪᴅᴏ ᴀʟ ᴍᴇɴᴜ ʟɪsᴛᴀ
+║ ★━━━━━━✩━━━━━━★
+║ ☬ *FECHA:* ${fecha}
+║ ☬ *HORA:* ${hora}
+║ ☬ *Versión:* Personalizado
+║ ★━━━━━━✩━━━━━━★
+║ 👥 *INFO DEL USUARIO*
+║ ★━━━━━━✩━━━━━━★
+║ ☬ *USUARIO:* ${nombreUsuario}
+║ ☬ *PAÍS:* ${paisUsuario}
+║ ☬ *MASCOTA PRINCIPAL:* ${mascotaPrincipal}
+║ ☬ *PERSONAJE PRINCIPAL:* ${personajePrincipal}
+║ ☬ *CORTANA COINS:* 🪙 ${cortanaCoins}
+║ ★━━━━━━✩━━━━━━★
+*╭─╮─᤻─᳒─᤻᳒᯽⃟ᰳᰬᰶ┈*🔰⃐𝙂𝙍𝙐𝙋𝙊𝙎*️⃟ᬽ፝֟━*
+├• Gᵉˢᵗᶤᵒᶰᵃʳ тυ gяυρσ ¢ση ¢σятαηαвσт-2.0
+├┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+├➫ .welcome _(on/off)_
+├➫ .antilink _(on/off)_
+├➫ .antienlace _(on/off)_
+├➫ .antifake _(on/off)_
+├➫ .antiarabe _(on/off)_
+├➫ .mute
+├➫ .unmute
+├➫ .antitoxic _(on/off)_
+├➫ .antilink2 _(on/off)_
+├➫ .AntiTwiter _(on/off)_
+├➫ .antitiktok _(on/off)_
+├➫ .AntiTikTok _(on/off)_
+├➫ .antitelegram _(on/off)_
+├➫ .AntiTelegram _(on/off)_
+├➫ .antifacebook _(on/off)_
+├➫ .AntiFb _(on/off)_
+├➫ .AntiFaceBook _(on/off)_
+├➫ .AntInstagram _(on/off)_
+├➫ .AntiIg _(on/off)_
+├➫ .antiyoutube _(on/off)_
+├➫ .AntiYoutube _(on/off)_
+├➫ .autosticker _(on/off)_
+├➫ .detect _(on/off)_
+├➫ .autodetect _(on/off)_
+├➫ .antinsfw _(on/off)_
+├➫ .modocaliente _(on/off)_
+├➫ .autosticker _(on/off)_
+├➫ .modoadmin _(on/off)_
+├➫ .audios _(on/off)_
+├➫ .chatbot _(on/off)_
+├➫ .autolevelup _(on/off)_
+├➫ .autonivel _(on/off)_
+├➫ .kick _(@tag)_
+├➫ .add _(@tag)_
+├➫ .invita _(@tag)_
+├➫ .promote _(@tag)_
+├➫ .demote _(@tag)_
+├➫ .infogrupo
+├➫ .groupinfo
+├➫ .grouplist
+├➫ .fantasmas
+├➫ .kickfantasmas
+├➫ .admins _(llama a los admins)_
+├➫ .grupo close/open 
+├➫ .warn _(@tag)_
+├➫ .advertencia _(@tag)_
+├➫ .unwarn _(@tag)_
+├➫ .quitardvertencia _(@tag)_
+├➫ .setppname _(cambia el nombre del grupo)_
+├➫ .setdesc _(cambia la desc del Grupo)_
+├➫ .setppgroup _(cambia la foto del Grupo)_
+├➫ .anularlink 
+├➫ .resetlink _(restablece el link del grupo)_
+├➫ .hidetag _(etiqueta a todos el un mensaje)_
+├➫ .tagall 
+├➫ .invocar _(etiqueta a todos el una listas)_
+├➫ .listonline _(usuarios que esta online)_
+*╰┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭࣭࣭۫┄̸࣭۫┄̸࣭࣭࣭࣭࣭ٜ۫┄̸࣭࣭࣭࣭࣭ٜ۫┄࣭۫*
+
+
+
+🎭 *¿𝐐𝐮𝐢𝐞𝐫𝐞𝐬 𝐨𝐛𝐭𝐞𝐧𝐞𝐫 𝐭𝐮 𝐛𝐨𝐭 𝐩𝐞𝐫𝐬𝐨𝐧𝐚𝐥𝐢𝐳𝐚𝐝𝐨?*  
+🌍 https://www.facebook.com/elrebelde21  
+
+*✦ CORTANA BOT 2.0 ✦*
+`;
+
+        // 📸 **Enviar el menú con la imagen personalizada**
+        await conn.sendMessage(
+            m.chat,
+            {
+                image: { url: "https://cdn.dorratz.com/files/1738558156212.jpg" }, // Imagen del menú
+                caption: menuTexto,
+                mentions: [m.sender]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .menu:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al mostrar el menú. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+
+		
+case 'menu': {
     try {
         await m.react('📜'); // Reacción al usar el comando
 
@@ -857,131 +1036,6 @@ case 'menu22': {
 }
 break;
 	
-case 'menu': {
-    try {
-        await m.react('📜'); // Reacción al usar el comando
-
-        const userId = m.sender.replace(/\D/g, ''); // Eliminar caracteres no numéricos (deja solo números)
-        const userData = cartera[userId] || {}; // Obtener datos del usuario o devolver un objeto vacío si no tiene cartera
-        const now = new Date();
-
-        // 📅 **Obtener fecha y hora del usuario**
-        const fecha = now.toLocaleDateString('es', { day: '2-digit', month: 'long', year: 'numeric' });
-        const hora = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-        // 🏆 **Obtener información del usuario**
-        const nombreUsuario = `@${m.sender.split('@')[0]}`;
-        const cortanaCoins = userData?.coins !== undefined ? userData.coins : 0; // Asegurar que siempre se muestre el saldo
-
-        // 🐾 **Mascota Principal (Si existe)**
-        let mascotaPrincipal = '🐾 Aún no tiene mascota';
-        if (userData.mascotas && Array.isArray(userData.mascotas) && userData.mascotas.length > 0) {
-            const mascota = userData.mascotas[0]; // Tomar la primera mascota (la principal)
-            mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel || 1})`;
-        }
-
-        // 🎭 **Personaje Principal (Si existe)**
-        let personajePrincipal = '🎭 Aún no tiene personaje';
-        if (userData.personajes && Array.isArray(userData.personajes) && userData.personajes.length > 0) {
-            const personaje = userData.personajes[0]; // Tomar el primer personaje (el principal)
-            personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats?.nivel || 1})`;
-        }
-
-        // 🌍 **Deducir el país del usuario basándose en el código del número**
-        const codigosPaises = {
-            "507": "🇵🇦 Panamá",
-            "52": "🇲🇽 México",
-            "58": "🇻🇪 Venezuela",
-            "51": "🇵🇪 Perú",
-            "1": "🇺🇸 Estados Unidos",
-            "54": "🇦🇷 Argentina",
-            "34": "🇪🇸 España",
-            "56": "🇨🇱 Chile",
-            "55": "🇧🇷 Brasil",
-            "57": "🇨🇴 Colombia",
-            "591": "🇧🇴 Bolivia",
-            "593": "🇪🇨 Ecuador",
-            "502": "🇬🇹 Guatemala",
-            "503": "🇸🇻 El Salvador",
-            "504": "🇭🇳 Honduras",
-            "505": "🇳🇮 Nicaragua",
-            "506": "🇨🇷 Costa Rica",
-            "592": "🇬🇾 Guyana",
-            "595": "🇵🇾 Paraguay",
-            "597": "🇸🇷 Surinam",
-            "598": "🇺🇾 Uruguay",
-            "599": "🇨🇼 Curazao"
-        };
-
-        let paisUsuario = '🌍 No especificado';
-        const codigoPais = Object.keys(codigosPaises).find(codigo => userId.startsWith(codigo));
-        if (codigoPais) {
-            paisUsuario = codigosPaises[codigoPais];
-        }
-
-        // 📜 **Construcción del menú**
-        let menuTexto = `
-       (҂"_")
-         <,︻╦̵̵̿╤─ ҉     ~  •
-█۞███████]▄▄▄▄▄▄▄▄▄▄▃ ●●●
-▂▄▅█████████▅▄▃▂…
-[███████████████████]
-◥⊙▲⊙▲⊙▲⊙▲⊙▲⊙▲⊙
-╔─━━━━━░★░━━━━━─╗
-║ 📡 ʙɪᴇɴᴠᴇɴɪᴅᴏ ᴀʟ ᴍᴇɴᴜ ʟɪsᴛᴀ
-║ ★━━━━━━✩━━━━━━★
-║ ☬ *FECHA:* ${fecha}
-║ ☬ *HORA:* ${hora}
-║ ☬ *Versión:* Personalizado
-║ ★━━━━━━✩━━━━━━★
-║ 👥 *INFO DEL USUARIO*
-║ ★━━━━━━✩━━━━━━★
-║ ☬ *USUARIO:* ${nombreUsuario}
-║ ☬ *PAÍS:* ${paisUsuario}
-║ ☬ *MASCOTA PRINCIPAL:* ${mascotaPrincipal}
-║ ☬ *PERSONAJE PRINCIPAL:* ${personajePrincipal}
-║ ☬ *CORTANA COINS:* 🪙 ${cortanaCoins}
-║ ★━━━━━━✩━━━━━━★
-║ 👇 *𝑂𝑇𝑅𝑂𝑆 𝑀𝐸𝑁𝑈𝑆 𝐴𝑄𝑈𝐼 𝐴𝐵𝐴𝐽𝑂* 👇
-║ 
-║ 🔹 .menupersonajes
-║ 🔹 .menu2
-║ 🔹 .menucaja
-║ 🔹 .menuguar
-║ 🔹 .tiendamall
-║ 🔹 .alaventa
-║ 🔹 .allmenu
-║ 🔹 .menugrupo
-║
-╚─━━━━━░★░━━━━━─╝
-
-🎭 *¿𝐐𝐮𝐢𝐞𝐫𝐞𝐬 𝐨𝐛𝐭𝐞𝐧𝐞𝐫 𝐭𝐮 𝐛𝐨𝐭 𝐩𝐞𝐫𝐬𝐨𝐧𝐚𝐥𝐢𝐳𝐚𝐝𝐨?*  
-🌍 https://www.facebook.com/elrebelde21  
-
-*✦ CORTANA BOT 2.0 ✦*
-`;
-
-        // 📸 **Enviar el menú con la imagen personalizada**
-        await conn.sendMessage(
-            m.chat,
-            {
-                image: { url: "https://cdn.dorratz.com/files/1738558156212.jpg" }, // Imagen del menú
-                caption: menuTexto,
-                mentions: [m.sender]
-            },
-            { quoted: m }
-        );
-
-    } catch (error) {
-        console.error('❌ Error en el comando .menu:', error);
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Ocurrió un error al mostrar el menú. Intenta nuevamente.*" },
-            { quoted: m }
-        );
-    }
-}
-break;
 	
 case 'tiendamall': {
     try {
