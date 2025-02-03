@@ -733,8 +733,8 @@ case 'menu': {
     try {
         await m.react('📜'); // Reacción al usar el comando
 
-        const userId = m.sender.replace(/\D/g, ''); // Eliminar caracteres no numéricos
-        const userData = cartera[userId] || {}; // Si no existe, devuelve un objeto vacío
+        const userId = m.sender.replace(/\D/g, ''); // Eliminar caracteres no numéricos (deja solo números)
+        const userData = cartera[userId] || {}; // Obtener datos del usuario o un objeto vacío si no tiene cartera
         const now = new Date();
 
         // 📅 **Obtener fecha y hora del usuario**
@@ -745,21 +745,21 @@ case 'menu': {
         const nombreUsuario = `@${m.sender.split('@')[0]}`;
         const cortanaCoins = userData.coins || 0;
 
-        // 🐾 **Mascota Principal**
+        // 🐾 **Mascota Principal (si existe)**
         let mascotaPrincipal = '🐾 Aún no tiene mascota';
         if (userData.mascotas && Array.isArray(userData.mascotas) && userData.mascotas.length > 0) {
-            const mascota = userData.mascotas[0];
+            const mascota = userData.mascotas[0]; // Tomar la primera mascota (la principal)
             mascotaPrincipal = `🐾 ${mascota.nombre} (Nivel ${mascota.nivel})`;
         }
 
-        // 🎭 **Personaje Principal**
+        // 🎭 **Personaje Principal (si existe)**
         let personajePrincipal = '🎭 Aún no tiene personaje';
         if (userData.personajes && Array.isArray(userData.personajes) && userData.personajes.length > 0) {
-            const personaje = userData.personajes[0];
-            personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats.nivel})`;
+            const personaje = userData.personajes[0]; // Tomar el primer personaje (el principal)
+            personajePrincipal = `🎭 ${personaje.nombre} (Nivel ${personaje.stats ? personaje.stats.nivel : 1})`;
         }
 
-        // 🌍 **Detectar país del usuario**
+        // 🌍 **Deducir el país del usuario basándose en el código del número**
         const codigosPaises = {
             "507": "🇵🇦 Panamá",
             "52": "🇲🇽 México",
