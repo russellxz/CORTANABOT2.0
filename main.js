@@ -7512,7 +7512,7 @@ case 'otra': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
+                image: { url: 'https://cdn.dorratz.com/files/1738568032326.jpg' }, // Imagen decorativa
                 caption: `╭───≪~*MULTIMEDIA GUARDADO*~*
 │✨ Selecciona una palabra clave para obtener el comando:
 │
@@ -7631,7 +7631,7 @@ case 'ban': {
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: 'https://i.postimg.cc/7ZJVpHr0/cortana-anime-fanart-by-laverniustuckerrvb-dee7wsu-pre.jpg' }, // Imagen decorativa
+                image: { url: 'https://cdn.dorratz.com/files/1738568032326.jpg' }, // Imagen decorativa
                 caption: `╭───≪~*ELIMINAR MULTIMEDIA*~*
 │✨ Selecciona una palabra clave para eliminar el archivo asociado:
 │
@@ -8695,9 +8695,18 @@ break;
 		
 //menucaja fuerte	
 case 'menucaja': {
-    const imageUrl = "https://cloud.dorratz.com/files/8f3d740c894ae979e4bfa72fc84589a7"; // URL de la imagen
+    try {
+        // Reaccionar al mensaje del usuario antes de enviar el menú
+        await conn.sendMessage(m.chat, {
+            react: {
+                text: "🗄️", // Emoji de la reacción (puedes cambiarlo)
+                key: m.key, // Mensaje del usuario al que reaccionará
+            },
+        });
 
-    const menuText = `
+        const imageUrl = "https://cdn.dorratz.com/files/1738568482402.jpg"; // URL de la imagen
+
+        const menuText = `
 ✧══════•❁❀❁•══════✧
 🎉 *Bienvenidos al Menú Caja Fuerte de Cortana Bot 2.0* 🎉
 ✧══════•❁❀❁•══════✧
@@ -8746,7 +8755,7 @@ _Activa o desactiva el fallo automático que permite acceder a cajas fuertes dur
 
 📊 *.topcaja* _para ver que usuario tiene mas archivo guardado en su caja es un top_
 
- 🔎 *.escan* _para escaniar cajas fuertes abiertas_
+ 🔎 *.escan* _para escanear cajas fuertes abiertas_
 
 ╔╦══• •✠•❀•✠• •══╦╗
 ✨ *Sistema Innovador Exclusivo* ✨  
@@ -8758,23 +8767,24 @@ _Activa o desactiva el fallo automático que permite acceder a cajas fuertes dur
 ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 `;
 
-    // Enviar el menú con la imagen
-    await conn.sendMessage(
-        m.chat,
-        { 
-            image: { url: imageUrl },
-            caption: menuText 
-        },
-        { quoted: m }
-    );
+        // Enviar el menú con la imagen
+        await conn.sendMessage(
+            m.chat,
+            { 
+                image: { url: imageUrl },
+                caption: menuText 
+            },
+            { quoted: m }
+        );
 
-    // Reaccionar al mensaje del usuario
-    await conn.sendMessage(m.chat, {
-        react: {
-            text: "🕑", // Emoji de la reacción
-            key: m.key, // Mensaje del usuario al que reaccionará
-        },
-    });
+    } catch (error) {
+        console.error('❌ Error en el comando .menucaja:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al mostrar el menú de caja fuerte. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
 }
 break;
 //mute
@@ -8837,7 +8847,7 @@ case 'menuguar': {
         await m.react('✅'); // Reacción al usar el comando
 
         // URL de la imagen decorativa
-        const menuImageUrl = 'https://cloud.dorratz.com/files/5430343fab7566bc71c2feb244b4a240';
+        const menuImageUrl = 'https://cdn.dorratz.com/files/1738568398935.jpg';
 
         // Texto del menú
         const menuText = `
