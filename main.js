@@ -729,6 +729,90 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case 'atacar': {
+    try {
+        await m.react('⚔️');
+
+        const userId = m.sender;
+        const targetId = m.mentionedJid[0] || (m.quoted && m.quoted.sender);
+
+        if (!targetId) return conn.sendMessage(m.chat, { text: "⚠️ *Debes mencionar o responder a un usuario para atacarlo.*" }, { quoted: m });
+        if (userId === targetId) return conn.sendMessage(m.chat, { text: "⚠️ *No puedes atacarte a ti mismo.*" }, { quoted: m });
+
+        if (!cartera[userId]?.personajes || !cartera[targetId]?.personajes) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Uno de los usuarios no tiene personaje para pelear.*" }, { quoted: m });
+        }
+
+        // Verificar cooldown de 15 min
+        const now = Date.now();
+        if (cartera[userId].lastAtacar && now - cartera[userId].lastAtacar < 900000) {
+            const remainingTime = Math.ceil((900000 - (now - cartera[userId].lastAtacar)) / 60000);
+            return conn.sendMessage(m.chat, { text: `⏳ *Espera ${remainingTime} minutos para usar .atacar nuevamente.*` }, { quoted: m });
+        }
+
+        const atacante = cartera[userId].personajes[0];
+        const defensor = cartera[targetId].personajes[0];
+
+        // Daño y robo aleatorio
+        let daño = Math.floor(Math.random() * 21) + 10;
+        let robo = Math.floor(Math.random() * 200) + 1;
+
+        // Ajuste de daño según nivel
+        const diferenciaNivel = defensor.stats.nivel - atacante.stats.nivel;
+        if (diferenciaNivel >= 15) daño = 0;
+        else if (diferenciaNivel >= 10) daño = Math.floor(daño * 0.5);
+
+        defensor.stats.vida = Math.max(defensor.stats.vida - daño, 0);
+        cartera[userId].coins += robo;
+        cartera[targetId].coins = Math.max(cartera[targetId].coins - robo, 0);
+
+        const xpGanado = Math.floor(Math.random() * 1500) + 500;
+        atacante.stats.experiencia += xpGanado;
+
+        while (atacante.stats.experiencia >= atacante.stats.experienciaSiguienteNivel) {
+            atacante.stats.nivel++;
+            atacante.stats.experiencia -= atacante.stats.experienciaSiguienteNivel;
+            atacante.stats.experienciaSiguienteNivel += 500;
+        }
+
+        cartera[userId].lastAtacar = now;
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensajes dinámicos con nombres de los personajes
+        const mensajes = [
+            `💥 *${atacante.nombre} golpea con fuerza a ${defensor.nombre}, causando un gran impacto.*`,
+            `⚡ *${atacante.nombre} ataca con rapidez, pero ${defensor.nombre} logra esquivar parcialmente el golpe.*`,
+            `🔥 *${defensor.nombre} recibe un ataque directo de ${atacante.nombre}, dejándolo tambaleante.*`,
+            `💀 *${atacante.nombre} usa su técnica especial y deja una marca en ${defensor.nombre}.*`,
+            `⚔️ *${defensor.nombre} intenta defenderse, pero ${atacante.nombre} encuentra una apertura y ataca.*`,
+            `💥 *Un intercambio de golpes feroz entre ${atacante.nombre} y ${defensor.nombre}, pero ${atacante.nombre} lleva la ventaja.*`,
+            `🌪️ *${atacante.nombre} se mueve con velocidad y acierta un golpe crítico en ${defensor.nombre}.*`,
+            `💢 *${defensor.nombre} grita de dolor al recibir el ataque de ${atacante.nombre}.*`,
+            `🎭 *${atacante.nombre} sonríe con confianza después de conectar un poderoso golpe a ${defensor.nombre}.*`,
+            `🩸 *${defensor.nombre} retrocede con heridas visibles tras el feroz ataque de ${atacante.nombre}.*`
+        ];
+
+        let mensajeFinal = `⚔️ *¡Ataque realizado con éxito!* ⚔️\n\n` +
+            `🎭 *Atacante:* ${atacante.nombre} (Nivel ${atacante.stats.nivel})\n` +
+            `💥 *Daño causado:* ${daño} HP\n` +
+            `🪙 *Robaste:* ${robo} Cortana Coins\n` +
+            `🆙 *Ganaste:* ${xpGanado} XP\n` +
+            `❤️ *Vida restante de ${defensor.nombre}:* ${defensor.stats.vida} HP\n\n` +
+            `${mensajes[Math.floor(Math.random() * mensajes.length)]}`;
+
+        if (defensor.stats.vida <= 0) {
+            mensajeFinal += `\n\n☠️ *¡${defensor.nombre} ha sido derrotado por ${atacante.nombre}!*`;
+        }
+
+        await conn.sendMessage(m.chat, { text: mensajeFinal, mentions: [userId, targetId] }, { quoted: m });
+
+    } catch (error) {
+        console.error('❌ Error en .atacar:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al atacar. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+	
 case 'retirar': {
     try {
         await m.react('💸'); // Reacción al usar el comando
@@ -4546,7 +4630,7 @@ case 'free': {
 }
 break;        
         
-        
+case 'menuper':       
 case 'menupersonajes': {
     try {
         await m.react('📜'); // Reacción al usar el comando
@@ -4614,7 +4698,7 @@ case 'menupersonajes': {
 }
 break;
 
-	
+case 'per':	
 case 'personaje': {
     try {
         await m.react('🔄'); // Reacción al usar el comando
@@ -4697,6 +4781,7 @@ case 'personaje': {
 }
 break;	
 
+case 'estadoper':
 case 'estadopersonaje': {
     try {
         await m.react('📊'); // Reacción al usar el comando
@@ -4831,6 +4916,7 @@ case 'deletepersonaje2': {
 }
 break;
 	
+case 'topper':
 case 'toppersonajes': {
     try {
         await m.react('🏆'); // Reacción al usar el comando
@@ -5019,6 +5105,7 @@ case 'quitarventa': {
 }
 break;
 
+case 'verper':
 case 'verpersonajes': {
     try {
         await m.react('📜'); // Reacción al usar el comando
