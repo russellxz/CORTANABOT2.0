@@ -728,6 +728,151 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
+case 'morder2': {
+    try {
+        await m.react('🐾');
+
+        const userId = m.sender;
+        const targetId = m.mentionedJid[0] || (m.quoted && m.quoted.sender);
+
+        if (!targetId) return conn.sendMessage(m.chat, { text: "⚠️ *Debes mencionar o responder a un usuario para atacar con tu mascota.*" }, { quoted: m });
+        if (userId === targetId) return conn.sendMessage(m.chat, { text: "⚠️ *No puedes atacar a tu propia mascota.*" }, { quoted: m });
+
+        if (!cartera[userId]?.mascotas || !cartera[targetId]?.mascotas) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Uno de los usuarios no tiene mascota para pelear.*" }, { quoted: m });
+        }
+
+        // Verificar cooldown de 15 min
+        const now = Date.now();
+        if (cartera[userId].lastModer2 && now - cartera[userId].lastModer2 < 900000) {
+            const remainingTime = Math.ceil((900000 - (now - cartera[userId].lastModer2)) / 60000);
+            return conn.sendMessage(m.chat, { text: `⏳ *Espera ${remainingTime} minutos para usar .moder2 nuevamente.*` }, { quoted: m });
+        }
+
+        const atacante = cartera[userId].mascotas[0];
+        const defensor = cartera[targetId].mascotas[0];
+
+        let daño = Math.floor(Math.random() * 51) + 50; // Daño entre 50 y 100
+        let robo = Math.floor(Math.random() * 401) + 100; // Robo entre 100 y 500
+
+        const diferenciaNivel = defensor.nivel - atacante.nivel;
+        if (diferenciaNivel >= 15) daño = 0;
+        else if (diferenciaNivel >= 10) daño = Math.floor(daño * 0.5);
+
+        defensor.vida = Math.max(defensor.vida - daño, 0);
+        const saldoDisponible = cartera[targetId].coins || 0;
+        const roboReal = Math.min(robo, saldoDisponible);
+        cartera[userId].coins += roboReal;
+        cartera[targetId].coins = Math.max(saldoDisponible - roboReal, 0);
+
+        const xpGanado = Math.floor(Math.random() * 2000) + 1000;
+        atacante.experiencia += xpGanado;
+
+        cartera[userId].lastModer2 = now;
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        const secuencia = [
+            `⚡ *${atacante.nombre} se prepara para atacar...*`,
+            `🔥 *El ambiente se llena de tensión...*`,
+            `💥 *¡${atacante.nombre} carga con toda su fuerza!*`,
+            `⚔️ *${atacante.nombre} lanza su ataque final sobre ${defensor.nombre}!*`
+        ];
+
+        let mensajeAnimado = await conn.sendMessage(m.chat, { text: secuencia[0] }, { quoted: m });
+        for (let i = 1; i < secuencia.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            await conn.sendMessage(m.chat, { text: secuencia[i], edit: mensajeAnimado.key }, { quoted: m });
+        }
+
+        await conn.sendMessage(m.chat, { text: `🐾 *Ataque completo, ${defensor.nombre} ha sido impactado!*` }, { quoted: m });
+
+    } catch (error) {
+        console.error('❌ Error en .moder2:', error);
+    }
+}
+break;	
+	
+case 'morder': {
+    try {
+        await m.react('🐾');
+
+        const userId = m.sender;
+        const targetId = m.mentionedJid[0] || (m.quoted && m.quoted.sender);
+
+        if (!targetId) return conn.sendMessage(m.chat, { text: "⚠️ *Debes mencionar o responder a un usuario para atacar con tu mascota.*" }, { quoted: m });
+        if (userId === targetId) return conn.sendMessage(m.chat, { text: "⚠️ *No puedes atacar a tu propia mascota.*" }, { quoted: m });
+
+        if (!cartera[userId]?.mascotas || !cartera[targetId]?.mascotas) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Uno de los usuarios no tiene mascota para pelear.*" }, { quoted: m });
+        }
+
+        // Verificar cooldown de 15 min
+        const now = Date.now();
+        if (cartera[userId].lastModer && now - cartera[userId].lastModer < 900000) {
+            const remainingTime = Math.ceil((900000 - (now - cartera[userId].lastModer)) / 60000);
+            return conn.sendMessage(m.chat, { text: `⏳ *Espera ${remainingTime} minutos para usar .moder nuevamente.*` }, { quoted: m });
+        }
+
+        const atacante = cartera[userId].mascotas[0];
+        const defensor = cartera[targetId].mascotas[0];
+
+        // Daño y robo aleatorio
+        let daño = Math.floor(Math.random() * 21) + 10; // Daño entre 10 y 30 HP
+        let robo = Math.floor(Math.random() * 201) + 1; // Robo entre 1 y 200 Coins
+
+        // Ajuste de daño según nivel
+        const diferenciaNivel = defensor.nivel - atacante.nivel;
+        if (diferenciaNivel >= 15) daño = 0;
+        else if (diferenciaNivel >= 10) daño = Math.floor(daño * 0.5);
+
+        defensor.vida = Math.max(defensor.vida - daño, 0);
+        const saldoDisponible = cartera[targetId].coins || 0;
+        const roboReal = Math.min(robo, saldoDisponible);
+        cartera[userId].coins += roboReal;
+        cartera[targetId].coins = Math.max(saldoDisponible - roboReal, 0);
+
+        const xpGanado = Math.floor(Math.random() * 1500) + 500;
+        atacante.experiencia += xpGanado;
+
+        while (atacante.experiencia >= atacante.experienciaSiguienteNivel) {
+            atacante.nivel++;
+            atacante.experiencia -= atacante.experienciaSiguienteNivel;
+            atacante.experienciaSiguienteNivel += 100 * atacante.nivel;
+        }
+
+        cartera[userId].lastModer = now;
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        const mensajes = [
+            `🐾 *${atacante.nombre} lanza un mordisco feroz a ${defensor.nombre}!*`,
+            `🔥 *${atacante.nombre} ruge con furia y ataca a ${defensor.nombre}!*`,
+            `⚔️ *${atacante.nombre} embiste con toda su fuerza contra ${defensor.nombre}!*`,
+            `💥 *Golpe directo de ${atacante.nombre} a ${defensor.nombre}.*`,
+            `⚡ *Un movimiento rápido y certero de ${atacante.nombre} impacta a ${defensor.nombre}.*`
+        ];
+
+        let mensajeFinal = `🐾 *¡Ataque de mascota realizado!* 🐾\n\n` +
+            `🐶 *Atacante:* ${atacante.nombre} (Nivel ${atacante.nivel})\n` +
+            `💥 *Daño causado:* ${daño} HP\n` +
+            `🪙 *Robaste:* ${roboReal} Cortana Coins\n` +
+            `🆙 *Ganaste:* ${xpGanado} XP\n` +
+            `❤️ *Vida restante de ${defensor.nombre}:* ${defensor.vida} HP\n\n` +
+            `${mensajes[Math.floor(Math.random() * mensajes.length)]}`;
+
+        if (defensor.vida <= 0) {
+            mensajeFinal += `\n\n☠️ *¡${defensor.nombre} ha sido derrotado por ${atacante.nombre}!*`;
+        }
+
+        await conn.sendMessage(m.chat, { text: mensajeFinal, mentions: [userId, targetId] }, { quoted: m });
+
+    } catch (error) {
+        console.error('❌ Error en .moder:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al atacar con tu mascota. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+	
 case 'atacar3': {
     try {
         await m.react('⚔️');
@@ -1491,7 +1636,7 @@ case 'menujuegos': {
 ║ 🌍 *.otromundo* → Explora otros mundos en busca de XP y Coins.
 ║ 💥 *.podermaximo* → Desata tu poder máximo (Disponible cada 24 horas).
 ║ 🐉 *.bolasdeldragon* → Usa 300 🪙 para restaurar la vida de tu personaje.
-║
+║ ⚔️ *.atacar .atacar2 y .atacar3(ataca otros usuarios)
 ║ ★━━━━━━✩━━━━━━★
 ║ 🎭 *ADMINISTRA TUS PERSONAJES* 🎭
 ║
@@ -1517,7 +1662,7 @@ case 'menujuegos': {
 ║ ⚔️ *.batalla1* → Haz batallas con otras mascotas.
 ║ 💃 *.presumir* → Presume a tu mascota.
 ║ 🏋️ *.entrenar* → Entrena a tu mascota.
-║
+║ 🐅 *.morder .moder2 (ataca a otras mascotas)
 ║ ★━━━━━━✩━━━━━━★
 ║ 🛠️ *ADMINISTRA TUS MASCOTAS* 🛠️
 ║
@@ -4895,7 +5040,8 @@ case 'menupersonajes': {
         menuTexto += `🎁 *.free* → Un administrador lanza un personaje gratis para que alguien lo reclame.\n`;
         menuTexto += `✋ *.damelo* → Reclama un personaje gratis antes de que desaparezca.\n`;
         menuTexto += `⚔️ *.batallaanime @usuario* → Reta a otro jugador a una batalla anime.\n`;
-        menuTexto += `🏆 *.go* → Acepta un reto de batalla anime y pelea con tu personaje.\n\n`;
+        menuTexto += `⚔️ *.atacar .atacar2 y .atacar3(atacas otros usuarios).\n`;
+	menuTexto += `🏆 *.go* → Acepta un reto de batalla anime y pelea con tu personaje.\n\n`;
 
         menuTexto += `🎭 *¡Mejora a tu personaje y conviértete en el más fuerte!* 🔥\n`;
 
@@ -5379,7 +5525,8 @@ case 'verpersonajes': {
         textoPersonajes += `❌ *.quitarventa [nombre]* → Retirar un personaje de la venta y volverlo a tu colección.\n`;
         textoPersonajes += `🐉 *.bolasdeldragon* → Usa 300 🪙 Cortana Coins para restaurar la vida de tu personaje al 100%.\n\n`;
         textoPersonajes += `⚔️ *.batallaanime @usuario* → Reta a otro jugador a una batalla anime.\n`;
-        textoPersonajes += `🏆 *.go* → Acepta un reto de batalla anime y pelea con tu personaje.\n\n`;
+        textoPersonajes += `⚔️ *.atacar .atacar2 y .atacar3 (ataca a otros usuarios).\n`;
+	textoPersonajes += `🏆 *.go* → Acepta un reto de batalla anime y pelea con tu personaje.\n\n`;
         textoPersonajes += `🔄 *.personaje [nombre]* → Cambiar de personaje principal.\n`;
         textoPersonajes += `📌 *Usa* \`.menupersonajes\` *para ver otros comandos útiles.*\n`;
 
@@ -7139,7 +7286,8 @@ case 'vermascotas': {
             `- ⏳ *.darcariño* (5 min)\n` +
             `- ⏳ *.estadomascota*\n` +
             `- ⏳ *.supermascota* (24 horas)\n` +
-            `- ⏳ *.mascota cambia tu mascota y usa otra*\n` +
+            `- ⏳ *.morder morder2* (acata a otras mascotas)\n` +
+	    `- ⏳ *.mascota cambia tu mascota y usa otra*\n` +
             `- ❤️ *.curar* (100 Cortana Coins)\n` +
             `- 🎾 *.lanzarpelota* (5 min)\n\n`;
 
