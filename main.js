@@ -728,7 +728,217 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'atacar3': {
+    try {
+        await m.react('⚔️');
 
+        const userId = m.sender;
+        const targetId = m.mentionedJid[0] || (m.quoted && m.quoted.sender);
+
+        if (!targetId) return conn.sendMessage(m.chat, { text: "⚠️ *Debes mencionar o responder a un usuario para atacarlo.*" }, { quoted: m });
+        if (userId === targetId) return conn.sendMessage(m.chat, { text: "⚠️ *No puedes atacarte a ti mismo.*" }, { quoted: m });
+
+        if (!cartera[userId]?.personajes || !cartera[targetId]?.personajes) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Uno de los usuarios no tiene personaje para pelear.*" }, { quoted: m });
+        }
+
+        // Verificar cooldown de 15 min
+        const now = Date.now();
+        if (cartera[userId].lastAtacar3 && now - cartera[userId].lastAtacar3 < 900000) {
+            const remainingTime = Math.ceil((900000 - (now - cartera[userId].lastAtacar3)) / 60000);
+            return conn.sendMessage(m.chat, { text: `⏳ *Espera ${remainingTime} minutos para usar .atacar3 nuevamente.*` }, { quoted: m });
+        }
+
+        const atacante = cartera[userId].personajes[0];
+        const defensor = cartera[targetId].personajes[0];
+
+        // Daño y robo aleatorio
+        let daño = Math.floor(Math.random() * 51) + 50; // Daño entre 50 y 100 HP
+        let robo = Math.floor(Math.random() * 401) + 100; // Robo entre 100 y 500 Coins
+
+        // Ajuste de daño según nivel
+        const diferenciaNivel = defensor.stats.nivel - atacante.stats.nivel;
+        if (diferenciaNivel >= 15) daño = 0;
+        else if (diferenciaNivel >= 10) daño = Math.floor(daño * 0.5);
+
+        defensor.stats.vida = Math.max(defensor.stats.vida - daño, 0);
+
+        // Verificar saldo disponible del objetivo
+        const saldoDisponible = cartera[targetId].coins || 0;
+        const roboReal = Math.min(robo, saldoDisponible);
+        cartera[userId].coins += roboReal;
+        cartera[targetId].coins = Math.max(saldoDisponible - roboReal, 0);
+
+        const xpGanado = Math.floor(Math.random() * 1001) + 2000; // Entre 2000 y 3000 XP
+        atacante.stats.experiencia += xpGanado;
+
+        while (atacante.stats.experiencia >= atacante.stats.experienciaSiguienteNivel) {
+            atacante.stats.nivel++;
+            atacante.stats.experiencia -= atacante.stats.experienciaSiguienteNivel;
+            atacante.stats.experienciaSiguienteNivel += 500;
+        }
+
+        cartera[userId].lastAtacar3 = now;
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Secuencia de animación de ataque (Mensajes que se editan)
+        const secuencia = [
+            `⚡ *${atacante.nombre} está acumulando energía al máximo...*`,
+            `🔥 *El aura de ${atacante.nombre} crece intensamente...*`,
+            `💥 *El suelo tiembla cuando ${atacante.nombre} libera su verdadero poder...*`,
+            `⚔️ *¡${atacante.nombre} ha superado sus límites!*`,
+            `🌪️ *¡El golpe definitivo de ${atacante.nombre} impacta brutalmente a ${defensor.nombre}!*`
+        ];
+
+        let mensajeAnimado = await conn.sendMessage(m.chat, { text: secuencia[0] }, { quoted: m });
+        for (let i = 1; i < secuencia.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Esperar 1.5 segundos
+            await conn.sendMessage(
+                m.chat,
+                { text: secuencia[i], edit: mensajeAnimado.key }, // Editar mensaje existente
+                { quoted: m }
+            );
+        }
+
+        // Mensajes épicos aleatorios
+        const mensajes = [
+            `💀 *${defensor.nombre} apenas puede mantenerse en pie tras el devastador ataque de ${atacante.nombre}.*`,
+            `🔥 *Una explosión sacude el campo de batalla mientras ${atacante.nombre} desata una fuerza incontenible sobre ${defensor.nombre}.*`,
+            `⚔️ *${defensor.nombre} intenta resistir, pero el poder de ${atacante.nombre} es simplemente abrumador.*`,
+            `💥 *El choque de energías deja una cicatriz en el suelo tras el impacto de ${atacante.nombre}.*`,
+            `⚡ *${atacante.nombre} no tiene piedad y sigue atacando sin descanso, sin darle respiro a ${defensor.nombre}.*`,
+            `🌪️ *Con un movimiento supremo, ${atacante.nombre} lanza un golpe que manda a volar a ${defensor.nombre}.*`,
+            `💢 *${defensor.nombre} no esperaba una arremetida tan feroz por parte de ${atacante.nombre}.*`,
+            `🎭 *La batalla se convierte en un espectáculo épico mientras ${atacante.nombre} y ${defensor.nombre} chocan con todo su poder.*`,
+            `🩸 *${defensor.nombre} cae de rodillas, apenas consciente tras el feroz ataque de ${atacante.nombre}.*`,
+            `☠️ *El destino de ${defensor.nombre} parece estar sellado tras la brutal ofensiva de ${atacante.nombre}.*`
+        ];
+
+        let mensajeFinal = `⚔️ *¡Ataque devastador realizado con éxito!* ⚔️\n\n` +
+            `🎭 *Atacante:* ${atacante.nombre} (Nivel ${atacante.stats.nivel})\n` +
+            `💥 *Daño causado:* ${daño} HP\n` +
+            `🪙 *Robaste:* ${roboReal} Cortana Coins\n` +
+            `🆙 *Ganaste:* ${xpGanado} XP\n` +
+            `❤️ *Vida restante de ${defensor.nombre}:* ${defensor.stats.vida} HP\n\n`;
+
+        if (roboReal > 0) {
+            mensajeFinal += `🪙 *Robaste:* ${roboReal} Cortana Coins de ${defensor.nombre}\n`;
+        } else {
+            mensajeFinal += `⚠️ *Intentaste robar, pero ${defensor.nombre} no tenía Cortana Coins disponibles.*\n`;
+        }
+
+        mensajeFinal += `\n${mensajes[Math.floor(Math.random() * mensajes.length)]}`;
+
+        if (defensor.stats.vida <= 0) {
+            mensajeFinal += `\n\n☠️ *¡${defensor.nombre} ha sido completamente derrotado por ${atacante.nombre}! ¡Victoria aplastante!*`;
+        }
+
+        await conn.sendMessage(m.chat, { text: mensajeFinal, mentions: [userId, targetId] }, { quoted: m });
+
+    } catch (error) {
+        console.error('❌ Error en .atacar3:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al atacar. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+
+	
+case 'atacar2': {
+    try {
+        await m.react('⚔️');
+
+        const userId = m.sender;
+        const targetId = m.mentionedJid[0] || (m.quoted && m.quoted.sender);
+
+        if (!targetId) return conn.sendMessage(m.chat, { text: "⚠️ *Debes mencionar o responder a un usuario para atacarlo.*" }, { quoted: m });
+        if (userId === targetId) return conn.sendMessage(m.chat, { text: "⚠️ *No puedes atacarte a ti mismo.*" }, { quoted: m });
+
+        if (!cartera[userId]?.personajes || !cartera[targetId]?.personajes) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Uno de los usuarios no tiene personaje para pelear.*" }, { quoted: m });
+        }
+
+        // Verificar cooldown de 15 min
+        const now = Date.now();
+        if (cartera[userId].lastAtacar2 && now - cartera[userId].lastAtacar2 < 900000) {
+            const remainingTime = Math.ceil((900000 - (now - cartera[userId].lastAtacar2)) / 60000);
+            return conn.sendMessage(m.chat, { text: `⏳ *Espera ${remainingTime} minutos para usar .atacar2 nuevamente.*` }, { quoted: m });
+        }
+
+        const atacante = cartera[userId].personajes[0];
+        const defensor = cartera[targetId].personajes[0];
+
+        // Daño y robo aleatorio
+        let daño = Math.floor(Math.random() * 31) + 20; // Entre 20 y 50 HP
+        let robo = Math.floor(Math.random() * 300) + 1; // Hasta 300 Coins
+
+        // Ajuste de daño según nivel
+        const diferenciaNivel = defensor.stats.nivel - atacante.stats.nivel;
+        if (diferenciaNivel >= 15) daño = 0;
+        else if (diferenciaNivel >= 10) daño = Math.floor(daño * 0.5);
+
+        defensor.stats.vida = Math.max(defensor.stats.vida - daño, 0);
+
+        // Verificar saldo disponible del objetivo
+        const saldoDisponible = cartera[targetId].coins || 0;
+
+        // Solo se pueden robar los Coins que el usuario tiene consigo, no los que están guardados
+        const roboReal = Math.min(robo, saldoDisponible);
+        cartera[userId].coins += roboReal;
+        cartera[targetId].coins = Math.max(saldoDisponible - roboReal, 0);
+
+        const xpGanado = Math.floor(Math.random() * 1001) + 1000; // Entre 1000 y 2000 XP
+        atacante.stats.experiencia += xpGanado;
+
+        while (atacante.stats.experiencia >= atacante.stats.experienciaSiguienteNivel) {
+            atacante.stats.nivel++;
+            atacante.stats.experiencia -= atacante.stats.experienciaSiguienteNivel;
+            atacante.stats.experienciaSiguienteNivel += 500;
+        }
+
+        cartera[userId].lastAtacar2 = now;
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        const mensajes = [
+            `⚡ *${atacante.nombre} carga una gran cantidad de energía y ataca con un golpe devastador a ${defensor.nombre}!*`,
+            `🔥 *${atacante.nombre} usa una técnica avanzada que impacta a ${defensor.nombre}, quien apenas puede mantenerse en pie.*`,
+            `💥 *El campo de batalla tiembla cuando ${atacante.nombre} desata un ataque masivo contra ${defensor.nombre}.*`,
+            `☠️ *${defensor.nombre} recibe un golpe brutal de ${atacante.nombre}, dejándolo severamente herido.*`,
+            `⚔️ *El combate alcanza un nuevo nivel cuando ${atacante.nombre} libera todo su poder contra ${defensor.nombre}.*`,
+            `🌪️ *Una ráfaga de ataques de ${atacante.nombre} golpea sin piedad a ${defensor.nombre}.*`,
+            `💢 *${defensor.nombre} intenta esquivar, pero el poder de ${atacante.nombre} es abrumador.*`,
+            `🎭 *El público queda en shock tras el poderoso ataque de ${atacante.nombre} contra ${defensor.nombre}.*`,
+            `🩸 *${defensor.nombre} sangra después del ataque brutal de ${atacante.nombre}.*`,
+            `🚀 *¡${atacante.nombre} lleva la batalla a un nuevo nivel con una explosión de energía!*`
+        ];
+
+        let mensajeFinal = `⚔️ *¡Ataque brutal ejecutado con éxito!* ⚔️\n\n` +
+            `🎭 *Atacante:* ${atacante.nombre} (Nivel ${atacante.stats.nivel})\n` +
+            `💥 *Daño causado:* ${daño} HP\n` +
+            `🆙 *Ganaste:* ${xpGanado} XP\n` +
+            `❤️ *Vida restante de ${defensor.nombre}:* ${defensor.stats.vida} HP\n\n`;
+
+        if (roboReal > 0) {
+            mensajeFinal += `🪙 *Robaste:* ${roboReal} Cortana Coins de ${defensor.nombre}\n`;
+        } else {
+            mensajeFinal += `⚠️ *Intentaste robar, pero ${defensor.nombre} no tenía Cortana Coins disponibles.*\n`;
+        }
+
+        mensajeFinal += `\n${mensajes[Math.floor(Math.random() * mensajes.length)]}`;
+
+        if (defensor.stats.vida <= 0) {
+            mensajeFinal += `\n\n☠️ *¡${defensor.nombre} ha sido derrotado!*`;
+        }
+
+        await conn.sendMessage(m.chat, { text: mensajeFinal, mentions: [userId, targetId] }, { quoted: m });
+
+    } catch (error) {
+        console.error('❌ Error en .atacar2:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al atacar. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+
+		
 case 'atacar': {
     try {
         await m.react('⚔️');
@@ -763,8 +973,15 @@ case 'atacar': {
         else if (diferenciaNivel >= 10) daño = Math.floor(daño * 0.5);
 
         defensor.stats.vida = Math.max(defensor.stats.vida - daño, 0);
-        cartera[userId].coins += robo;
-        cartera[targetId].coins = Math.max(cartera[targetId].coins - robo, 0);
+
+        // Verificar saldo disponible del objetivo
+        const saldoDisponible = cartera[targetId].coins || 0;
+        const saldoEnCasa = cartera[targetId].casa || 0;
+
+        // Solo se pueden robar los Coins que el usuario tiene consigo, no los que están guardados
+        const roboReal = Math.min(robo, saldoDisponible);
+        cartera[userId].coins += roboReal;
+        cartera[targetId].coins = Math.max(saldoDisponible - roboReal, 0);
 
         const xpGanado = Math.floor(Math.random() * 1500) + 500;
         atacante.stats.experiencia += xpGanado;
@@ -778,30 +995,35 @@ case 'atacar': {
         cartera[userId].lastAtacar = now;
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // Mensajes dinámicos con nombres de los personajes
         const mensajes = [
-            `💥 *${atacante.nombre} golpea con fuerza a ${defensor.nombre}, causando un gran impacto.*`,
-            `⚡ *${atacante.nombre} ataca con rapidez, pero ${defensor.nombre} logra esquivar parcialmente el golpe.*`,
-            `🔥 *${defensor.nombre} recibe un ataque directo de ${atacante.nombre}, dejándolo tambaleante.*`,
-            `💀 *${atacante.nombre} usa su técnica especial y deja una marca en ${defensor.nombre}.*`,
-            `⚔️ *${defensor.nombre} intenta defenderse, pero ${atacante.nombre} encuentra una apertura y ataca.*`,
-            `💥 *Un intercambio de golpes feroz entre ${atacante.nombre} y ${defensor.nombre}, pero ${atacante.nombre} lleva la ventaja.*`,
-            `🌪️ *${atacante.nombre} se mueve con velocidad y acierta un golpe crítico en ${defensor.nombre}.*`,
-            `💢 *${defensor.nombre} grita de dolor al recibir el ataque de ${atacante.nombre}.*`,
-            `🎭 *${atacante.nombre} sonríe con confianza después de conectar un poderoso golpe a ${defensor.nombre}.*`,
-            `🩸 *${defensor.nombre} retrocede con heridas visibles tras el feroz ataque de ${atacante.nombre}.*`
+            `💀 *${defensor.nombre} apenas pudo reaccionar tras el golpe de ${atacante.nombre}.*`,
+            `🔥 *¡${atacante.nombre} lanzó un golpe certero contra ${defensor.nombre}!*`,
+            `⚔️ *El ataque de ${atacante.nombre} hizo temblar el suelo, impactando a ${defensor.nombre}.*`,
+            `💥 *${defensor.nombre} intenta resistir, pero el daño fue significativo.*`,
+            `⚡ *La batalla se vuelve intensa mientras ${atacante.nombre} muestra su fuerza.*`,
+            `🌪️ *Un golpe preciso de ${atacante.nombre} alcanza a ${defensor.nombre}.*`,
+            `💢 *${defensor.nombre} sufre el impacto, pero sigue en pie.*`,
+            `🎭 *La pelea entre ${atacante.nombre} y ${defensor.nombre} sigue subiendo de intensidad.*`,
+            `🩸 *${defensor.nombre} queda debilitado tras el ataque.*`,
+            `☠️ *¡El poder de ${atacante.nombre} está dominando el combate!*`
         ];
 
         let mensajeFinal = `⚔️ *¡Ataque realizado con éxito!* ⚔️\n\n` +
             `🎭 *Atacante:* ${atacante.nombre} (Nivel ${atacante.stats.nivel})\n` +
             `💥 *Daño causado:* ${daño} HP\n` +
-            `🪙 *Robaste:* ${robo} Cortana Coins\n` +
             `🆙 *Ganaste:* ${xpGanado} XP\n` +
-            `❤️ *Vida restante de ${defensor.nombre}:* ${defensor.stats.vida} HP\n\n` +
-            `${mensajes[Math.floor(Math.random() * mensajes.length)]}`;
+            `❤️ *Vida restante de ${defensor.nombre}:* ${defensor.stats.vida} HP\n\n`;
+
+        if (roboReal > 0) {
+            mensajeFinal += `🪙 *Robaste:* ${roboReal} Cortana Coins de ${defensor.nombre}\n`;
+        } else {
+            mensajeFinal += `⚠️ *Intentaste robar, pero ${defensor.nombre} no tenía Cortana Coins disponibles.*\n`;
+        }
+
+        mensajeFinal += `\n${mensajes[Math.floor(Math.random() * mensajes.length)]}`;
 
         if (defensor.stats.vida <= 0) {
-            mensajeFinal += `\n\n☠️ *¡${defensor.nombre} ha sido derrotado por ${atacante.nombre}!*`;
+            mensajeFinal += `\n\n☠️ *¡${defensor.nombre} ha sido derrotado!*`;
         }
 
         await conn.sendMessage(m.chat, { text: mensajeFinal, mentions: [userId, targetId] }, { quoted: m });
