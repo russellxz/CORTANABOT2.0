@@ -728,6 +728,181 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
+case 'retirar': {
+    try {
+        await m.react('💸'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const cantidad = parseInt(args[0]);
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes una cartera creada.* Usa `.crearcartera` para comenzar." },
+                { quoted: m }
+            );
+        }
+
+        if (isNaN(cantidad) || cantidad <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Debes ingresar una cantidad válida para retirar.*\n📌 *Ejemplo:* `.retirar 500`" },
+                { quoted: m }
+            );
+        }
+
+        if ((cartera[userId].dineroEnCasa || 0) < cantidad) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No tienes suficientes Coins en tu casa.*\n🏦 *Saldo en Casa:* ${cartera[userId].dineroEnCasa || 0} Coins` },
+                { quoted: m }
+            );
+        }
+
+        // Transferir saldo de la casa al usuario
+        cartera[userId].dineroEnCasa -= cantidad;
+        cartera[userId].coins = (cartera[userId].coins || 0) + cantidad;
+
+        // Guardar cambios
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `✅ *Has retirado ${cantidad} Cortana Coins de tu casa.*  
+💰 *Saldo Contigo:* ${cartera[userId].coins} Coins  
+🏦 *Saldo en Casa:* ${cartera[userId].dineroEnCasa} Coins`;
+
+        await conn.sendMessage(m.chat, { text: mensaje }, { quoted: m });
+
+    } catch (error) {
+        console.error('❌ Error en el comando .retirar:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar retirar coins.*" },
+            { quoted: m }
+        );
+    }
+}
+break;	
+
+	
+case 'depositar':
+case 'dep': {
+    try {
+        await m.react('🏦'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const cantidad = parseInt(args[0]);
+
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes una cartera creada.* Usa `.crearcartera` para comenzar." },
+                { quoted: m }
+            );
+        }
+
+        if (isNaN(cantidad) || cantidad <= 0) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *Debes ingresar una cantidad válida para depositar.*\n📌 *Ejemplo:* `.depositar 500`" },
+                { quoted: m }
+            );
+        }
+
+        if (cartera[userId].coins < cantidad) {
+            return conn.sendMessage(
+                m.chat,
+                { text: `❌ *No tienes suficientes Cortana Coins.*\n💰 *Tu saldo actual:* ${cartera[userId].coins} Coins` },
+                { quoted: m }
+            );
+        }
+
+        // Transferir saldo a la casa
+        cartera[userId].coins -= cantidad;
+        cartera[userId].dineroEnCasa = (cartera[userId].dineroEnCasa || 0) + cantidad;
+
+        // Guardar cambios
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `✅ *Has depositado ${cantidad} Cortana Coins en tu casa.*  
+🏦 *Saldo en Casa:* ${cartera[userId].dineroEnCasa} Coins  
+💰 *Saldo Contigo:* ${cartera[userId].coins} Coins`;
+
+        await conn.sendMessage(m.chat, { text: mensaje }, { quoted: m });
+
+    } catch (error) {
+        console.error('❌ Error en el comando .depositar:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar depositar coins.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+
+
+case 'bal':		
+case 'saldo': {
+    try {
+        await m.react('💰'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes una cartera creada.* Usa `.crearcartera` para comenzar." },
+                { quoted: m }
+            );
+        }
+
+        // Validar y asignar valores
+        const coins = typeof cartera[userId].coins === 'number' ? cartera[userId].coins : 0;
+        const dineroEnCasa = typeof cartera[userId].dineroEnCasa === 'number' ? cartera[userId].dineroEnCasa : 0;
+
+        // Construir el mensaje
+        const mensaje = `
+╭──────☆──────╮
+💰 *CORTANA COINS* 💰
+╰──────☆──────╯
+
+👤 *Usuario:* @${userId.split('@')[0]}
+🪙 *Saldo Contigo:* ${coins} Cortana Coins
+🏦 *Saldo en Casa:* ${dineroEnCasa} Cortana Coins
+
+✨ *¡Usa tus monedas para comprar y mejorar tus mascotas y personajes anime!* ✨  
+📊 Comando: .alaventa para ver los personajes anime a la venta 👀  
+💡 *Comandos útiles:*  
+- \`.vermascotas\`  
+- \`.tiendamall\`  
+- \`.alaventa\`
+- \`.menupersonajes\`
+- \`.depositar <cantidad>\` (Para guardar Coins en casa)
+- \`.retirar <cantidad>\` (Para sacar Coins de casa)
+
+🌟 *¡Sigue ganando monedas completando actividades con tus mascotas y personajes!*
+━━━━━━━━━━━━━━━━━━
+📌 *Desarrollado por RUSSELL XZ*
+━━━━━━━━━━━━━━━━━━`;
+
+        // Enviar el mensaje
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: mensaje,
+                mentions: [m.sender],
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error consultando saldo:', error);
+        m.reply('❌ *Ocurrió un error al intentar consultar tu saldo.*');
+    }
+}
+break;
+	
 case 'totalper': {
     try {
         await m.react('📊'); // Reacción al usar el comando
@@ -6487,7 +6662,7 @@ break;
 
 
 
-case 'casar': {
+case 'cazar': {
     try {
         await m.react('✅'); // Reacción al usar el comando
 
@@ -6644,7 +6819,7 @@ case 'vermascotas': {
         });
 
         textoMascotas += `🛠️ *Comandos Disponibles:* 🪙\n` +
-            `- ⏳ *.casar* (8 min)\n` +
+            `- ⏳ *.cazar* (8 min)\n` +
             `- ⏳ *.saldo* (mira tu cortana coins)\n` +
 	    `- ⏳ *.darcomida* (10 min)\n` +
             `- ⏳ *.daragua* (10 min)\n` +
@@ -6855,59 +7030,6 @@ case 'presumir': {
 break;
 
 		
-case 'saldo': {
-    try {
-        await m.react('💰'); // Reacción al usar el comando
-
-        const userId = m.sender;
-        if (!cartera[userId]) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *No tienes una cartera creada.* Usa `.crearcartera` para comenzar." },
-                { quoted: m }
-            );
-        }
-
-        // Validar si coins existe y es un número
-        const coins = typeof cartera[userId].coins === 'number' ? cartera[userId].coins : 0;
-
-        // Construir el mensaje
-        const mensaje = `
-╭──────☆──────╮
-💰 *CORTANA COINS* 💰
-╰──────☆──────╯
-
-👤 *Usuario:* @${userId.split('@')[0]}
-🪙 *Saldo Actual:* ${coins} Cortana Coins
-
-✨ *¡Usa tus monedas para comprar y mejorar tus mascotas! y comprar personajes anime* ✨️ 
-📊comando: .alaventa para ver los peronajes anime a la venta👀
-💡 *Comandos útiles:*  
-- \`.vermascotas\`  
-- \`.tiendamall\`  
-- \`.alaventa\`
-- \`.menupersonajes\`
-
-🌟 *¡Sigue ganando monedas completando actividades con tus mascotas!*
-━━━━━━━━━━━━━━━━━━
-📌 *Desarrollado por RUSSELL XZ*
-━━━━━━━━━━━━━━━━━━`;
-
-        // Enviar el mensaje
-        await conn.sendMessage(
-            m.chat,
-            {
-                text: mensaje,
-                mentions: [m.sender],
-            },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error('❌ Error consultando saldo:', error);
-        m.reply('❌ *Ocurrió un error al intentar consultar tu saldo.*');
-    }
-}
-break;
 //elimimar cartera
 case 'deletecartera': {
     try {
