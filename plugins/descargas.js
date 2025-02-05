@@ -549,8 +549,8 @@ conn.sendMessage(m.chat, { document : { url : baby1[0].link}, fileName : baby1[0
 m.reply('2 ' + info.limit)}}
 
 async function descarga2(m, command, text, args, conn, lolkeysapi, isCreator) {
-//if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
-//if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
+if (global.db.data.users[m.sender].registered < true) return m.reply(info.registra)
+if (global.db.data.users[m.sender].limit < 1) return m.reply(info.endLimit)
 if (global.db.data.users[m.sender].banned) return
 if (command == 'facebook' || command == 'fb') { 
 const igeh = require(`../libs/scraper.js`) 
