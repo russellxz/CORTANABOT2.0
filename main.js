@@ -770,7 +770,7 @@ case 'retirar': {
         // Mensaje de confirmación
         const mensaje = `✅ *Has retirado ${cantidad} Cortana Coins de tu casa.*  
 💰 *Saldo Contigo:* ${cartera[userId].coins} Coins  
-🏦 *Saldo en Casa:* ${cartera[userId].dineroEnCasa} Coins`;
+🏘️ *Saldo en Casa:* ${cartera[userId].dineroEnCasa} Coins`;
 
         await conn.sendMessage(m.chat, { text: mensaje }, { quoted: m });
 
@@ -827,7 +827,7 @@ case 'dep': {
 
         // Mensaje de confirmación
         const mensaje = `✅ *Has depositado ${cantidad} Cortana Coins en tu casa.*  
-🏦 *Saldo en Casa:* ${cartera[userId].dineroEnCasa} Coins  
+🏘️ *Saldo en Casa:* ${cartera[userId].dineroEnCasa} Coins  
 💰 *Saldo Contigo:* ${cartera[userId].coins} Coins`;
 
         await conn.sendMessage(m.chat, { text: mensaje }, { quoted: m });
@@ -870,7 +870,7 @@ case 'saldo': {
 
 👤 *Usuario:* @${userId.split('@')[0]}
 🪙 *Saldo Contigo:* ${coins} Cortana Coins
-🏦 *Saldo en Casa:* ${dineroEnCasa} Cortana Coins
+🏘️ *Saldo en Casa:* ${dineroEnCasa} Cortana Coins
 
 ✨ *¡Usa tus monedas para comprar y mejorar tus mascotas y personajes anime!* ✨  
 📊 Comando: .alaventa para ver los personajes anime a la venta 👀  
