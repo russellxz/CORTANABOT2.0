@@ -728,10 +728,9 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
-
 case 'morder2': {
     try {
-        await m.react('🐾');
+        await m.react('⚔️');
 
         const userId = m.sender;
         const targetId = m.mentionedJid[0] || (m.quoted && m.quoted.sender);
@@ -740,10 +739,10 @@ case 'morder2': {
         if (userId === targetId) return conn.sendMessage(m.chat, { text: "⚠️ *No puedes atacar a tu propia mascota.*" }, { quoted: m });
 
         if (!cartera[userId]?.mascotas || !cartera[targetId]?.mascotas) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Uno de los usuarios no tiene mascota para pelear.*" }, { quoted: m });
+            return conn.sendMessage(m.chat, { text: "⚠️ *Uno de los usuarios no tiene mascotas para pelear.*" }, { quoted: m });
         }
 
-        // Verificar cooldown de 15 min
+        // Verificar cooldown de 15 minutos
         const now = Date.now();
         if (cartera[userId].lastModer2 && now - cartera[userId].lastModer2 < 900000) {
             const remainingTime = Math.ceil((900000 - (now - cartera[userId].lastModer2)) / 60000);
@@ -753,45 +752,85 @@ case 'morder2': {
         const atacante = cartera[userId].mascotas[0];
         const defensor = cartera[targetId].mascotas[0];
 
-        let daño = Math.floor(Math.random() * 51) + 50; // Daño entre 50 y 100
-        let robo = Math.floor(Math.random() * 401) + 100; // Robo entre 100 y 500
+        // Daño y robo aleatorio
+        let daño = Math.floor(Math.random() * 41) + 30; // Daño entre 30 y 70
+        let robo = Math.floor(Math.random() * 200) + 50; // Robo entre 50 y 250
 
+        // Ajuste de daño según nivel
         const diferenciaNivel = defensor.nivel - atacante.nivel;
         if (diferenciaNivel >= 15) daño = 0;
         else if (diferenciaNivel >= 10) daño = Math.floor(daño * 0.5);
 
         defensor.vida = Math.max(defensor.vida - daño, 0);
-        const saldoDisponible = cartera[targetId].coins || 0;
-        const roboReal = Math.min(robo, saldoDisponible);
-        cartera[userId].coins += roboReal;
-        cartera[targetId].coins = Math.max(saldoDisponible - roboReal, 0);
+        cartera[userId].coins += robo;
+        cartera[targetId].coins = Math.max(cartera[targetId].coins - robo, 0);
 
         const xpGanado = Math.floor(Math.random() * 2000) + 1000;
         atacante.experiencia += xpGanado;
 
+        while (atacante.experiencia >= atacante.experienciaSiguienteNivel) {
+            atacante.nivel++;
+            atacante.experiencia -= atacante.experienciaSiguienteNivel;
+            atacante.experienciaSiguienteNivel += 500;
+        }
+
         cartera[userId].lastModer2 = now;
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
+        // Secuencia de animación de ataque (Mensajes que se editan)
         const secuencia = [
             `⚡ *${atacante.nombre} se prepara para atacar...*`,
-            `🔥 *El ambiente se llena de tensión...*`,
-            `💥 *¡${atacante.nombre} carga con toda su fuerza!*`,
-            `⚔️ *${atacante.nombre} lanza su ataque final sobre ${defensor.nombre}!*`
+            `🔥 *${atacante.nombre} carga su poder...*`,
+            `💥 *${atacante.nombre} va con todo contra ${defensor.nombre}...*`,
+            `⚔️ *¡${atacante.nombre} lanza su ataque definitivo sobre ${defensor.nombre}!*`,
+            `🌪️ *¡Golpe devastador impacta con fuerza!*`
         ];
 
         let mensajeAnimado = await conn.sendMessage(m.chat, { text: secuencia[0] }, { quoted: m });
         for (let i = 1; i < secuencia.length; i++) {
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            await conn.sendMessage(m.chat, { text: secuencia[i], edit: mensajeAnimado.key }, { quoted: m });
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Esperar 1 segundo entre cada edición
+            await conn.sendMessage(
+                m.chat,
+                { text: secuencia[i], edit: mensajeAnimado.key }, // Editar mensaje existente
+                { quoted: m }
+            );
         }
 
-        await conn.sendMessage(m.chat, { text: `🐾 *Ataque completo, ${defensor.nombre} ha sido impactado!*` }, { quoted: m });
+        // Mensajes épicos aleatorios
+        const mensajes = [
+            `💀 *${defensor.nombre} apenas puede mantenerse en pie tras el ataque de ${atacante.nombre}.*`,
+            `🔥 *${atacante.nombre} arrasó con el campo de batalla, dejando a ${defensor.nombre} temblando.*`,
+            `⚔️ *${defensor.nombre} intentó resistir, pero el ataque de ${atacante.nombre} fue brutal.*`,
+            `💥 *La batalla ha dejado huella, ambos se miran con respeto tras el combate.*`,
+            `⚡ *${atacante.nombre} desata su furia contra ${defensor.nombre}, causando gran daño.*`,
+            `🌪️ *Un golpe certero manda a ${defensor.nombre} al suelo.*`,
+            `💢 *La intensidad del combate entre ${atacante.nombre} y ${defensor.nombre} es legendaria.*`,
+            `🎭 *${atacante.nombre} demuestra su poder en esta feroz batalla.*`,
+            `🩸 *${defensor.nombre} está muy debilitado tras el feroz ataque.*`,
+            `☠️ *La fuerza de ${atacante.nombre} ha dominado por completo la batalla.*`
+        ];
+
+        let mensajeFinal = `🐾 *¡Batalla de Mascotas Completa!* 🐾\n\n` +
+            `🦴 *Atacante:* ${atacante.nombre} (Nivel ${atacante.nivel})\n` +
+            `💥 *Daño causado:* ${daño} HP\n` +
+            `🪙 *Robaste:* ${robo} Cortana Coins\n` +
+            `🆙 *Ganaste:* ${xpGanado} XP\n` +
+            `❤️ *Vida restante de ${defensor.nombre}:* ${defensor.vida} HP\n\n` +
+            `${mensajes[Math.floor(Math.random() * mensajes.length)]}`;
+
+        if (defensor.vida <= 0) {
+            mensajeFinal += `\n\n☠️ *¡${defensor.nombre} ha sido completamente derrotado por ${atacante.nombre}! ¡Victoria total!*`;
+        }
+
+        await conn.sendMessage(m.chat, { text: mensajeFinal, mentions: [userId, targetId] }, { quoted: m });
 
     } catch (error) {
         console.error('❌ Error en .moder2:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al atacar con tu mascota. Intenta nuevamente.*" }, { quoted: m });
     }
 }
-break;	
+break;
+
 	
 case 'morder': {
     try {
