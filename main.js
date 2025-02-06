@@ -728,8 +728,7 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
-
-case ".insta":
+case "insta":
     if (!args[0]) {
         reply("❌ Debes proporcionar una URL válida de Instagram.");
         break;
@@ -745,31 +744,28 @@ case ".insta":
             throw new Error(`HTTP Error: ${response.status}`);
         }
 
-        let text = await response.text(); // Intentamos obtener la respuesta como texto primero
+        let json = await response.json(); // Convertimos la respuesta en JSON
 
-        try {
-            let json = JSON.parse(text); // Intentamos convertirlo a JSON
-            if (json.data && json.data.length > 0) {
-                let { thumbnail, url: downloadUrl } = json.data[0];
-                let message = `✅ Descarga lista:\n📥 *[Click aquí para descargar]*(${downloadUrl})`;
-                if (thumbnail) {
-                    sendMedia(thumbnail, message);
-                } else {
-                    reply(message);
-                }
+        if (json.data && json.data.length > 0) {
+            let { thumbnail, url: downloadUrl } = json.data[0];
+
+            let message = `✅ *Descarga lista:*  
+📥 *[Click aquí para descargar]*(${downloadUrl})`;
+
+            if (thumbnail) {
+                sendMedia(thumbnail, message);
             } else {
-                reply("⚠️ No se encontró contenido en la URL. Asegúrate de que sea correcta.");
+                reply(message);
             }
-        } catch (jsonError) {
-            console.error("No se pudo parsear la respuesta de la API:", text);
-            reply("🚨 Error: La API devolvió una respuesta no válida.");
+        } else {
+            reply("⚠️ No se pudo obtener el contenido. Asegúrate de que la URL sea correcta.");
         }
-
     } catch (error) {
-        console.error(error);
-        reply("🚨 Ocurrió un error al procesar la solicitud. Puede que Instagram haya bloqueado la API.");
+        console.error("Error al procesar la solicitud:", error);
+        reply("🚨 Error al obtener el contenido. Inténtalo más tarde.");
     }
     break;
+
 	
 case 'tran':
 case 'transferir': {
