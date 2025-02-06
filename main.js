@@ -728,6 +728,58 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'compraxp': {
+    try {
+        await m.react('🛒'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        const cantidad = parseInt(args[0]);
+
+        if (isNaN(cantidad) || cantidad <= 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes ingresar una cantidad válida de XP a comprar.*\n📌 *Ejemplo:* `.compraxp 1000`" }, { quoted: m });
+        }
+
+        // **Verificar si el usuario tiene una cartera y un personaje**
+        if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
+            return conn.sendMessage(m.chat, { text: "❌ *No tienes un personaje principal para asignarle XP.*\n📌 *Compra un personaje con* `.alaventa`" }, { quoted: m });
+        }
+
+        // **Verificar si el usuario tiene suficientes coins**
+        if (cartera[userId].coins < cantidad) {
+            return conn.sendMessage(m.chat, { text: "❌ *No tienes suficientes Cortana Coins para comprar esa cantidad de XP.*" }, { quoted: m });
+        }
+
+        // **Obtener personaje principal y asignar XP**
+        const personaje = cartera[userId].personajes[0];
+        personaje.stats.experiencia += cantidad;
+        cartera[userId].coins -= cantidad; // Descontar el costo en coins
+
+        // **Verificar si sube de nivel automáticamente**
+        while (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
+            personaje.stats.nivel++;
+            personaje.stats.experiencia -= personaje.stats.experienciaSiguienteNivel;
+            personaje.stats.experienciaSiguienteNivel += 500; // Aumentar el XP requerido para el siguiente nivel
+        }
+
+        // **Guardar los cambios**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        return conn.sendMessage(
+            m.chat,
+            {
+                text: `✅ *Has comprado ${cantidad} XP para tu personaje.*\n\n🎭 *Personaje:* ${personaje.nombre}\n🆙 *Nuevo Nivel:* ${personaje.stats.nivel}\n⚡ *Experiencia Total:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}\n💰 *Cortana Coins Restantes:* ${cartera[userId].coins}`,
+                mentions: [m.sender]
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .compraxp:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al intentar comprar XP. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+	
 case 'deletefondos': {
     try {
         const userId = m.sender;
