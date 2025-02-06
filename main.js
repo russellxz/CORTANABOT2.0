@@ -728,6 +728,175 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'banco': {
+    try {
+        await m.react('🏦'); // Reacción al usar el comando
+
+        // Verificar si el banco existe en la cartera
+        if (!cartera.banco) {
+            return conn.sendMessage(m.chat, { text: "🏦 *El Banco Cortana Coins aún no ha sido creado.* Usa `.addfondos` para activarlo." }, { quoted: m });
+        }
+
+        const fondosBanco = cartera.banco.fondos || 0;
+        const now = Date.now();
+        let usuariosConDeuda = [];
+
+        // Buscar usuarios con deudas activas
+        for (const userId in cartera) {
+            if (cartera[userId].deuda > 0 && cartera[userId].fechaPrestamo) {
+                const tiempoRestante = 86400000 - (now - cartera[userId].fechaPrestamo);
+                const horas = Math.floor(tiempoRestante / 3600000);
+                const minutos = Math.floor((tiempoRestante % 3600000) / 60000);
+
+                let tiempoTexto = horas > 0 ? `${horas}h ${minutos}m` : `${minutos} minutos`;
+
+                if (tiempoRestante <= 0) tiempoTexto = "❌ *Tiempo agotado*";
+
+                usuariosConDeuda.push({
+                    userId,
+                    deuda: cartera[userId].deuda,
+                    tiempoRestante: tiempoTexto
+                });
+            }
+        }
+
+        // Construcción del mensaje
+        let mensajeBanco = `🏦 *Banco Cortana Coins* 🏦\n\n`;
+        mensajeBanco += `💰 *Fondos disponibles:* ${fondosBanco} 🪙 Cortana Coins\n\n`;
+        
+        if (usuariosConDeuda.length === 0) {
+            mensajeBanco += "✅ *No hay usuarios con préstamos pendientes.*\n";
+        } else {
+            mensajeBanco += "📋 *Usuarios con deuda pendiente:*\n\n";
+            usuariosConDeuda.forEach((usuario, index) => {
+                mensajeBanco += `🔹 *#${index + 1}* - @${usuario.userId.split('@')[0]}\n`;
+                mensajeBanco += `💰 *Debe:* ${usuario.deuda} 🪙\n`;
+                mensajeBanco += `⏳ *Tiempo restante:* ${usuario.tiempoRestante}\n`;
+                mensajeBanco += `━━━━━━━━━━━━━━\n`;
+            });
+        }
+
+        // Enviar el mensaje con menciones
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: mensajeBanco,
+                mentions: usuariosConDeuda.map(u => u.userId)
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .banco:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al consultar el banco. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+
+case 'pagar': {
+    try {
+        const userId = m.sender;
+        const cantidad = parseInt(args[0]);
+
+        if (isNaN(cantidad) || cantidad <= 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes ingresar una cantidad válida para pagar.*" }, { quoted: m });
+        }
+
+        if (!cartera[userId] || !cartera[userId].deuda || cartera[userId].deuda <= 0) {
+            return conn.sendMessage(m.chat, { text: "✅ *No tienes ninguna deuda pendiente.*" }, { quoted: m });
+        }
+
+        // **Verificar si el usuario tiene el dinero suficiente para pagar**
+        if (cartera[userId].coins < cantidad) {
+            return conn.sendMessage(m.chat, { text: "❌ *No tienes suficientes Cortana Coins para pagar esa cantidad.*" }, { quoted: m });
+        }
+
+        // **Reducir deuda y saldo**
+        cartera[userId].coins -= cantidad;
+        cartera[userId].deuda -= cantidad;
+        cartera.banco.fondos += cantidad; // Se suma al banco
+
+        if (cartera[userId].deuda <= 0) {
+            cartera[userId].deuda = 0;
+            delete cartera[userId].fechaPrestamo; // Eliminar fecha porque la deuda fue saldada
+        }
+
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        return conn.sendMessage(
+            m.chat,
+            { text: `✅ *Has pagado ${cantidad} 🪙 Cortana Coins de tu préstamo.*\n📉 *Deuda restante:* ${cartera[userId].deuda} 🪙` },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .pagar:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al intentar pagar tu deuda.*" }, { quoted: m });
+    }
+}
+break;
+	
+case 'prestamo': {
+    try {
+        const userId = m.sender;
+        const cantidad = parseInt(args[0]);
+
+        if (isNaN(cantidad) || cantidad <= 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes ingresar una cantidad válida para el préstamo.*" }, { quoted: m });
+        }
+
+        if (!cartera.banco || cartera.banco.fondos < cantidad) {
+            return conn.sendMessage(m.chat, { text: "❌ *El banco no tiene suficientes fondos para otorgar el préstamo.*" }, { quoted: m });
+        }
+
+        if (!cartera[userId]) cartera[userId] = { coins: 0, casa: 0, deuda: 0 };
+
+        // **Verificar si el usuario tiene un préstamo vencido antes de otorgar otro**
+        if (cartera[userId].deuda > 0 && cartera[userId].fechaPrestamo) {
+            const now = Date.now();
+            const tiempoPasado = now - cartera[userId].fechaPrestamo;
+
+            if (tiempoPasado > 86400000) { // Más de 24 horas
+                let saldoTotal = (cartera[userId].coins || 0) + (cartera[userId].casa || 0);
+
+                cartera.banco.fondos += saldoTotal; // Se suma al banco
+                cartera[userId].coins = 0;
+                cartera[userId].casa = 0;
+                cartera[userId].deuda = 0;
+                delete cartera[userId].fechaPrestamo; // Se elimina la fecha para evitar errores
+
+                fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+                return conn.sendMessage(m.chat, { text: "🚨 *No pagaste tu préstamo a tiempo. Todo tu dinero ha sido embargado por el banco.*" }, { quoted: m });
+            }
+        }
+
+        // **Verificar que el usuario no supere el límite de préstamo**
+        const deudaTotal = (cartera[userId].deuda || 0) + cantidad;
+        if (deudaTotal > 50000) {
+            return conn.sendMessage(m.chat, { text: "❌ *No puedes pedir más de 50,000 Cortana Coins en préstamos.*" }, { quoted: m });
+        }
+
+        cartera[userId].deuda = deudaTotal;
+        cartera[userId].coins += cantidad;
+        cartera.banco.fondos -= cantidad;
+        cartera[userId].fechaPrestamo = Date.now(); // Guardar el tiempo exacto del préstamo
+
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        return conn.sendMessage(
+            m.chat,
+            { text: `✅ *Has solicitado un préstamo de ${cantidad} 🪙 Cortana Coins.*\n📅 *Tienes 24 horas para pagarlo antes de ser embargado.*\n\n💰 *Saldo actual:* ${cartera[userId].coins} 🪙` },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .prestamo:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al solicitar el préstamo. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+	
 case 'addfondos': {
     try {
         await m.react('🏦');
