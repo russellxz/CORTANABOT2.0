@@ -729,34 +729,45 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
-case "insta":
+case ".insta":
     if (!args[0]) {
         reply("❌ Debes proporcionar una URL válida de Instagram.");
         break;
     }
 
-    let url = args[0];
+    let url = args[0].trim();
     let apiUrl = `https://api.dorratz.com/instagram?url=${encodeURIComponent(url)}`;
 
     try {
         let response = await fetch(apiUrl);
-        let json = await response.json();
 
-        if (json.data && json.data.length > 0) {
-            let { thumbnail, url: downloadUrl } = json.data[0];
-
-            let message = `✅ Descarga lista:\n📥 *[Click aquí para descargar]*(${downloadUrl})`;
-            if (thumbnail) {
-                sendMedia(thumbnail, message);
-            } else {
-                reply(message);
-            }
-        } else {
-            reply("⚠️ No se pudo obtener el contenido. Asegúrate de que la URL sea correcta.");
+        if (!response.ok) {
+            throw new Error(`HTTP Error: ${response.status}`);
         }
+
+        let text = await response.text(); // Intentamos obtener la respuesta como texto primero
+
+        try {
+            let json = JSON.parse(text); // Intentamos convertirlo a JSON
+            if (json.data && json.data.length > 0) {
+                let { thumbnail, url: downloadUrl } = json.data[0];
+                let message = `✅ Descarga lista:\n📥 *[Click aquí para descargar]*(${downloadUrl})`;
+                if (thumbnail) {
+                    sendMedia(thumbnail, message);
+                } else {
+                    reply(message);
+                }
+            } else {
+                reply("⚠️ No se encontró contenido en la URL. Asegúrate de que sea correcta.");
+            }
+        } catch (jsonError) {
+            console.error("No se pudo parsear la respuesta de la API:", text);
+            reply("🚨 Error: La API devolvió una respuesta no válida.");
+        }
+
     } catch (error) {
         console.error(error);
-        reply("🚨 Error al procesar la solicitud. Inténtalo nuevamente más tarde.");
+        reply("🚨 Ocurrió un error al procesar la solicitud. Puede que Instagram haya bloqueado la API.");
     }
     break;
 	
