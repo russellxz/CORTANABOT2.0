@@ -729,7 +729,7 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
-case ".insta":
+case "insta":
     if (!args[0]) {
         reply("❌ Debes proporcionar una URL válida de Instagram.");
         break;
