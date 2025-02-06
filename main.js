@@ -887,7 +887,7 @@ ${prestamosInfo}
         await conn.sendMessage(
             m.chat,
             {
-                image: { url: "https://postimg.cc/GBsW8t93" }, // Imagen del banco
+                image: { url: "https://cdn.dorratz.com/files/1738855729631.jpg" }, // Imagen del banco
                 caption: bancoTexto,
                 mentions: Object.keys(cartera).filter(id => cartera[id].deuda > 0)
             },
