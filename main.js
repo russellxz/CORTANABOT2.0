@@ -728,6 +728,65 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
+case 'tran':
+case 'transferir': {
+    try {
+        await m.react('💸');
+
+        const userId = m.sender;
+        const args = text.split(" "); // Obtener argumentos (cantidad y usuario)
+        const targetId = m.mentionedJid[0] || (m.quoted && m.quoted.sender);
+        const cantidad = parseInt(args[0]);
+
+        // Verificar si la cantidad es válida
+        if (isNaN(cantidad) || cantidad <= 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes ingresar una cantidad válida para transferir.*\n📌 *Ejemplo:* `.transferir 500 @usuario`" }, { quoted: m });
+        }
+
+        // Verificar si hay un destinatario válido
+        if (!targetId) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes mencionar o responder a un usuario para transferirle Cortana Coins.*" }, { quoted: m });
+        }
+
+        // Evitar transferencias a sí mismo
+        if (userId === targetId) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *No puedes transferirte monedas a ti mismo.*" }, { quoted: m });
+        }
+
+        // Verificar que ambos usuarios tienen cartera creada
+        if (!cartera[userId] || !cartera[targetId]) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Ambos usuarios deben tener una cartera creada con `.crearcartera` antes de transferir monedas.*" }, { quoted: m });
+        }
+
+        // Verificar que el usuario tenga suficientes monedas
+        if (cartera[userId].coins < cantidad) {
+            return conn.sendMessage(m.chat, { text: "❌ *No tienes suficientes Cortana Coins para esta transferencia.*" }, { quoted: m });
+        }
+
+        // Realizar la transferencia
+        cartera[userId].coins -= cantidad;
+        cartera[targetId].coins += cantidad;
+
+        // Guardar los cambios
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `✅ *Transferencia exitosa* ✅\n\n` +
+            `👤 *De:* @${userId.split('@')[0]}\n` +
+            `📤 *Para:* @${targetId.split('@')[0]}\n` +
+            `💰 *Cantidad transferida:* 🪙 ${cantidad} Cortana Coins\n\n` +
+            `🎉 *¡Tu saldo ha sido actualizado!*`;
+
+        await conn.sendMessage(m.chat, { text: mensaje, mentions: [userId, targetId] }, { quoted: m });
+
+    } catch (error) {
+        console.error('❌ Error en el comando .transferir:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al intentar transferir monedas. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+	
 case 'morder2': {
     try {
         await m.react('⚔️');
