@@ -730,65 +730,71 @@ break
 // Comando para poner en venta un personaje exclusivo
 case 'banco': {
     try {
-        await m.react('🏦'); // Reacción al usar el comando
+        await m.react('🏦');
 
-        // Verificar si el banco existe en la cartera
         if (!cartera.banco) {
-            return conn.sendMessage(m.chat, { text: "🏦 *El Banco Cortana Coins aún no ha sido creado.* Usa `.addfondos` para activarlo." }, { quoted: m });
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *El Banco Cortana Coins aún no ha sido establecido.* Usa `.addfondos` para crearlo." },
+                { quoted: m }
+            );
         }
 
-        const fondosBanco = cartera.banco.fondos || 0;
+        const fondos = cartera.banco.fondos || 0;
         const now = Date.now();
-        let usuariosConDeuda = [];
+        let prestamosInfo = '';
 
-        // Buscar usuarios con deudas activas
-        for (const userId in cartera) {
-            if (cartera[userId].deuda > 0 && cartera[userId].fechaPrestamo) {
-                const tiempoRestante = 86400000 - (now - cartera[userId].fechaPrestamo);
-                const horas = Math.floor(tiempoRestante / 3600000);
-                const minutos = Math.floor((tiempoRestante % 3600000) / 60000);
+        Object.entries(cartera).forEach(([userId, data]) => {
+            if (data.deuda > 0 && data.fechaPrestamo) {
+                const tiempoRestante = Math.max(0, 86400000 - (now - data.fechaPrestamo));
+                const horasRestantes = Math.floor(tiempoRestante / 3600000);
+                const minutosRestantes = Math.floor((tiempoRestante % 3600000) / 60000);
 
-                let tiempoTexto = horas > 0 ? `${horas}h ${minutos}m` : `${minutos} minutos`;
-
-                if (tiempoRestante <= 0) tiempoTexto = "❌ *Tiempo agotado*";
-
-                usuariosConDeuda.push({
-                    userId,
-                    deuda: cartera[userId].deuda,
-                    tiempoRestante: tiempoTexto
-                });
+                prestamosInfo += `👤 *@${userId.split('@')[0]}*\n` +
+                                 `💰 *Deuda:* ${data.deuda} Cortana Coins\n` +
+                                 `⏳ *Tiempo restante:* ${horasRestantes}h ${minutosRestantes}m\n` +
+                                 `━━━━━━━━━━━━━━\n`;
             }
-        }
+        });
 
-        // Construcción del mensaje
-        let mensajeBanco = `🏦 *Banco Cortana Coins* 🏦\n\n`;
-        mensajeBanco += `💰 *Fondos disponibles:* ${fondosBanco} 🪙 Cortana Coins\n\n`;
-        
-        if (usuariosConDeuda.length === 0) {
-            mensajeBanco += "✅ *No hay usuarios con préstamos pendientes.*\n";
-        } else {
-            mensajeBanco += "📋 *Usuarios con deuda pendiente:*\n\n";
-            usuariosConDeuda.forEach((usuario, index) => {
-                mensajeBanco += `🔹 *#${index + 1}* - @${usuario.userId.split('@')[0]}\n`;
-                mensajeBanco += `💰 *Debe:* ${usuario.deuda} 🪙\n`;
-                mensajeBanco += `⏳ *Tiempo restante:* ${usuario.tiempoRestante}\n`;
-                mensajeBanco += `━━━━━━━━━━━━━━\n`;
-            });
-        }
+        if (!prestamosInfo) prestamosInfo = "📌 *No hay préstamos activos actualmente.*";
 
-        // Enviar el mensaje con menciones
+        // 📜 **Diseño del mensaje del banco**
+        let bancoTexto = `
+█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+█-----╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗-----█
+█-----║║║╠─║─║─║║║║║╠─-----█
+█-----╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝-----█
+█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
+
+🏦 *Banco Cortana Coins* 🏦
+💰 *Fondos Disponibles:* ${fondos} Cortana Coins
+
+📋 *Usuarios con préstamos pendientes:*
+${prestamosInfo}
+
+✅ *Usa* \`.prestamo <cantidad>\` *para solicitar un préstamo.*
+💸 *Usa* \`.pagar <cantidad>\` *para pagar tu deuda.*
+`;
+
+        // 📸 **Enviar el mensaje con la imagen del banco**
         await conn.sendMessage(
             m.chat,
             {
-                text: mensajeBanco,
-                mentions: usuariosConDeuda.map(u => u.userId)
+                image: { url: "https://postimg.cc/GBsW8t93" }, // Imagen del banco
+                caption: bancoTexto,
+                mentions: Object.keys(cartera).filter(id => cartera[id].deuda > 0)
             },
             { quoted: m }
         );
 
     } catch (error) {
         console.error('❌ Error en el comando .banco:', error);
-        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al consultar el banco. Intenta nuevamente.*" }, { quoted: m });
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al consultar el banco. Intenta nuevamente.*" },
+            { quoted: m }
+        );
     }
 }
 break;
@@ -1622,7 +1628,6 @@ case 'dep': {
 }
 break;
 
-
 case 'bal':		
 case 'saldo': {
     try {
@@ -1641,7 +1646,20 @@ case 'saldo': {
         const coins = typeof cartera[userId].coins === 'number' ? cartera[userId].coins : 0;
         const dineroEnCasa = typeof cartera[userId].dineroEnCasa === 'number' ? cartera[userId].dineroEnCasa : 0;
 
-        // Construir el mensaje
+        // 🏦 **Información del préstamo**
+        let deudaInfo = "✅ *No tienes deudas pendientes.*";
+        if (cartera[userId].deuda > 0 && cartera[userId].fechaPrestamo) {
+            const now = Date.now();
+            const tiempoRestante = Math.max(0, 86400000 - (now - cartera[userId].fechaPrestamo));
+            const horasRestantes = Math.floor(tiempoRestante / 3600000);
+            const minutosRestantes = Math.floor((tiempoRestante % 3600000) / 60000);
+
+            deudaInfo = `⚠️ *Tienes una deuda de* ${cartera[userId].deuda} *Cortana Coins.*  
+⏳ *Tiempo restante para pagar:* ${horasRestantes}h ${minutosRestantes}m  
+💳 Usa \`.pagar <cantidad>\` para saldar tu deuda.`;
+        }
+
+        // 📜 **Construcción del mensaje de saldo**
         const mensaje = `
 ╭──────☆──────╮
 💰 *CORTANA COINS* 💰
@@ -1650,6 +1668,9 @@ case 'saldo': {
 👤 *Usuario:* @${userId.split('@')[0]}
 🪙 *Saldo Contigo:* ${coins} Cortana Coins
 🏘️ *Saldo en Casa:* ${dineroEnCasa} Cortana Coins
+
+🏦 *Estado del Préstamo:*  
+${deudaInfo}
 
 ✨ *¡Usa tus monedas para comprar y mejorar tus mascotas y personajes anime!* ✨  
 📊 Comando: .alaventa para ver los personajes anime a la venta 👀  
@@ -1660,6 +1681,8 @@ case 'saldo': {
 - \`.menupersonajes\`
 - \`.depositar <cantidad>\` (Para guardar Coins en casa)
 - \`.retirar <cantidad>\` (Para sacar Coins de casa)
+- \`.prestamo <cantidad>\` (Solicita un préstamo)
+- \`.pagar <cantidad>\` (Paga tu préstamo)
 
 🌟 *¡Sigue ganando monedas completando actividades con tus mascotas y personajes!*
 ━━━━━━━━━━━━━━━━━━
@@ -1681,6 +1704,7 @@ case 'saldo': {
     }
 }
 break;
+
 	
 case 'totalper': {
     try {
