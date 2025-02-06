@@ -729,6 +729,37 @@ break
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
 
+case ".insta":
+    if (!args[0]) {
+        reply("❌ Debes proporcionar una URL válida de Instagram.");
+        break;
+    }
+
+    let url = args[0];
+    let apiUrl = `https://api.dorratz.com/instagram?url=${encodeURIComponent(url)}`;
+
+    try {
+        let response = await fetch(apiUrl);
+        let json = await response.json();
+
+        if (json.data && json.data.length > 0) {
+            let { thumbnail, url: downloadUrl } = json.data[0];
+
+            let message = `✅ Descarga lista:\n📥 *[Click aquí para descargar]*(${downloadUrl})`;
+            if (thumbnail) {
+                sendMedia(thumbnail, message);
+            } else {
+                reply(message);
+            }
+        } else {
+            reply("⚠️ No se pudo obtener el contenido. Asegúrate de que la URL sea correcta.");
+        }
+    } catch (error) {
+        console.error(error);
+        reply("🚨 Error al procesar la solicitud. Inténtalo nuevamente más tarde.");
+    }
+    break;
+	
 case 'tran':
 case 'transferir': {
     try {
