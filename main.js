@@ -728,6 +728,65 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'deletefondos': {
+    try {
+        const userId = m.sender;
+        const chat = await conn.groupMetadata(m.chat).catch(() => null);
+        const isGroup = !!chat;
+        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, ''));
+        let isAdmin = false;
+
+        // 🔹 Si está en grupo, verificar si es admin
+        if (isGroup) {
+            const groupAdmins = chat.participants.filter(p => p.admin);
+            isAdmin = groupAdmins.some(admin => admin.id === userId);
+        }
+
+        // 🔐 **Verificar si el usuario es Admin o Owner**
+        if (!isAdmin && !isOwner) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "🚫 *No tienes permisos para eliminar los fondos del banco.*\n⚠️ *Solo los administradores del grupo o el dueño del bot pueden usar este comando.*" },
+                { quoted: m }
+            );
+        }
+
+        // 📢 **Confirmación antes de eliminar los fondos**
+        const confirmacion = await conn.sendMessage(
+            m.chat,
+            { text: "⚠️ *¿Estás seguro de que quieres eliminar todos los fondos del banco?*\n\n✍️ *Responde con* `CONFIRMAR` *para proceder.*" },
+            { quoted: m }
+        );
+
+        // **Esperar confirmación**
+        conn.once('chat-update', async (msg) => {
+            if (msg.messages && msg.messages.all()[0].message.conversation.toLowerCase() === 'confirmar') {
+                if (!cartera.banco) {
+                    cartera.banco = { fondos: 0 };
+                }
+
+                cartera.banco.fondos = 0;
+                fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+                return conn.sendMessage(
+                    m.chat,
+                    { text: "✅ *Todos los fondos del banco han sido eliminados.*\n💰 *El saldo ahora es:* 0 Cortana Coins." },
+                    { quoted: m }
+                );
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ Error en el comando .deletefondos:', error);
+        return conn.sendMessage(
+            m.chat,
+            { text: "❌ *Ocurrió un error al intentar eliminar los fondos del banco. Intenta nuevamente.*" },
+            { quoted: m }
+        );
+    }
+}
+break;
+	
 case 'banco': {
     try {
         await m.react('🏦');
@@ -1909,7 +1968,6 @@ case 'menuowner': {
 }
 break;
 
-		
 case 'menujuegos': {
     try {
         await m.react('🎮'); // Reacción al usar el comando
@@ -1991,7 +2049,18 @@ case 'menujuegos': {
 ║ 🌍 *.otromundo* → Explora otros mundos en busca de XP y Coins.
 ║ 💥 *.podermaximo* → Desata tu poder máximo (Disponible cada 24 horas).
 ║ 🐉 *.bolasdeldragon* → Usa 300 🪙 para restaurar la vida de tu personaje.
-║ ⚔️ *.atacar .atacar2 y .atacar3(ataca otros usuarios)
+║ ⚔️ *.atacar* → Ataca a otro personaje.
+║ ⚔️ *.atacar2* → Ataque más fuerte contra otro personaje.
+║ ⚔️ *.atacar3* → Ataque definitivo con animaciones épicas.
+║ ★━━━━━━✩━━━━━━★
+║ 🏦 *BANCO CORTANA COINS* 🏦
+║
+║ 🏦 *.banco* → Consulta fondos y préstamos activos.
+║ 💰 *.prestamo <cantidad>* → Solicita un préstamo.
+║ 🏦 *.pagar <cantidad>* → Devuelve parte o todo el préstamo.
+║ 📈 *.addfondos <cantidad>* → Añadir fondos al banco (Admins y Owner).
+║ ❌ *.deletefondos* → Elimina los fondos del banco. (Admins y owner)
+║
 ║ ★━━━━━━✩━━━━━━★
 ║ 🎭 *ADMINISTRA TUS PERSONAJES* 🎭
 ║
@@ -2008,7 +2077,7 @@ case 'menujuegos': {
 ║ ★━━━━━━✩━━━━━━★
 ║ 🐾 *CÓMO MEJORAR TU MASCOTA* 🐾
 ║
-║ 🏹 *.casar* → Haz que tu mascota cace presas.
+║ 🏹 *.cazar* → Haz que tu mascota cace presas.
 ║ 🍖 *.darcomida* → Alimenta a tu mascota.
 ║ 💧 *.daragua* → Dale agua a tu mascota.
 ║ 🎾 *.lanzarpelota* → Juega con tu mascota.
@@ -2017,27 +2086,12 @@ case 'menujuegos': {
 ║ ⚔️ *.batalla1* → Haz batallas con otras mascotas.
 ║ 💃 *.presumir* → Presume a tu mascota.
 ║ 🏋️ *.entrenar* → Entrena a tu mascota.
-║ 🐅 *.morder .moder2 (ataca a otras mascotas)
-║ ★━━━━━━✩━━━━━━★
-║ 🛠️ *ADMINISTRA TUS MASCOTAS* 🛠️
-║
-║ 🔄 *.mascota* → Cambia de mascota principal.
-║ 📜 *.estadomascota* → Mira estadísticas de tu mascota.
-║ 🐾 *.vermascotas* → Lista todas tus mascotas.
-║ 🏪 *.tiendamall* → Compra más mascotas.
-║ 🏆 *.topmascotas* → Mira el ranking de mascotas.
-║ 🛍️ *.compra* → Compra más mascotas.
-║ ✍️ *.addmascota* → Agrega nuevas mascotas.
+║ 🐅 *.morder* → Ataca a otra mascota.
+║ 🔥 *.morder2* → Ataque más fuerte con animaciones épicas.
 ║
 ╚─━━━━━░★░━━━━━─╝
-
-🎭 *¿𝐐𝐮𝐢𝐞𝐫𝐞𝐬 𝐨𝐛𝐭𝐞𝐧𝐞𝐫 𝐭𝐮 𝐛𝐨𝐭 𝐩𝐞𝐫𝐬𝐨𝐧𝐚𝐥𝐢𝐳𝐚𝐝𝐨?*  
-🌍 https://www.facebook.com/elrebelde21  
-
-*✦ CORTANA BOT 2.0 ✦*
 `;
 
-        // 📸 **Enviar el menú con la imagen personalizada**
         await conn.sendMessage(
             m.chat,
             {
@@ -2050,14 +2104,12 @@ case 'menujuegos': {
 
     } catch (error) {
         console.error('❌ Error en el comando .menujuegos:', error);
-        return conn.sendMessage(
-            m.chat,
-            { text: "❌ *Ocurrió un error al mostrar el menú. Intenta nuevamente.*" },
-            { quoted: m }
-        );
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al mostrar el menú.*" }, { quoted: m });
     }
 }
-break;
+break;		
+
+
 		
 case 'menu2': {
     try {
