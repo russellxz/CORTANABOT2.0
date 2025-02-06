@@ -733,11 +733,14 @@ case 'compraxp': {
         await m.react('🛒'); // Reacción al usar el comando
 
         const userId = m.sender;
-        const cantidad = parseInt(args[0]);
+        const cantidadXP = parseInt(args[0]);
 
-        if (isNaN(cantidad) || cantidad <= 0) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Debes ingresar una cantidad válida de XP a comprar.*\n📌 *Ejemplo:* `.compraxp 1000`" }, { quoted: m });
+        if (isNaN(cantidadXP) || cantidadXP <= 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes ingresar una cantidad válida de XP a comprar.*\n📌 *Ejemplo:* `.compraxp 3000`" }, { quoted: m });
         }
+
+        // **Convertir XP a costo en Coins**
+        const costoCoins = Math.ceil(cantidadXP / 3); // 1 Coin = 3 XP
 
         // **Verificar si el usuario tiene una cartera y un personaje**
         if (!cartera[userId] || !cartera[userId].personajes || cartera[userId].personajes.length === 0) {
@@ -745,14 +748,14 @@ case 'compraxp': {
         }
 
         // **Verificar si el usuario tiene suficientes coins**
-        if (cartera[userId].coins < cantidad) {
-            return conn.sendMessage(m.chat, { text: "❌ *No tienes suficientes Cortana Coins para comprar esa cantidad de XP.*" }, { quoted: m });
+        if (cartera[userId].coins < costoCoins) {
+            return conn.sendMessage(m.chat, { text: `❌ *No tienes suficientes Cortana Coins para comprar ${cantidadXP} XP.*\n💰 *Costo requerido:* ${costoCoins} 🪙` }, { quoted: m });
         }
 
         // **Obtener personaje principal y asignar XP**
         const personaje = cartera[userId].personajes[0];
-        personaje.stats.experiencia += cantidad;
-        cartera[userId].coins -= cantidad; // Descontar el costo en coins
+        personaje.stats.experiencia += cantidadXP;
+        cartera[userId].coins -= costoCoins; // Descontar el costo en coins
 
         // **Verificar si sube de nivel automáticamente**
         while (personaje.stats.experiencia >= personaje.stats.experienciaSiguienteNivel) {
@@ -767,7 +770,7 @@ case 'compraxp': {
         return conn.sendMessage(
             m.chat,
             {
-                text: `✅ *Has comprado ${cantidad} XP para tu personaje.*\n\n🎭 *Personaje:* ${personaje.nombre}\n🆙 *Nuevo Nivel:* ${personaje.stats.nivel}\n⚡ *Experiencia Total:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}\n💰 *Cortana Coins Restantes:* ${cartera[userId].coins}`,
+                text: `✅ *Has comprado ${cantidadXP} XP para tu personaje.*\n\n🎭 *Personaje:* ${personaje.nombre}\n🆙 *Nuevo Nivel:* ${personaje.stats.nivel}\n⚡ *Experiencia Total:* ${personaje.stats.experiencia} / ${personaje.stats.experienciaSiguienteNivel}\n💰 *Costo:* ${costoCoins} 🪙\n💰 *Cortana Coins Restantes:* ${cartera[userId].coins}`,
                 mentions: [m.sender]
             },
             { quoted: m }
