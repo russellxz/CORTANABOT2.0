@@ -742,39 +742,29 @@ case 'deletefondos': {
             isAdmin = groupAdmins.some(admin => admin.id === userId);
         }
 
-        // 🔐 **Verificar si el usuario es Admin o Owner**
+        // 🔐 **Verificar permisos (Solo Admins y Owner)**
         if (!isAdmin && !isOwner) {
             return conn.sendMessage(
                 m.chat,
-                { text: "🚫 *No tienes permisos para eliminar los fondos del banco.*\n⚠️ *Solo los administradores del grupo o el dueño del bot pueden usar este comando.*" },
+                { text: "🚫 *No tienes permisos para eliminar los fondos del banco.*\n⚠️ *Solo administradores o el dueño del bot pueden usar este comando.*" },
                 { quoted: m }
             );
         }
 
-        // 📢 **Confirmación antes de eliminar los fondos**
-        const confirmacion = await conn.sendMessage(
+        // 🏦 **Verificar si el banco existe**
+        if (!cartera.banco) {
+            cartera.banco = { fondos: 0 };
+        }
+
+        // 💰 **Eliminar fondos**
+        cartera.banco.fondos = 0;
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        return conn.sendMessage(
             m.chat,
-            { text: "⚠️ *¿Estás seguro de que quieres eliminar todos los fondos del banco?*\n\n✍️ *Responde con* `CONFIRMAR` *para proceder.*" },
+            { text: "✅ *Todos los fondos del Banco Cortana Coins han sido eliminados.*\n💰 *El saldo ahora es:* 0 Cortana Coins." },
             { quoted: m }
         );
-
-        // **Esperar confirmación**
-        conn.once('chat-update', async (msg) => {
-            if (msg.messages && msg.messages.all()[0].message.conversation.toLowerCase() === 'confirmar') {
-                if (!cartera.banco) {
-                    cartera.banco = { fondos: 0 };
-                }
-
-                cartera.banco.fondos = 0;
-                fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-
-                return conn.sendMessage(
-                    m.chat,
-                    { text: "✅ *Todos los fondos del banco han sido eliminados.*\n💰 *El saldo ahora es:* 0 Cortana Coins." },
-                    { quoted: m }
-                );
-            }
-        });
 
     } catch (error) {
         console.error('❌ Error en el comando .deletefondos:', error);
@@ -786,6 +776,8 @@ case 'deletefondos': {
     }
 }
 break;
+
+	
 	
 case 'banco': {
     try {
