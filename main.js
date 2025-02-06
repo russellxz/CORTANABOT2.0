@@ -728,43 +728,66 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
-case "insta":
-    if (!args[0]) {
-        reply("❌ Debes proporcionar una URL válida de Instagram.");
-        break;
-    }
-
-    let url = args[0].trim();
-    let apiUrl = `https://api.dorratz.com/instagram?url=${encodeURIComponent(url)}`;
-
+case 'addfondos': {
     try {
-        let response = await fetch(apiUrl);
+        await m.react('🏦');
 
-        if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
+        const userId = m.sender;
+        const args = text.split(" ");
+        const cantidad = parseInt(args[0]);
+
+        // Verificar si el usuario es Owner o Admin
+        const chat = await conn.groupMetadata(m.chat).catch(() => null);
+        const isGroup = !!chat;
+        let isAdmin = false;
+        const isOwner = global.owner.includes(userId.replace(/@s.whatsapp.net/, ''));
+
+        if (isGroup) {
+            const groupAdmins = chat.participants.filter(p => p.admin);
+            isAdmin = groupAdmins.some(admin => admin.id === userId);
         }
 
-        let json = await response.json(); // Convertimos la respuesta en JSON
-
-        if (json.data && json.data.length > 0) {
-            let { thumbnail, url: downloadUrl } = json.data[0];
-
-            let message = `✅ *Descarga lista:*  
-📥 *[Click aquí para descargar]*(${downloadUrl})`;
-
-            if (thumbnail) {
-                sendMedia(thumbnail, message);
-            } else {
-                reply(message);
-            }
-        } else {
-            reply("⚠️ No se pudo obtener el contenido. Asegúrate de que la URL sea correcta.");
+        if (!isAdmin && !isOwner) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "🚫 *No tienes permisos para agregar fondos al Banco Cortana Coins.*\n⚠️ *Solo los administradores del grupo o el dueño del bot pueden usar este comando.*" },
+                { quoted: m }
+            );
         }
+
+        // Verificar si la cantidad es válida
+        if (isNaN(cantidad) || cantidad <= 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes ingresar una cantidad válida de fondos.*\n📌 *Ejemplo:* `.addfondos 10000`" }, { quoted: m });
+        }
+
+        // Inicializar el banco si no existe
+        if (!cartera.banco) {
+            cartera.banco = {
+                fondos: 0,
+                prestamos: {}
+            };
+        }
+
+        // Agregar fondos al banco
+        cartera.banco.fondos += cantidad;
+
+        // Guardar los cambios en `cartera.json`
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // Mensaje de confirmación
+        const mensaje = `🏦 *Banco Cortana Coins* 🏦\n\n` +
+            `💰 *Fondos agregados:* 🪙 ${cantidad} Cortana Coins\n` +
+            `📈 *Total en el banco:* 🪙 ${cartera.banco.fondos}\n\n` +
+            `✅ *Los fondos están listos para otorgar préstamos a los usuarios.*`;
+
+        await conn.sendMessage(m.chat, { text: mensaje }, { quoted: m });
+
     } catch (error) {
-        console.error("Error al procesar la solicitud:", error);
-        reply("🚨 Error al obtener el contenido. Inténtalo más tarde.");
+        console.error('❌ Error en el comando .addfondos:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al intentar agregar fondos al banco.*" }, { quoted: m });
     }
-    break;
+}
+break;
 
 	
 case 'tran':
