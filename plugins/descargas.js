@@ -599,12 +599,13 @@ console.log(err6)
 if (command == 'instagram' || command == 'ig') {
 if (!text) return m.reply(`${lenguaje.lengua.ejem}\n${prefix + command} https://www.instagram.com/p/CCoI4DQBGVQ/?igshid=YmMyMTA2M2Y=`)
 m.react("📥") 
-conn.fakeReply(m.chat, `${lenguaje.lengua.espere}`, '0@s.whatsapp.net', 'No haga spam')
-let res = await fetch(`https://vihangayt.me/download/instagram?url=${text}`)
-let json = await res.json()
-const shortUrl1 = await (await fetch(`https://tinyurl.com/api-create.php?url=${args[0]}`)).text();
-conn.sendMessage(m.chat, { video: { url: json.data.data[0].url }, caption: `🔗 *Url:* ${shortUrl1}`}, {quoted: m})
-.catch(console.error)
+const apiUrl = `https://api.dorratz.com/igdl?url=${text}`;
+        const response = await axios.get(apiUrl);
+        const { creator, data } = response.data;
+        const caption = `> 🌙 request answered by api.dorratz.com`;
+        for (let item of data) {
+          await conn.sendFile(m.chat, item.url, '', caption, m);
+        }
 db.data.users[m.sender].limit -= 1
 m.reply('1 ' + info.limit)
 }
