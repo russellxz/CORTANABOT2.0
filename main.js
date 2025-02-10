@@ -732,26 +732,66 @@ case 'topmillo': {
     try {
         await m.react('💰'); // Reacción al usar el comando
 
-        // **Verificar si hay datos suficientes en la cartera**
+        // **Verificar si hay datos en la cartera**
         if (!cartera || Object.keys(cartera).length === 0) {
             return conn.sendMessage(m.chat, { text: "⚠️ *No hay datos suficientes para generar el ranking.*" }, { quoted: m });
         }
 
-        // **Funciones para ordenar usuarios**
+        let usuariosProcesados = 0;
+
+        // **Recorrer cada usuario en la cartera y actualizar los gastos**
+        for (const userId in cartera) {
+            if (!cartera[userId]) continue;
+
+            // Inicializar valores si no existen
+            if (!cartera[userId].gastoPersonajes) cartera[userId].gastoPersonajes = 0;
+            if (!cartera[userId].gastoMascotas) cartera[userId].gastoMascotas = 0;
+
+            let gastoPersonajes = 0;
+            let gastoMascotas = 0;
+
+            // Sumar el costo de los personajes comprados
+            if (cartera[userId].personajes && Array.isArray(cartera[userId].personajes)) {
+                for (const personaje of cartera[userId].personajes) {
+                    if (personaje.precio) {
+                        gastoPersonajes += personaje.precio;
+                    }
+                }
+            }
+
+            // Sumar el costo de las mascotas compradas
+            if (cartera[userId].mascotas && Array.isArray(cartera[userId].mascotas)) {
+                for (const mascota of cartera[userId].mascotas) {
+                    if (mascota.precio) {
+                        gastoMascotas += mascota.precio;
+                    }
+                }
+            }
+
+            // Guardar los valores actualizados en la cartera
+            cartera[userId].gastoPersonajes = gastoPersonajes;
+            cartera[userId].gastoMascotas = gastoMascotas;
+            usuariosProcesados++;
+        }
+
+        // Guardar los datos actualizados en cartera.json
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // **Funciones para ordenar los rankings**
         const ordenarTop = (campo) => {
             return Object.entries(cartera)
                 .filter(([_, datos]) => datos[campo] && typeof datos[campo] === 'number')
                 .sort((a, b) => b[1][campo] - a[1][campo])
                 .slice(0, 5) // Top 5
                 .map(([userId, datos], index) => `🏅 *#${index + 1}* - @${userId.split('@')[0]} \n💰 *Cantidad:* ${datos[campo]} 🪙`)
-                .join("\n\n");
+                .join("\n\n") || "⚠️ No hay datos suficientes.";
         };
 
-        // **Generar los distintos rankings**
-        const topCartera = ordenarTop("coins") || "🥇 No hay usuarios con saldo en la cartera.";
-        const topCasa = ordenarTop("dineroEnCasa") || "🏠 Nadie tiene dinero guardado en casa.";
-        const topGastoPersonajes = ordenarTop("gastoPersonajes") || "🎭 Nadie ha gastado en personajes aún.";
-        const topGastoMascotas = ordenarTop("gastoMascotas") || "🐾 Nadie ha gastado en mascotas aún.";
+        // **Generar los rankings**
+        const topCartera = ordenarTop("coins");
+        const topCasa = ordenarTop("dineroEnCasa");
+        const topGastoPersonajes = ordenarTop("gastoPersonajes");
+        const topGastoMascotas = ordenarTop("gastoMascotas");
 
         // 📜 **Construcción del mensaje**
         let mensaje = `
