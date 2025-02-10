@@ -795,7 +795,7 @@ case 'topmillo': {
         // **Generar los rankings**
         const topCartera = ordenarTop("coins", "TOP USUARIOS CON MÁS DINERO EN LA CARTERA", "💰");
         const topCasa = ordenarTop("dineroEnCasa", "TOP USUARIOS CON MÁS DINERO EN CASA", "🏡");
-        const topGastoGeneral = ordenarTop("gastoGeneral", "TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES Y MASCOTAS", "🛍️");
+        const topGastoGeneral = ordenarTop("gastoGeneral", "TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES", "🛍️");
 
         // 📜 **Construcción del mensaje**
         let mensaje = `
