@@ -728,6 +728,73 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'topmillo': {
+    try {
+        await m.react('💰'); // Reacción al usar el comando
+
+        // **Verificar si hay datos suficientes en la cartera**
+        if (!cartera || Object.keys(cartera).length === 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *No hay datos suficientes para generar el ranking.*" }, { quoted: m });
+        }
+
+        // **Funciones para ordenar usuarios**
+        const ordenarTop = (campo) => {
+            return Object.entries(cartera)
+                .filter(([_, datos]) => datos[campo] && typeof datos[campo] === 'number')
+                .sort((a, b) => b[1][campo] - a[1][campo])
+                .slice(0, 5) // Top 5
+                .map(([userId, datos], index) => `🏅 *#${index + 1}* - @${userId.split('@')[0]} \n💰 *Cantidad:* ${datos[campo]} 🪙`)
+                .join("\n\n");
+        };
+
+        // **Generar los distintos rankings**
+        const topCartera = ordenarTop("coins") || "🥇 No hay usuarios con saldo en la cartera.";
+        const topCasa = ordenarTop("dineroEnCasa") || "🏠 Nadie tiene dinero guardado en casa.";
+        const topGastoPersonajes = ordenarTop("gastoPersonajes") || "🎭 Nadie ha gastado en personajes aún.";
+        const topGastoMascotas = ordenarTop("gastoMascotas") || "🐾 Nadie ha gastado en mascotas aún.";
+
+        // 📜 **Construcción del mensaje**
+        let mensaje = `
+╔═━━━━━✥◈✥━━━━━═╗
+         💰 *TOP MILLONARIOS* 💰
+╚═━━━━━✥◈✥━━━━━═╝
+
+📜 *TOP USUARIOS CON MÁS DINERO EN LA CARTERA*  
+${topCartera}
+
+🏡 *TOP USUARIOS CON MÁS DINERO EN CASA*  
+${topCasa}
+
+🎭 *TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES*  
+${topGastoPersonajes}
+
+🐾 *TOP USUARIOS QUE MÁS HAN GASTADO EN MASCOTAS*  
+${topGastoMascotas}
+
+━━━━━━━━━━━━━━━━━━━
+📌 *¡Sigue participando y sube en el ranking!*
+🪙 *Acumula monedas con eventos y batallas.*
+━━━━━━━━━━━━━━━━━━━`;
+
+        // 📤 **Enviar el mensaje con menciones**
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: mensaje,
+                mentions: Object.keys(cartera),
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .topmillo:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al generar el top. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+	
+	
+	
 case 'compraxp': {
     try {
         await m.react('🛒'); // Reacción al usar el comando
