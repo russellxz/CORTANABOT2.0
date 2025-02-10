@@ -831,69 +831,7 @@ ${topGastoGeneral}
 }
 break;
 	
-case 'topgasto': {
-    try {
-        await m.react('💸'); // Reacción al usar el comando
 
-        if (!cartera || Object.keys(cartera).length === 0) {
-            return conn.sendMessage(m.chat, { text: "⚠️ *No hay datos suficientes para generar el ranking.*" }, { quoted: m });
-        }
-
-        const ordenarTopGasto = Object.entries(cartera)
-            .filter(([_, datos]) => datos.gastoTotal && typeof datos.gastoTotal === 'number')
-            .sort((a, b) => b[1].gastoTotal - a[1].gastoTotal)
-            .map(([userId, datos], index) => `🏅 *#${index + 1}* - @${userId.split('@')[0]}\n💰 *Gastado:* ${datos.gastoTotal} 🪙`)
-            .join("\n\n");
-
-        let mensaje = `
-╔═━━━━━✥◈✥━━━━━═╗
-      💸 *TOP GASTADORES* 💸
-╚═━━━━━✥◈✥━━━━━═╝
-
-📜 *Usuarios que más han gastado en el sistema de mascotas y personajes:*  
-${ordenarTopGasto || "🤷‍♂️ Nadie ha gastado todavía."}
-
-━━━━━━━━━━━━━━━━━━━
-📌 *¡Sigue participando y sube en el ranking!*
-🪙 *Compra personajes, mascotas y mejoras.*
-━━━━━━━━━━━━━━━━━━━`;
-
-        await conn.sendMessage(
-            m.chat,
-            {
-                text: mensaje,
-                mentions: Object.keys(cartera),
-            },
-            { quoted: m }
-        );
-
-    } catch (error) {
-        console.error('❌ Error en el comando .topgasto:', error);
-        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al generar el top de gasto.*" }, { quoted: m });
-    }
-}
-break;
-		
-	
-case 'gasto': {
-    try {
-        if (args[0] === "on") {
-            cartera.gastoActivo = true;
-            fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-            return conn.sendMessage(m.chat, { text: "✅ *El conteo de gastos en tiempo real ha sido ACTIVADO.*" }, { quoted: m });
-        } else if (args[0] === "off") {
-            cartera.gastoActivo = false;
-            fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-            return conn.sendMessage(m.chat, { text: "🚫 *El conteo de gastos en tiempo real ha sido DESACTIVADO.*" }, { quoted: m });
-        } else {
-            return conn.sendMessage(m.chat, { text: "⚠️ *Usa: .gasto on / .gasto off* para activar o desactivar el conteo." }, { quoted: m });
-        }
-    } catch (error) {
-        console.error('❌ Error en el comando .gasto:', error);
-        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al activar/desactivar el conteo de gastos.*" }, { quoted: m });
-    }
-}
-break;
 	
 	
 case 'compraxp': {
