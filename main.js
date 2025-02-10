@@ -7991,16 +7991,32 @@ case 'ok': {
             );
         }
 
-        // Eliminar la cartera
+        // Asegurar que la tienda de personajes en venta existe
+        if (!cartera.personajesEnVenta) {
+            cartera.personajesEnVenta = [];
+        }
+
+        // **Devolver los personajes del usuario a la tienda**
+        if (cartera[userId].personajes && cartera[userId].personajes.length > 0) {
+            cartera[userId].personajes.forEach(personaje => {
+                personaje.dueño = null; // Quitar dueño
+                cartera.personajesEnVenta.push(personaje); // Agregar a la tienda
+            });
+        }
+
+        // Eliminar la cartera del usuario
         delete cartera[userId];
         delete global.confirmDelete[userId];
+
+        // Guardar los cambios en cartera.json
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         await conn.sendMessage(
             m.chat,
-            { text: "✅ *Tu cartera ha sido eliminada con éxito.*" },
+            { text: "✅ *Tu cartera ha sido eliminada con éxito.*\n🎭 *Todos tus personajes han sido devueltos a la tienda.*" },
             { quoted: m }
         );
+
     } catch (error) {
         console.error('❌ Error eliminando cartera:', error);
         m.reply('❌ *Ocurrió un error al intentar eliminar tu cartera. Intenta nuevamente.*');
