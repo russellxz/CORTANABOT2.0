@@ -69,6 +69,28 @@ function saveMuteList() {
     }
 }
 //comando a stikerz
+//comando de gasto
+// Middleware: Detectar gasto automático si .gasto on está activado
+function registrarGasto(userId, cantidad) {
+    if (cartera.gastoActivo) {
+        if (!cartera[userId]) cartera[userId] = { gastoTotal: 0 };
+        if (!cartera[userId].gastoTotal) cartera[userId].gastoTotal = 0;
+
+        cartera[userId].gastoTotal += cantidad; // Sumar el gasto total del usuario
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+    }
+}
+// Reducir saldo al comprar algo
+const precio = 1000;
+cartera[userId].coins -= precio;
+
+// Registrar el gasto automáticamente si .gasto on está activado
+registrarGasto(userId, precio);
+
+//gasto
+
+
+
 const { handleCommand } = require('./main'); // Ajusta la ruta según tu estructura
 
 //comando a stikerz
@@ -737,47 +759,41 @@ case 'topmillo': {
             return conn.sendMessage(m.chat, { text: "⚠️ *No hay datos suficientes para generar el ranking.*" }, { quoted: m });
         }
 
-        let usuariosProcesados = 0;
-
-        // **Recorrer cada usuario en la cartera y actualizar los gastos**
+        // **Recorrer cada usuario y calcular gastos generales (personajes + mascotas)**
         for (const userId in cartera) {
             if (!cartera[userId]) continue;
 
             // Inicializar valores si no existen
-            if (!cartera[userId].gastoPersonajes) cartera[userId].gastoPersonajes = 0;
-            if (!cartera[userId].gastoMascotas) cartera[userId].gastoMascotas = 0;
+            if (!cartera[userId].gastoGeneral) cartera[userId].gastoGeneral = 0;
 
-            let gastoPersonajes = 0;
-            let gastoMascotas = 0;
+            let gastoTotal = 0;
 
-            // 📌 **Sumar el costo de los personajes comprados**
+            // 📌 **Sumar costo de los personajes**
             if (cartera[userId].personajes && Array.isArray(cartera[userId].personajes)) {
                 for (const personaje of cartera[userId].personajes) {
                     if (personaje.precio) {
-                        gastoPersonajes += personaje.precio;
+                        gastoTotal += personaje.precio;
                     }
                 }
             }
 
-            // 🐾 **Sumar el costo de las mascotas compradas**
+            // 🐾 **Sumar costo de las mascotas**
             if (cartera[userId].mascotas && Array.isArray(cartera[userId].mascotas)) {
                 for (const mascota of cartera[userId].mascotas) {
                     if (mascota.precio) {
-                        gastoMascotas += mascota.precio;
+                        gastoTotal += mascota.precio;
                     }
                 }
             }
 
-            // **Guardar los valores actualizados en la cartera**
-            cartera[userId].gastoPersonajes = gastoPersonajes;
-            cartera[userId].gastoMascotas = gastoMascotas;
-            usuariosProcesados++;
+            // **Actualizar gasto general**
+            cartera[userId].gastoGeneral = gastoTotal;
         }
 
         // Guardar los datos actualizados en cartera.json
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // **Funciones para ordenar los rankings SIN LÍMITE de usuarios**
+        // **Funciones para ordenar los rankings**
         const ordenarTop = (campo, titulo, emoji) => {
             const lista = Object.entries(cartera)
                 .filter(([_, datos]) => datos[campo] && typeof datos[campo] === 'number' && datos[campo] > 0)
@@ -788,11 +804,10 @@ case 'topmillo': {
             return `📜 *${titulo}*\n${lista}\n━━━━━━━━━━━━━━━━━━━`;
         };
 
-        // **Generar los rankings sin límite de usuarios**
+        // **Generar los rankings**
         const topCartera = ordenarTop("coins", "TOP USUARIOS CON MÁS DINERO EN LA CARTERA", "💰");
         const topCasa = ordenarTop("dineroEnCasa", "TOP USUARIOS CON MÁS DINERO EN CASA", "🏡");
-        const topGastoPersonajes = ordenarTop("gastoPersonajes", "TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES", "🎭");
-        const topGastoMascotas = ordenarTop("gastoMascotas", "TOP USUARIOS QUE MÁS HAN GASTADO EN MASCOTAS", "🐾");
+        const topGastoGeneral = ordenarTop("gastoGeneral", "TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES Y MASCOTAS", "🛍️");
 
         // 📜 **Construcción del mensaje**
         let mensaje = `
@@ -804,9 +819,7 @@ ${topCartera}
 
 ${topCasa}
 
-${topGastoPersonajes}
-
-${topGastoMascotas}
+${topGastoGeneral}
 
 ━━━━━━━━━━━━━━━━━━━
 📌 *¡Sigue participando y sube en el ranking!*
@@ -828,7 +841,71 @@ ${topGastoMascotas}
         return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al generar el top. Intenta nuevamente.*" }, { quoted: m });
     }
 }
-break;	
+break;
+	
+case 'topgasto': {
+    try {
+        await m.react('💸'); // Reacción al usar el comando
+
+        if (!cartera || Object.keys(cartera).length === 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *No hay datos suficientes para generar el ranking.*" }, { quoted: m });
+        }
+
+        const ordenarTopGasto = Object.entries(cartera)
+            .filter(([_, datos]) => datos.gastoTotal && typeof datos.gastoTotal === 'number')
+            .sort((a, b) => b[1].gastoTotal - a[1].gastoTotal)
+            .map(([userId, datos], index) => `🏅 *#${index + 1}* - @${userId.split('@')[0]}\n💰 *Gastado:* ${datos.gastoTotal} 🪙`)
+            .join("\n\n");
+
+        let mensaje = `
+╔═━━━━━✥◈✥━━━━━═╗
+      💸 *TOP GASTADORES* 💸
+╚═━━━━━✥◈✥━━━━━═╝
+
+📜 *Usuarios que más han gastado en el sistema de mascotas y personajes:*  
+${ordenarTopGasto || "🤷‍♂️ Nadie ha gastado todavía."}
+
+━━━━━━━━━━━━━━━━━━━
+📌 *¡Sigue participando y sube en el ranking!*
+🪙 *Compra personajes, mascotas y mejoras.*
+━━━━━━━━━━━━━━━━━━━`;
+
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: mensaje,
+                mentions: Object.keys(cartera),
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .topgasto:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al generar el top de gasto.*" }, { quoted: m });
+    }
+}
+break;
+		
+	
+case 'gasto': {
+    try {
+        if (args[0] === "on") {
+            cartera.gastoActivo = true;
+            fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+            return conn.sendMessage(m.chat, { text: "✅ *El conteo de gastos en tiempo real ha sido ACTIVADO.*" }, { quoted: m });
+        } else if (args[0] === "off") {
+            cartera.gastoActivo = false;
+            fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+            return conn.sendMessage(m.chat, { text: "🚫 *El conteo de gastos en tiempo real ha sido DESACTIVADO.*" }, { quoted: m });
+        } else {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Usa: .gasto on / .gasto off* para activar o desactivar el conteo." }, { quoted: m });
+        }
+    } catch (error) {
+        console.error('❌ Error en el comando .gasto:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al activar/desactivar el conteo de gastos.*" }, { quoted: m });
+    }
+}
+break;
 	
 	
 case 'compraxp': {
