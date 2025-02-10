@@ -71,18 +71,6 @@ function saveMuteList() {
 //comando a stikerz
 //comando de gasto
 // Middleware: Detectar gasto automático si .gasto on está activado
-function registrarGasto(userId, cantidad) {
-    if (cartera.gastoActivo) {
-        if (!cartera[userId]) cartera[userId] = { gastoTotal: 0 };
-        if (!cartera[userId].gastoTotal) cartera[userId].gastoTotal = 0;
-
-        cartera[userId].gastoTotal += cantidad; // Sumar el gasto total del usuario
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-    }
-}
-// Reducir saldo al comprar algo
-const precio = 1000;
-cartera[userId].coins -= precio;
 
 // Registrar el gasto automáticamente si .gasto on está activado
 
