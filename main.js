@@ -85,7 +85,7 @@ const precio = 1000;
 cartera[userId].coins -= precio;
 
 // Registrar el gasto automáticamente si .gasto on está activado
-registrarGasto(userId, precio);
+
 
 //gasto
 
