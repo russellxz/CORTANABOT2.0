@@ -750,7 +750,7 @@ case 'topmillo': {
             let gastoPersonajes = 0;
             let gastoMascotas = 0;
 
-            // Sumar el costo de los personajes comprados
+            // 📌 **Sumar el costo de los personajes comprados**
             if (cartera[userId].personajes && Array.isArray(cartera[userId].personajes)) {
                 for (const personaje of cartera[userId].personajes) {
                     if (personaje.precio) {
@@ -759,7 +759,7 @@ case 'topmillo': {
                 }
             }
 
-            // Sumar el costo de las mascotas compradas
+            // 🐾 **Sumar el costo de las mascotas compradas**
             if (cartera[userId].mascotas && Array.isArray(cartera[userId].mascotas)) {
                 for (const mascota of cartera[userId].mascotas) {
                     if (mascota.precio) {
@@ -768,7 +768,7 @@ case 'topmillo': {
                 }
             }
 
-            // Guardar los valores actualizados en la cartera
+            // **Guardar los valores actualizados en la cartera**
             cartera[userId].gastoPersonajes = gastoPersonajes;
             cartera[userId].gastoMascotas = gastoMascotas;
             usuariosProcesados++;
@@ -777,21 +777,22 @@ case 'topmillo': {
         // Guardar los datos actualizados en cartera.json
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
-        // **Funciones para ordenar los rankings**
-        const ordenarTop = (campo) => {
-            return Object.entries(cartera)
-                .filter(([_, datos]) => datos[campo] && typeof datos[campo] === 'number')
+        // **Funciones para ordenar los rankings SIN LÍMITE de usuarios**
+        const ordenarTop = (campo, titulo, emoji) => {
+            const lista = Object.entries(cartera)
+                .filter(([_, datos]) => datos[campo] && typeof datos[campo] === 'number' && datos[campo] > 0)
                 .sort((a, b) => b[1][campo] - a[1][campo])
-                .slice(0, 5) // Top 5
-                .map(([userId, datos], index) => `🏅 *#${index + 1}* - @${userId.split('@')[0]} \n💰 *Cantidad:* ${datos[campo]} 🪙`)
-                .join("\n\n") || "⚠️ No hay datos suficientes.";
+                .map(([userId, datos], index) => `🏅 *#${index + 1}* - @${userId.split('@')[0]} \n${emoji} *Cantidad:* ${datos[campo]} 🪙`)
+                .join("\n\n") || `⚠️ No hay datos suficientes para ${titulo}.`;
+
+            return `📜 *${titulo}*\n${lista}\n━━━━━━━━━━━━━━━━━━━`;
         };
 
-        // **Generar los rankings**
-        const topCartera = ordenarTop("coins");
-        const topCasa = ordenarTop("dineroEnCasa");
-        const topGastoPersonajes = ordenarTop("gastoPersonajes");
-        const topGastoMascotas = ordenarTop("gastoMascotas");
+        // **Generar los rankings sin límite de usuarios**
+        const topCartera = ordenarTop("coins", "TOP USUARIOS CON MÁS DINERO EN LA CARTERA", "💰");
+        const topCasa = ordenarTop("dineroEnCasa", "TOP USUARIOS CON MÁS DINERO EN CASA", "🏡");
+        const topGastoPersonajes = ordenarTop("gastoPersonajes", "TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES", "🎭");
+        const topGastoMascotas = ordenarTop("gastoMascotas", "TOP USUARIOS QUE MÁS HAN GASTADO EN MASCOTAS", "🐾");
 
         // 📜 **Construcción del mensaje**
         let mensaje = `
@@ -799,16 +800,12 @@ case 'topmillo': {
          💰 *TOP MILLONARIOS* 💰
 ╚═━━━━━✥◈✥━━━━━═╝
 
-📜 *TOP USUARIOS CON MÁS DINERO EN LA CARTERA*  
 ${topCartera}
 
-🏡 *TOP USUARIOS CON MÁS DINERO EN CASA*  
 ${topCasa}
 
-🎭 *TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES*  
 ${topGastoPersonajes}
 
-🐾 *TOP USUARIOS QUE MÁS HAN GASTADO EN MASCOTAS*  
 ${topGastoMascotas}
 
 ━━━━━━━━━━━━━━━━━━━
@@ -831,8 +828,7 @@ ${topGastoMascotas}
         return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al generar el top. Intenta nuevamente.*" }, { quoted: m });
     }
 }
-break;
-	
+break;	
 	
 	
 case 'compraxp': {
