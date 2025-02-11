@@ -818,13 +818,11 @@ case 'saldo': {
         if (!cartera[userId].totalGastos) cartera[userId].totalGastos = 0;
         if (!cartera[userId].totalIngresos) cartera[userId].totalIngresos = 0;
         if (!cartera[userId].ultimoSaldo) cartera[userId].ultimoSaldo = cartera[userId].coins || 0;
-        if (!cartera[userId].ultimoSaldoCasa) cartera[userId].ultimoSaldoCasa = cartera[userId].dineroEnCasa || 0;
 
-        // 🪙 **Obtener valores actuales**
+        // 🪙 **Obtener valores actuales SOLO de la cartera, no de la casa**
         const saldoActual = cartera[userId].coins || 0;
-        const saldoCasaActual = cartera[userId].dineroEnCasa || 0;
 
-        // ✅ **Registrar ingresos/gastos en cualquier caso (No solo al depositar)**
+        // ✅ **Registrar ingresos/gastos solo de la cartera**
         let ingresoTotal = 0;
         let gastoTotal = 0;
 
@@ -834,18 +832,11 @@ case 'saldo': {
             gastoTotal += cartera[userId].ultimoSaldo - saldoActual;
         }
 
-        if (saldoCasaActual > cartera[userId].ultimoSaldoCasa) {
-            ingresoTotal += saldoCasaActual - cartera[userId].ultimoSaldoCasa;
-        } else if (saldoCasaActual < cartera[userId].ultimoSaldoCasa) {
-            gastoTotal += cartera[userId].ultimoSaldoCasa - saldoCasaActual;
-        }
-
         cartera[userId].totalIngresos += ingresoTotal;
         cartera[userId].totalGastos += gastoTotal;
 
         // Actualizar último saldo registrado
         cartera[userId].ultimoSaldo = saldoActual;
-        cartera[userId].ultimoSaldoCasa = saldoCasaActual;
 
         // Guardar en cartera.json
         fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
@@ -871,7 +862,7 @@ case 'saldo': {
 
 👤 *Usuario:* @${userId.split('@')[0]}
 🪙 *Saldo Contigo:* ${saldoActual} Cortana Coins
-🏘️ *Saldo en Casa:* ${saldoCasaActual} Cortana Coins
+🏘️ *Saldo en Casa:* ${cartera[userId].dineroEnCasa || 0} Cortana Coins
 
 📉 *Gastos Totales:* ${cartera[userId].totalGastos} 🪙
 📈 *Ingresos Totales:* ${cartera[userId].totalIngresos} 🪙
