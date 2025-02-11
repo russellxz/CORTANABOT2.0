@@ -764,9 +764,9 @@ case 'topgastos': {
             return lista.length > 0 ? `📜 *${titulo}*\n${lista}\n━━━━━━━━━━━━━━━━━━━` : `⚠️ No hay datos suficientes para ${titulo}.`;
         };
 
-        // **Generar los rankings**
-        const topGastoTotal = ordenarTop("totalGastos", "TOP USUARIOS QUE MÁS HAN GASTADO", "📉");
-        const topIngresoTotal = ordenarTop("totalIngresos", "TOP USUARIOS QUE MÁS HAN GANADO", "📈");
+        // **Generar los rankings SOLO considerando la cartera, no la casa**
+        const topGastoTotal = ordenarTop("totalGastos", "TOP USUARIOS QUE MÁS HAN GASTADO (SOLO CARTERA)", "📉");
+        const topIngresoTotal = ordenarTop("totalIngresos", "TOP USUARIOS QUE MÁS HAN GANADO (SOLO CARTERA)", "📈");
 
         // 📜 **Construcción del mensaje**
         let mensaje = `
