@@ -815,15 +815,16 @@ case 'saldo': {
         }
 
         // **Si los valores no existen, crearlos automáticamente**
-        if (!cartera[userId].totalGastos) cartera[userId].totalGastos = 0;
-        if (!cartera[userId].totalIngresos) cartera[userId].totalIngresos = 0;
-        if (!cartera[userId].ultimoSaldo) cartera[userId].ultimoSaldo = cartera[userId].coins || 0;
-        if (!cartera[userId].ultimoSaldoCasa) cartera[userId].ultimoSaldoCasa = cartera[userId].dineroEnCasa || 0;
+        if (typeof cartera[userId].totalGastos !== 'number') cartera[userId].totalGastos = 0;
+        if (typeof cartera[userId].totalIngresos !== 'number') cartera[userId].totalIngresos = 0;
+        if (typeof cartera[userId].ultimoSaldo !== 'number') cartera[userId].ultimoSaldo = cartera[userId].coins || 0;
+        if (typeof cartera[userId].ultimoSaldoCasa !== 'number') cartera[userId].ultimoSaldoCasa = cartera[userId].dineroEnCasa || 0;
 
         // 🪙 **Verificar cambios en el saldo para registrar gastos e ingresos**
         const saldoActual = cartera[userId].coins || 0;
         const saldoCasaActual = cartera[userId].dineroEnCasa || 0;
 
+        // ✅ **Si el usuario solo recibe ingresos, se asegurará que totalGastos exista**
         if (saldoActual > cartera[userId].ultimoSaldo) {
             cartera[userId].totalIngresos += saldoActual - cartera[userId].ultimoSaldo;
         } else if (saldoActual < cartera[userId].ultimoSaldo) {
