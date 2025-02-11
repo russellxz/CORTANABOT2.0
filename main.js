@@ -742,19 +742,26 @@ case 'topgastos': {
     try {
         await m.react('📊'); // Reacción al usar el comando
 
+        // **Verificar si hay datos en la cartera**
         if (!cartera || Object.keys(cartera).length === 0) {
             return conn.sendMessage(m.chat, { text: "⚠️ *No hay datos suficientes para generar el ranking.*" }, { quoted: m });
+        }
+
+        // **Inicializar valores en caso de que no existan**
+        for (const userId in cartera) {
+            if (!cartera[userId].totalGastos) cartera[userId].totalGastos = 0;
+            if (!cartera[userId].totalIngresos) cartera[userId].totalIngresos = 0;
         }
 
         // **Funciones para ordenar los rankings**
         const ordenarTop = (campo, titulo, emoji) => {
             const lista = Object.entries(cartera)
-                .filter(([_, datos]) => datos[campo] && typeof datos[campo] === 'number' && datos[campo] > 0)
-                .sort((a, b) => b[1][campo] - a[1][campo])
+                .filter(([_, datos]) => typeof datos[campo] === 'number' && datos[campo] > 0)
+                .sort((a, b) => b[1][campo] - a[1][campo]) // Ordenar de mayor a menor
                 .map(([userId, datos], index) => `🏅 *#${index + 1}* - @${userId.split('@')[0]} \n${emoji} *Cantidad:* ${datos[campo]} 🪙`)
-                .join("\n\n") || `⚠️ No hay datos suficientes para ${titulo}.`;
+                .join("\n\n");
 
-            return `📜 *${titulo}*\n${lista}\n━━━━━━━━━━━━━━━━━━━`;
+            return lista.length > 0 ? `📜 *${titulo}*\n${lista}\n━━━━━━━━━━━━━━━━━━━` : `⚠️ No hay datos suficientes para ${titulo}.`;
         };
 
         // **Generar los rankings**
@@ -807,16 +814,36 @@ case 'saldo': {
             );
         }
 
-        // **Validar y asignar valores**
+        // **Si los valores no existen, crearlos automáticamente**
         if (!cartera[userId].totalGastos) cartera[userId].totalGastos = 0;
         if (!cartera[userId].totalIngresos) cartera[userId].totalIngresos = 0;
+        if (!cartera[userId].ultimoSaldo) cartera[userId].ultimoSaldo = cartera[userId].coins || 0;
+        if (!cartera[userId].ultimoSaldoCasa) cartera[userId].ultimoSaldoCasa = cartera[userId].dineroEnCasa || 0;
 
-        const coins = typeof cartera[userId].coins === 'number' ? cartera[userId].coins : 0;
-        const dineroEnCasa = typeof cartera[userId].dineroEnCasa === 'number' ? cartera[userId].dineroEnCasa : 0;
-        const totalGastos = cartera[userId].totalGastos;
-        const totalIngresos = cartera[userId].totalIngresos;
+        // 🪙 **Verificar cambios en el saldo para registrar gastos e ingresos**
+        const saldoActual = cartera[userId].coins || 0;
+        const saldoCasaActual = cartera[userId].dineroEnCasa || 0;
 
-        // 🏦 **Información del préstamo**
+        if (saldoActual > cartera[userId].ultimoSaldo) {
+            cartera[userId].totalIngresos += saldoActual - cartera[userId].ultimoSaldo;
+        } else if (saldoActual < cartera[userId].ultimoSaldo) {
+            cartera[userId].totalGastos += cartera[userId].ultimoSaldo - saldoActual;
+        }
+
+        if (saldoCasaActual > cartera[userId].ultimoSaldoCasa) {
+            cartera[userId].totalIngresos += saldoCasaActual - cartera[userId].ultimoSaldoCasa;
+        } else if (saldoCasaActual < cartera[userId].ultimoSaldoCasa) {
+            cartera[userId].totalGastos += cartera[userId].ultimoSaldoCasa - saldoCasaActual;
+        }
+
+        // Actualizar último saldo
+        cartera[userId].ultimoSaldo = saldoActual;
+        cartera[userId].ultimoSaldoCasa = saldoCasaActual;
+
+        // Guardar en cartera.json
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // 🏦 **Estado del préstamo**
         let deudaInfo = "✅ *No tienes deudas pendientes.*";
         if (cartera[userId].deuda > 0 && cartera[userId].fechaPrestamo) {
             const now = Date.now();
@@ -829,18 +856,18 @@ case 'saldo': {
 💳 Usa \`.pagar <cantidad>\` para saldar tu deuda.`;
         }
 
-        // 📜 **Construcción del mensaje de saldo**
+        // 📜 **Mensaje de saldo**
         const mensaje = `
 ╔═━━━━━✥◈✥━━━━━═╗
        💰 *CORTANA COINS* 💰
 ╚═━━━━━✥◈✥━━━━━═╝
 
 👤 *Usuario:* @${userId.split('@')[0]}
-🪙 *Saldo Contigo:* ${coins} Cortana Coins
-🏘️ *Saldo en Casa:* ${dineroEnCasa} Cortana Coins
+🪙 *Saldo Contigo:* ${saldoActual} Cortana Coins
+🏘️ *Saldo en Casa:* ${saldoCasaActual} Cortana Coins
 
-📉 *Gastos Totales:* ${totalGastos} 🪙
-📈 *Ingresos Totales:* ${totalIngresos} 🪙
+📉 *Gastos Totales:* ${cartera[userId].totalGastos} 🪙
+📈 *Ingresos Totales:* ${cartera[userId].totalIngresos} 🪙
 
 🏦 *Estado del Préstamo:*  
 ${deudaInfo}
@@ -862,9 +889,6 @@ ${deudaInfo}
 📌 *Desarrollado por RUSSELL XZ*
 ━━━━━━━━━━━━━━━━━━`;
 
-        // **Guardar cambios en cartera.json**
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
-
         // 📤 **Enviar el mensaje**
         await conn.sendMessage(
             m.chat,
@@ -874,6 +898,7 @@ ${deudaInfo}
             },
             { quoted: m }
         );
+
     } catch (error) {
         console.error('❌ Error consultando saldo:', error);
         m.reply('❌ *Ocurrió un error al intentar consultar tu saldo.*');
@@ -894,17 +919,16 @@ case 'topmillo': {
         const ordenarTop = (campo, titulo, emoji) => {
             const lista = Object.entries(cartera)
                 .filter(([_, datos]) => datos[campo] && typeof datos[campo] === 'number' && datos[campo] > 0)
-                .sort((a, b) => b[1][campo] - a[1][campo])
+                .sort((a, b) => b[1][campo] - a[1][campo]) // Ordenar de mayor a menor
                 .map(([userId, datos], index) => `🏅 *#${index + 1}* - @${userId.split('@')[0]} \n${emoji} *Cantidad:* ${datos[campo]} 🪙`)
-                .join("\n\n") || `⚠️ No hay datos suficientes para ${titulo}.`;
+                .join("\n\n");
 
-            return `📜 *${titulo}*\n${lista}\n━━━━━━━━━━━━━━━━━━━`;
+            return lista.length > 0 ? `📜 *${titulo}*\n${lista}\n━━━━━━━━━━━━━━━━━━━` : `⚠️ No hay datos suficientes para ${titulo}.`;
         };
 
         // **Generar los rankings**
         const topCartera = ordenarTop("coins", "TOP USUARIOS CON MÁS DINERO EN LA CARTERA", "💰");
         const topCasa = ordenarTop("dineroEnCasa", "TOP USUARIOS CON MÁS DINERO EN CASA", "🏡");
-        const topGastoGeneral = ordenarTop("totalGastos", "TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES Y MASCOTAS", "🛍️");
 
         // 📜 **Construcción del mensaje**
         let mensaje = `
@@ -915,8 +939,6 @@ case 'topmillo': {
 ${topCartera}
 
 ${topCasa}
-
-${topGastoGeneral}
 
 ━━━━━━━━━━━━━━━━━━━
 📌 *¡Sigue participando y sube en el ranking!*
