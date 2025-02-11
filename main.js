@@ -815,29 +815,35 @@ case 'saldo': {
         }
 
         // **Si los valores no existen, crearlos automáticamente**
-        if (typeof cartera[userId].totalGastos !== 'number') cartera[userId].totalGastos = 0;
-        if (typeof cartera[userId].totalIngresos !== 'number') cartera[userId].totalIngresos = 0;
-        if (typeof cartera[userId].ultimoSaldo !== 'number') cartera[userId].ultimoSaldo = cartera[userId].coins || 0;
-        if (typeof cartera[userId].ultimoSaldoCasa !== 'number') cartera[userId].ultimoSaldoCasa = cartera[userId].dineroEnCasa || 0;
+        if (!cartera[userId].totalGastos) cartera[userId].totalGastos = 0;
+        if (!cartera[userId].totalIngresos) cartera[userId].totalIngresos = 0;
+        if (!cartera[userId].ultimoSaldo) cartera[userId].ultimoSaldo = cartera[userId].coins || 0;
+        if (!cartera[userId].ultimoSaldoCasa) cartera[userId].ultimoSaldoCasa = cartera[userId].dineroEnCasa || 0;
 
-        // 🪙 **Verificar cambios en el saldo para registrar gastos e ingresos**
+        // 🪙 **Obtener valores actuales**
         const saldoActual = cartera[userId].coins || 0;
         const saldoCasaActual = cartera[userId].dineroEnCasa || 0;
 
-        // ✅ **Si el usuario solo recibe ingresos, se asegurará que totalGastos exista**
+        // ✅ **Registrar ingresos/gastos en cualquier caso (No solo al depositar)**
+        let ingresoTotal = 0;
+        let gastoTotal = 0;
+
         if (saldoActual > cartera[userId].ultimoSaldo) {
-            cartera[userId].totalIngresos += saldoActual - cartera[userId].ultimoSaldo;
+            ingresoTotal += saldoActual - cartera[userId].ultimoSaldo;
         } else if (saldoActual < cartera[userId].ultimoSaldo) {
-            cartera[userId].totalGastos += cartera[userId].ultimoSaldo - saldoActual;
+            gastoTotal += cartera[userId].ultimoSaldo - saldoActual;
         }
 
         if (saldoCasaActual > cartera[userId].ultimoSaldoCasa) {
-            cartera[userId].totalIngresos += saldoCasaActual - cartera[userId].ultimoSaldoCasa;
+            ingresoTotal += saldoCasaActual - cartera[userId].ultimoSaldoCasa;
         } else if (saldoCasaActual < cartera[userId].ultimoSaldoCasa) {
-            cartera[userId].totalGastos += cartera[userId].ultimoSaldoCasa - saldoCasaActual;
+            gastoTotal += cartera[userId].ultimoSaldoCasa - saldoCasaActual;
         }
 
-        // Actualizar último saldo
+        cartera[userId].totalIngresos += ingresoTotal;
+        cartera[userId].totalGastos += gastoTotal;
+
+        // Actualizar último saldo registrado
         cartera[userId].ultimoSaldo = saldoActual;
         cartera[userId].ultimoSaldoCasa = saldoCasaActual;
 
