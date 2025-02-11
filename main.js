@@ -738,6 +738,149 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'topgastos': {
+    try {
+        await m.react('📊'); // Reacción al usar el comando
+
+        if (!cartera || Object.keys(cartera).length === 0) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *No hay datos suficientes para generar el ranking.*" }, { quoted: m });
+        }
+
+        // **Funciones para ordenar los rankings**
+        const ordenarTop = (campo, titulo, emoji) => {
+            const lista = Object.entries(cartera)
+                .filter(([_, datos]) => datos[campo] && typeof datos[campo] === 'number' && datos[campo] > 0)
+                .sort((a, b) => b[1][campo] - a[1][campo])
+                .map(([userId, datos], index) => `🏅 *#${index + 1}* - @${userId.split('@')[0]} \n${emoji} *Cantidad:* ${datos[campo]} 🪙`)
+                .join("\n\n") || `⚠️ No hay datos suficientes para ${titulo}.`;
+
+            return `📜 *${titulo}*\n${lista}\n━━━━━━━━━━━━━━━━━━━`;
+        };
+
+        // **Generar los rankings**
+        const topGastoTotal = ordenarTop("totalGastos", "TOP USUARIOS QUE MÁS HAN GASTADO", "📉");
+        const topIngresoTotal = ordenarTop("totalIngresos", "TOP USUARIOS QUE MÁS HAN GANADO", "📈");
+
+        // 📜 **Construcción del mensaje**
+        let mensaje = `
+╔═━━━━━✥◈✥━━━━━═╗
+       📊 *TOP GASTOS & INGRESOS* 📊
+╚═━━━━━✥◈✥━━━━━═╝
+
+${topGastoTotal}
+
+${topIngresoTotal}
+
+━━━━━━━━━━━━━━━━━━━
+📌 *¡Sigue participando y sube en el ranking!*
+🪙 *Acumula monedas con eventos y batallas.*
+━━━━━━━━━━━━━━━━━━━`;
+
+        // 📤 **Enviar el mensaje con menciones**
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: mensaje,
+                mentions: Object.keys(cartera),
+            },
+            { quoted: m }
+        );
+
+    } catch (error) {
+        console.error('❌ Error en el comando .topgastos:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al generar el top. Intenta nuevamente.*" }, { quoted: m });
+    }
+}
+break;
+	
+case 'bal':
+case 'saldo': {
+    try {
+        await m.react('💰'); // Reacción al usar el comando
+
+        const userId = m.sender;
+        if (!cartera[userId]) {
+            return conn.sendMessage(
+                m.chat,
+                { text: "⚠️ *No tienes una cartera creada.* Usa `.crearcartera` para comenzar." },
+                { quoted: m }
+            );
+        }
+
+        // **Validar y asignar valores**
+        if (!cartera[userId].totalGastos) cartera[userId].totalGastos = 0;
+        if (!cartera[userId].totalIngresos) cartera[userId].totalIngresos = 0;
+
+        const coins = typeof cartera[userId].coins === 'number' ? cartera[userId].coins : 0;
+        const dineroEnCasa = typeof cartera[userId].dineroEnCasa === 'number' ? cartera[userId].dineroEnCasa : 0;
+        const totalGastos = cartera[userId].totalGastos;
+        const totalIngresos = cartera[userId].totalIngresos;
+
+        // 🏦 **Información del préstamo**
+        let deudaInfo = "✅ *No tienes deudas pendientes.*";
+        if (cartera[userId].deuda > 0 && cartera[userId].fechaPrestamo) {
+            const now = Date.now();
+            const tiempoRestante = Math.max(0, 86400000 - (now - cartera[userId].fechaPrestamo));
+            const horasRestantes = Math.floor(tiempoRestante / 3600000);
+            const minutosRestantes = Math.floor((tiempoRestante % 3600000) / 60000);
+
+            deudaInfo = `⚠️ *Tienes una deuda de* ${cartera[userId].deuda} *Cortana Coins.*  
+⏳ *Tiempo restante para pagar:* ${horasRestantes}h ${minutosRestantes}m  
+💳 Usa \`.pagar <cantidad>\` para saldar tu deuda.`;
+        }
+
+        // 📜 **Construcción del mensaje de saldo**
+        const mensaje = `
+╔═━━━━━✥◈✥━━━━━═╗
+       💰 *CORTANA COINS* 💰
+╚═━━━━━✥◈✥━━━━━═╝
+
+👤 *Usuario:* @${userId.split('@')[0]}
+🪙 *Saldo Contigo:* ${coins} Cortana Coins
+🏘️ *Saldo en Casa:* ${dineroEnCasa} Cortana Coins
+
+📉 *Gastos Totales:* ${totalGastos} 🪙
+📈 *Ingresos Totales:* ${totalIngresos} 🪙
+
+🏦 *Estado del Préstamo:*  
+${deudaInfo}
+
+✨ *¡Usa tus monedas para comprar y mejorar tus mascotas y personajes anime!* ✨  
+📊 Comando: .alaventa para ver los personajes anime a la venta 👀  
+💡 *Comandos útiles:*  
+- \`.vermascotas\`  
+- \`.tiendamall\`  
+- \`.alaventa\`
+- \`.menupersonajes\`
+- \`.depositar <cantidad>\` (Para guardar Coins en casa)
+- \`.retirar <cantidad>\` (Para sacar Coins de casa)
+- \`.prestamo <cantidad>\` (Solicita un préstamo)
+- \`.pagar <cantidad>\` (Paga tu préstamo)
+
+🌟 *¡Sigue ganando monedas completando actividades con tus mascotas y personajes!*
+━━━━━━━━━━━━━━━━━━
+📌 *Desarrollado por RUSSELL XZ*
+━━━━━━━━━━━━━━━━━━`;
+
+        // **Guardar cambios en cartera.json**
+        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
+
+        // 📤 **Enviar el mensaje**
+        await conn.sendMessage(
+            m.chat,
+            {
+                text: mensaje,
+                mentions: [m.sender],
+            },
+            { quoted: m }
+        );
+    } catch (error) {
+        console.error('❌ Error consultando saldo:', error);
+        m.reply('❌ *Ocurrió un error al intentar consultar tu saldo.*');
+    }
+}
+break;
+	
 case 'topmillo': {
     try {
         await m.react('💰'); // Reacción al usar el comando
@@ -746,40 +889,6 @@ case 'topmillo': {
         if (!cartera || Object.keys(cartera).length === 0) {
             return conn.sendMessage(m.chat, { text: "⚠️ *No hay datos suficientes para generar el ranking.*" }, { quoted: m });
         }
-
-        // **Recorrer cada usuario y calcular gastos generales (personajes + mascotas)**
-        for (const userId in cartera) {
-            if (!cartera[userId]) continue;
-
-            // Inicializar valores si no existen
-            if (!cartera[userId].gastoGeneral) cartera[userId].gastoGeneral = 0;
-
-            let gastoTotal = 0;
-
-            // 📌 **Sumar costo de los personajes**
-            if (cartera[userId].personajes && Array.isArray(cartera[userId].personajes)) {
-                for (const personaje of cartera[userId].personajes) {
-                    if (personaje.precio) {
-                        gastoTotal += personaje.precio;
-                    }
-                }
-            }
-
-            // 🐾 **Sumar costo de las mascotas**
-            if (cartera[userId].mascotas && Array.isArray(cartera[userId].mascotas)) {
-                for (const mascota of cartera[userId].mascotas) {
-                    if (mascota.precio) {
-                        gastoTotal += mascota.precio;
-                    }
-                }
-            }
-
-            // **Actualizar gasto general**
-            cartera[userId].gastoGeneral = gastoTotal;
-        }
-
-        // Guardar los datos actualizados en cartera.json
-        fs.writeFileSync('./cartera.json', JSON.stringify(cartera, null, 2));
 
         // **Funciones para ordenar los rankings**
         const ordenarTop = (campo, titulo, emoji) => {
@@ -795,7 +904,7 @@ case 'topmillo': {
         // **Generar los rankings**
         const topCartera = ordenarTop("coins", "TOP USUARIOS CON MÁS DINERO EN LA CARTERA", "💰");
         const topCasa = ordenarTop("dineroEnCasa", "TOP USUARIOS CON MÁS DINERO EN CASA", "🏡");
-        const topGastoGeneral = ordenarTop("gastoGeneral", "TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES", "🛍️");
+        const topGastoGeneral = ordenarTop("totalGastos", "TOP USUARIOS QUE MÁS HAN GASTADO EN PERSONAJES Y MASCOTAS", "🛍️");
 
         // 📜 **Construcción del mensaje**
         let mensaje = `
@@ -1839,83 +1948,6 @@ case 'dep': {
             { text: "❌ *Ocurrió un error al intentar depositar coins.*" },
             { quoted: m }
         );
-    }
-}
-break;
-
-case 'bal':		
-case 'saldo': {
-    try {
-        await m.react('💰'); // Reacción al usar el comando
-
-        const userId = m.sender;
-        if (!cartera[userId]) {
-            return conn.sendMessage(
-                m.chat,
-                { text: "⚠️ *No tienes una cartera creada.* Usa `.crearcartera` para comenzar." },
-                { quoted: m }
-            );
-        }
-
-        // Validar y asignar valores
-        const coins = typeof cartera[userId].coins === 'number' ? cartera[userId].coins : 0;
-        const dineroEnCasa = typeof cartera[userId].dineroEnCasa === 'number' ? cartera[userId].dineroEnCasa : 0;
-
-        // 🏦 **Información del préstamo**
-        let deudaInfo = "✅ *No tienes deudas pendientes.*";
-        if (cartera[userId].deuda > 0 && cartera[userId].fechaPrestamo) {
-            const now = Date.now();
-            const tiempoRestante = Math.max(0, 86400000 - (now - cartera[userId].fechaPrestamo));
-            const horasRestantes = Math.floor(tiempoRestante / 3600000);
-            const minutosRestantes = Math.floor((tiempoRestante % 3600000) / 60000);
-
-            deudaInfo = `⚠️ *Tienes una deuda de* ${cartera[userId].deuda} *Cortana Coins.*  
-⏳ *Tiempo restante para pagar:* ${horasRestantes}h ${minutosRestantes}m  
-💳 Usa \`.pagar <cantidad>\` para saldar tu deuda.`;
-        }
-
-        // 📜 **Construcción del mensaje de saldo**
-        const mensaje = `
-╭──────☆──────╮
-💰 *CORTANA COINS* 💰
-╰──────☆──────╯
-
-👤 *Usuario:* @${userId.split('@')[0]}
-🪙 *Saldo Contigo:* ${coins} Cortana Coins
-🏘️ *Saldo en Casa:* ${dineroEnCasa} Cortana Coins
-
-🏦 *Estado del Préstamo:*  
-${deudaInfo}
-
-✨ *¡Usa tus monedas para comprar y mejorar tus mascotas y personajes anime!* ✨  
-📊 Comando: .alaventa para ver los personajes anime a la venta 👀  
-💡 *Comandos útiles:*  
-- \`.vermascotas\`  
-- \`.tiendamall\`  
-- \`.alaventa\`
-- \`.menupersonajes\`
-- \`.depositar <cantidad>\` (Para guardar Coins en casa)
-- \`.retirar <cantidad>\` (Para sacar Coins de casa)
-- \`.prestamo <cantidad>\` (Solicita un préstamo)
-- \`.pagar <cantidad>\` (Paga tu préstamo)
-
-🌟 *¡Sigue ganando monedas completando actividades con tus mascotas y personajes!*
-━━━━━━━━━━━━━━━━━━
-📌 *Desarrollado por RUSSELL XZ*
-━━━━━━━━━━━━━━━━━━`;
-
-        // Enviar el mensaje
-        await conn.sendMessage(
-            m.chat,
-            {
-                text: mensaje,
-                mentions: [m.sender],
-            },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error('❌ Error consultando saldo:', error);
-        m.reply('❌ *Ocurrió un error al intentar consultar tu saldo.*');
     }
 }
 break;
