@@ -738,6 +738,62 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case 'musica': {
+const fs = require('fs');
+const path = require('path');
+const fetch = require('node-fetch');
+const ytdl = require('./libs/ytdl');
+const yts = require('yt-search');
+
+if (!args.length || !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(args[0])) {
+return m.reply('Por favor, ingresa un enlace de YouTube válido.');
+}
+
+m.reply('🔄 Descargando el audio, por favor espera...');
+const videoUrl = args[0];
+
+try {
+const searchResult = await yts({ videoId: videoUrl.split('v=')[1] || videoUrl.split('/').pop() });
+if (!searchResult || !searchResult.title || !searchResult.thumbnail) {
+throw new Error('No se pudo obtener la información del video.');
+}
+
+const videoInfo = {
+title: searchResult.title,
+thumbnail: await (await fetch(searchResult.thumbnail)).buffer()
+};
+
+const ytdlResult = await ytdl(videoUrl);
+if (ytdlResult.status !== 'success' || !ytdlResult.dl) {
+throw new Error('No se pudo obtener el enlace de descarga.');
+}
+
+const tmpDir = path.join(__dirname, 'tmp');
+if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
+
+const filePath = path.join(tmpDir, `${Date.now()}.mp3`);
+const response = await fetch(ytdlResult.dl);
+const buffer = await response.buffer();
+fs.writeFileSync(filePath, buffer);
+
+const audioCaption = `🎵 *Título:* ${videoInfo.title}\n🔗 *Enlace:* ${videoUrl}`;
+
+await conn.sendMessage(m.chat, {
+document: fs.readFileSync(filePath),
+mimetype: 'audio/mpeg',
+fileName: `${videoInfo.title}.mp3`,
+caption: audioCaption,
+thumbnail: videoInfo.thumbnail
+}, { quoted: m });
+
+fs.unlinkSync(filePath);
+} catch (error) {
+await m.reply('Ocurrió un error al intentar descargar el audio.');
+}
+break;
+}
+	
+	
 case 'topgastos': {
     try {
         await m.react('📊'); // Reacción al usar el comando
