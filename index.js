@@ -1,3 +1,4 @@
+
 (async () => {
 require("./settings")
 const { default: makeWASocket, CONNECTING, PHONENUMBER_MCC, Browsers, makeInMemoryStore, useMultiFileAuthState, DisconnectReason, proto , jidNormalizedUser,WAMessageStubType, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, msgRetryCounterMap, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, getAggregateVotesInPollMessage, downloadMediaMessage} = require("@whiskeysockets/baileys")
@@ -804,15 +805,24 @@ let media = or[Math.floor(Math.random() * 3)]
 let welcome = wel[Math.floor(Math.random() * wel.length)]
 if (media === 'audio')
 sock.sendMessage(anu.id, { audio: { url: vn }, 
-contextInfo: { mentionedJid:[num], "externalAdReply": { 
+contextInfo: { forwardingScore: 9999999, 
+isForwarded: true,
+mentionedJid:[num], 
+"externalAdReply": { 
 "title": `乂 ＷＥＬＣＯＭＥ 乂`, 
 "body": `${name.split("@")[0]}`, 
-"previewType": "PHOTO", 
+"mediaType": 1, 
+"previewType": "PHOTO",
 "thumbnailUrl": null,
 "thumbnail": welc, 
 "sourceUrl": `${pickRandom([md, yt])}`, 
-"showAdAttribution": true}}, 
-seconds: '4556', ptt: true, mimetype: 'audio/mpeg', fileName: `error.mp3` }, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
+"showAdAttribution": true,
+"renderLargerThumbnail": true
+}}, 
+seconds: '4556', 
+ptt: true, 
+mimetype: 'audio/mpeg', 
+fileName: `error.mp3` }, {quoted: null, ephemeralExpiration: 24*60*100, disappearingMessagesInChat: 24*60*100})
 if (media === 'image')
 sock.sendMessage(anu.id, {image: welc, caption: `😃𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃@😃 
 @${name.split("@")[0]} 😇ᴄᴏᴍᴏ ᴇsᴛᴀs😇 
