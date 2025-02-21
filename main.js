@@ -10723,46 +10723,37 @@ m.react(rwait)
     break;
 }
 
-case 'video': {
-    if (!text) return m.reply('Por favor, proporciona un enlace de YouTube válido.');
+case 'video': { 
+    const fetch = require('node-fetch');
+
+    if (!text) return m.reply('Proporciona un enlace de YouTube válido.');
     const url = args[0];
 
-    if (!url.includes('youtu')) return m.reply('Por favor, proporciona un enlace válido de YouTube.');
+    if (!url.includes('youtu')) return m.reply('Proporciona un enlace válido de YouTube.');
 
-    m.reply('🚀 ᴘʀᴏsᴇsᴀɴᴅᴏ ᴛᴜ sᴏʟɪᴄɪᴛᴜᴅ...');
-    
+    m.reply('🔄 Obteniendo información del video...');
+
     try {
-        const api = `https://api.siputzx.my.id/api/d/ytmp4?url=${url}`;
-        const res = await fetch(api);
-        const json = await res.json();
+        const infoResponse = await fetch(`https://ytdownloader.nvlgroup.my.id/info?url=${url}`);
+        const info = await infoResponse.json();
 
-        if (json.status) {
-            const videoUrl = json.data.dl;
-            await conn.sendMessage(m.chat, {
-                video: { url: videoUrl },
-                caption: '✅ Aquí está tu video.',
-            }, { quoted: m });
-        } else {
-            throw new Error('API de Siputzx falló.');
+        if (!info.resolutions || info.resolutions.length === 0) {
+            return m.reply('❌ No se encontraron resoluciones disponibles.');
         }
-    } catch {
-        try {
-            const axeelApi = `https://axeel.my.id/api/download/video?url=${encodeURIComponent(url)}`;
-            const axeelRes = await fetch(axeelApi);
-            const axeelJson = await axeelRes.json();
 
-            if (axeelJson && axeelJson.downloads?.url) {
-                const videoUrl = axeelJson.downloads.url;
-                await conn.sendMessage(m.chat, {
-                    video: { url: videoUrl },
-                    caption: `✅ Aquí está tu video: ${axeelJson.metadata.title}`,
-                }, { quoted: m });
-            } else {
-                throw new Error('API de Axeel falló.');
-            }
-        } catch {
-            m.reply('❌ Todas las APIs fallaron. No se pudo procesar tu solicitud.');
-        }
+        const randomResolution = info.resolutions[Math.floor(Math.random() * info.resolutions.length)];
+        const selectedHeight = randomResolution.height;
+
+        m.reply(`🔄 Descargando el video en ${selectedHeight}p, espera...`);
+
+        const videoUrl = `https://ytdownloader.nvlgroup.my.id/download?url=${url}&resolution=${selectedHeight}`;
+
+        await conn.sendMessage(m.chat, {
+            video: { url: videoUrl },
+            caption: `✅ Aquí está tu video en ${selectedHeight}p.`,
+        }, { quoted: m });
+    } catch (e) {
+        m.reply(`❌ Error: ${e.stack}\n\nNo se pudo obtener información del video.`);
     }
     break;
 }
@@ -10805,14 +10796,12 @@ const response = await fetch(ytdlResult.dl);
 const buffer = await response.buffer();
 fs.writeFileSync(filePath, buffer);
 
-const audioCaption = `🎵 *Título:* ${videoInfo.title}\n🔗 *Enlace:* ${videoUrl}`;
+//const audioCaption = `🎵 *Título:* ${videoInfo.title}\n🔗 *Enlace:* ${videoUrl}`;
 
 await conn.sendMessage(m.chat, {
-document: fs.readFileSync(filePath),
+audio: fs.readFileSync(filePath),
 mimetype: 'audio/mpeg',
 fileName: `${videoInfo.title}.mp3`,
-caption: audioCaption,
-thumbnail: videoInfo.thumbnail
 }, { quoted: m });
 
 fs.unlinkSync(filePath);
