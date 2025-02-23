@@ -738,7 +738,88 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+case "ver": {
+    try {
+        if (!msg.message.extendedTextMessage || 
+            !msg.message.extendedTextMessage.contextInfo || 
+            !msg.message.extendedTextMessage.contextInfo.quotedMessage) {
+            return sock.sendMessage(
+                msg.key.remoteJid,
+                { text: "❌ *Error:* Debes responder a un mensaje de *ver una sola vez* (imagen, video o audio) para poder verlo nuevamente." },
+                { quoted: msg }
+            );
+        }
 
+        const quotedMsg = msg.message.extendedTextMessage.contextInfo.quotedMessage;
+        let mediaType, mediaMessage;
+
+        if (quotedMsg.imageMessage?.viewOnce) {
+            mediaType = "image";
+            mediaMessage = quotedMsg.imageMessage;
+        } else if (quotedMsg.videoMessage?.viewOnce) {
+            mediaType = "video";
+            mediaMessage = quotedMsg.videoMessage;
+        } else if (quotedMsg.audioMessage?.viewOnce) {
+            mediaType = "audio";
+            mediaMessage = quotedMsg.audioMessage;
+        } else {
+            return sock.sendMessage(
+                msg.key.remoteJid,
+                { text: "❌ *Error:* Solo puedes usar este comando en mensajes de *ver una sola vez*." },
+                { quoted: msg }
+            );
+        }
+
+        // Enviar reacción mientras procesa
+        await sock.sendMessage(msg.key.remoteJid, {
+            react: { text: "⏳", key: msg.key } 
+        });
+
+        // Descargar el multimedia de forma segura
+        const mediaStream = await new Promise(async (resolve, reject) => {
+            try {
+                const stream = await downloadContentFromMessage(mediaMessage, mediaType);
+                let buffer = Buffer.alloc(0);
+                for await (const chunk of stream) {
+                    buffer = Buffer.concat([buffer, chunk]);
+                }
+                resolve(buffer);
+            } catch (err) {
+                reject(null);
+            }
+        });
+
+        if (!mediaStream || mediaStream.length === 0) {
+            await sock.sendMessage(msg.key.remoteJid, { text: "❌ *Error:* No se pudo descargar el archivo. Intenta de nuevo." }, { quoted: msg });
+            return;
+        }
+
+        // Enviar el archivo descargado al grupo o chat
+        let messageOptions = {
+            mimetype: mediaMessage.mimetype,
+        };
+
+        if (mediaType === "image") {
+            messageOptions.image = mediaStream;
+        } else if (mediaType === "video") {
+            messageOptions.video = mediaStream;
+        } else if (mediaType === "audio") {
+            messageOptions.audio = mediaStream;
+        }
+
+        await sock.sendMessage(msg.key.remoteJid, messageOptions, { quoted: msg });
+
+        // Confirmar que el archivo ha sido enviado con éxito
+        await sock.sendMessage(msg.key.remoteJid, {
+            react: { text: "✅", key: msg.key } 
+        });
+
+    } catch (error) {
+        console.error("❌ Error en el comando ver:", error);
+        await sock.sendMessage(msg.key.remoteJid, { text: "❌ *Error:* No se pudo recuperar el mensaje de *ver una sola vez*. Inténtalo de nuevo." }, { quoted: msg });
+    }
+    break;
+}
 	
 	
 case 'topgastos': {
