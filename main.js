@@ -738,6 +738,54 @@ break
 // prueba desde aqui ok
 //sistema de personaje de anime
 // Comando para poner en venta un personaje exclusivo
+
+
+case 'git2': {
+    try {
+        const comandoSolicitado = args[0]?.toLowerCase();
+
+        if (!comandoSolicitado) {
+            return conn.sendMessage(m.chat, { text: "⚠️ *Debes especificar el nombre del comando que deseas obtener.*\nEjemplo: `.git cerrargrupo`" }, { quoted: m });
+        }
+
+        const archivoCodigo = './main.js'; // Ruta del archivo donde están los comandos
+
+        if (!fs.existsSync(archivoCodigo)) {
+            return conn.sendMessage(m.chat, { text: "❌ *No se encontró el archivo principal de comandos.*" }, { quoted: m });
+        }
+
+        const codigoFuente = fs.readFileSync(archivoCodigo, 'utf8');
+
+        // Buscar el código del comando solicitado
+        const regex = new RegExp(`case '${comandoSolicitado}': {([\\s\\S]*?)}\\s*break;`, 'g');
+        const coincidencia = regex.exec(codigoFuente);
+
+        if (!coincidencia) {
+            return conn.sendMessage(m.chat, { text: `❌ *No se encontró el comando* '${comandoSolicitado}' *en el código fuente.*` }, { quoted: m });
+        }
+
+        const codigoExtraido = `case '${comandoSolicitado}': {${coincidencia[1]}}\nbreak;`;
+
+        // Enviar el código en un mensaje de texto
+        if (codigoExtraido.length < 4000) { // Límite de caracteres para mensaje de texto
+            return conn.sendMessage(m.chat, { text: `📜 *Código del comando '${comandoSolicitado}':*\n\`\`\`${codigoExtraido}\`\`\`` }, { quoted: m });
+        } else {
+            // Si el código es muy largo, enviarlo como archivo de texto
+            fs.writeFileSync(`./${comandoSolicitado}.txt`, codigoExtraido);
+            return conn.sendMessage(
+                m.chat,
+                { document: fs.readFileSync(`./${comandoSolicitado}.txt`), mimetype: 'text/plain', fileName: `${comandoSolicitado}.txt`, caption: `📜 *Código del comando '${comandoSolicitado}'*` },
+                { quoted: m }
+            );
+        }
+
+    } catch (error) {
+        console.error('❌ Error en el comando .git:', error);
+        return conn.sendMessage(m.chat, { text: "❌ *Ocurrió un error al intentar obtener el código del comando.*" }, { quoted: m });
+    }
+}
+break;
+	
 case "git":
     try {
         // Verificar si se proporcionó un comando
