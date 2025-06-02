@@ -3939,7 +3939,6 @@ case 'menu': {
   break;
 }
 
-        
 case 'menugrupo': {
   try {
     await sock.sendMessage(msg.key.remoteJid, {
@@ -3947,74 +3946,70 @@ case 'menugrupo': {
     });
 
     const chatId = msg.key.remoteJid;
-    const captionText = `╔════════════════╗  
-║  𝐀𝐙𝐔𝐑𝐀 𝐔𝐋𝐓𝐑𝐀             
-║   🎭 𝙼𝙴𝙽𝚄 𝙳𝙴 𝙶ℝ𝚄𝙿𝙾 🎭    
-╚════════════════╝  
+    const captionText = `╭─❍ 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎 𝐁𝐎𝐓 ❍─╮
+│ 🎭 𝙈𝙀𝙉𝙐́ 𝘿𝙀 𝙂𝙍𝙐𝙋𝙊 🎭
+╰───────────────╯
 
-🛠 𝐂𝐎𝐍𝐅𝐈𝐆𝐔𝐑𝐀𝐂𝐈Ó𝐍  
-╭✦ ${global.prefix}setinfo  
-├✦ ${global.prefix}infogrupo
-├✦ ${global.prefix}setname  
-├✦ ${global.prefix}delwelcome
-├✦ ${global.prefix}setwelcome
-├✦ ${global.prefix}antiporno on o off
-├✦ ${global.prefix}antidelete on o off
-├✦ ${global.prefix}setfoto  
-├✦ ${global.prefix}setreglas
-├✦ ${global.prefix}reglas
-├✦ ${global.prefix}welcome on/off  
-├✦ ${global.prefix}despedidas on/off
-├✦ ${global.prefix}modocaliente on/off
-╰────────────────
+🛠 𝐂𝐎𝐍𝐅𝐈𝐆𝐔𝐑𝐀𝐂𝐈Ó𝐍
+⤷ ${global.prefix}setinfo  
+⤷ ${global.prefix}infogrupo  
+⤷ ${global.prefix}setname  
+⤷ ${global.prefix}delwelcome  
+⤷ ${global.prefix}setwelcome  
+⤷ ${global.prefix}antiporno on o off  
+⤷ ${global.prefix}antidelete on o off  
+⤷ ${global.prefix}setfoto  
+⤷ ${global.prefix}setreglas  
+⤷ ${global.prefix}reglas  
+⤷ ${global.prefix}welcome on/off  
+⤷ ${global.prefix}despedidas on/off  
+⤷ ${global.prefix}modocaliente on/off
 
-🔱 𝐀𝐃𝐌𝐈𝐍𝐈𝐒𝐓𝐑𝐀𝐂𝐈Ó𝐍  
-╭✦ ${global.prefix}daradmins  
-├✦ ${global.prefix}quitaradmins  
-├✦ ${global.prefix}tag  
-├✦ ${global.prefix}tagall  
-├✦ ${global.prefix}modoadmins on o off
-├✦ ${global.prefix}invocar  
-├✦ ${global.prefix}todos  
-├✦ ${global.prefix}totalmensaje
-├✦ ${global.prefix}fantasmas
-├✦ ${global.prefix}fankick
-├✦ ${global.prefix}okfan
-├✦ ${global.prefix}delete
-├✦ ${global.prefix}damelink  
-├✦ ${global.prefix}mute
-├✦ ${global.prefix}unmute
-├✦ ${global.prefix}ban
-├✦ ${global.prefix}unban
-├✦ ${global.prefix}abrir/ automaticamente
-├✦ ${global.prefix}cerrar/ automaticamente
-├✦ ${global.prefix}abrirgrupo  
-╰✦ ${global.prefix}cerrargrupo  
+🔱 𝐀𝐃𝐌𝐈𝐍𝐈𝐒𝐓𝐑𝐀𝐂𝐈Ó𝐍
+⤷ ${global.prefix}daradmins  
+⤷ ${global.prefix}quitaradmins  
+⤷ ${global.prefix}tag  
+⤷ ${global.prefix}tagall  
+⤷ ${global.prefix}modoadmins on o off  
+⤷ ${global.prefix}invocar  
+⤷ ${global.prefix}todos  
+⤷ ${global.prefix}totalmensaje  
+⤷ ${global.prefix}fantasmas  
+⤷ ${global.prefix}fankick  
+⤷ ${global.prefix}okfan  
+⤷ ${global.prefix}delete  
+⤷ ${global.prefix}damelink  
+⤷ ${global.prefix}mute  
+⤷ ${global.prefix}unmute  
+⤷ ${global.prefix}ban  
+⤷ ${global.prefix}unban  
+⤷ ${global.prefix}abrir/ automaticamente  
+⤷ ${global.prefix}cerrar/ automaticamente  
+⤷ ${global.prefix}abrirgrupo  
+⤷ ${global.prefix}cerrargrupo
 
-🛡 𝐒𝐄𝐆𝐔𝐑𝐈𝐃𝐀𝐃  
-╭✦ ${global.prefix}antilink on/off  
-├✦ ${global.prefix}antiarabe on/off  
-├✦ ${global.prefix}antis on/off  
-├✦ ${global.prefix}antidelete on/off
-├✦ ${global.prefix}kick  
-╰✦ ${global.prefix}add
+🛡 𝐒𝐄𝐆𝐔𝐑𝐈𝐃𝐀𝐃
+⤷ ${global.prefix}antilink on/off  
+⤷ ${global.prefix}antiarabe on/off  
+⤷ ${global.prefix}antis on/off  
+⤷ ${global.prefix}antidelete on/off  
+⤷ ${global.prefix}kick  
+⤷ ${global.prefix}add
 
 📌 𝐌Á𝐒 𝐂𝐎𝐌𝐀𝐍𝐃𝐎𝐒 𝐏𝐑Ó𝐗𝐈𝐌𝐀𝐌𝐄𝐍𝐓𝐄...
 
-⟢ 𝐀𝐙𝐔𝐑𝐀 𝐔𝐋𝐓𝐑𝐀 ⟣`;
-
-    const videoResponse = await axios.get("https://cdn.russellxz.click/c113150e.jpeg", { 
-      responseType: 'arraybuffer' 
-    });
+╭─❍ 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎 ❍─╮  
+│ 𝙐𝙣 𝙗𝙤𝙩 𝙖𝙙𝙖𝙥𝙩𝙖𝙙𝙤 𝙥𝙖𝙧𝙖 𝙩𝙪 𝙜𝙧𝙪𝙥𝙤.
+╰──────────────────╯`;
 
     await sock.sendMessage2(
-  chatId,
-  {
-    image: { url: "https://cdn.russellxz.click/c113150e.jpeg" }, 
-    caption: captionText 
-  },
-  msg
-)
+      chatId,
+      {
+        image: { url: "https://cdn.russellxz.click/c113150e.jpeg" },
+        caption: captionText
+      },
+      msg
+    );
 
   } catch (error) {
     console.error("Error en menugrupo:", error);
@@ -4025,7 +4020,8 @@ case 'menugrupo': {
     );
   }
   break;
-}
+}        
+
             
 case 'setinfo': {
   try {
