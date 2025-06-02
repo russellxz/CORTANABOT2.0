@@ -402,73 +402,73 @@ case 'play2': {
 }        
         
 case "menuaudio": {
-    try {
-        // Reacción antes de enviar el menú
-        await sock.sendMessage(msg.key.remoteJid, {
-            react: { text: "📂", key: msg.key } 
-        });
+  try {
+    await sock.sendMessage(msg.key.remoteJid, {
+      react: { text: "🎧", key: msg.key }
+    });
 
-        // Verificar si el archivo guar.json existe
-        if (!fs.existsSync("./guar.json")) {
-            return sock.sendMessage(
-                msg.key.remoteJid,
-                { text: "❌ *Error:* No hay multimedia guardado aún. Usa `.guar` para guardar algo primero." },
-                { quoted: msg }
-            );
-        }
-
-        // Leer archivo guar.json
-        let guarData = JSON.parse(fs.readFileSync("./guar.json", "utf-8"));
-        
-        let listaMensaje = `┏━━━━━━━━━━━━━━━┓
-┃  📂 *MENÚ DE MULTIMEDIA*  
-┃  🔑 *Palabras Clave Guardadas*  
-┗━━━━━━━━━━━━━━━┛
-
-📌 *¿Cómo recuperar un archivo guardado?*  
-Usa el comando:  
-➡️ _${global.prefix}g palabra_clave_  
-( *o puedes solo escribirlas tambien y bot las envia tambien* ) 
-
-📂 *Lista de palabras clave guardadas:*  
-━━━━━━━━━━━━━━━━━━━\n`;
-
-        let claves = Object.keys(guarData);
-        
-        if (claves.length === 0) {
-            listaMensaje += "🚫 *No hay palabras clave guardadas.*\n";
-        } else {
-            claves.forEach((clave, index) => {
-                listaMensaje += `*${index + 1}.* ${clave}\n`;
-            });
-        }
-
-        listaMensaje += `\n━━━━━━━━━━━━━━━━━━━  
-📥 *Otros Comandos de Multimedia*  
-
-${global.prefix}guar → Guarda archivos con una clave.  
-${global.prefix}g → Recupera archivos guardados.  
-${global.prefix}kill → Elimina un archivo guardado.  
-
-💡 *Azura Ultra sigue mejorando. Pronto más funciones.*  
-⚙️ *Desarrollado por Russell xz* 🚀`;
-
-        // Enviar el menú con video como GIF
-        await sock.sendMessage2(msg.key.remoteJid,
-  {
-    image: { url: "https://cdn.dorratz.com/files/1744666582539.jpg" }, 
-    caption: listaMensaje 
-  },
-  msg
-)
-    } catch (error) {
-        console.error("❌ Error al enviar el menú2:", error);
-        await sock.sendMessage(msg.key.remoteJid, { 
-            text: "❌ *Ocurrió un error al mostrar el menú2. Inténtalo de nuevo.*" 
-        }, { quoted: msg });
+    if (!fs.existsSync("./guar.json")) {
+      return sock.sendMessage(
+        msg.key.remoteJid,
+        {
+          text: "❌ *Error:* No hay multimedia guardado aún. Usa `.guar` para guardar algo primero."
+        },
+        { quoted: msg }
+      );
     }
-    break;
-}    
+
+    const guarData = JSON.parse(fs.readFileSync("./guar.json", "utf-8"));
+    let claves = Object.keys(guarData);
+
+    let listaMensaje = `🎧 𓆩 𝐌𝐄𝐍𝐔́ 𝐌𝐔𝐋𝐓𝐈𝐌𝐄𝐃𝐈𝐀 — 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎 𓆪
+
+🔑 *Palabras clave almacenadas:*  
+✦ Usa el comando: *${global.prefix}g palabra_clave*  
+✦ También puedes escribir la palabra directamente.
+
+🎵 *Claves disponibles:*\n`;
+
+    if (claves.length === 0) {
+      listaMensaje += "🚫 *No hay ninguna palabra clave guardada.*\n";
+    } else {
+      claves.forEach((clave, index) => {
+        listaMensaje += `➤ ${index + 1}. ${clave}\n`;
+      });
+    }
+
+    listaMensaje += `
+━━━━━━━━━━━━━━━━━━
+🛠 *Otros comandos útiles:*
+
+📥 ${global.prefix}guar — Guardar archivo  
+📤 ${global.prefix}g — Recuperar archivo  
+🗑️ ${global.prefix}kill — Eliminar archivo
+
+🚀 *Cortana 2.0 Bot está en constante expansión.*
+👨‍💻 *Desarrollado por Russell XZ*`;
+
+    await sock.sendMessage2(
+      msg.key.remoteJid,
+      {
+        image: { url: "https://cdn.russellxz.click/49d2cb0a.jpeg" },
+        caption: listaMensaje
+      },
+      msg
+    );
+  } catch (error) {
+    console.error("❌ Error al enviar el menú de multimedia:", error);
+    await sock.sendMessage(
+      msg.key.remoteJid,
+      {
+        text: "❌ *Ocurrió un error al mostrar el menú multimedia. Inténtalo de nuevo.*"
+      },
+      { quoted: msg }
+    );
+  }
+  break;
+}
+
+        
        case 'nsfwwaifu': {
   const chatId = msg.key.remoteJid;
 
