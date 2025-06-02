@@ -3622,82 +3622,77 @@ case 'bc': {
   break;
 }
         
+
 case 'allmenu': {
-    try {
-        const fs = require("fs");
+  try {
+    const fs = require("fs");
 
-        // Verificar archivo de comandos
-        const mainFilePath = "./main.js";
-        if (!fs.existsSync(mainFilePath)) {
-            await sock.sendMessage2(
-                msg.key.remoteJid,
-                "❌ *Error:* No se encontró el archivo de comandos.",
-                msg
-            );
-            return;
-        }
-
-        const chatId = msg.key.remoteJid;
-
-        // Reacción inicial (se mantiene sendMessage normal)
-        await sock.sendMessage(chatId, { 
-            react: { text: "📜", key: msg.key }
-        });
-
-        // Leer y procesar comandos
-        const mainFileContent = fs.readFileSync(mainFilePath, "utf-8");
-        const commandRegex = /case\s+['"]([^'"]+)['"]:/g;
-        let commands = [];
-        let match;
-
-        while ((match = commandRegex.exec(mainFileContent)) !== null) {
-            commands.push(match[1]);
-        }
-
-        commands = [...new Set(commands)].sort();
-        let totalComandos = commands.length;
-
-        // Construir menú
-        let commandList = `╔════════════════╗  
-║  𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 ALL MENU            
-╚═════════════════╝  
-        📜 *Menú Completo*  
-━━━━━━━━━━━━━━━━━━━  
-📌 𝗧𝗢𝗧𝗔𝗟 𝗗𝗘 𝗖𝗢𝗠𝗔𝗡𝗗𝗢𝗦: ${totalComandos}  
-📌 𝗣𝗿𝗲𝗳𝗶𝗷𝗼 𝗔𝗰𝘁𝘂𝗮𝗹: 『${global.prefix}』  
-📌 𝗨𝘀𝗮 『${global.prefix}』 𝗮𝗻𝘁𝗲𝘀 𝗱𝗲 𝗰𝗮𝗱𝗮 𝗰𝗼𝗺𝗮𝗻𝗱𝗼.  
-━━━━━━━━━━━━━━━━━━━  
-`;
-
-        commands.forEach(cmd => {
-            commandList += `➫ *${global.prefix}${cmd}*\n`;
-        });
-
-        commandList += `━━━━━━━━━━━━━━━━━━━  
-👨‍💻 𝘿𝙚𝙨𝙖𝙧𝙧𝙤𝙡𝙡𝙖𝙙𝙤 𝙥𝙤𝙧 𝙍𝙪𝙨𝙨𝙚𝙡𝙡 𝙓𝙕  
-╭─────────────╮  
-│    𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼    
-╰─────────────╯`;
-
-        // Enviar usando sendMessage2
-        await sock.sendMessage2(
-  chatId,
-  {
-    image: { url: "https://cdn.russellxz.click/9bd11d81.jpeg" }, 
-    caption: commandList 
-  },
-  msg 
-);
-    } catch (error) {
-        console.error("Error en comando allmenu:", error);
-        await sock.sendMessage2(
-            msg.key.remoteJid,
-            "❌ *Ocurrió un error al obtener la lista de comandos. Inténtalo de nuevo.*",
-            msg
-        );
+    const mainFilePath = "./main.js";
+    if (!fs.existsSync(mainFilePath)) {
+      await sock.sendMessage2(
+        msg.key.remoteJid,
+        "❌ *Error:* No se encontró el archivo de comandos.",
+        msg
+      );
+      return;
     }
-    break;
+
+    const chatId = msg.key.remoteJid;
+
+    await sock.sendMessage(chatId, {
+      react: { text: "📜", key: msg.key }
+    });
+
+    const mainFileContent = fs.readFileSync(mainFilePath, "utf-8");
+    const commandRegex = /case\s+['"]([^'"]+)['"]:/g;
+    let commands = [];
+    let match;
+
+    while ((match = commandRegex.exec(mainFileContent)) !== null) {
+      commands.push(match[1]);
+    }
+
+    commands = [...new Set(commands)].sort();
+    let totalComandos = commands.length;
+
+    // Menú visual estilizado
+    let commandList = `📚 𓆩 𝐌𝐄𝐍𝐔́ 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐎 - 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎 𝐁𝐎𝐓 𓆪
+
+🔹 *Total de comandos:* ${totalComandos}
+🔹 *Prefijo actual:* 『${global.prefix}』
+🔹 Usa el prefijo antes de cada comando.
+
+━━━━━━━━━━━━━━━━━━━`;
+
+    commands.forEach(cmd => {
+      commandList += `\n➤ ${global.prefix}${cmd}`;
+    });
+
+    commandList += `
+
+━━━━━━━━━━━━━━━━━━━
+👨‍💻 *Desarrollado por:* Russell XZ
+🤖 *Cortana 2.0 — Asistente Avanzado*`;
+
+    await sock.sendMessage2(
+      chatId,
+      {
+        image: { url: "https://cdn.russellxz.click/9bd11d81.jpeg" },
+        caption: commandList
+      },
+      msg
+    );
+  } catch (error) {
+    console.error("Error en comando allmenu:", error);
+    await sock.sendMessage2(
+      msg.key.remoteJid,
+      "❌ *Ocurrió un error al obtener la lista de comandos. Inténtalo de nuevo.*",
+      msg
+    );
+  }
+  break;
 }
+
 case 'menuowner': {
   try {
     await sock.sendMessage(msg.key.remoteJid, {
@@ -3705,59 +3700,54 @@ case 'menuowner': {
     });
 
     const chatId = msg.key.remoteJid;
-    const captionText = `╔═══════════╗  
-║    𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼      
-╚═══════════╝  
+    const captionText = `👑 CORTANA 2.0 — PANEL DEL CREADOR
 
-            𝐌𝐄𝐍𝐔 𝐎𝐖𝐍𝐄𝐑  
-━━━━━━━━━━━━━━━━━━━━  
-📌 𝗖𝗢𝗠𝗔𝗡𝗗𝗢𝗦 𝗘𝗦𝗣𝗘𝗖𝗜𝗔𝗟𝗘𝗦  
-        (𝐏𝐀𝐑𝐀 𝐄𝐋 𝐃𝐔𝐄Ñ𝐎)  
-━━━━━━━━━━━━━━━━━━━━  
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯  
-➠ ${global.prefix}bc  
-➠ ${global.prefix}rest  
-➠ ${global.prefix}carga
-➠ ${global.prefix}cargabots
-➠ ${global.prefix}delsesion
-➠ ${global.prefix}delsubbots
-➠ ${global.prefix}deltmp
-➠ ${global.prefix}modoprivado on/off  
-➠ ${global.prefix}addmascota  
-➠ ${global.prefix}addper  
-➠ ${global.prefix}botfoto  
-➠ ${global.prefix}botname  
-➠ ${global.prefix}git  
-➠ ${global.prefix}dar  
-➠ ${global.prefix}dame  
-➠ ${global.prefix}addlista  
-➠ ${global.prefix}deletelista
-➠ ${global.prefix}setprefix
-➠ ${global.prefix}re
-➠ ${global.prefix}antideletepri on o off
-➠ ${global.prefix}unre
-➠ ${global.prefix}apagar
-➠ ${global.prefix}prender
+🧠 Comandos exclusivos del propietario:
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯  
+• ${global.prefix}bc
+• ${global.prefix}rest
+• ${global.prefix}carga
+• ${global.prefix}cargabots
+• ${global.prefix}delsesion
+• ${global.prefix}delsubbots
+• ${global.prefix}deltmp
+• ${global.prefix}modoprivado on/off
 
-      𝗗𝗲𝘀𝗮𝗿𝗿𝗼𝗹𝗹𝗮𝗱𝗼 𝗽𝗼𝗿: ʳᵘˢˢᵉˡˡ ˣᶻ  
+🎨 Personaliza tu bot:
 
-         𝙖𝙯𝙪𝙧𝙖 𝙪𝙡𝙩𝙧𝙖`;
+• ${global.prefix}botname
+• ${global.prefix}botfoto
+• ${global.prefix}setprefix
+• ${global.prefix}git
 
-    const videoResponse = await axios.get(
-      "https://cdn.russellxz.click/83229a2d.jpeg",
-      { responseType: 'arraybuffer' }
+🧬 Consola técnica:
+
+• ${global.prefix}re
+• ${global.prefix}unre
+• ${global.prefix}antideletepri on/off
+• ${global.prefix}apagar
+• ${global.prefix}prender
+
+🎮 Contenido editable:
+
+• ${global.prefix}addper
+• ${global.prefix}addmascota
+• ${global.prefix}dar
+• ${global.prefix}dame
+• ${global.prefix}addlista
+• ${global.prefix}deletelista
+
+🔐 Solo para administradores autorizados.
+👨‍💻 Dev: Russell XZ`;
+
+    await sock.sendMessage2(
+      chatId,
+      {
+        image: { url: "https://cdn.russellxz.click/83229a2d.jpeg" },
+        caption: captionText
+      },
+      msg
     );
-
-await sock.sendMessage2(
-  chatId,
-  {
-    image: { url: "https://cdn.russellxz.click/83229a2d.jpeg" }, 
-    caption: captionText 
-  },
-  msg 
-);
 
   } catch (error) {
     console.error("Error en menuowner:", error);
@@ -3769,6 +3759,7 @@ await sock.sendMessage2(
   }
   break;
 }
+        
 case 'menurpg': {
   try {
     await sock.sendMessage(msg.key.remoteJid, {
@@ -3776,81 +3767,63 @@ case 'menurpg': {
     });
 
     const chatId = msg.key.remoteJid;
-    const menuText = `╔═════════════════╗  
-║  𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 MENU RPG       
-╚═════════════════╝  
+    const menuText = `🎮 𓆩 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎 𝐁𝐎𝐓 — 𝐌𝐄𝐍𝐔́ 𝐑𝐏𝐆 𓆪
 
-✦ 𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐎 𝐀𝐋 𝐌𝐄𝐍𝐔 𝐑𝐏𝐆 ✦  
-━━━━━━━━━━━━━━━━━━  
-➤ 𝗣𝗥𝗘𝗙𝗜𝗝𝗢 𝗔𝗖𝗧𝗨𝗔𝗟: ${global.prefix}  
-➤ 𝗣𝗔𝗥𝗔 𝗘𝗠𝗣𝗘𝗭𝗔𝗥, 𝗨𝗦𝗔:  
-${global.prefix}rpg <nombre> <edad>  
-Así te registras  
-━━━━━━━━━━━━━━━━━━  
+🌟 *Explora un mundo de aventuras*  
+📍 *Regístrate:* ${global.prefix}rpg <nombre> <edad>  
+🔰 *Prefijo actual:* ${global.prefix}
 
-📌 𝗖𝗢𝗠𝗔𝗡𝗗𝗢𝗦 𝗗𝗘 𝗨𝗦𝗨𝗔𝗥𝗜𝗢𝗦  
-➤ ${global.prefix}nivel ➤ ${global.prefix}picar  
-➤ ${global.prefix}minar ➤ ${global.prefix}minar2  
-➤ ${global.prefix}work ➤ ${global.prefix}crime  
-➤ ${global.prefix}robar ➤ ${global.prefix}cofre  
-➤ ${global.prefix}claim ➤ ${global.prefix}batallauser  
-➤ ${global.prefix}hospital ➤ ${global.prefix}hosp  
+𓆩 𝑪𝑶𝑴𝑨𝑵𝑫𝑶𝑺 𝑫𝑬 𝑼𝑺𝑼𝑨𝑹𝑰𝑶𓆪  
+🎯 ${global.prefix}nivel /picar  
+⛏️ ${global.prefix}minar / minar2  
+💼 ${global.prefix}work / crime  
+💰 ${global.prefix}robar / cofre  
+🎁 ${global.prefix}claim / batallauser  
+🏥 ${global.prefix}hospital / hosp
 
-📌 𝗖𝗢𝗠𝗔𝗡𝗗𝗢𝗦 𝗗𝗘 𝗣𝗘𝗥𝗦𝗢𝗡𝗔𝗝𝗘𝗦  
-➤ ${global.prefix}luchar ➤ ${global.prefix}poder  
-➤ ${global.prefix}volar ➤ ${global.prefix}otromundo  
-➤ ${global.prefix}otrouniverso ➤ ${global.prefix}mododios  
-➤ ${global.prefix}mododiablo ➤ ${global.prefix}podermaximo  
-➤ ${global.prefix}enemigos ➤ ${global.prefix}nivelper  
-➤ ${global.prefix}per ➤ ${global.prefix}bolasdeldragon  
-➤ ${global.prefix}vender ➤ ${global.prefix}quitarventa  
-➤ ${global.prefix}batallaanime ➤ ${global.prefix}comprar  
-➤ ${global.prefix}tiendaper ➤ ${global.prefix}alaventa  
-➤ ${global.prefix}verper
+𓆩 𝑷𝑬𝑹𝑺𝑶𝑵𝑨𝑱𝑬𝑺 & 𝑷𝑶𝑫𝑬𝑹𝑬𝑺𓆪  
+⚔️ ${global.prefix}luchar / poder  
+🕊️ ${global.prefix}volar / otromundo / otrouniverso  
+👑 ${global.prefix}mododios / mododiablo / podermaximo  
+👹 ${global.prefix}enemigos / nivelper / per  
+🐉 ${global.prefix}bolasdeldragon  
+🏪 ${global.prefix}tiendaper / alaventa / verper  
+🛒 ${global.prefix}comprar / vender / quitarventa  
+🧝 ${global.prefix}batallaanime
 
-📌 𝗖𝗢𝗠𝗔𝗡𝗗𝗢𝗦 𝗗𝗘 𝗠𝗔𝗦𝗖𝗢𝗧𝗔𝗦  
-➤ ${global.prefix}daragua ➤ ${global.prefix}darcariño  
-➤ ${global.prefix}darcomida ➤ ${global.prefix}presumir  
-➤ ${global.prefix}cazar ➤ ${global.prefix}entrenar  
-➤ ${global.prefix}pasear ➤ ${global.prefix}supermascota  
-➤ ${global.prefix}mascota ➤ ${global.prefix}curar  
-➤ ${global.prefix}nivelmascota ➤ ${global.prefix}batallamascota  
-➤ ${global.prefix}compra ➤ ${global.prefix}tiendamascotas  
-➤ ${global.prefix}vermascotas
+𓆩 𝑴𝑨𝑺𝑪𝑶𝑻𝑨𝑺 & 𝑪𝑼𝑰𝑫𝑨𝑫𝑶𓆪  
+🐾 ${global.prefix}mascota / supermascota / vermascotas  
+💧 ${global.prefix}daragua / darcomida / darcariño  
+🏃 ${global.prefix}pasear / entrenar / cazar  
+💖 ${global.prefix}presumir / curar  
+⚔️ ${global.prefix}batallamascota  
+🏪 ${global.prefix}compra / tiendamascotas
 
-📌 𝗢𝗧𝗥𝗢𝗦 𝗖𝗢𝗠𝗔𝗡𝗗𝗢𝗦
-➤ ${global.prefix}addmascota ➤ ${global.prefix}addper  
-➤ ${global.prefix}deleteuser ➤ ${global.prefix}deleteper  
-➤ ${global.prefix}deletemascota ➤ ${global.prefix}totalper  
-➤ ${global.prefix}tran ➤ ${global.prefix}transferir  
-➤ ${global.prefix}dame ➤ ${global.prefix}dep
-➤ ${global.prefix}bal ➤ ${global.prefix}saldo
-➤ ${global.prefix}retirar ➤ ${global.prefix}depositar
-➤ ${global.prefix}retirar ➤ ${global.prefix}delrpg
-➤ ${global.prefix}rpgazura on o off
+𓆩 𝑬𝑪𝑶𝑵𝑶𝑴𝑰́𝑨 & 𝑮𝑬𝑺𝑻𝑰𝑶́𝑵𓆪  
+💸 ${global.prefix}bal / saldo / dame  
+🏦 ${global.prefix}depositar / retirar / dep  
+🔁 ${global.prefix}tran / transferir  
+🧩 ${global.prefix}addper / addmascota  
+🗑️ ${global.prefix}deleteuser / deleteper / deletemascota  
+📊 ${global.prefix}totalper / delrpg  
+🔄 ${global.prefix}rpgazura on|off
 
-📌 𝗖𝗢𝗠𝗔𝗡𝗗𝗢𝗦 𝗗𝗘 𝗧𝗢𝗣  
-➤ ${global.prefix}topuser ➤ ${global.prefix}topmascotas  
-➤ ${global.prefix}topper  
+𓆩 𝑻𝑶𝑷 𝑱𝑼𝑮𝑨𝑫𝑶𝑹𝑬𝑺𓆪  
+🥇 ${global.prefix}topuser  
+🐶 ${global.prefix}topmascotas  
+🏅 ${global.prefix}topper
 
-━━━━━━━━━━━━━━━━━━  
-𝗗𝗘𝗦𝗔𝗥𝗥𝗢𝗟𝗟𝗔𝗗𝗢 𝗣𝗢𝗥: russell xz  
+🧙 *Desarrollado por:* Russell XZ  
+🧭 *Sistema de aventura activo en Cortana 2.0 Bot*`;
 
-╭────────────╮  
-│ 𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼          
-╰────────────╯`;
-
-    const videoUrl = "https://cdn.russellxz.click/0abb8549.jpeg";
-    const videoBuffer = (await axios.get(videoUrl, { responseType: 'arraybuffer' })).data;
-
-await sock.sendMessage2(
-  chatId,
-  {
-    image: { url: "https://cdn.russellxz.click/0abb8549.jpeg" }, 
-    caption: menuText
-  },
-  msg 
-);
+    await sock.sendMessage2(
+      chatId,
+      {
+        image: { url: "https://cdn.russellxz.click/0abb8549.jpeg" },
+        caption: menuText
+      },
+      msg
+    );
 
   } catch (error) {
     console.error("Error en menurpg:", error);
@@ -3861,7 +3834,7 @@ await sock.sendMessage2(
     );
   }
   break;
-}        
+}
 
 case 'menu': {
   try {
