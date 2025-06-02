@@ -1,0 +1,4768 @@
+{
+  "usuarios": {},
+  "tiendaMascotas": [
+    {
+      "nombre": "🐬Delfín_Juguetón",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Nado_Agil": 1,
+        "Sonido_Encantador": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742199178323.jpg",
+      "precio": 75000
+    },
+    {
+      "nombre": "🐵Mono_Juguetón",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Agilidad_Extrema": 1,
+        "Manos_Hábiles": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742199183142.jpg",
+      "precio": 84800
+    },
+    {
+      "nombre": "🦙Llama_Divertida",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Lana_Suave": 1,
+        "Personalidad_Encantadora": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742199173171.jpg",
+      "precio": 74500
+    },
+    {
+      "nombre": "🐿️Ardilla_Veloz",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Cola_Espléndida": 1,
+        "Salto_Increíble": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742199152647.jpg",
+      "precio": 84000
+    },
+    {
+      "nombre": "🐾Hurón_Juguetón",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Cuerpo_Ágil": 1,
+        "Espíritu_Curioso": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742199146070.jpg",
+      "precio": 93500
+    },
+    {
+      "nombre": "🦔Erizo_Tierno",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Espinas_Dóciles": 1,
+        "Paso_Silencioso": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742199139477.jpg",
+      "precio": 74000
+    },
+    {
+      "nombre": "🐨Koala_Dormilón",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Abrazos_Apachurrables": 1,
+        "Sueño_Profundo": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742199134613.jpg",
+      "precio": 62500
+    },
+    {
+      "nombre": "🦁León_Rey",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Melena_Resplandeciente": 1,
+        "Rugido_Poderoso": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198266080.jpg",
+      "precio": 74000
+    },
+    {
+      "nombre": "🐉Dragón_Chibi",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Aliento_Mágico": 1,
+        "Vuelo_Encantado": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198259160.jpg",
+      "precio": 75000
+    },
+    {
+      "nombre": "🦦Nutria_Alegre",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Natación_Rápida": 1,
+        "Diversión_Asegurada": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742199158258.jpg",
+      "precio": 64500
+    },
+    {
+      "nombre": "🦄Unicornio_Mágico",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Cuerno_Brillante": 1,
+        "Aura_Celestial": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742199163348.jpg",
+      "precio": 75000
+    },
+    {
+      "nombre": "🐺Lobo_Kawaii",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Astucia_Indomable": 1,
+        "Velocidad_Fantasma": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198250702.jpg",
+      "precio": 72000
+    },
+    {
+      "nombre": "🐼Panda_Kawaii",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Abrazos_Suaves": 1,
+        "Dulzura_Insuperable": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198244220.jpg",
+      "precio": 72800
+    },
+    {
+      "nombre": "🐢Tortuga_Cute",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Caparazón_Defensivo": 1,
+        "Movimiento_Pausado": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198237650.jpg",
+      "precio": 62700
+    },
+    {
+      "nombre": "🦊Zorro_Chibi",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Astucia_Encantadora": 1,
+        "Cola_Espléndida": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198231332.jpg",
+      "precio": 82900
+    },
+    {
+      "nombre": "🐰Conejo",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Saltos_Veloces": 1,
+        "Suavidad_Absoluta": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198157205.jpg",
+      "precio": 62600
+    },
+    {
+      "nombre": "🐧Pingüino",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Deslizamiento_Ágil": 1,
+        "Frío_Resistente": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198150763.jpg",
+      "precio": 62700
+    },
+    {
+      "nombre": "🐻Oso",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Fuerza_Colosal": 1,
+        "Instinto_Protector": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198079436.jpg",
+      "precio": 73500
+    },
+    {
+      "nombre": "🦉Búho",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Visión_Nocturna": 1,
+        "Vuelo_Silencioso": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198104704.jpg",
+      "precio": 62800
+    },
+    {
+      "nombre": "🦊Zorro",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Astucia_Salvaje": 1,
+        "Velocidad_Sigilosa": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198055822.jpg",
+      "precio": 723000
+    },
+    {
+      "nombre": "🐓Gallo",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Canto_de_guerra": 1,
+        "Picotazo_rápido": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1740556819807.jpg",
+      "precio": 71800
+    },
+    {
+      "nombre": "🐕Perro",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Lealtad_inquebrantable": 1,
+        "Olfato_agudo": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1740556752843.jpg",
+      "precio": 72500
+    },
+    {
+      "nombre": "🐈‍⬛Gato",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Sigilo_nocturno": 1,
+        "Agilidad_felina": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1740556714815.jpg",
+      "precio": 82000
+    },
+    {
+      "nombre": "🦝Mapache",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Astucia_Traviesa": 1,
+        "Manos_Hábiles": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.dorratz.com/files/1742198144068.jpg",
+      "precio": 72800
+    },
+    {
+      "nombre": "🦜Loro_Arcoíris",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Canto_Hipnótico": 1,
+        "Alas_Radiales": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/fc76da3c.jpeg",
+      "precio": 87000
+    },
+    {
+      "nombre": "🐍Serpiente_Esmeralda",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Camuflaje_Perfecto": 1,
+        "Veneno_Sutil": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/b5b91d88.jpeg",
+      "precio": 86000
+    },
+    {
+      "nombre": "🐘Elefante_Cósmico",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Memoria_Infinita": 1,
+        "Pisada_Estelar": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/4bdae92e.jpeg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🦋Mariposa_Lunar",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Alas_Brillantes": 1,
+        "Polvo_Mágico": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/23221a21.jpeg",
+      "precio": 88000
+    },
+    {
+      "nombre": "🐸Rana_Melódica",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Salto_Rítmico": 1,
+        "Canto_Encantador": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/a430b621.jpeg",
+      "precio": 85000
+    },
+    {
+      "nombre": "🦚Pavo_Real_Mágico",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Plumas_Hipnóticas": 1,
+        "Danza_Elegante": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/b64b2ffa.jpeg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🐙Pulpo_Genio",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Tentáculos_Múltiples": 1,
+        "Mente_Estratega": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/5f725386.jpeg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🦩Flamenco_Luminoso",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Equilibrio_Sublime": 1,
+        "Elegancia_Flameante": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/2053e3f3.jpeg",
+      "precio": 97000
+    },
+    {
+      "nombre": "🐊Cocodrilo_Sonriente",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Mandíbula_Poderosa": 1,
+        "Piel_Indestructible": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/13870a59.jpeg",
+      "precio": 94000
+    },
+    {
+      "nombre": "🐦Colibrí_Electrico",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Velocidad_Lumínica": 1,
+        "Zumbido_Energético": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/fd785a3f.jpeg",
+      "precio": 95000
+    },
+    {
+      "nombre": "🐐Cabra_Mística",
+      "rango": "🐣 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 500,
+      "habilidades": {
+        "Salto_Dimensional": 1,
+        "Cuerno_Energético": 1
+      },
+      "vida": 100,
+      "imagen": "https://cdn.russellxz.click/b8f65d1b.jpeg",
+      "precio": 97000
+    }
+  ],
+  "tiendaPersonajes": [
+    {
+      "nombre": "🟠Goku_Ultra_Instinto",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Reflejos_Divinos": 1,
+        "🔥Kamehameha_Supremo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741587472394.jpg",
+      "precio": 80000
+    },
+    {
+      "nombre": "🟣Vegeta_Ultra_Ego",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Poder_Desbordante": 1,
+        "🔥Golpe_Destrucción": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741587670980.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🔵Jiren",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Poder_Absoluto": 1,
+        "🛡️Defensa_Inquebrantable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741587759297.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🟢Broly_Legendario",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌪️Furia_Indomable": 1,
+        "💥Golpes_Brutales": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741587812054.jpg",
+      "precio": 77000
+    },
+    {
+      "nombre": "🟡Gohan_Beast",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Explosión_Bestial": 1,
+        "🥋Artes_Marciales": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741587871768.jpg",
+      "precio": 76000
+    },
+    {
+      "nombre": "🟠Goku_Black",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌑Corte_Energético": 1,
+        "🖤Aura_Oscura": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741587924527.jpg",
+      "precio": 85000
+    },
+    {
+      "nombre": "🟣Hit",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⏳Salto_Temporal": 1,
+        "🥊Asesino_Preciso": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741587978819.jpg",
+      "precio": 114000
+    },
+    {
+      "nombre": "🔵Toppo_Dios_Del_Destr",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Poder_Hakai": 1,
+        "🛡️Defensa_Justiciera": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741588017420.jpg",
+      "precio": 83000
+    },
+    {
+      "nombre": "🟠Caulifla",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Saiyajin_Prodigio": 1,
+        "🔥Puño_Explosivo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741588085861.jpg",
+      "precio": 112000
+    },
+    {
+      "nombre": "🟣Kefla",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💥Fusión_Suprema": 1,
+        "⚡Energía_Imparable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741588172636.jpg",
+      "precio": 71000
+    },
+    {
+      "nombre": "🔥Goku",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Kamehameha": 1,
+        "🐉Ultra_Instinto": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1740562887688.jpg",
+      "precio": 76000
+    },
+    {
+      "nombre": "🌀Satoru_Gojo",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Infinito": 1,
+        "🔥Hollow_Purple": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1740562815350.jpg",
+      "precio": 95000
+    },
+    {
+      "nombre": "⚫Sukuna",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Llamas_Malditas": 1,
+        "💀Manipulación_Almas": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741599557829.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🔵Yuji_Itadori",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "👊Puño_Divergente": 1,
+        "🔥Resistencia_Sobrehumana": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741599625903.jpg",
+      "precio": 118000
+    },
+    {
+      "nombre": "🔴Megumi_Fushiguro",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐺Diez_Sombras": 1,
+        "🌀Quimera": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741599690464.jpg",
+      "precio": 87000
+    },
+    {
+      "nombre": "🟡Nobara_Kugisaki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔨Resonancia": 1,
+        "💀Pajaro_de_Paja": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741599795047.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🟢Yuta_Okkotsu",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Copia_de_Técnicas": 1,
+        "💀Rika_Manifestada": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741599863541.jpg",
+      "precio": 85000
+    },
+    {
+      "nombre": "🟠Toji_Fushiguro",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔪Asesino_Experto": 1,
+        "⚡Reflejos_Sobrehumanos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741599915118.jpg",
+      "precio": 84000
+    },
+    {
+      "nombre": "🟣Kenjaku",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧠Manipulación_Cerebral": 1,
+        "🌀Transferencia_de_Cuerpos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741599970464.jpg",
+      "precio": 83000
+    },
+    {
+      "nombre": "🔵Choso",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🩸Manipulación_de_Sangre": 1,
+        "🔥Explosión_Rotativa": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741600042015.jpg",
+      "precio": 82000
+    },
+    {
+      "nombre": "🟤Mahito",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Transformación_Idiota": 1,
+        "💀Desfigurar_Almas": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741600097426.jpg",
+      "precio": 91000
+    },
+    {
+      "nombre": "🥼Senku_Ishigami",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧪Científico_Supremo": 1,
+        "🧠Genio_Estratega": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741600165752.jpg",
+      "precio": 120000
+    },
+    {
+      "nombre": "🛠️Chrome",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Inventor_Natural": 1,
+        "🏹Espíritu_Curioso": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679040959.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🏋️Tsukasa_Shishio",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Fuerza_Primitiva": 1,
+        "🐅Rey_de_la_Selva": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679141294.jpg",
+      "precio": 91000
+    },
+    {
+      "nombre": "🏹Kohaku",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Reflejos_Felinos": 1,
+        "🗡️Guerrera_Ágil": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679203431.jpg",
+      "precio": 98500
+    },
+    {
+      "nombre": "🔬Gen_Asagiri",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🗣️Maestro_de_la_Persuasión": 1,
+        "🧠Estratega_Agudo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679373398.jpg",
+      "precio": 89700
+    },
+    {
+      "nombre": "🏗️Kaseki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔨Artesano_Supremo": 1,
+        "🏛️Constructor_Ingenioso": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679445577.jpg",
+      "precio": 79200
+    },
+    {
+      "nombre": "🍽️Francois",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏆Chef_Exquisito": 1,
+        "🎩Mayordomo_Preciso": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679594531.jpg",
+      "precio": 93800
+    },
+    {
+      "nombre": "🔥Ukyo_Saionji",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎯Experto_en_Sonar": 1,
+        "🏹Tirador_Silencioso": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679664509.jpg",
+      "precio": 89400
+    },
+    {
+      "nombre": "🏺Hyoga",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🗡️Lanza_Mortal": 1,
+        "🧠Táctico_Frío": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679745425.jpg",
+      "precio": 90800
+    },
+    {
+      "nombre": "☠️Monkey_D_Luffy",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏴‍☠️Gear_5_JoyBoy": 1,
+        "🌀Haki_del_Rey": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1740562855603.jpg",
+      "precio": 95000
+    },
+    {
+      "nombre": "☠️Roronoa_Zoro",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Espadachín_Tres_Espadas": 1,
+        "🌀Haki_de_Armamento": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679821079.jpg",
+      "precio": 119000
+    },
+    {
+      "nombre": "☠️Sanji",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Patada_Diabólica": 1,
+        "🚀Velocidad_Sorprendente": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679870689.jpg",
+      "precio": 88000
+    },
+    {
+      "nombre": "☠️Nami",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⛈️Clima_Tempestuoso": 1,
+        "💰Maestra_de_la_Estrategia": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679908349.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "☠️Usopp",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎯Francotirador_Legendario": 1,
+        "🏹Mentiras_Geniales": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679978167.jpg",
+      "precio": 86000
+    },
+    {
+      "nombre": "☠️Tony_Tony_Chopper",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏥Medicina_Milagrosa": 1,
+        "🐾Transformación_Monstruosa": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741680037891.jpg",
+      "precio": 75000
+    },
+    {
+      "nombre": "☠️Nico_Robin",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "📖Historiadora_Secreta": 1,
+        "🌸Flor_Flor_no_Mi": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741680949273.jpg",
+      "precio": 74000
+    },
+    {
+      "nombre": "☠️Franky",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔧Cyborg_Super_Fuerte": 1,
+        "🚀Tecnología_Avanzada": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741681025809.jpg",
+      "precio": 83000
+    },
+    {
+      "nombre": "☠️Brook",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎻Espadachín_Músico": 1,
+        "💀Regreso_del_Infierno": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741681090217.jpg",
+      "precio": 92000
+    },
+    {
+      "nombre": "☠️Jinbe",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌊Maestro_del_Karate_Pez": 1,
+        "🏴‍☠️Haki_de_Observación": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741681128852.jpg",
+      "precio": 111000
+    },
+    {
+      "nombre": "🦁Gawain",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "☀️Poder_del_Sol": 1,
+        "💥Fuerza_Colosal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741768252480.jpg",
+      "precio": 99500
+    },
+    {
+      "nombre": "🏆Baam",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Onda_Shinsoo": 1,
+        "🌀Irrégular_Supremo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742095827875.jpg",
+      "precio": 75000
+    },
+    {
+      "nombre": "✨️Tristan",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Hijo_de_Meliodas": 1,
+        "🩸Híbrido_Demonio_Divino": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741768165485.jpg",
+      "precio": 90000
+    },
+    {
+      "nombre": "🏹Khun_Aguero_Agnis",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧠Estratega_Genial": 1,
+        "🔥Encendimiento_Azul": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742095885217.jpg",
+      "precio": 15000
+    },
+    {
+      "nombre": "🦊Lancelot",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏹Heredero_de_Ban": 1,
+        "🌀Cambio_de_Forma": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741768062347.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🐉Percival",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Caballero_del_Apocalipsis": 1,
+        "🌀Magia_Milagrosa": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767898602.jpg",
+      "precio": 118000
+    },
+    {
+      "nombre": "🏴‍☠️Rachel",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Manipulación_Astuta": 1,
+        "💀Sombra_Traicionera": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742095999376.jpg",
+      "precio": 85000
+    },
+    {
+      "nombre": "🔥Howzer",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌪️Torbellino_Salvaje": 1,
+        "⚔️Caballero_Furioso": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767833958.jpg",
+      "precio": 93000
+    },
+    {
+      "nombre": "🔥Gilthunder",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Relámpago_Purificador": 1,
+        "🗡️Espadachín_Élite": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767744621.jpg",
+      "precio": 114000
+    },
+    {
+      "nombre": "⚔️Androssi_Zahard",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏆Princesa_de_Zahard": 1,
+        "🔥Poder_Shinsu": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742096057832.jpg",
+      "precio": 80000
+    },
+    {
+      "nombre": "🔥Dreyfus",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Espada_Crimson": 1,
+        "🛡️Defensa_Acorazada": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767705847.jpg",
+      "precio": 115000
+    },
+    {
+      "nombre": "🔥Hendrickson",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💀Sangre_Demoníaca": 1,
+        "🌊Purga_Sagrada": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767656141.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🌊Ha_Yuri_Zahard",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Espada_Black_March": 1,
+        "🌀Fuerza_Inmortal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742096123621.jpg",
+      "precio": 13000
+    },
+    {
+      "nombre": "🔥Mael",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "☀️Modo_Sol": 1,
+        "⚔️Espada_de_Luz": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767615252.jpg",
+      "precio": 80000
+    },
+    {
+      "nombre": "🔥Ludociel",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏹Luz_Divina": 1,
+        "✨Haki_Celestial": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767578662.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "👼Elizabeth_Liones",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "✨Bendición_Divina": 1,
+        "💖Curación_Angélica": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767529262.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🏯Evan_Edrok",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Guía_Experto": 1,
+        "🛡️Protección_Absoluta": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742096175670.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🔥Gloxinia",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🍃Mandamiento_de_la_Reposo": 1,
+        "🌀Manipulación_Espiritual": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767401022.jpg",
+      "precio": 91000
+    },
+    {
+      "nombre": "🏴‍☠️Hwa_Ryun",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Oráculo_Sagrado": 1,
+        "🌀Visión_Profética": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742096281629.jpg",
+      "precio": 91000
+    },
+    {
+      "nombre": "🔥Drole",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚒️Mandamiento_de_la_Respiración": 1,
+        "🏔️Control_de_Tierra": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767329835.jpg",
+      "precio": 82000
+    },
+    {
+      "nombre": "🎭White",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Espadachín_Demoníaco": 1,
+        "🌀Magia_Negra": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742096330229.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "🔥Kallavan",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Comandante_Élite": 1,
+        "🛡️Invulnerabilidad": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742096392268.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🔥Grayroad",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "👤Mandamiento_de_la_Paciencia": 1,
+        "🕰️Aceleración_de_Tiempo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767177686.jpg",
+      "precio": 93000
+    },
+    {
+      "nombre": "🔥Fraudrin",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🛡️Mandamiento_del_Altruismo": 1,
+        "🔄Control_de_Cuerpos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767128509.jpg",
+      "precio": 94000
+    },
+    {
+      "nombre": "🔵Rimuru_Tempest",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Rey_Demonio_Supremo": 1,
+        "🔥Devorador_Infinito": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742103084548.jpg",
+      "precio": 140000
+    },
+    {
+      "nombre": "🔥Derriere",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "👊Mandamiento_de_la_Pureza": 1,
+        "🦵Combo_Star": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741767081750.jpg",
+      "precio": 95000
+    },
+    {
+      "nombre": "🔥Monspeet",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Mandamiento_de_la_Reticencia": 1,
+        "🌋Llamas_Infernales": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766973206.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🔥Veldora_Tempest",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐉Dragón_Destructor": 1,
+        "🌪️Tormenta_Inmortal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742103134693.jpg",
+      "precio": 92000
+    },
+    {
+      "nombre": "🔥Galand",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🗡️Mandamiento_de_la_Verdad": 1,
+        "🔥Explosión_Demoníaca": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766915637.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "⚔️Benimaru",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Espada_Infernal": 1,
+        "🔥Comandante_Ogro": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742103185479.jpg",
+      "precio": 95000
+    },
+    {
+      "nombre": "🌊Shion",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Fuerza_Titanica": 1,
+        "🍳Cocinera_Peligrosa": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742103333565.jpg",
+      "precio": 94000
+    },
+    {
+      "nombre": "🔥Melascula",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐍Mandamiento_de_la_Fe": 1,
+        "🩸Control_de_Almas": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766882463.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🔥Estarossa",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🖤Mandamiento_del_Amor": 1,
+        "🌑Corrupción_Oscura": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766819464.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🏹Shuna",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔮Sacerdotisa_Mágica": 1,
+        "🌸Bendición_Ogro": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742103503307.jpg",
+      "precio": 93000
+    },
+    {
+      "nombre": "🔥Zeldris",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Dios_del_Infierno": 1,
+        "🌀Modo_Oscuro": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766665699.jpg",
+      "precio": 90000
+    },
+    {
+      "nombre": "💀Diablo",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Demonio_Archiduke": 1,
+        "🌀Manipulación_Cósmica": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742103765231.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "🦁Escanor",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Poder_del_Sol": 1,
+        "☀️El_Que_Supera_a_Todos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766573161.jpg",
+      "precio": 91000
+    },
+    {
+      "nombre": "🐉Milim_Nava",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "☀️Rey_Demonio_Destructivo": 1,
+        "💥Poder_Sin_Límites": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742104511254.jpg",
+      "precio": 87000
+    },
+    {
+      "nombre": "✨️Merlin",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔬Magia_Infinita": 1,
+        "🌀Encantamientos_Supremos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766497819.jpg",
+      "precio": 95000
+    },
+    {
+      "nombre": "🐐Gowther",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧠Invasión_Mental": 1,
+        "🎭Manipulación_de_Recuerdos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766445114.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🦊Ranga",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Lobo_Alfa": 1,
+        "🌀Tormenta_Sombra": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742104610103.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🐉Meliodas",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Full_Counter": 1,
+        "🔥Modo_Asalto": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766178789.jpg",
+      "precio": 190000
+    },
+    {
+      "nombre": "🏯Hakuro",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Maestro_Espadachín": 1,
+        "🌀Velocidad_Fantasma": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742104819674.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🦊Ban",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🩸Inmortalidad_Eterna": 1,
+        "🏃Velocidad_Sobrehumana": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766245069.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🐻King",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🛡️Lanza_Espíritu_Chastiefol": 1,
+        "🌿Control_de_la_Naturaleza": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766298443.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🔥Geld",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🛡️Guardián_Orco": 1,
+        "💪Fuerza_Brutal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742104891242.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🐍Diane",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏔️Fuerza_Gigante": 1,
+        "🌪️Danza_de_la_Creación": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741766381118.jpg",
+      "precio": 117000
+    },
+    {
+      "nombre": "🏴‍☠️Agent_Six",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔫Mercenario_Infame": 1,
+        "🎭Estratega_Irreverente": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109538248.jpg",
+      "precio": 92000
+    },
+    {
+      "nombre": "🤖Alice_Kisaragi",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Android_Táctico": 1,
+        "🧠Super_Inteligencia": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109597416.jpg",
+      "precio": 84000
+    },
+    {
+      "nombre": "👹Margarette_Macaron",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎵Sinfonía_de_la_Destrucción": 1,
+        "⚡Control_de_Sonido": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109475564.jpg",
+      "precio": 86000
+    },
+    {
+      "nombre": "🔥Innocent_Zero",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌑Manipulación_Temporal": 1,
+        "🔥Hechicería_Prohibida": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109418872.jpg",
+      "precio": 83000
+    },
+    {
+      "nombre": "🏴‍☠️Souei",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Asesino_Sombrío": 1,
+        "⚔️Ataque_Rapido": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742104938639.jpg",
+      "precio": 87000
+    },
+    {
+      "nombre": "🎭Guy_Crimson",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Rey_Demonio_Supremo": 1,
+        "🌀Dominación_Absoluta": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742104979312.jpg",
+      "precio": 79000
+    },
+    {
+      "nombre": "🔥Leon_Cromwell",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏰Rey_Demonio_Santo": 1,
+        "🔥Manipulación_Flamígera": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105035378.jpg",
+      "precio": 11000
+    },
+    {
+      "nombre": "🏴‍☠️Orter_Madl",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Espadas_Elementales": 1,
+        "🔥Maestro_de_Magia": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109348900.jpg",
+      "precio": 78000
+    },
+    {
+      "nombre": "👑Cell_War",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Poder_Absoluto": 1,
+        "⚡Control_de_Rayos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109316766.jpg",
+      "precio": 84000
+    },
+    {
+      "nombre": "🏆Rayne_Ames",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Espada_Mágica": 1,
+        "🔥Dominio_Total": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109270314.jpg",
+      "precio": 89000
+    },
+    {
+      "nombre": "❄️Finn_Ames",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⏳Teletransporte": 1,
+        "⚡Evasión_Perfecta": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109232569.jpg",
+      "precio": 89000
+    },
+    {
+      "nombre": "🏹Dot_Barrett",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Explosión_Mágica": 1,
+        "💀Modo_Berserker": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109184653.jpg",
+      "precio": 82000
+    },
+    {
+      "nombre": "🔥Lance_Crown",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Magia_Gravitatoria": 1,
+        "🌀Lanzas_Flotantes": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109149437.jpg",
+      "precio": 93000
+    },
+    {
+      "nombre": "💪Mash_Burnedead",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏋️Fuerza_Sobrehumana": 1,
+        "🔥Golpe_Divino": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742109046539.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "⚔️Hajime_Nagumo",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Alquimista_Demoníaco": 1,
+        "🏹Dominación_Total": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742082385738.jpg",
+      "precio": 95000
+    },
+    {
+      "nombre": "🌑Daggrull",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏔️Rey_Demonio_Gigante": 1,
+        "💪Poder_Inmortal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105091092.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "🦇Yue",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌙Vampira_Ancestral": 1,
+        "🔥Magia_Prohibida": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742082587580.jpg",
+      "precio": 124000
+    },
+    {
+      "nombre": "🔥Luminous_Valentine",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🦇Reina_Vampiro": 1,
+        "🌙Magia_Eterna": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105219754.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "👹Zegion",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Guerrero_Insecto": 1,
+        "🛡️Defensa_Impenetrable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105264924.jpg",
+      "precio": 81000
+    },
+    {
+      "nombre": "🌪️Hinata_Sakaguchi",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Santo_Caballero": 1,
+        "⚔️Dominio_Espiritual": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105353009.jpg",
+      "precio": 10500
+    },
+    {
+      "nombre": "💀Testarossa",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Demonio_Élite": 1,
+        "🌀Fuego_Blanco": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105437544.jpg",
+      "precio": 86000
+    },
+    {
+      "nombre": "🐲Shea_Haulia",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Fuerza_Descomunal": 1,
+        "🌀Precognición": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742082670464.jpg",
+      "precio": 123000
+    },
+    {
+      "nombre": "🔥Ultima",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "😈Demonio_Destructivo": 1,
+        "💀Explosión_Púrpura": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105489799.jpg",
+      "precio": 790000
+    },
+    {
+      "nombre": "🦸Tio_Klarus",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Dragón_Supremo": 1,
+        "🛡️Resistencia_Absoluta": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742082740150.jpg",
+      "precio": 122000
+    },
+    {
+      "nombre": "⚔️Kaori_Shurasaka",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💖Sanación_Divina": 1,
+        "🔥Luz_Sagrada": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742082819866.jpg",
+      "precio": 121000
+    },
+    {
+      "nombre": "🔥Shizuku_Yaegashi",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🗡️Espadachina_Élite": 1,
+        "⚡Reflejos_Sobrehumanos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742082875267.jpg",
+      "precio": 120000
+    },
+    {
+      "nombre": "🏹Carrera",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💀Asesina_Sin_Piedad": 1,
+        "🔥Velocidad_Mortal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105572385.jpg",
+      "precio": 860000
+    },
+    {
+      "nombre": "🏋️Kafka_Hibino",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Kaiju_No_8": 1,
+        "💪Fuerza_Titánica": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105614986.jpg",
+      "precio": 95000
+    },
+    {
+      "nombre": "🦊Myu",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌊Control_del_Agua": 1,
+        "🐟Bendición_Marítima": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742082979006.jpg",
+      "precio": 120500
+    },
+    {
+      "nombre": "🎯Mina_Ashiro",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Francotiradora_Élite": 1,
+        "🐉Cazadora_de_Kaijus": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105653748.jpg",
+      "precio": 850000
+    },
+    {
+      "nombre": "🏹Freid_Bagwa",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥General_Demonio": 1,
+        "🏰Estratega_Infernal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083016886.jpg",
+      "precio": 122000
+    },
+    {
+      "nombre": "⚔️Reno_Ichikawa",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Tirador_Preciso": 1,
+        "🌀Reflejos_Sobrehumanos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105684044.jpg",
+      "precio": 750000
+    },
+    {
+      "nombre": "🔥Kikoru_Shinomiya",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💥Hacha_Descomunal": 1,
+        "⚡Heredera_de_Élite": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105727449.jpg",
+      "precio": 75000
+    },
+    {
+      "nombre": "👿Pain",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Rinnegan_Supremo": 1,
+        "🔥Shinra_Tensei": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108958600.jpg",
+      "precio": 89000
+    },
+    {
+      "nombre": "💀Orochimaru",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐍Reencarnación_Maldíta": 1,
+        "🧪Ciencia_Prohibida": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108923075.jpg",
+      "precio": 82000
+    },
+    {
+      "nombre": "💀Ainz_Ooal_Gown",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Rey_No_Muerto": 1,
+        "🌀Magia_Suprema": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083115776.jpg",
+      "precio": 930000
+    },
+    {
+      "nombre": "🔥Madara_Uchiha",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Susanoo_Perfecto": 1,
+        "🔥Infierno_Eterno": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108684791.jpg",
+      "precio": 85000
+    },
+    {
+      "nombre": "🏴‍☠️Jiraiya",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐸Modo_Sabio": 1,
+        "🔥Aceite_Explosivo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108886415.jpg",
+      "precio": 72000
+    },
+    {
+      "nombre": "👁️Obito_Uchiha",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Kamui_Supremo": 1,
+        "🔥Juubi_Jinchuriki": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108720020.jpg",
+      "precio": 71000
+    },
+    {
+      "nombre": "🏹Narberal_Gamma",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Maga_Elemental": 1,
+        "🛡️Lealtad_Absoluta": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083767677.jpg",
+      "precio": 120000
+    },
+    {
+      "nombre": "🦁Minato_Namikaze",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Dios_del_Rayo_Amarillo": 1,
+        "🌀Rasengan_Sellado": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108645720.jpg",
+      "precio": 81000
+    },
+    {
+      "nombre": "🏹Itachi_Uchiha",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Tsukuyomi_Infinito": 1,
+        "🖤Amaterasu": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108610100.jpg",
+      "precio": 73000
+    },
+    {
+      "nombre": "🍃Kakashi_Hatake",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Raikiri_Imparable": 1,
+        "🌀Kamui_Dimensional": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108534754.jpg",
+      "precio": 86000
+    },
+    {
+      "nombre": "⚔️Pandora’s_Actor",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎭Cambio_de_Forma": 1,
+        "🏦Gestor_del_Tesoro": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083623116.jpg",
+      "precio": 121000
+    },
+    {
+      "nombre": "🔥Sasuke_Uchiha",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Mangekyou_Sharingan": 1,
+        "🗡️Chidori_Perfecto": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108485089.jpg",
+      "precio": 75000
+    },
+    {
+      "nombre": "🏴‍☠️Sebas_Tian",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🥋Maestro_Artes_Marciales": 1,
+        "⚡Velocidad_Sorprendente": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083554923.jpg",
+      "precio": 122000
+    },
+    {
+      "nombre": "🐺Mare_Bello_Fiora",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌱Druida_Supremo": 1,
+        "🌀Magia_Terrestre": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083508539.jpg",
+      "precio": 123000
+    },
+    {
+      "nombre": "🦗Aura_Bella_Fiora",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏹Domadora_Bestias": 1,
+        "🌿Control_de_la_Naturaleza": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083461577.jpg",
+      "precio": 124000
+    },
+    {
+      "nombre": "🌀Naruto_Uzumaki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🦊Modo_Sabio_del_Nueve_Colas": 1,
+        "⚡Rasengan_Supremo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108443753.jpg",
+      "precio": 123000
+    },
+    {
+      "nombre": "🦂Cocytus",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "❄️Señor_Gélido": 1,
+        "⚔️Maestro_Guerrero": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083403971.jpg",
+      "precio": 125000
+    },
+    {
+      "nombre": "🦸Mirio_Togata",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💫Permeabilidad": 1,
+        "🏆Invulnerabilidad": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108342310.jpg",
+      "precio": 95000
+    },
+    {
+      "nombre": "🐍Demiurge",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Arquitecto_Infernal": 1,
+        "🧠Genio_Estratega": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083304962.jpg",
+      "precio": 126000
+    },
+    {
+      "nombre": "🦇Shalltear_Bloodfallen",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🩸Vampiresa_Todopoderosa": 1,
+        "🔥Lanza_Carmesí": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083224823.jpg",
+      "precio": 127000
+    },
+    {
+      "nombre": "🏴‍☠️Eraser_Head",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🖤Borrado_de_Dones": 1,
+        "🎭Táctico_Supremo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742108236009.jpg",
+      "precio": 110000
+    },
+    {
+      "nombre": "👹Albedo",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🛡️Guardiana_Suprema": 1,
+        "💖Amor_Devoto": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083160299.jpg",
+      "precio": 128000
+    },
+    {
+      "nombre": "🏹Hawks",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🦅Plumas_Afiladas": 1,
+        "⚡Velocidad_Extrema": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742107822934.jpg",
+      "precio": 83000
+    },
+    {
+      "nombre": "🦾Endeavor",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Hellflame": 1,
+        "💪Máximo_Poder": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742107467321.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "😈Dabi",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Llamas_Azules": 1,
+        "💀Cremación": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742107421992.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "💀Tomura_Shigaraki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🖐️Desintegración": 1,
+        "🌀All_For_One": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742107199632.jpg",
+      "precio": 120000
+    },
+    {
+      "nombre": "🏆All_Might",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Símbolo_de_la_Paz": 1,
+        "⚡United_States_of_Smash": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742107055649.jpg",
+      "precio": 89000
+    },
+    {
+      "nombre": "🔵Shoto_Todoroki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "❄️Hielo_&_Fuego": 1,
+        "🔥Flashfreeze_Burn": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106876303.jpg",
+      "precio": 94000
+    },
+    {
+      "nombre": "🔥Katsuki_Bakugo",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💣Explosión": 1,
+        "🔥Howitzer_Impact": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106608500.jpg",
+      "precio": 92000
+    },
+    {
+      "nombre": "⚔️Tanjiro_Kamado",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Respiración_del_Sol": 1,
+        "🩸Marca_del_Cazador": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742083878827.jpg",
+      "precio": 925000
+    },
+    {
+      "nombre": "🟢Izuku_Midoriya",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💥One_For_All": 1,
+        "⚡Detroit_Smash": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106543120.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "⚡Zenitsu_Agatsuma",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Respiración_del_Rayo": 1,
+        "🌩️Velocidad_Divina": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742084051146.jpg",
+      "precio": 924000
+    },
+    {
+      "nombre": "🏴‍☠️Mika",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧠Mentor_Estratégico": 1,
+        "⚡Maestro_de_Combate": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106504863.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🐗Inosuke_Hashibira",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐗Respiración_de_la_Bestia": 1,
+        "🔪Combate_Instintivo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742084034993.jpg",
+      "precio": 923000
+    },
+    {
+      "nombre": "👹Kaiju_No_9",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Evolución_Acelerada": 1,
+        "🧠Inteligencia_Maligna": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105804191.jpg",
+      "precio": 94000
+    },
+    {
+      "nombre": "👹Nezuko_Kamado",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Sangre_Demoníaca": 1,
+        "🌙Regeneración_Rápida": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742084019165.jpg",
+      "precio": 922000
+    },
+    {
+      "nombre": "💀Muzan_Kibutsuji",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "👹Rey_de_los_Demonios": 1,
+        "🔥Sangre_Maldita": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742084108939.jpg",
+      "precio": 130000
+    },
+    {
+      "nombre": "🏴‍☠️Soshiro_Hoshina",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Maestro_de_Espadas": 1,
+        "🌀Corte_Ultrarrápido": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105862869.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "🟣Giyu_Tomioka",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌊Pilar_del_Agua": 1,
+        "❄️Calma_Inquebrantable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742084200256.jpg",
+      "precio": 126000
+    },
+    {
+      "nombre": "🔥Kyojuro_Rengoku",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Pilar_de_la_Llama": 1,
+        "🔥Espíritu_Ardiente": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742084257037.jpg",
+      "precio": 127000
+    },
+    {
+      "nombre": "💀Kaiju_No_10",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Poder_Devastador": 1,
+        "🌪️Velocidad_Bestial": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105940051.jpg",
+      "precio": 93000
+    },
+    {
+      "nombre": "🏯Isao_Shinomiya",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Comandante_Supremo": 1,
+        "💪Dominio_Antikaiju": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742105994021.jpg",
+      "precio": 94000
+    },
+    {
+      "nombre": "🍃Sanemi_Shinazugawa",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🍃Pilar_del_Viento": 1,
+        "⚡Furia_Descontrolada": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742084293585.jpg",
+      "precio": 125000
+    },
+    {
+      "nombre": "🏔️Gyomei_Himejima",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏔️Pilar_de_la_Roca": 1,
+        "💪Fuerza_Colosal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742084430798.jpg",
+      "precio": 128000
+    },
+    {
+      "nombre": "🎭Majima",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Caos_Encarnado": 1,
+        "💀Estratega_Anárquico": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106350716.jpg",
+      "precio": 128000
+    },
+    {
+      "nombre": "💖Mitsuri_Kanroji",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💖Pilar_del_Amor": 1,
+        "🔥Espada_Flexible": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742084503631.jpg",
+      "precio": 124000
+    },
+    {
+      "nombre": "🦋Shinobu_Kocho",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🦋Pilar_del_Insecto": 1,
+        "☠️Veneno_Letal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088363371.jpg",
+      "precio": 123000
+    },
+    {
+      "nombre": "🏴‍☠️Kurumi",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎮Hacker_Genial": 1,
+        "🖥️Manipulación_Cibernética": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106301455.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🏹Mizuki_Nakahara",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🍷Maestra_del_Engaño": 1,
+        "🎭Espionaje_Sigiloso": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106179206.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "🎯Chisato_Nishikigi",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Reflejos_Sobrehumanos": 1,
+        "🔥Puntería_Perfecta": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106075038.jpg",
+      "precio": 12500
+    },
+    {
+      "nombre": "🔥Takina_Inoue",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔫Estratega_Fría": 1,
+        "💥Tiradora_Élite": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106135939.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🎭Tengen_Uzui",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎵Pilar_del_Sonido": 1,
+        "💥Explosión_Mortal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088411280.jpg",
+      "precio": 126000
+    },
+    {
+      "nombre": "🏯Sakura_Okamura",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Letal_y_Silenciosa": 1,
+        "🗡️Experta_en_Combate": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742106442633.jpg",
+      "precio": 126000
+    },
+    {
+      "nombre": "🐍Obanai_Iguro",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐍Pilar_de_la_Serpiente": 1,
+        "🔥Ataque_Impredecible": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088459246.jpg",
+      "precio": 125000
+    },
+    {
+      "nombre": "🌑Muichiro_Tokito",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌫️Pilar_de_la_Niebla": 1,
+        "⚡Reflejos_Sobrehumanos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088508407.jpg",
+      "precio": 124000
+    },
+    {
+      "nombre": "😈Akaza",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "👊Luna_Superior_Tres": 1,
+        "🔥Combate_Total": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088603119.jpg",
+      "precio": 927000
+    },
+    {
+      "nombre": "💀Doma",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "❄️Luna_Superior_Dos": 1,
+        "🧊Hielo_Mortal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088669345.jpg",
+      "precio": 928000
+    },
+    {
+      "nombre": "🦋Kokushibo",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌑Luna_Superior_Uno": 1,
+        "🌀Respiración_de_la_Luna": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088749250.jpg",
+      "precio": 929000
+    },
+    {
+      "nombre": "👹Gyutaro",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🩸Luna_Superior_Seis": 1,
+        "💀Guadañas_Envenenadas": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088798633.jpg",
+      "precio": 923000
+    },
+    {
+      "nombre": "👹Daki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎭Luna_Superior_Seis": 1,
+        "🕸️Cintas_Mortales": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088859395.jpg",
+      "precio": 922000
+    },
+    {
+      "nombre": "🔥Hantengu",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌪️Luna_Superior_Cuatro": 1,
+        "🌀Múltiples_Clones": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088902387.jpg",
+      "precio": 925000
+    },
+    {
+      "nombre": "👹Liebe",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🖤Demonio_de_Antimagia": 1,
+        "🔥Modo_Unión": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091962595.jpg",
+      "precio": 129000
+    },
+    {
+      "nombre": "⚔️Rill_Boismortier",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎨Magia_de_Pintura": 1,
+        "🎭Creatividad_Infinita": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091920697.jpg",
+      "precio": 121000
+    },
+    {
+      "nombre": "🏴‍☠️Charlotte_Roselei",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌿Magia_de_Espinas": 1,
+        "💙Caballero_Azul": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091818332.jpg",
+      "precio": 122000
+    },
+    {
+      "nombre": "🎩Finral_Roulacase",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔄Magia_Espacial": 1,
+        "🚀Portal_Instantáneo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091563048.jpg",
+      "precio": 123000
+    },
+    {
+      "nombre": "🎭Vanessa_Enoteca",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🕸️Hilos_del_Destino": 1,
+        "🍷Magia_del_Hilo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091476684.jpg",
+      "precio": 124000
+    },
+    {
+      "nombre": "🏹Luck_Volta",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Magia_del_Rayo": 1,
+        "⚡Velocidad_Electrizante": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091386976.jpg",
+      "precio": 125000
+    },
+    {
+      "nombre": "💀Zagred",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💀Demonio_Supremo": 1,
+        "🔥Magia_de_Palabras": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091316957.jpg",
+      "precio": 130000
+    },
+    {
+      "nombre": "❄️Fuegoleon_Vermillion",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Magia_de_Fuego": 1,
+        "🦁Espíritu_de_Salamandra": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091247849.jpg",
+      "precio": 126000
+    },
+    {
+      "nombre": "🐂Nacht_Faust",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "👹Magia_de_Sombra": 1,
+        "🦇Dominio_Demoníaco": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091186787.jpg",
+      "precio": 127000
+    },
+    {
+      "nombre": "🦁Mereoleona_Vermillion",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Magia_de_Fuego": 1,
+        "💪Instinto_Bestial": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091145123.jpg",
+      "precio": 128000
+    },
+    {
+      "nombre": "🔥Julius_Novachrono",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⏳Magia_del_Tiempo": 1,
+        "👑Rey_Mago": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091101264.jpg",
+      "precio": 130000
+    },
+    {
+      "nombre": "🔥Yami_Sukehiro",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Magia_Oscura": 1,
+        "🌀Zona_Maná": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742091030230.jpg",
+      "precio": 129000
+    },
+    {
+      "nombre": "🏹Noelle_Silva",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌊Magia_del_Agua": 1,
+        "🏰Armadura_Valquiria": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742090994302.jpg",
+      "precio": 126000
+    },
+    {
+      "nombre": "👑Yuno",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌪️Magia_del_Viento": 1,
+        "🌟Bendición_Real": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742090877134.jpg",
+      "precio": 127000
+    },
+    {
+      "nombre": "⚔️Asta",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Antimagia": 1,
+        "🔥Modo_Demoníaco": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742090837439.jpg",
+      "precio": 128000
+    },
+    {
+      "nombre": "👹Echidna",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧠Bruja_de_la_Codicia": 1,
+        "🔥Conocimiento_Infinito": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742089557164.jpg",
+      "precio": 127000
+    },
+    {
+      "nombre": "🔥Roswaal_L_Mathers",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔮Mago_Supremo": 1,
+        "💀Magia_de_Todos_los_Elementos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742089493820.jpg",
+      "precio": 126000
+    },
+    {
+      "nombre": "🐺Garfield_Tinsel",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏋️Fuerza_Bestial": 1,
+        "🐯Transformación_Tigre": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742089441150.jpg",
+      "precio": 122000
+    },
+    {
+      "nombre": "💀Beatrice",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "📖Guardiana_de_la_Biblioteca": 1,
+        "🔮Magia_Espacial": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742089361423.jpg",
+      "precio": 123000
+    },
+    {
+      "nombre": "🌺Ram",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌬️Magia_del_Viento": 1,
+        "🔥Clarividencia": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742089285771.jpg",
+      "precio": 122000
+    },
+    {
+      "nombre": "🏹Rem",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔨Maza_Demoledora": 1,
+        "💙Lealtad_Absoluta": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742089170415.jpg",
+      "precio": 123000
+    },
+    {
+      "nombre": "👑Emilia",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "❄️Magia_de_Hielo": 1,
+        "💖Bendición_Espiritual": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742089099019.jpg",
+      "precio": 124000
+    },
+    {
+      "nombre": "🔄Subaru_Natsuki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⏳Regreso_de_la_Muerte": 1,
+        "🏁Voluntad_Inquebrantable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742088961427.jpg",
+      "precio": 925000
+    },
+    {
+      "nombre": "🛠️Ryusui_Nanami",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⛵Navegante_Genial": 1,
+        "💰Instinto_Comercial": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1741679255091.jpg",
+      "precio": 90500
+    },
+    {
+      "nombre": "😈Issei_Hyoudou",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Boosted_Gear": 1,
+        "🏴‍☠️Harem_King": 1
+      },
+      "imagen": "https://cdn.russellxz.click/fd345153.jpeg",
+      "precio": 128000
+    },
+    {
+      "nombre": "👑Rias_Gremory",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Destrucción_Pura": 1,
+        "❤️Reina_Crimson": 1
+      },
+      "imagen": "https://cdn.russellxz.click/f235d778.jpeg",
+      "precio": 127000
+    },
+    {
+      "nombre": "🏹Akeno_Himejima",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Magia_Sagrada": 1,
+        "🔥Rayo_Negro": 1
+      },
+      "imagen": "https://cdn.russellxz.click/8763763c.jpeg",
+      "precio": 226000
+    },
+    {
+      "nombre": "🏴‍☠️Xenovia_Quarta",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Durandal": 1,
+        "🔥Aura_Sagrada": 1
+      },
+      "imagen": "https://cdn.russellxz.click/72a326b6.jpeg",
+      "precio": 94000
+    },
+    {
+      "nombre": "❄️Koneko_Toujou",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐾Nekoshou_Supremo": 1,
+        "💪Fuerza_Sobrehumana": 1
+      },
+      "imagen": "https://cdn.russellxz.click/d4903491.jpeg",
+      "precio": 125000
+    },
+    {
+      "nombre": "🏹Katerea_Leviathan",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Hechicería_Suprema": 1,
+        "🌀Magia_Infernal": 1
+      },
+      "imagen": "https://cdn.russellxz.click/863a0027.jpeg",
+      "precio": 90000
+    },
+    {
+      "nombre": "🔥Sairaorg_Baal",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Fuerza_Divina": 1,
+        "🏴‍☠️Golpes_Demoniacos": 1
+      },
+      "imagen": "https://cdn.russellxz.click/fea61892.jpeg",
+      "precio": 91000
+    },
+    {
+      "nombre": "🏴‍☠️Kiba_Yuuto",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Danza_de_Espadas": 1,
+        "🌪️Filo_Invisible": 1
+      },
+      "imagen": "https://cdn.russellxz.click/e34af4a5.jpeg",
+      "precio": 92000
+    },
+    {
+      "nombre": "💀Rizevim_Livian_Lucifer",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "😈Demonio_Ancestral": 1,
+        "🔥Modo_Destructor": 1
+      },
+      "imagen": "https://cdn.russellxz.click/ed379cce.jpeg",
+      "precio": 93000
+    },
+    {
+      "nombre": "🏹Rossweisse",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Magia_Nórdica": 1,
+        "🔥Barrera_Defensiva": 1
+      },
+      "imagen": "https://cdn.russellxz.click/36ae3858.jpeg",
+      "precio": 94000
+    },
+    {
+      "nombre": "🔥Arthur_Pendragon",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🗡️Excalibur_Ruler": 1,
+        "🏰Caballero_Eterno": 1
+      },
+      "imagen": "https://cdn.russellxz.click/1c448233.jpeg",
+      "precio": 95000
+    },
+    {
+      "nombre": "👹Cao_Cao",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️True_Longinus": 1,
+        "🏴‍☠️Estratega_Supremo": 1
+      },
+      "imagen": "https://cdn.russellxz.click/c632f1cd.jpeg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🏔️Tannin",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Dragón_de_Fuego": 1,
+        "🏔️Señor_de_los_Dragones": 1
+      },
+      "imagen": "https://cdn.russellxz.click/d86a6d5f.jpeg",
+      "precio": 97000
+    },
+    {
+      "nombre": "🐉Vali_Lucifer",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Divine_Dividing": 1,
+        "🔥Modo_Juggernaut": 1
+      },
+      "imagen": "https://cdn.russellxz.click/87b87212.jpeg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🏹Azazel",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "😈Lanza_Longinus": 1,
+        "🔥Sabiduría_Angélica": 1
+      },
+      "imagen": "https://cdn.russellxz.click/b1216fab.jpeg",
+      "precio": 99000
+    },
+    {
+      "nombre": "⚔️Sirzechs_Lucifer",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Poder_de_Destrucción": 1,
+        "🏰Rey_Demonio": 1
+      },
+      "imagen": "https://cdn.russellxz.click/7b6d1ba5.jpeg",
+      "precio": 80000
+    },
+    {
+      "nombre": "🔥Asia_Argento",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "✨Sanación_Sagrada": 1,
+        "🕊️Bendición_Divina": 1
+      },
+      "imagen": "https://cdn.russellxz.click/c70c6de6.jpeg",
+      "precio": 82000
+    },
+    {
+      "nombre": "🎭Irina_Shidou",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏹Excalibur_Mimic": 1,
+        "💖Ángel_Caído": 1
+      },
+      "imagen": "https://cdn.russellxz.click/c3c8fb87.jpeg",
+      "precio": 93000
+    },
+    {
+      "nombre": "🏍️Takemichi_Hanagaki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⏳Salto_en_el_Tiempo": 1,
+        "💥Voluntad_Inquebrantable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163213345.jpg",
+      "precio": 75000
+    },
+    {
+      "nombre": "🔥Marley_Comandante",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏴‍☠️Dominio_Militar": 1,
+        "🎖️Conquista_Global": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742146430584.jpg",
+      "precio": 86000
+    },
+    {
+      "nombre": "🔥Grisha_Yeager",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧬Titán_de_Atadura": 1,
+        "🌀Voluntad_Heredada": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742146483543.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "🔥Kenny_Ackerman",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎯Maestro_Asesino": 1,
+        "🔥Doble_Pistola": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742146529577.jpg",
+      "precio": 10200
+    },
+    {
+      "nombre": "🔥Floch_Forster",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Fanatismo_Extremo": 1,
+        "💣Determinación_Explosiva": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147685941.jpg",
+      "precio": 97800
+    },
+    {
+      "nombre": "🔥Ymir",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Titán_Original": 1,
+        "🏴‍☠️Espíritu_Indomable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147728033.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🔥Porco_Galliard",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Titán_Mandíbula": 1,
+        "💀Ataque_Rapaz": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147777235.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "🔥Pieck_Finger",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Titán_Carguero": 1,
+        "🏹Estratega_Sigilosa": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147828650.jpg",
+      "precio": 94000
+    },
+    {
+      "nombre": "🔥Hange_Zoe",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧠Genio_Científico": 1,
+        "🛠️Investigación_de_Titanes": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147872686.jpg",
+      "precio": 91200
+    },
+    {
+      "nombre": "🔥Historia_Reiss",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "👑Reina_Legítima": 1,
+        "🌟Sangre_Real": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742148114734.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🔥Sasha_Blouuse",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎯Francotiradora_Experta": 1,
+        "🍖Amor_Por_La_Comida": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742148152840.jpg",
+      "precio": 94500
+    },
+    {
+      "nombre": "🔥Connie_Springer",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Velocidad_Feroz": 1,
+        "💪Lealtad_Inquebrantable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742148192136.jpg",
+      "precio": 94300
+    },
+    {
+      "nombre": "🔥Annie_Leonhart",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Titán_Hembra": 1,
+        "⚔️Combate_Letal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742148023863.jpg",
+      "precio": 92300
+    },
+    {
+      "nombre": "🔥Zeke_Yeager",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🦍Titán_Bestia": 1,
+        "🏹Lanzamiento_Preciso": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147438586.jpg",
+      "precio": 85000
+    },
+    {
+      "nombre": "🔥Reiner_Braun",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🛡️Titán_Acorazado": 1,
+        "💪Resistencia_Indestructible": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147915616.jpg",
+      "precio": 87000
+    },
+    {
+      "nombre": "🏹Armin_Arlert",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧠Estratega_Supremo": 1,
+        "🌊Titán_Colosal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147134161.jpg",
+      "precio": 82000
+    },
+    {
+      "nombre": "⚔️Levi_Ackerman",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Capitán_Élite": 1,
+        "🔥Corte_Rápido": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147181595.jpg",
+      "precio": 10005
+    },
+    {
+      "nombre": "🔥Erwin_Smith",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏆Líder_Visionario": 1,
+        "🎭Maestro_de_la_Estrategia": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147391101.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🏴‍☠️Strada",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎖️Excalibur_Rapidly": 1,
+        "🔥Guerrero_Leyenda": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742146956924.jpg",
+      "precio": 10200
+    },
+    {
+      "nombre": "⚔️Eren_Yeager",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌀Titán_Fundador": 1,
+        "🔥Rugido_Colosal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147008737.jpg",
+      "precio": 81000
+    },
+    {
+      "nombre": "⚡Mikasa_Ackerman",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🗡️Guerrera_Imparable": 1,
+        "💥Reflejos_Sobrehumanos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742147065298.jpg",
+      "precio": 93000
+    },
+    {
+      "nombre": "🔥Benimaru_Shinmon",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Rey_de_la_Destrucción": 1,
+        "🔥Dominio_Doble": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163887616.jpg",
+      "precio": 29000
+    },
+    {
+      "nombre": "🔥Joker",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎭Maestro_de_la_Intriga": 1,
+        "🃏Explosión_de_Pólvora": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163943433.jpg",
+      "precio": 97000
+    },
+    {
+      "nombre": "🔥Tamaki_Kotatsu",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐱Danza_de_las_Llamas": 1,
+        "🔥Látigo_Ígneo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163983138.jpg",
+      "precio": 92000
+    },
+    {
+      "nombre": "🔥Viktor_Licht",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧠Genio_Científico": 1,
+        "🕵️Investigación_Prohibida": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164016307.jpg",
+      "precio": 93200
+    },
+    {
+      "nombre": "🔥Sho_Kusakabe",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Congelación_Adola": 1,
+        "❄️Manipulación_Temporal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164060827.jpg",
+      "precio": 99000
+    },
+    {
+      "nombre": "⚔️Gabimaru",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Ninja_Inmortal": 1,
+        "🌀Ninjutsu_Prohibido": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164662205.jpg",
+      "precio": 92300
+    },
+    {
+      "nombre": "🔥Takehisa_Hinawa",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎯Tirador_Táctico": 1,
+        "🔥Balas_Pirocinéticas": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163803178.jpg",
+      "precio": 91000
+    },
+    {
+      "nombre": "🔥Maki_Oze",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Dominio_de_Llamas": 1,
+        "🔥Puño_Incendiario": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163760141.jpg",
+      "precio": 93400
+    },
+    {
+      "nombre": "🔥Aza_Chobe",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Guerrero_Ferroz": 1,
+        "🏆Instinto_Asesino": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164742299.jpg",
+      "precio": 84000
+    },
+    {
+      "nombre": "🏹Yamada_Asaemon_Sagiri",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Espadachina_Legendaria": 1,
+        "💖Voluntad_Firme": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164706934.jpg",
+      "precio": 93000
+    },
+    {
+      "nombre": "🔥Iris",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "✨Bendición_Divina": 1,
+        "🏥Curación_Espiritual": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163723717.jpg",
+      "precio": 87000
+    },
+    {
+      "nombre": "🎭Aza_Toma",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Lealtad_Inquebrantable": 1,
+        "🌪️Danza_Mortal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164790051.jpg",
+      "precio": 92300
+    },
+    {
+      "nombre": "🏯Tensen_Ran",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Ilusión_Mística": 1,
+        "🌸Inmortalidad_Divina": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164869763.jpg",
+      "precio": 95000
+    },
+    {
+      "nombre": "💀Tensen_Tao_Fa",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Transformación_Perfecta": 1,
+        "🌑Poder_Divino": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164918382.jpg",
+      "precio": 98300
+    },
+    {
+      "nombre": "⚡Shion_Yamada_Asaemon",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Espada_Veloz": 1,
+        "⚡Reflejos_Letales": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164954963.jpg",
+      "precio": 94200
+    },
+    {
+      "nombre": "🌀Nurugai",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌊Evasión_Impecable": 1,
+        "🏴‍☠️Superviviente_Tenaz": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164996951.jpg",
+      "precio": 75000
+    },
+    {
+      "nombre": "🔥Yuzuriha",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💃Ninja_Seductora": 1,
+        "🥷Maestra_del_Engaño": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165033118.jpg",
+      "precio": 80000
+    },
+    {
+      "nombre": "🌍Colette_Loire",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌱Princesa_de_la_Tierra": 1,
+        "🌿Magia_Terrenal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165971153.jpg",
+      "precio": 96700
+    },
+    {
+      "nombre": "🔥Sion_Ulster",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Mago_del_Fuego": 1,
+        "🔥Rival_Ardiente": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742166013478.jpg",
+      "precio": 97600
+    },
+    {
+      "nombre": "❄️Elfaria_Alvis_Serfort",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "❄️Maga_Prodigio": 1,
+        "🌬️Dominio_del_Hielo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165909365.jpg",
+      "precio": 92300
+    },
+    {
+      "nombre": "❄️Julius_Reinberg",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "❄️Noble_del_Hielo": 1,
+        "❄️Hechizos_Congelantes": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742166071007.jpg",
+      "precio": 98000
+    },
+    {
+      "nombre": "🍃Wignall_Lindor",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🍃Elfo_Ilusionista": 1,
+        "🍃Magia_de_Viento": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742166109925.jpg",
+      "precio": 96000
+    },
+    {
+      "nombre": "🔥Inui_Seishu",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Guerrero_Silencioso": 1,
+        "💥Golpe_Directo": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163562480.jpg",
+      "precio": 83200
+    },
+    {
+      "nombre": "🔥Koko_Hajime",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💰Maestro_de_las_Finanzas": 1,
+        "🏴‍☠️Lealtad_Peligrosa": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163601611.jpg",
+      "precio": 82000
+    },
+    {
+      "nombre": "🔥Shinra_Kusakabe",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Pisada_del_Demonio": 1,
+        "🔥Llamas_Adola": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163637083.jpg",
+      "precio": 98700
+    },
+    {
+      "nombre": "🔥Arthur_Boyle",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Caballero_de_Fuego": 1,
+        "🌀Excalibur": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163674398.jpg",
+      "precio": 89200
+    },
+    {
+      "nombre": "👹Mu_Dan",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌿Técnica_Floral": 1,
+        "💀Veneno_Devastador": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165076191.jpg",
+      "precio": 86400
+    },
+    {
+      "nombre": "⚔️Will_Serfort",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🛡️Espadachín_Sin_Magia": 1,
+        "💪Determinación_Inquebrantable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165855249.jpg",
+      "precio": 94500
+    },
+    {
+      "nombre": "⚡Lihanna_Owenzaus",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Caballera_Rayo": 1,
+        "⚡Espadachina_Eléctrica": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742166162015.jpg",
+      "precio": 10050
+    },
+    {
+      "nombre": "🧠Rosty_Nowman",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🛠️Inventor_Genio": 1,
+        "🧠Creador_de_Artefactos": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742166210034.jpg",
+      "precio": 12000
+    },
+    {
+      "nombre": "🐾Kiki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🐾Familiar_Carbunclo": 1,
+        "🛡️Protección_Mágica": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742166249422.jpg",
+      "precio": 18600
+    },
+    {
+      "nombre": "🔥Chifuyu_Matsuno",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏴‍☠️Estratega_Fiel": 1,
+        "🏍️Corazón_Firme": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163383467.jpg",
+      "precio": 784007
+    },
+    {
+      "nombre": "🔥Kazutora_Hanemiya",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎭Instinto_Descontrolado": 1,
+        "💀Caos_Total": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163416327.jpg",
+      "precio": 76000
+    },
+    {
+      "nombre": "🔥Hanma_Shuji",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏴‍☠️Loco_por_la_Pelea": 1,
+        "💥Resistencia_Extrema": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163456980.jpg",
+      "precio": 75200
+    },
+    {
+      "nombre": "🔮Regan",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🧠Erudito_Sabio": 1,
+        "🔥Conocimiento_Arcano": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165603892.jpg",
+      "precio": 82450
+    },
+    {
+      "nombre": "🏹Krusty",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Guerrero_Brutal": 1,
+        "💥Fuerza_Descomunal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165543008.jpg",
+      "precio": 87600
+    },
+    {
+      "nombre": "🌟Marielle",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "✨Bendición_Sagrada": 1,
+        "🌺Carisma_Inspirador": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165498570.jpg",
+      "precio": 18740
+    },
+    {
+      "nombre": "🔥Isaac",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Comandante_Implacable": 1,
+        "🏆Liderazgo_Táctico": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165455414.jpg",
+      "precio": 100150
+    },
+    {
+      "nombre": "💀William_Massachusets",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Héroe_Trágico": 1,
+        "🔥Espada_de_la_Venganza": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165398196.jpg",
+      "precio": 98008
+    },
+    {
+      "nombre": "🏹Kazuma_Satou",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎭Maestro_de_la_Suerte": 1,
+        "🔥Robar_Habilidades": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164111552.jpg",
+      "precio": 83200
+    },
+    {
+      "nombre": "🎭Henrietta",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎶Encantadora_Melódica": 1,
+        "🌀Magia_de_Soporte": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165356397.jpg",
+      "precio": 84500
+    },
+    {
+      "nombre": "🔥Aqua",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💧Diosa_del_Agua": 1,
+        "✨Resurrección_Divina": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164192501.jpg",
+      "precio": 87600
+    },
+    {
+      "nombre": "🔥Megumin",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💥Explosión_Suprema": 1,
+        "🌀Magia_Prohibida": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164148282.jpg",
+      "precio": 94500
+    },
+    {
+      "nombre": "🛡️Darkness",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Caballera_Cruzada": 1,
+        "💪Resistencia_Infinita": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164230004.jpg",
+      "precio": 90000
+    },
+    {
+      "nombre": "🎭Yunyun",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Magia_Arcana": 1,
+        "🌀Explosión_Controlada": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164264443.jpg",
+      "precio": 87600
+    },
+    {
+      "nombre": "🔥Kisaki_Tetta",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎭Maestro_de_la_Manipulación": 1,
+        "🧠Genio_Estratega": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163504454.jpg",
+      "precio": 85400
+    },
+    {
+      "nombre": "🧠Shiroe",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎭Estratega_Supremo": 1,
+        "🔥Magia_Astral": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165792219.jpg",
+      "precio": 87800
+    },
+    {
+      "nombre": "🎓Workner_Norgram",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "📚Profesor_Estricto": 1,
+        "🌑Magia_Oscura": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742166284750.jpg",
+      "precio": 96900
+    },
+    {
+      "nombre": "🔥Wiz",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "❄️Lich_Benevolente": 1,
+        "🌀Magia_Prohibida": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164306666.jpg",
+      "precio": 12300
+    },
+    {
+      "nombre": "🔥Nyanta",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🏹Espadachín_Gourmet": 1,
+        "🎭Combate_Elegante": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165654298.jpg",
+      "precio": 100130
+    },
+    {
+      "nombre": "🏹Vanir",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎭Demonio_Adivino": 1,
+        "🔥Visión_Futura": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164383621.jpg",
+      "precio": 13400
+    },
+    {
+      "nombre": "🎩Chris",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔮Ladrón_Misterioso": 1,
+        "🏆Habilidades_Específicas": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164427363.jpg",
+      "precio": 960000
+    },
+    {
+      "nombre": "🏴‍☠️Eris",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🌟Diosa_de_la_Suerte": 1,
+        "💖Bendición_Celestial": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164475046.jpg",
+      "precio": 87600
+    },
+    {
+      "nombre": "🔥Sylphina",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🎶Dulce_Bardo": 1,
+        "🌬️Melodía_Mágica": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742164521003.jpg",
+      "precio": 100178
+    },
+    {
+      "nombre": "🔥Draken_Ryuguji",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "💪Fuerza_Colosal": 1,
+        "🏴‍☠️Lealtad_Eterna": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163303682.jpg",
+      "precio": 764500
+    },
+    {
+      "nombre": "🔥Baji_Keisuke",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚔️Espíritu_Fiero": 1,
+        "🏍️Guerrero_Indomable": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163344450.jpg",
+      "precio": 76500
+    },
+    {
+      "nombre": "⚔️Naotsugu",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🛡️Tanque_Indestructible": 1,
+        "💪Resistencia_Extrema": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742165750990.jpg",
+      "precio": 89700
+    },
+    {
+      "nombre": "🎯Akatsuki",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🥷Asesina_Sombra": 1,
+        "⚡Velocidad_Mortal": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742196467346.jpg",
+      "precio": 90000
+    },
+    {
+      "nombre": "🔥Mikey_Sano",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "⚡Patada_Dragon": 1,
+        "🏍️Líder_Invencible": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742163259618.jpg",
+      "precio": 100180
+    },
+    {
+      "nombre": "😈Issei_Hyoudou(caliente)",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "🔥Boosted_Gear": 1,
+        "🏴‍☠️Harem_King": 1
+      },
+      "imagen": "https://cdn.dorratz.com/files/1742145522983.jpg",
+      "precio": 94500
+    },
+    {
+      "nombre": "⚔️Sung_Jin-Woo",
+      "rango": "🌟 Principiante",
+      "nivel": 1,
+      "experiencia": 0,
+      "xpMax": 1000,
+      "vida": 100,
+      "habilidades": {
+        "☠️Sombra_Absoluta": 1,
+        "🐉Dominio_Monarca": 1
+      },
+      "imagen": "https://cdn.russellxz.click/890e3c01.jpeg",
+      "precio": 1000000
+    }
+  ],
+  "mercadoPersonajes": []
+}
