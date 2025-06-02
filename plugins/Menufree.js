@@ -3,38 +3,35 @@ const handler = async (msg, { conn }) => {
   const prefix = global.prefix;
 
   try {
-    // Reacción al usar el comando
-    await conn.sendMessage(chatId, { react: { text: "📋", key: msg.key } });
+    // Reacción al comando
+    await conn.sendMessage(chatId, { react: { text: "🎮", key: msg.key } });
 
-    // Imagen fija del menú
-    const imgUrl = 'https://cdn.russellxz.click/706326cf.jpeg';
+    // Imagen del menú
+    const imgUrl = 'https://cdn.russellxz.click/8b0e4c2c.jpeg';
 
-    // Menú con marca de agua al final
-    const texto = `╭──────>⋆☽⋆⋆☾⋆<──────╮
-   ✰ 𝙁𝙍𝙀𝙀 𝙁𝙄𝙍𝙀 𝙈𝙀𝙉𝙐 ✰
-╰──────>⋆☽⋆⋆☾⋆<──────╯
+    // Texto del menú rediseñado
+    const texto = `🎮 𓆩 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎 — 𝐌𝐄𝐍𝐔́ 𝐅𝐑𝐄𝐄 𝐅𝐈𝐑𝐄 𓆪
 
-🍉 𝗠𝗔𝗣𝗔𝗦 🍉
-🍉 ➺ *${prefix}mapas*
+🍉 𝐌𝐀𝐏𝐀𝐒 𝐃𝐄 𝐉𝐔𝐄𝐆𝐎  
+📍 ➤ ${prefix}mapas
 
-📃 𝗥𝗘𝗚𝗟𝗔𝗦 📃
-🍉 ➺ *${prefix}reglas*
-🍉 ➺ *${prefix}setreglas*
+📃 𝐑𝐄𝐆𝐋𝐀𝐒 𝐃𝐄 𝐄𝐍𝐅𝐑𝐄𝐍𝐓𝐀𝐌𝐈𝐄𝐍𝐓𝐎  
+📘 ➤ ${prefix}reglas  
+🖊️ ➤ ${prefix}setreglas
 
-🛡️ 𝗟𝗜𝗦𝗧𝗔 𝗩𝗘𝗥𝗦𝗨𝗦 🥷🏻
-🍉 ➺ *${prefix}4vs4*
-🍉 ➺ *${prefix}6vs6*
-🍉 ➺ *${prefix}12vs12*
-🍉 ➺ *${prefix}16vs16*
-🍉 ➺ *${prefix}20vs20*
-🍉 ➺ *${prefix}24vs24*
-🍉 ➺ *${prefix}guerr*
+⚔️ 𝐋𝐈𝐒𝐓𝐀 𝐕𝐄𝐑𝐒𝐔𝐒 𝐃𝐄 𝐂𝐋𝐀𝐍𝐄𝐒  
+🛡️ ➤ ${prefix}4vs4  
+🛡️ ➤ ${prefix}6vs6  
+🛡️ ➤ ${prefix}12vs12  
+🛡️ ➤ ${prefix}16vs16  
+🛡️ ➤ ${prefix}20vs20  
+🛡️ ➤ ${prefix}24vs24  
+🏹 ➤ ${prefix}guerr
 
-─────────────
-🤖 *Desarrollado por Russell XZ*
-🤖 *Azura Ultra*`;
+───────────────────
+👨‍💻 *Desarrollado por:* Russell XZ  
+🤖 *Cortana 2.0 Bot — Sección Free Fire*`;
 
-    // Enviar menú con imagen
     await conn.sendMessage(chatId, {
       image: { url: imgUrl },
       caption: texto
