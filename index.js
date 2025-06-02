@@ -1,6 +1,6 @@
 (async () => {
 let canalId = ["120363266665814365@newsletter"];  
-let canalNombre = ["AZURA ULTRA CHANNEL 👾"]
+let canalNombre = ["🪼 CORTANA 2.0 BOT 🪼"]
   function setupConnection(conn) {
   conn.sendMessage2 = async (chat, content, m, options = {}) => {
     const firstChannel = { 
@@ -127,7 +127,7 @@ function guardarModos(data) {
 let modos = cargarModos();
     
     // Configuración de consola
-    console.log(chalk.cyan(figlet.textSync("Azura Ultra Bot", { font: "Standard" })));    
+    console.log(chalk.cyan(figlet.textSync("Cortana 2.0 Bot", { font: "Standard" })));    
     console.log(chalk.green("\n✅ Iniciando conexión...\n"));
     
     // ✅ Mostrar opciones de conexión bien presentadas
