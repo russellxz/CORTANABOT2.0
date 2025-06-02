@@ -3873,29 +3873,19 @@ case 'menu': {
     const captionText = `╔═════════════════╗
 ║   🤖 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎 𝐁𝐎𝐓 🤖
 ║     𝘈𝘴𝘪𝘴𝘵𝘦𝘯𝘵𝘦 𝘝𝘪𝘳𝘵𝘶𝘢𝘭     
-╚═══════════════╝
+╚════════════════╝
 
 ╭── 📋 MENÚ PRINCIPAL ──╮
 
 📌 Prefijo Actual: 『${global.prefix}』
 📌 Usa el prefijo antes de cada comando.
 
-╭── ⚙️ SUBBOTS SYSTEM ──╮
-
-🚀 ¿Quieres tener tu propio bot?
-Usa los siguientes comandos:
-
-🔹 ${global.prefix}serbot / ${global.prefix}jadibot
-🔹 ${global.prefix}sercode / ${global.prefix}code
-🔹 ${global.prefix}delbots
-📌 Más opciones en el menú de subbots...
-
 ╭── ℹ️ INFORMACIÓN ──╮
 🔹 ${global.prefix}speedtest
 🔹 ${global.prefix}ping
 🔹 ${global.prefix}creador
 
-╭── 🗂️ MENÚS DISPONIBLES ──╮
+╭🗂️MENÚS DISPONIBLES ╮
 🔹 ${global.prefix}allmenu
 🔹 ${global.prefix}menugrupo
 🔹 ${global.prefix}menuaudio
@@ -3904,7 +3894,7 @@ Usa los siguientes comandos:
 🔹 ${global.prefix}menuowner
 🔹 ${global.prefix}menufree
 
-╭── 🛍️ SISTEMA DE VENTAS ──╮
+╭ 🛍️SISTEMA DE VENTAS ╮
 🔹 ${global.prefix}setstock / stock
 🔹 ${global.prefix}setnetflix / netflix
 🔹 ${global.prefix}setpago / pago
@@ -3949,10 +3939,10 @@ Usa los siguientes comandos:
 🔹 ${global.prefix}videoxxx / pornololi / nsfwneko
 🔹 ${global.prefix}waifu / neko / nsfwwaifu
 
-╭────────────────────────────╮
+╭────────────────╮
 ✨ 𝘾𝙤𝙧𝙩𝙖𝙣𝙖 2.0 está en constante mejora.  
 ¡Nuevas funciones serán añadidas pronto!  
-╰────────────────────────────╯
+╰────────────────╯
 
 👨‍💻 Desarrollado por *Russell XZ*`;
 
