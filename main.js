@@ -3677,7 +3677,7 @@ case 'allmenu': {
     await sock.sendMessage2(
       chatId,
       {
-        image: { url: "https://cdn.russellxz.click/9bd11d81.jpeg" },
+        image: { url: "https://cdn.russellxz.click/3d1075fc.jpeg" },
         caption: commandList
       },
       msg
@@ -3743,7 +3743,7 @@ case 'menuowner': {
     await sock.sendMessage2(
       chatId,
       {
-        image: { url: "https://cdn.russellxz.click/83229a2d.jpeg" },
+        image: { url: "https://cdn.russellxz.click/799e0033.jpeg" },
         caption: captionText
       },
       msg
@@ -3819,7 +3819,7 @@ case 'menurpg': {
     await sock.sendMessage2(
       chatId,
       {
-        image: { url: "https://cdn.russellxz.click/0abb8549.jpeg" },
+        image: { url: "https://cdn.russellxz.click/a4f19ed5.jpeg" },
         caption: menuText
       },
       msg
@@ -4005,7 +4005,7 @@ case 'menugrupo': {
     await sock.sendMessage2(
       chatId,
       {
-        image: { url: "https://cdn.russellxz.click/c113150e.jpeg" },
+        image: { url: "https://cdn.russellxz.click/a69577e7.jpeg" },
         caption: captionText
       },
       msg
