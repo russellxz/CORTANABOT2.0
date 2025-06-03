@@ -61,20 +61,21 @@ const handler = async (msg, { conn, text, usedPrefix }) => {
     }
 
     const caption = `
-╔═════════════════╗
-║✦ 𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 𝟮.𝟬 𝗕𝗢𝗧 ✦
-╚═════════════════╝
+╔═━──━══━──━═╗
+  🌟 𝓘𝓷𝓯𝓸 𝓭𝓮𝓵 𝓥𝓲𝓭𝓮𝓸 🌟
+╚═━──━══━──━═╝
 
-📀 *Info del video:*  
-├ 🎼 *Título:* ${videoData.title}
-├ ⏱️ *Duración:* ${videoData.duration}
-├ 👁️ *Vistas:* ${videoData.views}
-├ 👤 *Canal:* ${videoData.channel}
-├ 🗓️ *Publicado:* ${videoData.publish}
-├ 📦 *Tamaño:* ${videoData.size}
-├ 📹 *Calidad:* ${videoData.quality}
-└ 🔗 *Link:* https://youtu.be/${videoData.id}
-`;
+🎶 𝓣𝓲́𝓽𝓾𝓵𝓸: *${videoData.title}*
+⏱️ 𝓓𝓾𝓻𝓪𝓬𝓲𝓸́𝓷: *${videoData.duration}*
+👁️ 𝓥𝓲𝓼𝓽𝓪𝓼: *${videoData.views}*
+📺 𝓒𝓪𝓷𝓪𝓵: *${videoData.channel}*
+📅 𝓟𝓾𝓫𝓵𝓲𝓬𝓪𝓭𝓸: *${videoData.publish}*
+💾 𝓣𝓪𝓶𝓪𝓷̃𝓸: *${videoData.size}*
+🖥️ 𝓒𝓪𝓵𝓲𝓭𝓪𝓭: *${videoData.quality}*
+🔗 𝓛𝓲𝓷𝓴: https://youtu.be/${videoData.id}
+
+━━━━━━━━━━━━━━
+🤖 𝓒𝓞𝓡𝓣𝓐𝓝𝓐 2.0 𝓑𝓞𝓣 •`;
 
     await conn.sendMessage(msg.key.remoteJid, {
       document: fs.readFileSync(filePath),
