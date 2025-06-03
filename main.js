@@ -14874,9 +14874,6 @@ case "tt":
     }
     break;        
 
-        
-
-
 case "facebook":
 case "fb":
     if (!text) return sock.sendMessage(msg.key.remoteJid, { 
@@ -14933,7 +14930,7 @@ case "fb":
         }
 
         // 📜 Construcción del mensaje con resoluciones disponibles
-        const message = `Resoluciones disponibles:\n${results.map((res) => `- ${res.resolution}`).join('\n')}\n\n🔥 Enviado en 720p\n\n> 🍧 Solicitud procesada por api.dorratz.com\n\n───────\n© Azura Ultra`;
+        const message = `🎥 𝗩𝗶𝗱𝗲𝗼 𝗱𝗲 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 𝗹𝗶𝘀𝘁𝗼 🎯\n\nResoluciones disponibles:\n${results.map((res) => `- ${res.resolution}`).join('\n')}\n\n🔥 Enviado en 720p\n\n> ⚙️ Generado con api.dorratz.com\n───────\n🤖 *Cortana 2.0 Bot*`;
 
         // 📩 Enviar el video como normal
         await sock.sendMessage(msg.key.remoteJid, {
@@ -14957,8 +14954,10 @@ case "fb":
     }
     break;
     }
-}
-        
+}        
+
+
+
 
 
 module.exports = { handleCommand };
