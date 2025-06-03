@@ -14698,7 +14698,92 @@ case "kick": {
 }
         
         
+case "instagram":
+case "ig":
+    if (!text) return sock.sendMessage(msg.key.remoteJid, { 
+        text: `Ejemplo de uso:\n${global.prefix + command} https://www.instagram.com/p/CCoI4DQBGVQ/` 
+    }, { quoted: msg });
 
+    try {
+        // ⏳ Reacción de carga mientras se procesa
+        await sock.sendMessage(msg.key.remoteJid, {
+            react: { text: '⏳', key: msg.key }
+        });
+
+        const axios = require('axios');
+        const fs = require('fs');
+        const path = require('path');
+
+        const apiUrl = `https://api.dorratz.com/igdl?url=${text}`;
+        const response = await axios.get(apiUrl);
+        const { data } = response.data;
+
+        if (!data || data.length === 0) {
+            return sock.sendMessage(msg.key.remoteJid, { 
+                text: "❌ No se pudo obtener el video de Instagram." 
+            });
+        }
+
+        // 📜 Construcción del mensaje con marca de agua
+        const caption = `🎉 *¡DESCARGA LISTA!*
+
+📸 Instagram media detectada  
+✅ Video descargado sin errores  
+🔊 Listo para compartir con tu grupo o guardar
+
+━━━━━━━━━━━━━━  
+🚀 *API:* api.dorratz.com  
+🤖 *Cortana 2.0 Bot*`;
+
+        // Asegurar carpeta tmp
+        const tmpDir = path.resolve('./tmp');
+        if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
+
+        // 📩 Descargar y enviar cada video
+        for (let item of data) {
+            const filePath = path.join(tmpDir, `ig-${Date.now()}-${Math.floor(Math.random() * 1000)}.mp4`);
+
+            const videoRes = await axios.get(item.url, { responseType: 'stream' });
+            const writer = fs.createWriteStream(filePath);
+
+            await new Promise((resolve, reject) => {
+                videoRes.data.pipe(writer);
+                writer.on("finish", resolve);
+                writer.on("error", reject);
+            });
+
+            const stats = fs.statSync(filePath);
+            const sizeMB = stats.size / (1024 * 1024);
+
+            if (sizeMB > 99) {
+                fs.unlinkSync(filePath);
+                await sock.sendMessage(msg.key.remoteJid, {
+                    text: `❌ Un video pesa ${sizeMB.toFixed(2)}MB y excede el límite de 99MB.\n\n🔒 No se puede enviar para no saturar los servidores.`
+                }, { quoted: msg });
+                continue;
+            }
+
+            await sock.sendMessage(msg.key.remoteJid, { 
+                video: fs.readFileSync(filePath), 
+                mimetype: 'video/mp4',
+                caption: caption 
+            }, { quoted: msg });
+
+            fs.unlinkSync(filePath);
+        }
+
+        // ✅ Confirmación con reacción de éxito
+        await sock.sendMessage(msg.key.remoteJid, { 
+            react: { text: "✅", key: msg.key } 
+        });
+
+    } catch (error) {
+        console.error(error);
+        await sock.sendMessage(msg.key.remoteJid, { 
+            text: "❌ Ocurrió un error al procesar el enlace de Instagram." 
+        }, { quoted: msg });
+    }
+    break;
 
 case "tiktok":
 case "tt":
