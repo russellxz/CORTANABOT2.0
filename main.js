@@ -13860,7 +13860,7 @@ case 'info':
       react: { text: "ℹ️", key: msg.key }
     });
 
-    const infoMessage = `╭─ *🤖 AZURA ULTRA* ─╮
+    const infoMessage = `╭─ *🤖 CORTANA 2.0 BOT* ─╮
 │ 🔹 *Prefijo actual:* ${global.prefix}
 │ 👑 *Dueño:* Russell xz
 │ 🛠️ *Bot desarrollado desde cero* con la ayuda de Chatgpt.
@@ -13877,7 +13877,7 @@ case 'info':
 ├─〔 📜 *Menús y Comandos* 〕─
 │ 📌 Usa *${global.prefix}menu* para ver los comandos principales.  
 │ 📌 Usa *${global.prefix}allmenu* para ver todos los comandos disponibles.  
-│ 📌 Usa *${global.prefix}menu2* para ver los comandos de multimedia y guardado.  
+│ 📌 Usa *${global.prefix}menuaudio* para ver los comandos de multimedia y guardado.  
 ╰──────────────────╯`;
 
     await sock.sendMessage2(msg.key.remoteJid,
