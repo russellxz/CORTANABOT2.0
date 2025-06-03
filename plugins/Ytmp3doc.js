@@ -30,7 +30,18 @@ const handler = async (msg, { conn, text, usedPrefix }) => {
 
     await conn.sendMessage(msg.key.remoteJid, {
       image: { url: thumbnail },
-      caption: `🎧 *Título:* ${title}\n🕒 *Duración:* ${fduration}\n📥 *Tamaño:* ${data.size}\n\n⏳ Descargando audio...`
+       caption: `╭──〔 🎶 𝐃𝐄𝐓𝐀𝐋𝐋𝐄𝐒 𝐃𝐄𝐋 𝐀𝐔𝐃𝐈𝐎 〕──╮
+🎧 𝐓𝐢́𝐭𝐮𝐥𝐨: ${title}
+🕒 𝐃𝐮𝐫𝐚𝐜𝐢𝐨́𝐧: ${fduration}
+📦 𝐓𝐚𝐦𝐚𝐧̃𝐨: ${sizeMBFromApi.toFixed(2)} MB
+╰──────────────────────────╯
+
+🔄 *Procesando con precisión...*
+⚙️ *Aguarda un momento mientras finalizamos la descarga.*
+
+╭─────⟡
+│ 🤖 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎 𝐁𝐎𝐓
+╰─────⟡`
     }, { quoted: msg });
 
     const tmpDir = path.join(__dirname, '../tmp');
