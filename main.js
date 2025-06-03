@@ -857,7 +857,7 @@ case 'tovideo': {
     await sock.sendMessage(msg.key.remoteJid, {
       video: fs.readFileSync(outputPath),
       mimetype: 'video/mp4',
-      caption: '✅ Sticker convertido a video.\n\n© Azura Ultra 2.0'
+      caption: '✅ Sticker convertido a video.\n\n© cortana 2.0 bot'
     }, { quoted: msg });
 
     fs.unlinkSync(inputPath);
@@ -1101,25 +1101,26 @@ case 'whatmusic': {
         const channel = video.author.name || 'Desconocido';
 
         const banner = `
-╔══════════════════╗
-║  ✦ 𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 𝟮.𝟬 𝗕𝗢𝗧 ✦
-╚══════════════════╝
+╭〔 💿 𝗖𝗢𝗥𝗧𝗔𝗡𝗔 2.0 𝗕𝗢𝗧 〕╮
 
-🎵 *Canción detectada:*  
-╭───────────────╮  
-├ 📌 *Título:* ${title}
-├ 👤 *Artista:* ${artist}
-├ 💿 *Álbum:* ${album}
-├ 📅 *Lanzamiento:* ${release}
-├ 🔎 *Buscando:* ${video.title}
-├ ⏱️ *Duración:* ${fduration}
-├ 👁️ *Vistas:* ${views}
-├ 📺 *Canal:* ${channel}
-├ 🔗 *Link:* ${videoUrl}
-╰───────────────╯
+🎧 𝙈𝙪𝙨𝙞𝙘 𝘿𝙚𝙩𝙚𝙘𝙩𝙚𝙙 🎶
 
-⏳ *Espere un momento, descargando la canción...*
-═════════════════════`;
+╭──────⋆⋅☆⋅⋆──────╮
+┃ 📌 𝓣𝓲́𝓽𝓾𝓵𝓸: ${title}
+┃ 👤 𝓐𝓻𝓽𝓲𝓼𝓽𝓪: ${artist}
+┃ 💿 𝓐𝓵𝓫𝓾𝓶: ${album}
+┃ 📅 𝓛𝓪𝓷𝔃𝓪𝓶𝓲𝓮𝓷𝓽𝓸: ${release}
+┃ 🔍 𝓑𝓾𝓼𝓬𝓪𝓷𝓭𝓸: ${video.title}
+┃ ⏱️ 𝓓𝓾𝓻𝓪𝓬𝓲𝓸́𝓷: ${fduration}
+┃ 👁️ 𝓥𝓲𝓼𝓽𝓪𝓼: ${views}
+┃ 📺 𝓒𝓪𝓷𝓪𝓵: ${channel}
+┃ 🔗 𝓔𝓷𝓵𝓪𝓬𝓮: ${videoUrl}
+╰──────⋆⋅☆⋅⋆──────╯
+
+📥 𝓔𝓼𝓹𝓮𝓻𝓪 𝓾𝓷 𝓶𝓸𝓶𝓮𝓷𝓽𝓸...
+⏳ 𝓔𝓼𝓽𝓪𝓶𝓸𝓼 𝓭𝓮𝓼𝓬𝓪𝓻𝓰𝓪𝓷𝓭𝓸 𝓽𝓾 𝓬𝓪𝓷𝓬𝓲𝓸́𝓷 🎶
+╰━━━━━━━━━━━━━━━╯
+`;
 
         await sock.sendMessage(msg.key.remoteJid, {
             image: { url: thumbnail },
@@ -1243,24 +1244,26 @@ case 'whatmusic6': {
         if (!video) throw new Error("No se encontró la canción en YouTube");
 
         const banner = `
-╔══════════════════╗
-║ ✦ 𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 𝟮.𝟬 𝗕𝗢𝗧 ✦
-╚══════════════════╝
+╭〔 💿 𝗖𝗢𝗥𝗧𝗔𝗡𝗔 2.0 𝗕𝗢𝗧 〕╮
 
-🎵 *Canción detectada:*  
-╭───────────────╮  
-├ 📌 *Título:* ${title}
-├ 👤 *Artista:* ${artist}
-├ 💿 *Álbum:* ${album}
-├ 📅 *Lanzamiento:* ${release}
-├ 🔎 *Buscando:* ${video.title}
-├ ⏱️ *Duración:* ${video.timestamp}
-├ 👁️ *Vistas:* ${video.views.toLocaleString()}
-├ 📺 *Canal:* ${video.author.name}
-├ 🔗 *Link:* ${video.url}
-╰───────────────╯
+🎧 𝙈𝙪𝙨𝙞𝙘 𝘿𝙚𝙩𝙚𝙘𝙩𝙚𝙙 🎶
 
-⏳ *Espere un momento, descargando la canción...*`;
+╭──────⋆⋅☆⋅⋆──────╮
+┃ 📌 𝓣𝓲́𝓽𝓾𝓵𝓸: ${title}
+┃ 👤 𝓐𝓻𝓽𝓲𝓼𝓽𝓪: ${artist}
+┃ 💿 𝓐𝓵𝓫𝓾𝓶: ${album}
+┃ 📅 𝓛𝓪𝓷𝔃𝓪𝓶𝓲𝓮𝓷𝓽𝓸: ${release}
+┃ 🔍 𝓑𝓾𝓼𝓬𝓪𝓷𝓭𝓸: ${video.title}
+┃ ⏱️ 𝓓𝓾𝓻𝓪𝓬𝓲𝓸́𝓷: ${fduration}
+┃ 👁️ 𝓥𝓲𝓼𝓽𝓪𝓼: ${views}
+┃ 📺 𝓒𝓪𝓷𝓪𝓵: ${channel}
+┃ 🔗 𝓔𝓷𝓵𝓪𝓬𝓮: ${videoUrl}
+╰──────⋆⋅☆⋅⋆──────╯
+
+📥 𝓔𝓼𝓹𝓮𝓻𝓪 𝓾𝓷 𝓶𝓸𝓶𝓮𝓷𝓽𝓸...
+⏳ 𝓔𝓼𝓽𝓪𝓶𝓸𝓼 𝓭𝓮𝓼𝓬𝓪𝓻𝓰𝓪𝓷𝓭𝓸 𝓽𝓾 𝓬𝓪𝓷𝓬𝓲𝓸́𝓷 🎶
+╰━━━━━━━━━━━━━━━╯
+`;
 
         await sock.sendMessage(msg.key.remoteJid, {
             image: { url: video.thumbnail },
@@ -1760,24 +1763,25 @@ case 'ytmp4': {
         }
 
         const caption = `
-╔═════════════════╗
-║✦ 𝘼𝙕𝙐𝙍𝘼 𝙐𝙇𝙏𝙍𝘼 𝟮.𝟬 𝗕𝗢𝗧 ✦
-╚═════════════════╝
+╔✪〘 𝗖𝗢𝗥𝗧𝗔𝗡𝗔 2.0 𝗕𝗢𝗧 〙✪╗
 
-📀 *𝙄𝙣𝙛𝙤 𝙙𝙚𝙡 𝙫𝙞𝙙𝙚𝙤:*  
-╭───────────────╮  
-├ 🎼 *Título:* ${videoData.title}
-├ ⏱️ *Duración:* ${videoData.duration}
-├ 👁️ *Vistas:* ${videoData.views}
-├ 👤 *Canal:* ${videoData.channel}
-├ 🗓️ *Publicado:* ${videoData.publish}
-├ 📦 *Tamaño:* ${videoData.size}
-├ 📹 *Calidad:* ${videoData.quality}
-└ 🔗 *Link:* https://youtu.be/${videoData.id}
-╰───────────────╯
-┗ ⚠️ *¿No se reproduce?* Usa _${global.prefix}ff_
+🎶 𝑰𝒏𝒇𝒐 𝒅𝒆𝒍 𝑽𝒊́𝒅𝒆𝒐:
 
-⏳ *Procesado por Azura Ultra*`;
+❖ 𝑻𝒊́𝒕𝒖𝒍𝒐: ${videoData.title}
+❖ 𝑫𝒖𝒓𝒂𝒄𝒊𝒐́𝒏: ${videoData.duration}
+❖ 𝑽𝒊𝒔𝒕𝒂𝒔: ${videoData.views}
+❖ 𝑪𝒂𝒏𝒂𝒍: ${videoData.channel}
+❖ 𝑭𝒆𝒄𝒉𝒂 𝒅𝒆 𝒑𝒖𝒃𝒍𝒊𝒄𝒂𝒄𝒊𝒐́𝒏: ${videoData.publish}
+❖ 𝑻𝒂𝒎𝒂𝒏̃𝒐: ${videoData.size}
+❖ 𝑪𝒂𝒍𝒊𝒅𝒂𝒅: ${videoData.quality}
+❖ 𝑬𝒏𝒍𝒂𝒄𝒆: https://youtu.be/${videoData.id}
+
+╚═━━━━━━✪━━━━━━═╝
+
+⚠️ 𝙎𝙞 𝙣𝙤 𝙨𝙚 𝙧𝙚𝙥𝙧𝙤𝙙𝙪𝙘𝙚, 𝙪𝙨𝙖 _${global.prefix}ff_
+
+🔧 𝑷𝒓𝒐𝒄𝒆𝒔𝒂𝒅𝒐 𝒑𝒐𝒓 𝑪𝑶𝑹𝑻𝑨𝑵𝑨 𝟐.𝟎 𝑩𝑶𝑻
+`;
 
         await sock.sendMessage(msg.key.remoteJid, {
             video: fs.readFileSync(filePath),
@@ -1955,7 +1959,18 @@ case 'ytmp3': {
 
     await sock.sendMessage(msg.key.remoteJid, {
       image: { url: thumbnail },
-      caption: `🎧 *Título:* ${title}\n🕒 *Duración:* ${fduration}\n📥 *Tamaño:* ${sizeMBFromApi.toFixed(2)}MB\n\n⏳ Procesando audio...`
+      caption: `╭〔 🎶 𝐃𝐄𝐓𝐀𝐋𝐋𝐄𝐒 𝐃𝐄𝐋 𝐀𝐔𝐃𝐈𝐎 〕╮
+🎧 𝐓𝐢́𝐭𝐮𝐥𝐨: ${title}
+🕒 𝐃𝐮𝐫𝐚𝐜𝐢𝐨́𝐧: ${fduration}
+📦 𝐓𝐚𝐦𝐚𝐧̃𝐨: ${sizeMBFromApi.toFixed(2)} MB
+╰──────────────────╯
+
+🔄 *Procesando con precisión...*
+⚙️ *Aguarda un momento mientras finalizamos la descarga.*
+
+╭─────⟡
+│ 🤖 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎 𝐁𝐎𝐓
+╰─────⟡`
     }, { quoted: msg });
 
     const response = await axios.get(data.url, { responseType: 'stream' });
