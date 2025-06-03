@@ -13899,10 +13899,9 @@ case 'info':
   }
   break;
         
-        
-
 case "ping":
     try {
+        const start = Date.now(); // Marca de inicio para calcular el ping
         const now = new Date();
         const options = { 
             weekday: "long", 
@@ -13916,7 +13915,6 @@ case "ping":
         };
         const formattedDate = now.toLocaleDateString("es-ES", options);
 
-        // Obtener el tiempo activo en días, horas, minutos y segundos
         const uptime = os.uptime();
         const uptimeDays = Math.floor(uptime / 86400);
         const uptimeHours = Math.floor((uptime % 86400) / 3600);
@@ -13924,7 +13922,6 @@ case "ping":
         const uptimeSeconds = Math.floor(uptime % 60);
         const uptimeFormatted = `${uptimeDays} días, ${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s`;
 
-        // Información del sistema
         const freeMem = os.freemem();
         const totalMem = os.totalmem();
         const usedMem = totalMem - freeMem;
@@ -13937,7 +13934,6 @@ case "ping":
         const loadAvg = os.loadavg()[0].toFixed(2);
         const diskUsage = execSync("df -h / | awk 'NR==2 {print $3 \" / \" $2}'").toString().trim();
 
-        // Reaccionar al mensaje con un emoji
         await sock.sendMessage(msg.key.remoteJid, {
             react: {
                 text: "🏓",
@@ -13945,10 +13941,12 @@ case "ping":
             }
         });
 
-        // Enviar mensaje con imagen y detalles del servidor
+        const ping = Date.now() - start; // Cálculo de ping real
+
         await sock.sendMessage(msg.key.remoteJid, {
-            image: { url: "https://cdn.dorratz.com/files/1740372224017.jpg" }, 
+            image: { url: "https://cdn.russellxz.click/97dd9288.jpeg" }, 
             caption: `🏓 *Pong! El bot está activo.*\n\n` +
+                     `📶 *Ping Real:* ${ping} ms\n` +
                      `📅 *Fecha y hora actual:* ${formattedDate}\n\n` +
                      `🕒 *Tiempo Activo:* ${uptimeFormatted}\n\n` +
                      `💻 *Información del Servidor:*\n` +
@@ -13962,14 +13960,14 @@ case "ping":
                      `💾 *Disco:* ${diskUsage}\n\n` +
                      `🌐 *Alojado en:* *Sky Ultra Plus* 🚀\n` +
                      `📌 *Proveedor de Hosting de Confianza*`,
-            quoted: msg // Responder citando al mensaje original
+            quoted: msg
         });
 
     } catch (error) {
         console.error("❌ Error en el comando ping:", error);
         await sock.sendMessage(msg.key.remoteJid, {
             text: "❌ *Error al obtener información del servidor.*",
-            quoted: msg // Responder citando al mensaje original
+            quoted: msg
         });
     }
     break;
