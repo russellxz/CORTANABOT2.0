@@ -10822,7 +10822,7 @@ case 'verdad': {
         const verdad = pickRandom(global.verdad); // Selecciona una verdad aleatoria
 
         await sock.sendMessage(msg.key.remoteJid, {
-            image: { url: 'https://cdn.dorratz.com/files/1740781671173.jpg' },
+            image: { url: 'https://cdn.russellxz.click/cb9701a5.jpeg' },
             caption: `𝘏𝘢𝘴 𝘦𝘴𝘤𝘰𝘨𝘪𝘥𝘰 *𝘝𝘌𝘙𝘋𝘈𝘋*\n\n╱╲❀╱╲╱╲❀╱╲╱╲❀╱╲\n◆ ${verdad}\n╲╱❀╲╱╲╱❀╲╱╲╱❀╲╱\n\n© cortana 2.0 Bot`
         }, { quoted: msg });
 
@@ -10854,7 +10854,7 @@ case 'reto': {
         });
 
         await sock.sendMessage(msg.key.remoteJid, {
-            image: { url: 'https://cdn.dorratz.com/files/1740781675920.jpg' },
+            image: { url: 'https://cdn.russellxz.click/1e58dd69.jpeg' },
             caption: `𝘏𝘢𝘴 𝘦𝘴𝘤𝘰𝘨𝘪𝘥𝘰 *𝘙𝘌𝘛𝘖*\n\n╱╲❀╱╲╱╲❀╱╲╱╲❀╱╲\n◆ ${reto}\n╲╱❀╲╱╲╱❀╲╱╲╱❀╲╱\n\n© cortana 2.0 Bot`
         }, { quoted: msg });
 
