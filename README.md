@@ -1,38 +1,89 @@
-![CORTANA BOT 2.0](media/menu.jpg
-)
+<h1 align="center">🤖 CORTANA 2.0 BOT</h1>
 
-### Despliegue en SkyUltraPlus Host
-<a href="https://dash.corinplus.com"><img src="https://qu.ax/zFzXF.png" height="125px"></a>
+<p align="center">
+  <img src="https://cdn.russellxz.click/8d278a49.jpeg" width="600" alt="Cortana 2.0 Bot"/>
+</p>
 
-### Información sobre Sky
-- **Tutorial:** [`Aquí`](https://youtu.be/fZbcCLpSH6Y?si=1sDen7Bzmb7jVpAI)
-- **Dashboard:** [`Aquí`](https://dash.skyultraplus.com)
-- **Panel:** [`Aquí`](https://panel.skyultraplus.com)
-- **Estado de servicios:** [`Aquí`](https://estado.skyultraplus.com)
-- **Canal de WhatsApp:** [`Aquí`](https://whatsapp.com/channel/0029VakUvreFHWpyWUr4Jr0g)
-- **Comunidad:** [`Aquí`](https://chat.whatsapp.com/JPwcXvPEUwlEOyjI3BpYys)
-- **Contacto(s):** [`Gata Dios`](https://wa.me/message/B3KTM5XN2JMRD1) / [`Russell`](https://api.whatsapp.com/send/?phone=15167096032&text&type=phone_number&app_absent=0) / [`elrebelde21`](https://facebook.com/elrebelde21)
-- **Discord:** [`SkyUltraPlus`](https://discord.gg/Ph4eWsZ8)
+<p align="center">
+  <strong>Una inteligencia artificial poderosa, moderna y alojada en <a href="https://paymenter.skyultraplus.com">Sky Ultra Plus</a>.</strong><br>
+  Automatiza, responde, juega y mucho más... ¡Con estilo futurista!
+</p>
 
------------------- 
+<p align="center">
+  <a href="https://paymenter.skyultraplus.com">
+    <img src="https://cdn.dorratz.com/files/1742239358886.jpg" height="80" alt="Sky Ultra Plus Hosting">
+  </a>
+</p>
 
-## `𝙴𝙳𝙸𝚃𝙾𝚁 && 𝙼𝙾𝙳𝙸𝙵𝙸𝙲𝙰𝙳𝙾 𝙿𝙾𝚁 𝚁𝚄𝚂𝚂𝙴𝙻𝙻`
-<a href="https://github.com/russellxz"><img src="https://github.com/russellxz.png" width="250" height="250" alt="russellxz"/></a>
+<p align="center">
+  <a href="https://paymenter.skyultraplus.com">
+    <img src="https://img.shields.io/badge/💻 Hosting%20en%20SkyUltraPlus-blue?style=for-the-badge" />
+  </a>
+  <a href="https://youtu.be/xH_gQrqw4HI?si=9TUc5o6nJmT8JpVo">
+    <img src="https://img.shields.io/badge/🎬 Ver%20tutorial-red?style=for-the-badge" />
+  </a>
+  <a href="https://chat.whatsapp.com/EB4vMpRUw8R6me7myYF53M">
+    <img src="https://img.shields.io/badge/💬 Comunidad%20Cortana-green?style=for-the-badge" />
+  </a>
+  <a href="https://chat.whatsapp.com/E6iWpvGuJ8zJNPbN3zOr0D">
+    <img src="https://img.shields.io/badge/🌐 Comunidad%20SkyUltraPlus-purple?style=for-the-badge" />
+  </a>
+</p>
 
------------------- 
+---
 
-## `👑 𝙲𝙾𝙻𝙰𝙱𝙾𝚁𝙰𝙳𝙾𝚁𝙴𝚂 👑`
+## 🌟 ¿Qué es Cortana 2.0 Bot?
 
-[![GataNina-Li](https://github.com/GataNina-Li.png?size=100)](https://github.com/GataNina-Li) 
-[![Skidy89](https://github.com/Skidy89.png?size=100)](https://github.com/Skidy89) 
-[![AzamiJs](https://github.com/AzamiJs.png?size=100)](https://github.com/AzamiJs)  
-[![KatashiFukushima](https://github.com/KatashiFukushima.png?size=100)](https://github.com/KatashiFukushima)
-[![sensei-ofc](https://github.com/sensei-ofc.png?size=100)](https://github.com/sensei-ofc)
-[![diegojadibot](https://github.com/diegojadibot.png?size=100)](https://github.com/diegojadibot)
+Cortana 2.0 Bot es un **bot inteligente para WhatsApp** basado en la última tecnología de interacción.  
+Con una estética única inspirada en Halo y funciones premium, es la evolución de Azura Ultra, mejorada y más veloz.
 
-## `𝙰𝙶𝚁𝙰𝙳𝙴𝙲𝙸𝙼𝙸𝙴𝙽𝚃𝙾𝚂 & 𝙲𝚁𝙴𝙳𝙸𝚃𝙾𝚂` 
-<a href="https://github.com/elrebelde21"><img src="https://github.com/elrebelde21.png" width="250" height="250" alt="elrebelde21"/></a>
-<a href="https://github.com/ferhacks"><img src="https://github.com/ferhacks.png" width="150" height="150" alt="ferhacks"/></a>
-<a href="https://github.com/WhiskeySockets/Baileys"><img src="https://github.com/WhiskeySockets.png" width="150" height="150" alt="adiwajshing"/>
-</a>
-<a href="https://github.com/ds6/bails"><img src="https://github.com/ds6.png" width="150" height="150" alt="ds6"/></a>
+> 🚀 **Funciones**:
+- Comandos personalizados
+- Juegos interactivos como Verdad o Reto
+- Generador de Stickers, Menús animados y mucho más
+- Gestión de grupos, sistemas de niveles, economía, plugins...
+
+---
+
+## 📦 Alojado en:
+
+**🖥 Sky Ultra Plus**  
+Hosting veloz, seguro, y con panel de control intuitivo.  
+Tu bot merecía lo mejor, y aquí está:
+
+👉 **[¡Ir a Sky Ultra Plus!](https://paymenter.skyultraplus.com)**
+
+---
+
+## 🎬 Video tutorial
+
+Aprende a instalar y configurar Cortana en menos de 10 minutos:  
+📺 **[Ver en YouTube](https://youtu.be/xH_gQrqw4HI?si=9TUc5o6nJmT8JpVo)**
+
+---
+
+## 👑 Creador y Colaboradores
+
+💻 **𝐃𝐞𝐬𝐚𝐫𝐫𝐨𝐥𝐥𝐚𝐝𝐨𝐫 𝐩𝐫𝐢𝐧𝐜𝐢𝐩𝐚𝐥:**  
+- 👑 **Russell XZ** — *Creador de Azura Ultra y fundador de Sky Ultra Plus*
+
+🤖 **𝐂𝐨𝐥𝐚𝐛𝐨𝐫𝐚𝐝𝐨𝐫𝐞𝐬:**  
+- 🔹 [DIEGO-OFC](https://github.com/DIEGO-OFC)  
+- 🔹 [Eliasar54](https://github.com/Eliasar54)
+
+📢 ¡Gracias por apoyar el desarrollo de este poderoso bot!
+
+---
+
+## 💬 Comunidades
+
+Únete a nuestras comunidades y entérate de las actualizaciones, soporte y novedades:
+
+- 🤖 [Comunidad Cortana](https://chat.whatsapp.com/EB4vMpRUw8R6me7myYF53M)  
+- ☁️ [Comunidad Sky Ultra Plus](https://chat.whatsapp.com/E6iWpvGuJ8zJNPbN3zOr0D)
+
+---
+
+<p align="center">
+  <b>✨ Cortana 2.0 Bot — El futuro de los bots de WhatsApp empieza aquí. ✨</b>
+</p>
