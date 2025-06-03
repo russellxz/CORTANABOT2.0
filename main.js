@@ -280,29 +280,31 @@ case 'play': {
     const thumbnail = video.thumbnail;
 
     const info = `
-╔═════════════════╗
-║✦ 𝘼𝙕𝙐𝙍𝘼 𝙐𝗹𝗍𝗋𝗮 ✦
-╚═════════════════╝
-📀 *𝙄𝗻𝗳𝗼 𝗱𝗲𝗹 𝘃𝗶𝗱𝗲𝗼:*  
-╭───────────────╮  
-├ 🎼 *Título:* ${title}
-├ ⏱️ *Duración:* ${duration}
-├ 👁️ *Vistas:* ${views}
-├ 👤 *Autor:* ${author}
-└ 🔗 *Link:* ${videoUrl}
+╭─╼⃝🌟 𝓒𝓞𝓡𝓣𝓐𝓝𝓐 2.0 𝓑𝓞𝓣 🌟╾⃝─╮
+
+🎼 𝓓𝓮𝓽𝓪𝓵𝓵𝓮𝓼 𝓭𝓮𝓵 𝓥𝓲𝓭𝓮𝓸:
+╭───────────────╮
+├ 🎶 𝓣í𝓽𝓾𝓵𝓸: ${title}
+├ ⏱️ 𝓓𝓾𝓻𝓪𝓬𝓲ó𝓷: ${duration}
+├ 👁️ 𝓥𝓲𝓼𝓽𝓪𝓼: ${views}
+├ 👤 𝓐𝓾𝓽𝓸𝓻: ${author}
+└ 🔗 𝓔𝓷𝓵𝓪𝓬𝓮: ${videoUrl}
 ╰───────────────╯
-📥 *Opciones de Descargas si usas termux o estás en otros host que no sea Sky Ultra Plus:*  
-┣ 🎵 *Audio:* _${global.prefix}play5 boza hoy_
-┣ 🎥 *Video:* _${global.prefix}play6 boza hoy_
-┗ ⚠️ *¿No se reproduce?* Usa _${global.prefix}ff_
-═════════════════════  
-   𖥔 Azura Ultra 𖥔
-═════════════════════
-✳️ *Para descargar desde este mensaje:*
-• Responde con *1* o *audio* para recibir la música.
-• Responde con *2* o *video* para recibir el video.
-• Responde con *3* o *musicadoc* para recibir música como documento.
-• Responde con *4* o *videodoc* para recibir el video como documento.
+
+📥 𝓜𝓸𝓭𝓸 𝓿𝓲𝓻𝓽𝓾𝓪𝓵 𝓸 𝓽𝓮𝓻𝓶𝓾𝔁:
+┣ 🎧 𝓐𝓾𝓭𝓲𝓸: _${global.prefix}play5 boza hoy_
+┣ 📹 𝓥𝓲𝓭𝓮𝓸: _${global.prefix}play6 boza hoy_
+┗ ⚠️ 𝓢𝓲 𝓯𝓪𝓵𝓵𝓪, 𝓾𝓼𝓪: _${global.prefix}ff_
+
+╭───────────✦
+✳️ 𝓟𝓪𝓻𝓪 𝓭𝓮𝓼𝓬𝓪𝓻𝓰𝓪 𝓭𝓲𝓻𝓮𝓬𝓽𝓪:
+➤ 𝟏 o *audio* – 𝓜𝓾𝓼𝓲𝓬𝓪  
+➤ 𝟐 o *video* – 𝓥𝓲𝓭𝓮𝓸  
+➤ 𝟑 o *musicadoc* – 𝓐𝓾𝓭𝓲𝓸 𝓭𝓸𝓬  
+➤ 𝟒 o *videodoc* – 𝓥𝓲𝓭𝓮𝓸 𝓭𝓸𝓬  
+╰───────────✦
+
+🤖 𝓒𝓸𝓻𝓽𝓪𝓷𝓪 2.0 – 𝓣𝓾 𝓑𝓸𝓽 𝓘𝓷𝓽𝓮𝓵𝓲𝓰𝓮𝓷𝓽𝓮 🎧
 `;
 
     const sent = await sock.sendMessage(chatId, {
@@ -355,29 +357,31 @@ case 'play2': {
     const thumbnail = video.thumbnail;
 
     const info = `
-╔═════════════════╗
-║✦ 𝘼𝙕𝙐𝙍𝘼 𝙐𝗹𝗍𝗋𝗮 ✦
-╚═════════════════╝
-📀 *𝙄𝗻𝗳𝗼 𝗱𝗲𝗹 𝘃𝗶𝗱𝗲𝗼:*  
-╭───────────────╮  
-├ 🎼 *Título:* ${title}
-├ ⏱️ *Duración:* ${duration}
-├ 👁️ *Vistas:* ${views}
-├ 👤 *Autor:* ${author}
-└ 🔗 *Link:* ${videoUrl}
+╭─╼⃝🌟 𝓒𝓞𝓡𝓣𝓐𝓝𝓐 2.0 𝓑𝓞𝓣 🌟╾⃝─╮
+
+🎼 𝓓𝓮𝓽𝓪𝓵𝓵𝓮𝓼 𝓭𝓮𝓵 𝓥𝓲𝓭𝓮𝓸:
+╭───────────────╮
+├ 🎶 𝓣í𝓽𝓾𝓵𝓸: ${title}
+├ ⏱️ 𝓓𝓾𝓻𝓪𝓬𝓲ó𝓷: ${duration}
+├ 👁️ 𝓥𝓲𝓼𝓽𝓪𝓼: ${views}
+├ 👤 𝓐𝓾𝓽𝓸𝓻: ${author}
+└ 🔗 𝓔𝓷𝓵𝓪𝓬𝓮: ${videoUrl}
 ╰───────────────╯
-📥 *Opciones de Descargas si usas termux o estás en otros host que no sea Sky Ultra Plus:*  
-┣ 🎵 *Audio:* _${global.prefix}play5 boza hoy_
-┣ 🎥 *Video:* _${global.prefix}play6 boza hoy_
-┗ ⚠️ *¿No se reproduce?* Usa _${global.prefix}ff_
-═════════════════════  
-   𖥔 Azura Ultra  𖥔
-═════════════════════
-✳️ *Para descargar desde este mensaje:*
-• Responde con *1* o *audio* para recibir la música.
-• Responde con *2* o *video* para recibir el video.
-• Responde con *3* o *musicadoc* para recibir música como documento.
-• Responde con *4* o *videodoc* para recibir el video como documento.
+
+📥 𝓜𝓸𝓭𝓸 𝓿𝓲𝓻𝓽𝓾𝓪𝓵 𝓸 𝓽𝓮𝓻𝓶𝓾𝔁:
+┣ 🎧 𝓐𝓾𝓭𝓲𝓸: _${global.prefix}play5 boza hoy_
+┣ 📹 𝓥𝓲𝓭𝓮𝓸: _${global.prefix}play6 boza hoy_
+┗ ⚠️ 𝓢𝓲 𝓯𝓪𝓵𝓵𝓪, 𝓾𝓼𝓪: _${global.prefix}ff_
+
+╭───────────✦
+✳️ 𝓟𝓪𝓻𝓪 𝓭𝓮𝓼𝓬𝓪𝓻𝓰𝓪 𝓭𝓲𝓻𝓮𝓬𝓽𝓪:
+➤ 𝟏 o *audio* – 𝓜𝓾𝓼𝓲𝓬𝓪  
+➤ 𝟐 o *video* – 𝓥𝓲𝓭𝓮𝓸  
+➤ 𝟑 o *musicadoc* – 𝓐𝓾𝓭𝓲𝓸 𝓭𝓸𝓬  
+➤ 𝟒 o *videodoc* – 𝓥𝓲𝓭𝓮𝓸 𝓭𝓸𝓬  
+╰───────────✦
+
+🤖 𝓒𝓸𝓻𝓽𝓪𝓷𝓪 2.0 – 𝓣𝓾 𝓑𝓸𝓽 𝓘𝓷𝓽𝓮𝓵𝓲𝓰𝓮𝓷𝓽𝓮 🎧
 `;
 
     const sent = await sock.sendMessage(chatId, {
