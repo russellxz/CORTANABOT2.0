@@ -88,7 +88,7 @@ const handler = async (msg, { conn, text, command }) => {
 
     await conn.sendMessage(msg.key.remoteJid, {
       image: { url: thumbnail },
-      caption: `╭───🎬 *DESCARGADOR YTMP45* ───╮
+      caption: `╭─🎬 *CORTANA 2.0 BOT* ─╮
 │
 │ 📌 *Título:* ${title}
 │ 👤 *Autor:* ${author?.name || 'Desconocido'}
@@ -98,7 +98,7 @@ const handler = async (msg, { conn, text, command }) => {
 │
 │ ⏳ *Procesando video...*
 │
-╰──────────────────────────╯`
+╰────────────╯`
     }, { quoted: msg });
 
     const { downloadUrl } = await ddownr.download(url, quality);
