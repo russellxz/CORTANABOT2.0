@@ -1,4 +1,4 @@
-<h1 align="center">🤖 CORTANA 2.0 BOT</h1>
+<h1 align="center">🪼 CORTANA 2.0 BOT 🪼</h1>
 
 <p align="center">
   <img src="https://cdn.russellxz.click/8d278a49.jpeg" width="600" alt="Cortana 2.0 Bot"/>
