@@ -4663,7 +4663,7 @@ case 'parejas': {
 
     // Descargar la imagen desde la URL usando axios
     const axios = require("axios");
-    const imageUrl = "https://cdn.dorratz.com/files/1741340936306.jpg";
+    const imageUrl = "https://cdn.russellxz.click/84503c89.jpeg";
     let imageBuffer;
     try {
       const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
@@ -4823,7 +4823,7 @@ case 'todos': {
     const extraMsg = args.join(" ");
 
     let finalMsg = "━〔 *📢 INVOCACIÓN 📢* 〕━➫\n";
-    finalMsg += "٩(͡๏̯͡๏)۶ Por Azura Ultra ٩(͡๏̯͡๏)۶\n";
+    finalMsg += "٩(͡๏̯͡๏)۶ CORTANA 2.0 BOT ٩(͡๏̯͡๏)۶\n";
     if (extraMsg.trim().length > 0) {
       finalMsg += `\n❑ Mensaje: ${extraMsg}\n\n`;
     } else {
