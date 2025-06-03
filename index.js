@@ -709,7 +709,7 @@ try {
         [docMode ? 'document' : 'video']: fs.readFileSync(filePath),
         mimetype: 'video/mp4',
         fileName: `${data.title}.mp4`,
-        caption: docMode ? undefined : `🎬 Aquí tiene su video.\n\nDisfrútelo y continúe explorando el mundo digital.\n\n© Azura Ultra & Cortana`
+        caption: docMode ? undefined : `🎬 Aquí tiene su video.\n\nDisfrútelo y continúe explorando el mundo digital.\n\n©Cortana 2.0 bot`
       }, { quoted: msg });
 
       fs.unlinkSync(filePath);
