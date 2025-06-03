@@ -14929,10 +14929,9 @@ case "fb":
             }, { quoted: msg });
         }
 
-        // 📜 Construcción del mensaje con resoluciones disponibles
-        const message = `🎥 𝗩𝗶𝗱𝗲𝗼 𝗱𝗲 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 𝗹𝗶𝘀𝘁𝗼 🎯\n\nResoluciones disponibles:\n${results.map((res) => `- ${res.resolution}`).join('\n')}\n\n🔥 Enviado en 720p\n\n> ⚙️ Generado con api.dorratz.com\n───────\n🤖 *Cortana 2.0 Bot*`;
+        // 📜 Mensaje final sin resoluciones ni 720
+        const message = `🎥 𝗩𝗶𝗱𝗲𝗼 𝗱𝗲 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 𝗹𝗶𝘀𝘁𝗼 🎯\n\n> ⚙️ DESCARGADO con api.dorratz.com\n───────\n🤖 *Cortana 2.0 Bot*`;
 
-        // 📩 Enviar el video como normal
         await sock.sendMessage(msg.key.remoteJid, {
             video: fs.readFileSync(filePath),
             mimetype: 'video/mp4',
@@ -14941,7 +14940,6 @@ case "fb":
 
         fs.unlinkSync(filePath);
 
-        // ✅ Confirmación con reacción de éxito
         await sock.sendMessage(msg.key.remoteJid, { 
             react: { text: "✅", key: msg.key } 
         });
@@ -14954,8 +14952,7 @@ case "fb":
     }
     break;
     }
-}        
-
+}
 
 
 
