@@ -9137,7 +9137,7 @@ case 'supermascota': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -9274,7 +9274,7 @@ case 'presumir': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -9411,7 +9411,7 @@ case 'entrenar': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -9548,7 +9548,7 @@ case 'pasear': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -9686,7 +9686,7 @@ case 'cazar': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -9823,7 +9823,7 @@ case 'darcariño': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -9960,7 +9960,7 @@ case 'darcomida': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -10100,7 +10100,7 @@ case 'nivelmascota': {
         let userId = msg.key.participant || msg.key.remoteJid;
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta en el gremio Azura Ultra.*\n\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta en el gremio Cortana 2.0..*\n\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -10190,7 +10190,7 @@ case 'daragua': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -10339,7 +10339,7 @@ case 'hosp': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -10410,7 +10410,7 @@ case 'ret': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0..*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -10481,7 +10481,7 @@ case 'dep': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0..*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -10553,7 +10553,7 @@ case 'nivel': {
         // ❌ Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             return sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta registrada en el gremio Cortana 2.0.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
         }
 
@@ -10704,7 +10704,7 @@ case 'visión': {
                 caption: `🖼️ *Imagen generada para:* ${userMention}\n` +
                          `📌 *Descripción:* ${query}\n\n` +
                          `🍧 API utilizada: https://api.dorratz.com\n` +
-                         `© Azura Ultra 2.0 Bot`,
+                         `© Cortana 2.0 Bot`,
                 mentions: [participant] // Menciona al usuario (o al bot mismo si fuera el caso)
             },
             { quoted: msg }
@@ -10783,7 +10783,7 @@ case 'pixai': {
                 msg.key.remoteJid,
                 {
                     image: { url: imageUrl },
-                    caption: `🎨 *Imagen generada para:* ${userMention}\n📌 *Descripción:* ${prompt}\n\n🍧 API utilizada: https://api.dorratz.com\n© Azura Ultra 2.0 Bot`,
+                    caption: `🎨 *Imagen generada para:* ${userMention}\n📌 *Descripción:* ${prompt}\n\n🍧 API utilizada: https://api.dorratz.com\n© Cortana 2.0 Bot`,
                     mentions: [participant] // Menciona al usuario (o bot si es el emisor)
                 },
                 { quoted: msg }
@@ -10937,7 +10937,7 @@ case 'memes': {
 
         await sock.sendMessage(msg.key.remoteJid, {
             image: { url: meme },
-            caption: "🤣 *¡Aquí tienes un meme!*\n\n© Azura Ultra"
+            caption: "🤣 *¡Aquí tienes un meme!*\n\n© Cortana 2.0 Bot"
         }, { quoted: msg });
 
     } catch (e) {
@@ -10996,7 +10996,7 @@ case 'hd': {
         // 📤 Enviar imagen con la marca de agua en el texto
         await sock.sendMessage(msg.key.remoteJid, {
             image: pr,
-            caption: "✨ *Imagen mejorada con éxito.*\n\n© Azura Ultra 2.0 Bot"
+            caption: "✨ *Imagen mejorada con éxito.*\n\n© Cortana 2.0 Bot"
         }, { quoted: msg });
 
         // ✅ Reacción de éxito
@@ -11186,7 +11186,7 @@ case 'ia': {
         const respuestaGPT4 = data.data.message;
 
         await sock.sendMessage(msg.key.remoteJid, { 
-            text: `✨ *GPT-4 responde a @${userId.replace("@s.whatsapp.net", "")}:*\n\n${respuestaGPT4}\n\n🔹 *Powered by Azura Ultra* 🤖`,
+            text: `✨ *GPT-4 responde a @${userId.replace("@s.whatsapp.net", "")}:*\n\n${respuestaGPT4}\n\n🔹 *Powered by Cortana* 🤖`,
             mentions: [userId] 
         }, { quoted: msg });
 
@@ -11296,7 +11296,7 @@ case 'gemini': {
         let respuestaGemini = json.message.trim();
 
         await sock.sendMessage(msg.key.remoteJid, { 
-            text: `✨ *Respuesta de Gemini para @${userId.replace("@s.whatsapp.net", "")}:*\n\n${respuestaGemini}\n\n🔹 *Powered by Azura Ultra 2.0 Bot* 🤖`,
+            text: `✨ *Respuesta de Gemini para @${userId.replace("@s.whatsapp.net", "")}:*\n\n${respuestaGemini}\n\n🔹 *Powered by Cortana 2.0 Bot* 🤖`,
             mentions: [userId] // Menciona al usuario en la respuesta
         }, { quoted: msg });
 
@@ -11353,7 +11353,7 @@ case 'simisimi': {
         const respuestaSimi = data.result;
 
         await sock.sendMessage(msg.key.remoteJid, { 
-            text: `✨ *Simi Simi responde a @${userId.replace("@s.whatsapp.net", "")}:*\n\n${respuestaSimi}\n\n🔹 *Powered by Azura Ultra 2.0 Bot* 🤖`,
+            text: `✨ *Simi Simi responde a @${userId.replace("@s.whatsapp.net", "")}:*\n\n${respuestaSimi}\n\n🔹 *Powered by Cortana 2.0 Bot* 🤖`,
             mentions: [userId] // Menciona al usuario en la respuesta
         }, { quoted: msg });
 
@@ -11395,7 +11395,7 @@ case 'topuser': {
 
         if (!rpgData.usuarios || Object.keys(rpgData.usuarios).length === 0) {
             await sock.sendMessage(msg.key.remoteJid, { 
-                text: "📜 *No hay miembros registrados en el Gremio Azura Ultra.*" 
+                text: "📜 *No hay miembros registrados en el Gremio Cortana 2.0.*" 
             }, { quoted: msg });
             return;
         }
@@ -11405,7 +11405,7 @@ case 'topuser': {
         // Ordenar por nivel de mayor a menor
         usuarios.sort((a, b) => b[1].nivel - a[1].nivel);
 
-        let ranking = `🏆 *Ranking de Jugadores del Gremio Azura Ultra* 🏆\n\n`;
+        let ranking = `🏆 *rαทкiทg ∂є jυgα∂σrєs ∂єℓ grємiσ cσrταทα 2.0* 🏆\n\n`;
         let mentions = [];
 
         usuarios.forEach(([userId, usuario], index) => {
@@ -11793,7 +11793,7 @@ case 'alaventa': {
             return;
         }
 
-        let mensaje = `🏪 *Mercado de Personajes - Azura Ultra* 🏪\n\n`;
+        let mensaje = `🏪 *Mercado de Personajes - Cortana 2.0* 🏪\n\n`;
         mensaje += `🎭 *Aquí puedes comprar personajes puestos a la venta por otros jugadores.*\n`;
         mensaje += `🛒 *Para comprar usa:* \n`;
         mensaje += `   📌 \`${global.prefix}comprar2 <nombre_personaje>\`\n\n`;
@@ -12231,7 +12231,7 @@ case 'rpg': {
    *${global.prefix}minar*, *${global.prefix}picar*, *${global.prefix}crime*, *${global.prefix}work*,  
    *${global.prefix}claim*, *${global.prefix}cofre*, *${global.prefix}minar2*, *${global.prefix}robar*  
 
-🚀 ¡Prepárate para la aventura en *Azura Ultra*! 🏆`;
+🚀 ¡Prepárate para la aventura en *Cortana 2.0*! 🏆`;
 
         await sock.sendMessage(msg.key.remoteJid, { edit: registroMensaje.key, text: "✅ *¡Registro completado!* Generando tu tarjeta de jugador..." }); 
         await new Promise(resolve => setTimeout(resolve, 2000)); 
@@ -12295,7 +12295,7 @@ case 'vermascotas': {
         }  
 
         // 📜 Mensaje principal con explicación  
-        let mensaje = ` 🐾 *Tus Mascotas - Azura Ultra* 🐾\n\n`;  
+        let mensaje = ` 🐾 *Tus Mascotas - Cortana 2.0* 🐾\n\n`;  
         mensaje += `📜 *Aquí puedes ver todas las mascotas que has comprado y sus estadísticas.*\n\n`;  
         mensaje += `🔹 Usa \`${global.prefix}mascota <número>\` para cambiar tu mascota principal.\n`;  
         mensaje += `🔹 Usa \`${global.prefix}curar\` para restaurar la vida de tu mascota.\n`;  
@@ -12658,7 +12658,7 @@ case 'deleteuser': {
 
         // 📩 Confirmar eliminación
         await sock.sendMessage(msg.key.remoteJid, {
-            text: `🗑️ *La cuenta de @${text} ha sido eliminada exitosamente del gremio Azura Ultra.*\n\n` +
+            text: `🗑️ *La cuenta de @${text} ha sido eliminada exitosamente del gremio Cortana 2.0.*\n\n` +
                   `🔹 *Sus personajes han sido devueltos a la tienda.*`,
             mentions: [userId]
         }, { quoted: msg });
@@ -12706,7 +12706,7 @@ case 'deleterpg': {
         // Verificar si el usuario está registrado
         if (!rpgData.usuarios[userId]) {
             await sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes un registro en el gremio Azura Ultra.*\n\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes un registro en el gremio Cortana 2.0.*\n\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
             return;
         }
@@ -12773,7 +12773,7 @@ case 'ok': {
 
         // Confirmar eliminación
         await sock.sendMessage(msg.key.remoteJid, { 
-            text: "🗑️ *Tu cuenta ha sido eliminada del gremio Azura Ultra.*\n\n🔹 Puedes volver a registrarte en cualquier momento usando `"+global.prefix+"rpg <nombre> <edad>`." 
+            text: "🗑️ *Tu cuenta ha sido eliminada del gremio Cortana 2.0.*\n\n🔹 Puedes volver a registrarte en cualquier momento usando `"+global.prefix+"rpg <nombre> <edad>`." 
         }, { quoted: msg });
 
         // ✅ Reacción de confirmación
@@ -12810,7 +12810,7 @@ case 'saldo': {
         // Verificar si el archivo existe
         if (!fs.existsSync(rpgFile)) {
             await sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta en el gremio Azura Ultra.*\n\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta en el gremio Cortana 2.0.*\n\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
             return;
         }
@@ -12822,7 +12822,7 @@ case 'saldo': {
         let userId = msg.key.participant || msg.key.remoteJid;
         if (!rpgData.usuarios[userId]) {
             await sock.sendMessage(msg.key.remoteJid, { 
-                text: `❌ *No tienes una cuenta en el gremio Azura Ultra.*\n\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+                text: `❌ *No tienes una cuenta en el gremio Cortana 2.0.*\n\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
             }, { quoted: msg });
             return;
         }
@@ -12979,7 +12979,7 @@ case 'tiendamascotas': {
         }
 
         // Explicación sobre la compra de mascotas 📜
-        let mensaje = `🏪 *Tienda de Mascotas - Azura Ultra* 🏪\n\n`;
+        let mensaje = `🏪 *Եíҽղժɑ ժҽ ʍɑՏϲօԵɑՏ - 𝐂𝐎𝐑𝐓𝐀𝐍𝐀 𝟐.𝟎* 🏪\n\n`;
         mensaje += `🐶 *Aquí puedes comprar mascotas para mejorar tu equipo.*\n`;
         mensaje += `🛍️ *Para comprar una mascota, usa:* \n`;
         mensaje += `   📌 \`${global.prefix}compra <nombre_mascota>\`\n`;
@@ -13057,7 +13057,7 @@ case 'tiendaper': {
         }
 
         // Explicación de compra al inicio 📜
-        let mensaje = `🏪 *Tienda de Personajes - Azura Ultra* 🏪\n\n`;
+        let mensaje = `🏪 *ᴛɪᴇɴᴅᴀ ᴅᴇ ᴘᴇʀsᴏɴᴀᴊᴇs - 𝚌𝚘𝚛𝚝𝚊𝚗𝚊 𝟸.𝟶* 🏪\n\n`;
         mensaje += `🎭 *Compra personajes de anime y mejora sus habilidades.*\n`;
         mensaje += `🛒 *Para comprar un personaje usa:* \n`;
         mensaje += `   📌 \`${global.prefix}comprar <nombre_personaje>\`\n`;
@@ -14385,7 +14385,7 @@ case 'clavelista': {
             mentions.push(`${user}@s.whatsapp.net`);
         }
 
-        listaMensaje += `🔹 *${clave}* → Guardado por: @${user}\n`;
+        listaMensaje += `🪼 *${clave}* → Guardado por: @${user}\n`;
     }
 
     // Agregar explicación de cómo recuperar multimedia
