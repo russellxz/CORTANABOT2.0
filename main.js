@@ -13882,7 +13882,7 @@ case 'info':
 
     await sock.sendMessage2(msg.key.remoteJid,
   {
-    image: { url: "https://cdn.dorratz.com/files/1744671222036.jpg" }, 
+    image: { url: "https://cdn.russellxz.click/8d278a49.jpeg" }, 
     caption: infoMessage 
   },
   msg 
