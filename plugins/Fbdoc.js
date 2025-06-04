@@ -66,7 +66,7 @@ const handler = async (msg, { conn, text, command }) => {
     }
 
     // Enviar el archivo guardado
-    const caption = `📄 *Resoluciones disponibles:*\n${results.map(r => `- ${r.resolution}`).join('\n')}\n\n📥 *Video descargado como documento (720p)*\n🍧 *API:* api.dorratz.com\n\n───────\n© Azura Ultra`;
+    const caption = `📄 *Resoluciones disponibles:*\n${results.map(r => `- ${r.resolution}`).join('\n')}\n\n📥 *Video descargado como documento (720p)*\n🍧 *API:* api.dorratz.com\n\n───────\n© Cortana 2.0`;
 
     await conn.sendMessage(chatId, {
       document: fs.readFileSync(filePath),
