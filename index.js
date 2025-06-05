@@ -393,7 +393,7 @@ if (fs.existsSync(welcomePath)) {
       "Hasta luego, y gracias por haber sido parte de nuestra comunidad 🚀💙.",
       "Chao, que tus futuros proyectos sean tan brillantes como tú 🌟✨. 🪼 CORTANA 2.0 BOT 🪼 te recuerda siempre.",
       "¡Nos vemos! 🪼 CORTANA 2.0 BOT 🪼 Bot te dice adiós con un corazón lleno de gratitud 🤗❤️.",
-      "¡Adiós! Que tu camino esté lleno de éxitos, te lo desea 🪼 CORTANA 2.0 BOT 🪼 Bot 🚀🌟.",
+      "¡Adiós! Que tu camino esté lleno de éxitos, te lo desea 🪼 CORTANA 2.0 BOT 🪼 🚀🌟.",
       "Hasta pronto, y gracias por haber compartido momentos inolvidables con 🪼 CORTANA 2.0 BOT 🪼 👋💖."
     ];
 
@@ -467,7 +467,7 @@ if (update.action === "add" && welcomeActivo) {
     try {
       profilePicUrl = await sock.profilePictureUrl(participant, "image");
     } catch (err) {
-      profilePicUrl = "https://cdn.dorratz.com/files/1741323171822.jpg";
+      profilePicUrl = "https://cdn.russellxz.click/2486b9cc.jpeg";
     }
 
     if (option < 0.5) {
