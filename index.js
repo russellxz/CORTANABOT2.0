@@ -373,28 +373,28 @@ if (fs.existsSync(welcomePath)) {
 }
     // Textos integrados para bienvenida y despedida
     const welcomeTexts = [
-      "¡Bienvenido(a)! Azura Ultra 2.0 Bot te recibe con los brazos abiertos 🤗✨. ¡Disfruta y comparte!",
-      "¡Hola! Azura Ultra 2.0 Bot te abraza con alegría 🎉🤖. ¡Prepárate para grandes aventuras!",
-      "¡Saludos! Azura Ultra 2.0 Bot te da la bienvenida para que descubras ideas brillantes 🚀🌟.",
-      "¡Bienvenido(a) al grupo! Azura Ultra 2.0 Bot te invita a explorar un mundo de posibilidades 🤩💡.",
-      "¡Qué alegría verte! Azura Ultra 2.0 Bot te recibe y te hace sentir en casa 🏠💖.",
+      "¡Bienvenido(a)! 🪼 CORTANA 2.0 BOT 🪼 Bot te recibe con los brazos abiertos 🤗✨. ¡Disfruta y comparte!",
+      "¡Hola! 🪼 CORTANA 2.0 BOT 🪼 Bot te abraza con alegría 🎉🤖. ¡Prepárate para grandes aventuras!",
+      "¡Saludos! 🪼 CORTANA 2.0 BOT 🪼 Bot te da la bienvenida para que descubras ideas brillantes 🚀🌟.",
+      "¡Bienvenido(a) al grupo! 🪼 CORTANA 2.0 BOT 🪼 Bot te invita a explorar un mundo de posibilidades 🤩💡.",
+      "¡Qué alegría verte! 🪼 CORTANA 2.0 BOT 🪼 Bot te recibe y te hace sentir en casa 🏠💖.",
       "¡Hola! Gracias por unirte; Azura Ultra 2.0 Bot te saluda con entusiasmo 🎊😊.",
-      "¡Bienvenido(a)! Cada nuevo miembro es una chispa de inspiración en Azura Ultra 2.0 Bot 🔥✨.",
-      "¡Saludos cordiales! Azura Ultra 2.0 Bot te envía un abrazo virtual 🤗💙.",
-      "¡Bienvenido(a)! Únete a la experiencia Azura Ultra 2.0 Bot y comparte grandes ideas 🎉🌈.",
-      "¡Hola! Azura Ultra 2.0 Bot te da la bienvenida para vivir experiencias inolvidables 🚀✨!"
+      "¡Bienvenido(a)! Cada nuevo miembro es una chispa de inspiración en 🪼 CORTANA 2.0 BOT 🪼 🔥✨.",
+      "¡Saludos cordiales! 🪼 CORTANA 2.0 BOT 🪼 Bot te envía un abrazo virtual 🤗💙.",
+      "¡Bienvenido(a)! Únete a la experiencia 🪼 CORTANA 2.0 BOT 🪼 Bot y comparte grandes ideas 🎉🌈.",
+      "¡Hola! 🪼 CORTANA 2.0 BOT 🪼 Bot te da la bienvenida para vivir experiencias inolvidables 🚀✨!"
     ];
     const farewellTexts = [
-      "¡Adiós! Azura Ultra 2.0 Bot te despide con gratitud y te desea éxitos en tus nuevos caminos 👋💫.",
-      "Hasta pronto, desde Azura Ultra 2.0 Bot te deseamos lo mejor y esperamos verte de nuevo 🌟🙏.",
-      "¡Chao! Azura Ultra 2.0 Bot se despide, pero siempre tendrás un lugar si decides regresar 🤗💔.",
-      "Nos despedimos con cariño; gracias por compartir momentos en Azura Ultra 2.0 Bot 🏠❤️.",
-      "¡Adiós, amigo(a)! Azura Ultra 2.0 Bot te manda un abrazo y te desea mucha suerte 🤝🌟.",
+      "¡Adiós! 🪼 CORTANA 2.0 BOT 🪼 Bot te despide con gratitud y te desea éxitos en tus nuevos caminos 👋💫.",
+      "Hasta pronto, desde 🪼 CORTANA 2.0 BOT 🪼 Bot te deseamos lo mejor y esperamos verte de nuevo 🌟🙏.",
+      "¡Chao! 🪼 CORTANA 2.0 BOT 🪼 se despide, pero siempre tendrás un lugar si decides regresar 🤗💔.",
+      "Nos despedimos con cariño; gracias por compartir momentos en 🪼 CORTANA 2.0 BOT 🪼 🏠❤️.",
+      "¡Adiós, amigo(a)! 🪼 CORTANA 2.0 BOT 🪼 Bot te manda un abrazo y te desea mucha suerte 🤝🌟.",
       "Hasta luego, y gracias por haber sido parte de nuestra comunidad 🚀💙.",
-      "Chao, que tus futuros proyectos sean tan brillantes como tú 🌟✨. Azura Ultra 2.0 Bot te recuerda siempre.",
-      "¡Nos vemos! Azura Ultra 2.0 Bot te dice adiós con un corazón lleno de gratitud 🤗❤️.",
-      "¡Adiós! Que tu camino esté lleno de éxitos, te lo desea Azura Ultra 2.0 Bot 🚀🌟.",
-      "Hasta pronto, y gracias por haber compartido momentos inolvidables con Azura Ultra 2.0 Bot 👋💖."
+      "Chao, que tus futuros proyectos sean tan brillantes como tú 🌟✨. 🪼 CORTANA 2.0 BOT 🪼 te recuerda siempre.",
+      "¡Nos vemos! 🪼 CORTANA 2.0 BOT 🪼 Bot te dice adiós con un corazón lleno de gratitud 🤗❤️.",
+      "¡Adiós! Que tu camino esté lleno de éxitos, te lo desea 🪼 CORTANA 2.0 BOT 🪼 Bot 🚀🌟.",
+      "Hasta pronto, y gracias por haber compartido momentos inolvidables con 🪼 CORTANA 2.0 BOT 🪼 👋💖."
     ];
 
 // Procesar según la acción: "add" (entrada) o "remove" (salida)
@@ -413,7 +413,7 @@ if (update.action === "add" && welcomeActivo) {
       try {
         profilePicUrl = await sock.profilePictureUrl(update.id, "image");
       } catch {
-        profilePicUrl = "https://cdn.dorratz.com/files/1741323171822.jpg";
+        profilePicUrl = "https://cdn.russellxz.click/2486b9cc.jpeg";
       }
     }
 
