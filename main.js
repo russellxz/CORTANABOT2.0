@@ -2989,7 +2989,7 @@ case 'gremio': {
         // Encabezado del mensaje con el total al principio
         let listaMiembros = 
 `╔══════════════════╗  
-║ 🏰 *Gremio Azura Ultra* 🏰 ║  
+║ 🏰 *Gremio Cortana 2.0* 🏰 ║  
 ╚══════════════════╝  
 
 📋 *Total de miembros registrados:* ${miembros.length}\n`;
@@ -3008,12 +3008,11 @@ case 'gremio': {
             listaMiembros += `   🎭 *Personajes:* ${numPersonajes}\n`;
         });
 
-        // Enviar resultado con fondo animado
-        await sock.sendMessage(msg.key.remoteJid, { 
-            video: { url: "https://cdn.dorratz.com/files/1740565316697.mp4" }, 
-            gifPlayback: true, 
-            caption: listaMiembros 
-        }, { quoted: msg });
+// Enviar resultado con imagen fija
+await sock.sendMessage(msg.key.remoteJid, { 
+    image: { url: "https://cdn.russellxz.click/0c4bb8ef.jpeg" }, 
+    caption: listaMiembros 
+}, { quoted: msg });
 
     } catch (error) {
         console.error("❌ Error en el comando .gremio:", error);
