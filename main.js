@@ -7279,7 +7279,7 @@ case 'verper': {
         }
 
         // 📜 **Lista de personajes del usuario**  
-        let mensaje = `🎭 *Tus Personajes Comprados - Azura Ultra* 🎭\n\n`;
+        let mensaje = `🎭 *Tus Personajes Comprados - Cortana 2.0* 🎭\n\n`;
 
         usuario.personajes.forEach((personaje, index) => { 
             mensaje += `═════════════════════\n`;  
