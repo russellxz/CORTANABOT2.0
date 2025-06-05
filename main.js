@@ -4804,7 +4804,6 @@ case 'todos': {
       return;
     }
 
-    // Obtener metadata del grupo y verificar si es admin
     const metadata = await sock.groupMetadata(chatId);
     const participant = metadata.participants.find(p => p.id.includes(sender));
     const isAdmin = participant?.admin === "admin" || participant?.admin === "superadmin";
@@ -4817,24 +4816,26 @@ case 'todos': {
     }
 
     const participants = metadata.participants;
-    const mentionList = participants.map(p => `➥ @${p.id.split("@")[0]}`).join("\n");
+    const mentionList = participants.map(p => `➤ @${p.id.split("@")[0]}`).join("\n");
     const messageText = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
     const args = messageText.trim().split(" ").slice(1);
     const extraMsg = args.join(" ");
 
-    let finalMsg = "━〔 *📢 INVOCACIÓN 📢* 〕━➫\n";
-    finalMsg += "٩(͡๏̯͡๏)۶ CORTANA 2.0 BOT ٩(͡๏̯͡๏)۶\n";
+    let finalMsg = `╔══『 🔊 INVOCACIÓN MASIVA 』══╗\n`;
+    finalMsg += `╟🔹 *CORTANA 2.0 BOT PRESENTE*\n`;
+    finalMsg += `╟👤 *Invocado por:* @${sender}\n`;
     if (extraMsg.trim().length > 0) {
-      finalMsg += `\n❑ Mensaje: ${extraMsg}\n\n`;
-    } else {
-      finalMsg += "\n";
+      finalMsg += `╟💬 *Mensaje:* ${extraMsg}\n`;
     }
+    finalMsg += `╚════════════════════════╝\n\n`;
+    finalMsg += `📲 *Etiquetando a todos los miembros...*\n\n`;
     finalMsg += mentionList;
 
     const mentionIds = participants.map(p => p.id);
 
     await sock.sendMessage(chatId, {
-      text: finalMsg,
+      image: { url: "https://cdn.russellxz.click/9b10fab1.jpeg" },
+      caption: finalMsg,
       mentions: mentionIds
     }, { quoted: msg });
 
