@@ -5874,79 +5874,6 @@ case 'minar2': {
     break;
 }
         
-case 'topuser': {
-  try {
-    // Reacción inicial
-    await sock.sendMessage(msg.key.remoteJid, { 
-      react: { text: "🏆", key: msg.key } 
-    });
-    
-    const rpgFile = "./rpg.json";
-    if (!fs.existsSync(rpgFile)) {
-      return sock.sendMessage(msg.key.remoteJid, {
-        text: `❌ *No hay datos de RPG. Usa \`${global.prefix}crearcartera\` para empezar.*`
-      }, { quoted: msg });
-    }
-    
-    let rpgData = JSON.parse(fs.readFileSync(rpgFile, "utf-8"));
-    let usuarios = rpgData.usuarios;
-    if (!usuarios || Object.keys(usuarios).length === 0) {
-      return sock.sendMessage(msg.key.remoteJid, {
-        text: "❌ *No hay usuarios registrados aún.*"
-      }, { quoted: msg });
-    }
-    
-    // Crear array para el ranking de usuarios basado en su nivel
-    let ranking = [];
-    for (let id in usuarios) {
-      let user = usuarios[id];
-      // Solo consideramos usuarios que tengan datos básicos de nivel y habilidades
-      if (typeof user.nivel === "number") {
-        let habilidades = Object.entries(user.habilidades || {})
-          .map(([key, value]) => `${key} (Nivel ${value.nivel || value})`)
-          .join(", ");
-        ranking.push({
-          id,
-          nombre: user.nombre,
-          nivel: user.nivel,
-          rango: user.rango || "Sin rango",
-          habilidades: habilidades || "Sin habilidades"
-        });
-      }
-    }
-    
-    // Ordenar el ranking por nivel descendente
-    ranking.sort((a, b) => b.nivel - a.nivel);
-    
-    // Construir mensaje del ranking
-    let mensajeRanking = "🏆 *Ranking de Jugadores* 🏆\n━━━━━━━━━━━━━━━━━━━━\n";
-    ranking.forEach((user, index) => {
-      mensajeRanking += `🥇 *#${index + 1} - @${user.id.split('@')[0]}*\n`;
-      mensajeRanking += `🎮 *Nivel:* ${user.nivel}\n`;
-      mensajeRanking += `📊 *Rango:* ${user.rango}\n`;
-      mensajeRanking += `⚡ *Habilidades:* ${user.habilidades}\n`;
-      mensajeRanking += "━━━━━━━━━━━━━━━━━━━━\n\n";
-    });
-    
-    // Enviar el ranking con la imagen de fondo
-    await sock.sendMessage(msg.key.remoteJid, { 
-      image: { url: "https://cdn.dorratz.com/files/1741194763651.jpg" },
-      caption: mensajeRanking,
-      mentions: ranking.map(u => u.id)
-    }, { quoted: msg });
-    
-  } catch (error) {
-    console.error("❌ Error en el comando .topuser:", error);
-    await sock.sendMessage(msg.key.remoteJid, { 
-      text: `❌ *Ocurrió un error al generar el ranking de jugadores. Inténtalo de nuevo.*`
-    }, { quoted: msg });
-    await sock.sendMessage(msg.key.remoteJid, { 
-      react: { text: "❌", key: msg.key }
-    });
-  }
-  break;
-}
-
 case 'topmascotas': {
   try {
     // Reacción inicial
@@ -11816,19 +11743,17 @@ case 'alaventa': {
             mensaje += `═════════════════════\n\n`;
         });
 
-        // 📢 Enviar el mensaje con video como GIF 🎥
-        await sock.sendMessage(msg.key.remoteJid, { 
-            video: { url: "https://cdn.dorratz.com/files/1740730170576.mp4" }, 
-            gifPlayback: true, 
-            caption: mensaje, 
-            mentions: rpgData.mercadoPersonajes.map(p => p.vendedor) // Menciona a los vendedores
-        }, { quoted: msg });
+// 📷 Enviar el mensaje con imagen  
+await sock.sendMessage(msg.key.remoteJid, { 
+    image: { url: "https://cdn.russellxz.click/cda2a3e1.jpeg" }, 
+    caption: mensaje, 
+    mentions: rpgData.mercadoPersonajes.map(p => p.vendedor) // Menciona a los vendedores
+}, { quoted: msg });
 
-        // ✅ Confirmación con reacción
-        await sock.sendMessage(msg.key.remoteJid, { 
-            react: { text: "✅", key: msg.key } 
-        });
-
+// ✅ Confirmación con reacción
+await sock.sendMessage(msg.key.remoteJid, { 
+    react: { text: "✅", key: msg.key } 
+});
     } catch (error) {
         console.error("❌ Error en el comando .alaventa:", error);
     }
@@ -13554,7 +13479,7 @@ case "s":
         // 🌟 Formato llamativo para la metadata del sticker 🌟
         let metadata = {
             packname: `✨ Lo Mandó Hacer: ${senderName} ✨`,
-            author: `🤖 Bot Creador: Azura Ultra\n🛠️ Desarrollado por: 𝙍𝙪𝙨𝙨𝙚𝙡𝙡 xz💻\n${fechaCreacion}`
+            author: `🤖 Bot Creador: Cortana 2.0\n🛠️ Desarrollado por: 𝙍𝙪𝙨𝙨𝙚𝙡𝙡 xz💻\n${fechaCreacion}`
         };
 
         let stickerBuffer;
