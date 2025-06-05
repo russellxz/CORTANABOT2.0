@@ -13080,17 +13080,16 @@ case 'tiendaper': {
             mensaje += `*╚══════════════════╝*\n\n`;
         });
 
-        // Enviar mensaje con el video como GIF 🎥
-        await sock.sendMessage(msg.key.remoteJid, { 
-            video: { url: "https://cdn.dorratz.com/files/1740568203122.mp4" },
-            gifPlayback: true, // Se reproduce como GIF
-            caption: mensaje
-        }, { quoted: msg });
+        // Enviar mensaje con imagen estática 🖼️
+await sock.sendMessage(msg.key.remoteJid, { 
+    image: { url: "https://cdn.russellxz.click/1e23db7d.jpeg" }, // Ahora como imagen
+    caption: mensaje
+}, { quoted: msg });
 
-        // ✅ Confirmación con reacción de éxito
-        await sock.sendMessage(msg.key.remoteJid, { 
-            react: { text: "✅", key: msg.key } // Emoji de confirmación ✅
-        });
+// ✅ Confirmación con reacción de éxito
+await sock.sendMessage(msg.key.remoteJid, { 
+    react: { text: "✅", key: msg.key } 
+});
 
     } catch (error) {
         console.error("❌ Error en el comando .tiendaper:", error);
