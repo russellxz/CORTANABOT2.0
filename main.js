@@ -4821,13 +4821,13 @@ case 'todos': {
     const args = messageText.trim().split(" ").slice(1);
     const extraMsg = args.join(" ");
 
-    let finalMsg = `╔══『 🔊 INVOCACIÓN MASIVA 』══╗\n`;
+    let finalMsg = `╔『 🔊 INVOCACIÓN MASIVA 』╗\n`;
     finalMsg += `╟🔹 *CORTANA 2.0 BOT PRESENTE*\n`;
     finalMsg += `╟👤 *Invocado por:* @${sender}\n`;
     if (extraMsg.trim().length > 0) {
       finalMsg += `╟💬 *Mensaje:* ${extraMsg}\n`;
     }
-    finalMsg += `╚════════════════════════╝\n\n`;
+    finalMsg += `╚═══════════════╝\n\n`;
     finalMsg += `📲 *Etiquetando a todos los miembros...*\n\n`;
     finalMsg += mentionList;
 
