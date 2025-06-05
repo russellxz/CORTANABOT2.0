@@ -6005,7 +6005,7 @@ case 'topmascotas': {
     
     // Enviar la imagen con el ranking en el caption y mencionar a todos los usuarios incluidos
     await sock.sendMessage(msg.key.remoteJid, { 
-      image: { url: "https://cdn.dorratz.com/files/1741194332982.jpg" },
+      image: { url: "https://cdn.russellxz.click/a1f18f8d.jpeg" },
       caption: mensajeFinal,
       mentions: ranking.map(u => u.id)
     }, { quoted: msg });
@@ -6081,7 +6081,7 @@ case 'topper': {
     
     // Enviar el mensaje con la imagen de fondo y mencionar a todos los usuarios incluidos en el ranking
     await sock.sendMessage(msg.key.remoteJid, { 
-      image: { url: "https://cdn.dorratz.com/files/1741194214880.jpg" },
+      image: { url: "https://cdn.russellxz.click/83afae06.jpeg" },
       caption: mensajeRanking,
       mentions: ranking.map(u => u.id)
     }, { quoted: msg });
@@ -7387,12 +7387,11 @@ case 'verper': {
         mensaje += `🔹 \`${global.prefix}otromundo\`, \`${global.prefix}otrouniverso\`, \`${global.prefix}mododios\`\n`;
         mensaje += `🔹 \`${global.prefix}mododiablo\`, \`${global.prefix}enemigos\`, \`${global.prefix}podermaximo\`\n`;
 
-        // 🎥 **Enviar mensaje con video como GIF**  
-        await sock.sendMessage(msg.key.remoteJid, {  
-            video: { url: "https://cdn.dorratz.com/files/1740651987117.mp4" },  
-            gifPlayback: true, // Se reproduce como GIF  
-            caption: mensaje  
-        }, { quoted: msg });
+// 📷 **Enviar mensaje con imagen**  
+await sock.sendMessage(msg.key.remoteJid, {  
+    image: { url: "https://cdn.russellxz.click/e7b58ad6.jpeg" },  
+    caption: mensaje  
+}, { quoted: msg });
 
         // ✅ Enviar reacción de éxito  
         await sock.sendMessage(msg.key.remoteJid, {  
@@ -10533,7 +10532,7 @@ case 'nivel': {
         const axios = require("axios");
         const rpgFile = "./rpg.json";
         const userId = msg.key.participant || msg.key.remoteJid;
-        const defaultImageUrl = "https://cdn.dorratz.com/files/1740822565780.jpg"; // Imagen por defecto
+        const defaultImageUrl = "https://cdn.russellxz.click/1ead1eb3.jpeg"; // Imagen por defecto
 
         // 📜 Reacción antes de procesar
         await sock.sendMessage(msg.key.remoteJid, { 
@@ -11426,7 +11425,7 @@ case 'topuser': {
 
         // Enviar el mensaje con imagen 📩
         await sock.sendMessage(msg.key.remoteJid, { 
-            image: { url: "https://cdn.dorratz.com/files/1740729353375.jpg" },
+            image: { url: "https://cdn.russellxz.click/f55eb012.jpeg" },
             caption: ranking,
             mentions: mentions // Mencionar a todos los jugadores
         }, { quoted: msg });
@@ -12233,13 +12232,12 @@ case 'rpg': {
 
 🚀 ¡Prepárate para la aventura en *Cortana 2.0*! 🏆`;
 
-        await sock.sendMessage(msg.key.remoteJid, { edit: registroMensaje.key, text: "✅ *¡Registro completado!* Generando tu tarjeta de jugador..." }); 
-        await new Promise(resolve => setTimeout(resolve, 2000)); 
-        await sock.sendMessage(msg.key.remoteJid, {  
-            video: { url: "https://cdn.dorratz.com/files/1740560637895.mp4" },  
-            gifPlayback: true,  
-            caption: mensajeFinal  
-        }, { quoted: msg }); 
+await sock.sendMessage(msg.key.remoteJid, { edit: registroMensaje.key, text: "✅ *¡Registro completado!* Generando tu tarjeta de jugador..." }); 
+await new Promise(resolve => setTimeout(resolve, 2000)); 
+await sock.sendMessage(msg.key.remoteJid, {  
+    image: { url: "https://cdn.russellxz.click/6a89b1ba.jpeg" },  
+    caption: mensajeFinal  
+}, { quoted: msg }); 
 
         await sock.sendMessage(msg.key.remoteJid, { react: { text: "🎮", key: msg.key } }); 
 
@@ -12327,12 +12325,11 @@ case 'vermascotas': {
         mensaje += `   🛠️ *${global.prefix}daragua*, *${global.prefix}darcomida*, *${global.prefix}darcariño*, *${global.prefix}pasear*, *${global.prefix}cazar*, *${global.prefix}entrenar*, *${global.prefix}presumir*, *${global.prefix}supermascota*\n\n`;  
         mensaje += `🚀 **¡Sigue entrenando a tus mascotas en el Gremio Azura Ultra!** 🏆`;  
 
-        // 🎥 Enviar mensaje con el **video como GIF**  
-        await sock.sendMessage(msg.key.remoteJid, {  
-            video: { url: "https://cdn.dorratz.com/files/1740655817564.mp4" },  
-            gifPlayback: true, // Se reproduce como GIF  
-            caption: mensaje  
-        }, { quoted: msg });  
+// 🖼️ Enviar mensaje con imagen en lugar de GIF
+await sock.sendMessage(msg.key.remoteJid, {  
+    image: { url: "https://cdn.russellxz.click/6798e311.jpeg" },  
+    caption: mensaje  
+}, { quoted: msg });
 
         // ✅ Confirmación con reacción de éxito  
         await sock.sendMessage(msg.key.remoteJid, {  
@@ -12852,13 +12849,12 @@ case 'saldo': {
 🚀 ¡Administra bien tu economía y conviértete en el más rico del gremio! 🏆
 `;
 
-        // Enviar mensaje con el **video como GIF** 🎥
-        await sock.sendMessage(msg.key.remoteJid, { 
-            video: { url: "https://cdn.dorratz.com/files/1740652887134.mp4" },
-            gifPlayback: true, // Se reproduce como GIF
-            caption: mensaje,
-            mentions: [userId] // Menciona al usuario
-        }, { quoted: msg });
+// Enviar mensaje con imagen estática 🖼️
+await sock.sendMessage(msg.key.remoteJid, { 
+    image: { url: "https://cdn.russellxz.click/c97c119a.jpeg" },
+    caption: mensaje,
+    mentions: [userId] // Menciona al usuario
+}, { quoted: msg });
 
         // ✅ Confirmación con reacción de éxito
         await sock.sendMessage(msg.key.remoteJid, { 
@@ -13011,17 +13007,16 @@ case 'tiendamascotas': {
         mensaje += `🔹 Usa *${global.prefix}mascota <número>* para cambiar tu mascota principal.\n\n`;
         mensaje += `🚀 **¡Colecciona y entrena las mejores mascotas en el Gremio Azura Ultra!** 🏆`;
 
-        // Enviar mensaje con el **video como GIF** 🎥
-        await sock.sendMessage(msg.key.remoteJid, { 
-            video: { url: "https://cdn.dorratz.com/files/1740573307122.mp4" },
-            gifPlayback: true, // Se reproduce como GIF
-            caption: mensaje
-        }, { quoted: msg });
+        // Enviar mensaje con imagen estática 🖼️
+await sock.sendMessage(msg.key.remoteJid, { 
+    image: { url: "https://cdn.russellxz.click/15165d4f.jpeg" }, // Convertido a imagen
+    caption: mensaje
+}, { quoted: msg });
 
-        // ✅ Confirmación con reacción de éxito
-        await sock.sendMessage(msg.key.remoteJid, { 
-            react: { text: "✅", key: msg.key } // Emoji de confirmación ✅
-        });
+// ✅ Confirmación con reacción de éxito
+await sock.sendMessage(msg.key.remoteJid, { 
+    react: { text: "✅", key: msg.key } 
+});
 
     } catch (error) {
         console.error("❌ Error en el comando .tiendamascotas:", error);
