@@ -30,10 +30,10 @@ const handler = async (msg, { conn }) => {
     }
 
     const mensaje = `
-📄 *Estado de LIB en el grupo:*
+📄 *Estado de LID en el grupo:*
 👥 *Total miembros:* ${participantes.length}
 
-✅ *Sin LIB (número visible):* ${conLib.length}
+✅ *Sin LID (número visible):* ${conLib.length}
 ${conLib.length ? conLib.join('\n') : '• Ninguno'}
 
 ❌ *Con LIB (numeros ocultos por - lid para mayor seguridad segun whatsapp):* ${sinLib.length}
