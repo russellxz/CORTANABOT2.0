@@ -29,7 +29,7 @@ const handler = async (msg, { conn, args }) => {
 
   if (!args[0] || !["on", "off"].includes(args[0].toLowerCase())) {
     await conn.sendMessage(chatId, {
-      text: "⚙️ Usa: *rpgazura on/off* para activar o desactivar los comandos RPG en este grupo."
+      text: "⚙️ Usa: *rpgcortana on/off* para activar o desactivar los comandos RPG en este grupo."
     }, { quoted: msg });
     return;
   }
@@ -62,5 +62,5 @@ const handler = async (msg, { conn, args }) => {
   });
 };
 
-handler.command = ["rpgazura"];
+handler.command = ["rpgcortana"];
 module.exports = handler;
