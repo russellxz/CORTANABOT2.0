@@ -63,19 +63,19 @@ const handler = async (msg, { conn, text, usedPrefix }) => {
     }
 
     const caption = `
-╔═════════════════╗
-║ ✦ 𝗔𝘇𝘂𝗿𝗮 𝗨𝗹𝘁𝗿𝗮 & 𝘾𝙤𝙧𝙩𝙖𝙣𝙖 𝗦𝘂𝗯𝗯𝗼𝘁 ✦
-╚═════════════════╝
+
+✦ 𝘾𝙤𝙧𝙩𝙖𝙣𝙖 2.0 𝗦𝘂𝗯𝗯𝗼𝘁 ✦
+
 
 📀 *Info del video:*  
-├ 🎼 *Título:* ${videoData.title}
-├ ⏱️ *Duración:* ${videoData.duration}
-├ 👁️ *Vistas:* ${videoData.views}
-├ 👤 *Canal:* ${videoData.channel}
-├ 🗓️ *Publicado:* ${videoData.publish}
-├ 📦 *Tamaño:* ${videoData.size}
-├ 📹 *Calidad:* ${videoData.quality}
-└ 🔗 *Link:* https://youtu.be/${videoData.id}
+❀ 🎼 *Título:* ${videoData.title}
+❀ ⏱️ *Duración:* ${videoData.duration}
+❀ 👁️ *Vistas:* ${videoData.views}
+❀ 👤 *Canal:* ${videoData.channel}
+❀ 🗓️ *Publicado:* ${videoData.publish}
+❀ 📦 *Tamaño:* ${videoData.size}
+❀ 📹 *Calidad:* ${videoData.quality}
+❀ 🔗 *Link:* https://youtu.be/${videoData.id}
 
 ⚠️ ¿No se reproduce? Usa _${usedPrefix}ff_
 
