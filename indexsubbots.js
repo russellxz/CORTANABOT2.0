@@ -200,7 +200,97 @@ subSock.ev.on("group-participants.update", async (update) => {
     m.message?.imageMessage?.caption ||
     m.message?.videoMessage?.caption ||
     "";
+// === LÓGICA ANTILINK AUTOMÁTICO SOLO WHATSAPP POR SUBBOT ===
+if (isGroup && !isFromSelf) {
+  const activossubPath = path.resolve("./activossubbots.json");
+  let dataActivados = {};
 
+  if (fs.existsSync(activossubPath)) {
+    dataActivados = JSON.parse(fs.readFileSync(activossubPath, "utf-8"));
+  }
+
+  const subbotID = subSock.user?.id || "";
+  const antilinkActivo = dataActivados.antilink?.[subbotID]?.[from];
+  const contieneLinkWhatsApp = /https:\/\/chat\.whatsapp\.com\//i.test(messageText);
+
+  if (antilinkActivo && contieneLinkWhatsApp) {
+    try {
+      const metadata = await subSock.groupMetadata(from);
+      const participant = metadata.participants.find(p => p.id === senderJid);
+      const isAdmin = participant?.admin === "admin" || participant?.admin === "superadmin";
+      const isOwner = global.owner.some(o => o[0] === senderNum);
+
+      if (!isAdmin && !isOwner) {
+        await subSock.sendMessage(from, { delete: m.key });
+
+        await subSock.sendMessage(from, {
+          text: `⚠️ @${senderNum} envió un enlace de grupo de WhatsApp y fue eliminado.`,
+          mentions: [senderJid]
+        });
+
+        await subSock.groupParticipantsUpdate(from, [senderJid], "remove");
+      }
+    } catch (err) {
+      console.error("❌ Error procesando antilink:", err);
+    }
+  }
+}
+// === FIN LÓGICA ANTILINK ===
+// === INICIO LÓGICA MODOADMINS SUBBOT ===
+if (isGroup && !isFromSelf) {
+  try {
+    const activossubPath = path.resolve("./activossubbots.json");
+    if (!fs.existsSync(activossubPath)) return;
+
+    const dataActivados = JSON.parse(fs.readFileSync(activossubPath, "utf-8"));
+    
+    // Obtener subbotID en el formato correcto
+    const subbotID = subSock.user?.id || ""; // ejemplo: 15167096032:20@s.whatsapp.net
+    const modoAdminsActivo = dataActivados.modoadmins?.[subbotID]?.[from];
+
+    if (modoAdminsActivo) {
+      const metadata = await subSock.groupMetadata(from);
+      const participante = metadata.participants.find(p => p.id === senderJid);
+      const isAdmin = participante?.admin === "admin" || participante?.admin === "superadmin";
+
+      const botNum = subSock.user?.id.split(":")[0].replace(/[^0-9]/g, "");
+      const isBot = botNum === senderNum;
+
+      const isOwner = global.owner.some(([id]) => id === senderNum);
+
+      if (!isAdmin && !isOwner && !isBot) {
+        return;
+      }
+    }
+  } catch (err) {
+    console.error("❌ Error en verificación de modo admins:", err);
+    return;
+  }
+}
+// === FIN LÓGICA MODOADMINS SUBBOT ===
+          
+// 🟢 INICIO DE LA LÓGICA DE VERIFICACIÓN DE GRUPO ACTIVADO
+
+// Cargar lista de grupos activados desde subbotson.json
+const onPath = path.resolve("./subbotson.json");
+let gruposActivados = [];
+try {
+  if (fs.existsSync(onPath)) {
+    gruposActivados = JSON.parse(fs.readFileSync(onPath, "utf-8"));
+  }
+} catch (_) {}
+
+// Detectar si el comando es subbotson o subbotsoff
+const lowerText = messageText.trim().toLowerCase();
+const isSubbotControlCommand = lowerText.startsWith(".subbotson") || lowerText.startsWith(".subbotsoff");
+
+// Si es grupo y no es un comando de control, bloquear si el grupo no está autorizado
+if (isGroup && !isSubbotControlCommand && !gruposActivados.includes(from)) return;
+
+// 🔴 FIN DE LA LÓGICA DE VERIFICACIÓN DE GRUPO ACTIVADO
+
+
+          
   const customPrefix = dataPrefijos[subbotID];
   const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
   const usedPrefix = allowedPrefixes.find(p => messageText.startsWith(p));
