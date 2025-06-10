@@ -81,6 +81,8 @@ async function perplexityQuery(q, prompt) {
   //lumi
   const axios = require("axios");
 const fetch = require("node-fetch");
+const { cargarSubbots } = require("./indexsubbots");
+
   
     const { default: makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require("@whiskeysockets/baileys");
     const chalk = require("chalk");
@@ -1440,52 +1442,35 @@ try {
 });
             
             
-sock.ev.on("connection.update", async (update) => {
-  const { connection, lastDisconnect } = update;
+            sock.ev.on("connection.update", async (update) => {
+    const { connection } = update;
 
-  if (connection === "connecting") {
-    console.log(chalk.blue("🔄 Conectando a WhatsApp..."));
-  }
+    if (connection === "connecting") {
+        console.log(chalk.blue("🔄 Conectando a WhatsApp..."));
+    } else if (connection === "open") {
+        console.log(chalk.green("✅ ¡Conexión establecida con éxito!"));
+//await joinChannels(sock)
 
-  else if (connection === "open") {
-    console.log(chalk.green("✅ ¡Conexión establecida con éxito!"));
-
-    // ✅ Cargar subbots una vez conectado
-    const { cargarSubbots } = require("./indexsubbots");
-    cargarSubbots();
-
-    // Verificar si hubo reinicio por comando .rest
-    const restarterFile = "./lastRestarter.json";
-    if (fs.existsSync(restarterFile)) {
-      try {
-        const data = JSON.parse(fs.readFileSync(restarterFile, "utf-8"));
-        if (data.chatId) {
-          await sock.sendMessage(data.chatId, {
-            text: "✅ *El bot está en línea nuevamente tras el reinicio.* 🚀"
-          });
-          console.log(chalk.green("📢 Notificación enviada al chat del reinicio."));
-          fs.unlinkSync(restarterFile);
+        // 📌 Verificar si el bot se reinició con .rest y enviar mensaje
+        const restarterFile = "./lastRestarter.json";
+        if (fs.existsSync(restarterFile)) {
+            try {
+                const data = JSON.parse(fs.readFileSync(restarterFile, "utf-8"));
+                if (data.chatId) {
+                    await sock.sendMessage(data.chatId, { text: "✅ *El bot está en línea nuevamente tras el reinicio.* 🚀" });
+                    console.log(chalk.green("📢 Notificación enviada al chat del reinicio."));
+                    fs.unlinkSync(restarterFile); // 🔄 Eliminar el archivo después de enviar el mensaje
+                }
+            } catch (error) {
+                console.error("❌ Error al procesar lastRestarter.json:", error);
+            }
         }
-      } catch (error) {
-        console.error("❌ Error al procesar lastRestarter.json:", error);
-      }
+    } else if (connection === "close") {
+        console.log(chalk.red("❌ Conexión cerrada. Intentando reconectar en 5 segundos..."));
+        setTimeout(startBot, 5000);
     }
-  }
-
-  else if (connection === "close") {
-    const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== 401;
-
-    if (shouldReconnect) {
-      console.log(chalk.red("❌ Conexión cerrada. Intentando reconectar en 5 segundos..."));
-      setTimeout(startBot, 5000); // ⚠️ No afecta subbots
-    } else {
-      console.log(chalk.red("🛑 Sesión inválida o cerrada desde otro dispositivo. Se requiere nueva autenticación."));
-      // Si quieres borrar las sesiones corruptas, descomenta la línea siguiente:
-      // fs.rmSync("./sessions", { recursive: true, force: true });
-    }
-  }
 });
-          
+
 const path = require("path");
             
 /*async function cargarSubbots() {
