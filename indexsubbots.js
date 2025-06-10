@@ -261,46 +261,6 @@ if (isGroup && !isFromSelf) {
   }
 }
 // === FIN LÓGICA MODOADMINS SUBBOT ===
-// === INICIO LÓGICA SUBBOTSON ===
-if (isGroup && !isFromSelf) {
-  try {
-    const onPath = path.resolve("./subbotson.json");
-    if (!fs.existsSync(onPath)) return;
-
-    const gruposActivados = JSON.parse(fs.readFileSync(onPath, "utf-8"));
-
-    const messageText =
-      m.message?.conversation ||
-      m.message?.extendedTextMessage?.text ||
-      m.message?.imageMessage?.caption ||
-      m.message?.videoMessage?.caption ||
-      "";
-
-    const texto = messageText.trim().toLowerCase();
-    const prefixPath = path.resolve("./prefixes.json");
-    let prefijo = ".";
-
-    if (fs.existsSync(prefixPath)) {
-      const dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8"));
-      const subID = subSock.user?.id?.split(":")[0] + "@s.whatsapp.net";
-      if (dataPrefijos[subID]) {
-        prefijo = dataPrefijos[subID];
-      }
-    }
-
-    const esComandoControl = texto.startsWith(`${prefijo}subbotson`) || texto.startsWith(`${prefijo}subbotsoff`);
-    const grupoPermitido = gruposActivados.includes(from);
-
-    if (!grupoPermitido && !esComandoControl) {
-      return;
-    }
-
-  } catch (err) {
-    console.error("❌ Error en verificación subbotson:", err);
-    return;
-  }
-}
-// === FIN LÓGICA SUBBOTSON ===
           
           const customPrefix = dataPrefijos[subbotID];
           const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
