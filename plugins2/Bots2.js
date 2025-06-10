@@ -31,7 +31,7 @@ const handler = async (msg, { conn }) => {
     return `╭➤ *Subbot ${i + 1}*\n│ Número: @${jid}\n│ Prefijo: *${prefijo}*\n╰───────────────`;
   }).join("\n\n");
 
-  const menu = `╭━〔 *AZURA ULTRA 2.0* 〕━⬣\n│  🤖 Subbots Conectados\n│  Total: *${total}*\n╰━━━━━━━━━━━━⬣\n\n${lista}`;
+  const menu = `╭━〔 *CORTANA 2.0 BOT* 〕━⬣\n│  🤖 Subbots Conectados\n│  Total: *${total}*\n╰━━━━━━━━━━━━⬣\n\n${lista}`;
 
   await conn.sendMessage(msg.key.remoteJid, {
     text: menu,
