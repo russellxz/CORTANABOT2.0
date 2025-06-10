@@ -1441,34 +1441,47 @@ try {
             
             
             sock.ev.on("connection.update", async (update) => {
-    const { connection } = update;
+  const { connection, lastDisconnect } = update;
 
-    if (connection === "connecting") {
-        console.log(chalk.blue("🔄 Conectando a WhatsApp..."));
-    } else if (connection === "open") {
-        console.log(chalk.green("✅ ¡Conexión establecida con éxito!"));
-//await joinChannels(sock)
+  if (connection === "connecting") {
+    console.log(chalk.blue("🔄 Conectando a WhatsApp..."));
+  }
 
-        // 📌 Verificar si el bot se reinició con .rest y enviar mensaje
-        const restarterFile = "./lastRestarter.json";
-        if (fs.existsSync(restarterFile)) {
-            try {
-                const data = JSON.parse(fs.readFileSync(restarterFile, "utf-8"));
-                if (data.chatId) {
-                    await sock.sendMessage(data.chatId, { text: "✅ *El bot está en línea nuevamente tras el reinicio.* 🚀" });
-                    console.log(chalk.green("📢 Notificación enviada al chat del reinicio."));
-                    fs.unlinkSync(restarterFile); // 🔄 Eliminar el archivo después de enviar el mensaje
-                }
-            } catch (error) {
-                console.error("❌ Error al procesar lastRestarter.json:", error);
-            }
+  else if (connection === "open") {
+    console.log(chalk.green("✅ ¡Conexión establecida con éxito!"));
+
+    // Verificar si hubo reinicio por comando .rest
+    const restarterFile = "./lastRestarter.json";
+    if (fs.existsSync(restarterFile)) {
+      try {
+        const data = JSON.parse(fs.readFileSync(restarterFile, "utf-8"));
+        if (data.chatId) {
+          await sock.sendMessage(data.chatId, {
+            text: "✅ *El bot está en línea nuevamente tras el reinicio.* 🚀"
+          });
+          console.log(chalk.green("📢 Notificación enviada al chat del reinicio."));
+          fs.unlinkSync(restarterFile);
         }
-    } else if (connection === "close") {
-        console.log(chalk.red("❌ Conexión cerrada. Intentando reconectar en 5 segundos..."));
-        setTimeout(startBot, 5000);
+      } catch (error) {
+        console.error("❌ Error al procesar lastRestarter.json:", error);
+      }
     }
-});
+  }
 
+  else if (connection === "close") {
+    const shouldReconnect = lastDisconnect?.error?.output?.statusCode !== 401;
+
+    if (shouldReconnect) {
+      console.log(chalk.red("❌ Conexión cerrada. Intentando reconectar en 5 segundos..."));
+      setTimeout(startBot, 5000); // ⚠️ No afecta subbots
+    } else {
+      console.log(chalk.red("🛑 Sesión inválida o cerrada desde otro dispositivo. Se requiere nueva autenticación."));
+      // Puedes borrar sesiones aquí si quieres
+      // fs.rmSync("./sessions", { recursive: true, force: true });
+    }
+  }
+});
+          
 const path = require("path");
             
 /*async function cargarSubbots() {
