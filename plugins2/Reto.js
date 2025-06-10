@@ -11,8 +11,8 @@ const handler = async (msg, { conn }) => {
     });
 
     await conn.sendMessage(msg.key.remoteJid, {
-      image: { url: 'https://cdn.russellxz.click/0560b360.PNG' },
-      caption: `𝘏𝘢𝘴 𝘦𝘴𝘤𝘰𝘨𝘪𝘥𝘰 *𝘙𝘌𝘛𝘖*\n\n╱╲❀╱╲╱╲❀╱╲╱╲❀╱╲\n◆ ${reto}\n╲╱❀╲╱╲╱❀╲╱╲╱❀╲╱\n\n© Azura Ultra & Cortana subbots`
+      image: { url: 'https://cdn.russellxz.click/07cf4ec2.jpeg' },
+      caption: `𝘏𝘢𝘴 𝘦𝘴𝘤𝘰𝘨𝘪𝘥𝘰 *𝘙𝘌𝘛𝘖*\n\n╱╲❀╱╲╱╲❀╱╲╱╲❀╱╲\n◆ ${reto}\n╲╱❀╲╱╲╱❀╲╱╲╱❀╲╱\n\n© Cortana 2.0 subbots`
     }, { quoted: msg });
 
   } catch (e) {
