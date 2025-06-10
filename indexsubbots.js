@@ -196,30 +196,46 @@ subSock.ev.on("messages.upsert", async msg => {
 if (isGroup) {
   try {
     const grupoPath = path.resolve("./grupo.json");
+    const prefixPath = path.resolve("./prefixes.json");
+
     const rawID = subSock.user?.id || "";
     const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-    if (fs.existsSync(grupoPath)) {
-      const dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8"));
-      const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
+    // Obtener el texto completo del mensaje
+    const messageText =
+      m.message?.conversation ||
+      m.message?.extendedTextMessage?.text ||
+      m.message?.imageMessage?.caption ||
+      m.message?.videoMessage?.caption ||
+      "";
 
-      const messageText =
-        m.message?.conversation ||
-        m.message?.extendedTextMessage?.text ||
-        m.message?.imageMessage?.caption ||
-        m.message?.videoMessage?.caption ||
-        "";
-
-      const allowedCommands = ['addgrupo']; // ⚠️ Aquí defines excepciones
-
-      const isAllowedCommand = allowedCommands.some(cmd =>
-        messageText.toLowerCase().startsWith("." + cmd) || // .addgrupo
-        messageText.toLowerCase().startsWith("#" + cmd)    // #addgrupo si usas prefijos múltiples
-      );
-
-      if (!gruposPermitidos.includes(from) && !isAllowedCommand) {
-        return; // ❌ No está en la lista y no es comando permitido → ignorar mensaje
+    // Leer el prefijo personalizado
+    let dataPrefijos = {};
+    try {
+      if (fs.existsSync(prefixPath)) {
+        dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8"));
       }
+    } catch (_) {}
+
+    const customPrefix = dataPrefijos[subbotID];
+    const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
+    const usedPrefix = allowedPrefixes.find(p => messageText.startsWith(p));
+    if (!usedPrefix) return; // No tiene prefijo válido
+
+    const body = messageText.slice(usedPrefix.length).trim();
+    const command = body.split(" ")[0].toLowerCase();
+
+    const allowedCommands = ['addgrupo']; // Solo este se permite sin estar en lista
+
+    let dataGrupos = {};
+    if (fs.existsSync(grupoPath)) {
+      dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8"));
+    }
+
+    const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
+
+    if (!gruposPermitidos.includes(from) && !allowedCommands.includes(command)) {
+      return; // Grupo no autorizado y no es comando permitido
     }
 
   } catch (err) {
