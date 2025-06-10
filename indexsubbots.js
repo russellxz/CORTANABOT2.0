@@ -171,13 +171,6 @@ subSock.ev.on("group-participants.update", async (update) => {
   const rawID = subSock.user?.id || "";
   const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
   const botNum = rawID.split(":")[0]; // ← número sin @
-const fs = require("fs");
-const path = require("path");
-
-// Cargar el prefijo de prefixes.json antes de usarlo
-const prefixPath = path.join(__dirname, "prefixes.json");
-let customPrefix = "."; // Default if not defined in prefixes.json
-
 try {
   if (fs.existsSync(prefixPath)) {
     const dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8"));
@@ -186,7 +179,9 @@ try {
 } catch (error) {
   console.error("Error al leer el archivo de prefijos:", error);
 }
+          
   const listaPath = path.join(__dirname, "listasubots.json");
+  let customPrefix = "."; // Default if not defined in prefixes.json
   const grupoPath = path.join(__dirname, "grupo.json");
   const prefixPath = path.join(__dirname, "prefixes.json");
 
