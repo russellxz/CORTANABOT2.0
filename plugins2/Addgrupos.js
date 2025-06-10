@@ -13,6 +13,25 @@ const handler = async (msg, { conn }) => {
     }, { quoted: msg });
   }
 
+  // Obtener metadata del grupo y verificar si el remitente es admin
+  let metadata;
+  try {
+    metadata = await conn.groupMetadata(groupID);
+  } catch (err) {
+    return await conn.sendMessage(groupID, {
+      text: "❌ Error al obtener la metadata del grupo."
+    }, { quoted: msg });
+  }
+
+  const sender = msg.key.participant || msg.key.remoteJid;
+  const isAdmin = metadata.participants.find(p => p.id === sender && (p.admin === "admin" || p.admin === "superadmin"));
+
+  if (!isAdmin) {
+    return await conn.sendMessage(groupID, {
+      text: "⛔ Solo *administradores del grupo* pueden usar este comando."
+    }, { quoted: msg });
+  }
+
   const rawID = conn.user?.id || "";
   const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
