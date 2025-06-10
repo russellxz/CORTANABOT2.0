@@ -17,6 +17,18 @@ function isUrl(string) {
   return regex.test(string);
 }
 
+const filePath = path.resolve('./activossubbots.json');
+global.cachePlay10 = {}; // Guardará los datos de play10 por ID de mensaje
+// Crear archivo con estructura inicial si no existe
+if (!fs.existsSync(filePath)) {
+  const estructuraInicial = {
+    antilink: {}
+    // futuro: modoAdmins: {}, antiarabe: {}
+  };
+
+  fs.writeFileSync(filePath, JSON.stringify(estructuraInicial, null, 2));
+  console.log("✅ Archivo activossubbots.json creado correctamente.");
+}
 //retrimgir👇
 const rePath = path.resolve("./re.json");
 let comandosRestringidos = {};
@@ -34,7 +46,17 @@ global.generatingCode = false;
 
 if (!fs.existsSync(stickersDir)) fs.mkdirSync(stickersDir, { recursive: true });
 if (!fs.existsSync(stickersFile)) fs.writeFileSync(stickersFile, JSON.stringify({}, null, 2));
+//para los subot
+const rutaLista = path.join(__dirname, "listasubots.json");
 
+// Verificar y crear el archivo si no existe
+if (!fs.existsSync(rutaLista)) {
+  fs.writeFileSync(rutaLista, JSON.stringify([], null, 2));
+  console.log("✅ Archivo listasubots.json creado.");
+} else {
+  console.log("📂 Archivo listasubots.json ya existe.");
+}
+//para los subot
 const prefixPath = path.resolve("prefixes.json");
 
 // Crear archivo si no existe
@@ -44,6 +66,8 @@ if (!fs.existsSync(prefixPath)) {
 } else {
   console.log("✅ prefixes.json ya existe.");
 }
+//grupo subot
+const grupoPath = path.resolve("grupo.json");
 
 // Verifica si el archivo existe, si no lo crea vacío con estructura básica
 if (!fs.existsSync(grupoPath)) {
@@ -14884,3 +14908,4 @@ case "fb":
 
 
 module.exports = { handleCommand };
+
