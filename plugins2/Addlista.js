@@ -2,13 +2,11 @@ const fs = require("fs");
 const path = require("path");
 
 const handler = async (msg, { conn, text }) => {
-  // Reacción inicial
   await conn.sendMessage(msg.key.remoteJid, {
     react: { text: "➕", key: msg.key }
   });
 
   const fromMe = msg.key.fromMe;
-
   if (!fromMe) {
     return await conn.sendMessage(msg.key.remoteJid, {
       text: "⛔ Solo el *dueño del subbot* puede usar este comando."
@@ -16,21 +14,23 @@ const handler = async (msg, { conn, text }) => {
   }
 
   let target;
-  if (msg.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
-    target = msg.message.extendedTextMessage.contextInfo.participant;
+  const contextInfo = msg.message?.extendedTextMessage?.contextInfo;
+
+  if (contextInfo?.participant) {
+    target = contextInfo.participant;
   } else if (text && text.trim() !== "") {
     target = text;
   }
 
   if (!target) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: "⚠️ Cita el mensaje del usuario o escribe su número. que quieres agregar a la lista para que el subbots le responda en privado💠"
+      text: "⚠️ Cita un mensaje o escribe el número para agregar a la lista de acceso privado."
     }, { quoted: msg });
   }
 
-  target = target.replace(/\D/g, "");
+  target = target.replace(/[^0-9]/g, ""); // solo números
 
-  // Obtener el ID limpio del subbot
+  // Obtener ID del subbot
   const rawID = conn.user?.id || "";
   const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
@@ -38,7 +38,11 @@ const handler = async (msg, { conn, text }) => {
   let data = {};
 
   if (fs.existsSync(filePath)) {
-    data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    try {
+      data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    } catch (e) {
+      data = {};
+    }
   }
 
   if (!Array.isArray(data[subbotID])) {
@@ -55,7 +59,7 @@ const handler = async (msg, { conn, text }) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
   await conn.sendMessage(msg.key.remoteJid, {
-    text: `✅ Usuario *${target}* agregado a tu lista a hora el subbots le respondera a los comandos💠.`
+    text: `✅ Usuario *${target}* agregado a tu lista. Ahora el subbot le responderá en privado.`
   }, { quoted: msg });
 };
 
