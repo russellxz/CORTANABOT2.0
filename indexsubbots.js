@@ -147,4 +147,8 @@ async function cargarSubbots() {
   }
 }
 
+// Ejecutar automáticamente al correr este archivo (opcional)
 cargarSubbots();
+
+// ✅ Exportar para usar desde `index.js`
+module.exports = { cargarSubbots };
