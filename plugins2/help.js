@@ -19,78 +19,77 @@ const handler = async (msg, { conn }) => {
   });
 
   const menu = `
-╔⌬AZURA & CORTANA SUBBOT⌬╗
+╔⌬CORTANA 2.0 SUBBOT⌬╗
 ║   Menú por categorías  
-╚═──────────────────═╝
+╚═─────────────═╝
 
 〔 👇Has Que Tus Amigos Sean *SUBBOTS* Tambien Diles que envien estos comandos👇 〕
-⟢ ${usedPrefix}serbot / qr
-⟢ ${usedPrefix}code / codigo 
-⟢ ${usedPrefix}sercode / codigo
+༆ ${usedPrefix}serbot / qr
+༆ ${usedPrefix}code / codigo 
+༆ ${usedPrefix}sercode / codigo
 
 〔 AI & Respuestas 〕
-⟢ ${usedPrefix}chatgpt
-⟢ ${usedPrefix}geminis
+༆ ${usedPrefix}chatgpt
+༆ ${usedPrefix}geminis
 
 〔 Descargas 〕
-⟢ ${usedPrefix}play / ${usedPrefix}playdoc
-⟢ ${usedPrefix}play2 / ${usedPrefix}play2doc
-⟢ ${usedPrefix}play5
-⟢ ${usedPrefix}play6
-⟢ ${usedPrefix}ytmp3 / ${usedPrefix}ytmp3doc
-⟢ ${usedPrefix}ytmp35
-⟢ ${usedPrefix}ytmp4 / ${usedPrefix}ytmp4doc
-⟢ ${usedPrefix}ytmp45
-⟢ ${usedPrefix}apk
-⟢ ${usedPrefix}instagram / ${usedPrefix}ig
-⟢ ${usedPrefix}tiktok / ${usedPrefix}tt
-⟢ ${usedPrefix}facebook / ${usedPrefix}fb
+༆ ${usedPrefix}play / ${usedPrefix}playdoc
+༆ ${usedPrefix}play2 / ${usedPrefix}play2doc
+༆ ${usedPrefix}play5 ${usedPrefix}play6
+༆ ${usedPrefix}ytmp3 / ${usedPrefix}ytmp3doc
+༆ ${usedPrefix}ytmp35
+༆ ${usedPrefix}ytmp4 / ${usedPrefix}ytmp4doc
+༆ ${usedPrefix}ytmp45
+༆ ${usedPrefix}apk
+༆ ${usedPrefix}instagram / ${usedPrefix}ig
+༆ ${usedPrefix}tiktok / ${usedPrefix}tt
+༆ ${usedPrefix}facebook / ${usedPrefix}fb
 
 〔 Stickers & Multimedia 〕
-⟢ ${usedPrefix}s
-⟢ ${usedPrefix}ver
-⟢ ${usedPrefix}toaudio 
-⟢ ${usedPrefix}hd
-⟢ ${usedPrefix}toimg
-⟢ ${usedPrefix}whatmusic
-⟢ ${usedPrefix}tts
-⟢ ${usedPrefix}perfil
+༆ ${usedPrefix}s
+༆ ${usedPrefix}ver
+༆ ${usedPrefix}toaudio 
+༆ ${usedPrefix}hd
+༆ ${usedPrefix}toimg
+༆ ${usedPrefix}whatmusic
+༆ ${usedPrefix}tts
+༆ ${usedPrefix}perfil
 
 〔 Grupos 〕
-⟢ ${usedPrefix}abrirgrupo
-⟢ ${usedPrefix}cerrargrupo
-⟢ ${usedPrefix}infogrupo
-⟢ ${usedPrefix}kick
-⟢ ${usedPrefix}modoadmins on o off
-⟢ ${usedPrefix}antilink on o off
-⟢ ${usedPrefix}welcome on o off
-⟢ ${usedPrefix}tag
-⟢ ${usedPrefix}tagall / ${usedPrefix}invocar / ${usedPrefix}todos
-⟢ ${usedPrefix}infogrupo
-⟢ ${usedPrefix}damelink
+༆ ${usedPrefix}abrirgrupo
+༆ ${usedPrefix}cerrargrupo
+༆ ${usedPrefix}infogrupo
+༆ ${usedPrefix}kick
+༆ ${usedPrefix}modoadmins on o off
+༆ ${usedPrefix}antilink on o off
+༆ ${usedPrefix}welcome on o off
+༆ ${usedPrefix}tag
+༆ ${usedPrefix}tagall / ${usedPrefix}invocar / ${usedPrefix}todos
+༆ ${usedPrefix}infogrupo
+༆ ${usedPrefix}damelink
 
 〔 Comandos De Juegos 〕
-⟢ ${usedPrefix}verdad
-⟢ ${usedPrefix}reto
-⟢ ${usedPrefix}memes o meme
+༆ ${usedPrefix}verdad
+༆ ${usedPrefix}reto
+༆ ${usedPrefix}memes o meme
 
 〔 Configuración & Dueño 〕
 
-▣ ${usedPrefix}setprefix ↷
+༆ ${usedPrefix}setprefix ↷
   Cambiar prefijo del subbot
-▣ ${usedPrefix}creador ↷
+༆ ${usedPrefix}creador ↷
   Contacto del creador
-▣ ${usedPrefix}get ↷
+༆ ${usedPrefix}get ↷
   Descargar estados
-▣ ${usedPrefix}addgrupo ↷
+༆ ${usedPrefix}addgrupo ↷
   Autorizar grupo pa que lo usen.
-▣ ${usedPrefix}addlista ↷
+༆ ${usedPrefix}addlista ↷
   Autorizar usuario privado pa lo usen.
-▣ ${usedPrefix}dellista ↷
+༆ ${usedPrefix}dellista ↷
   Quitar usuario autorizado pa que o lo usen.
-▣ ${usedPrefix}delgrupo ↷
+༆ ${usedPrefix}delgrupo ↷
   Eliminar grupo autorizado pa que no lo usen.
-▣ ${usedPrefix}pong ↷
+༆ ${usedPrefix}pong ↷
   Medir latencia del bot
 
 ═⌬Azura Ultra & cortana Subbot⌬═`;
@@ -99,7 +98,7 @@ const handler = async (msg, { conn }) => {
 await conn.sendMessage(
   msg.key.remoteJid,
   {
-    image: { url: `https://cdn.russellxz.click/d06910d4.PNG` },
+    image: { url: `https://cdn.russellxz.click/139f04e1.jpeg` },
     caption: menu
   },
   { quoted: msg }
