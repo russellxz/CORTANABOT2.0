@@ -1471,12 +1471,6 @@ try {
 
       
 
-    } catch (err) {
-      console.error(`❌ Error al cargar subbot ${dir}:`, err);
-    }
-  }
-}
-
 /*async function joinChannels(sock) {
 for (const channelId of Object.values(global.ch)) {
 await sock.newsletterFollow(channelId).catch(() => {})
