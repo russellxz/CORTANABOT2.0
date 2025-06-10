@@ -6,11 +6,6 @@ const handler = async (msg, { conn }) => {
     react: { text: "➕", key: msg.key }
   });
 
-  const fromMe = msg.key.fromMe;
-  if (!fromMe) return await conn.sendMessage(msg.key.remoteJid, {
-    text: "⛔ Solo el *dueño del subbot* puede usar este comando."
-  }, { quoted: msg });
-
   const groupID = msg.key.remoteJid;
   if (!groupID.endsWith("@g.us")) {
     return await conn.sendMessage(groupID, {
@@ -20,6 +15,19 @@ const handler = async (msg, { conn }) => {
 
   const rawID = conn.user?.id || "";
   const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
+  const botNumber = rawID.split(":")[0];
+
+  const senderJid = msg.key.participant || msg.key.remoteJid;
+  const sender = senderJid.replace(/[^0-9]/g, "");
+
+  const isOwner = sender === botNumber;
+
+  if (!isOwner) {
+    return await conn.sendMessage(groupID, {
+      text: "⛔ Solo el *dueño del subbot* puede usar este comando."
+    }, { quoted: msg });
+  }
+
   const filePath = path.resolve("grupo.json");
   let data = {};
 
@@ -41,7 +49,7 @@ const handler = async (msg, { conn }) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
   await conn.sendMessage(groupID, {
-    text: `✅ Grupo autorizado correctamente a hora el subbots respondera a usuarios en este grupo💠.`
+    text: `✅ Grupo autorizado correctamente. Ahora el subbot responderá a los usuarios en este grupo 💠.`
   }, { quoted: msg });
 };
 
