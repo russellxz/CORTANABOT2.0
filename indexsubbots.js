@@ -159,46 +159,39 @@ subSock.ev.on("group-participants.update", async (update) => {
   }
 });
         
-subSock.ev.on("messages.upsert", async (messageUpsert) => {
-  try {
-    const msg = messageUpsert.messages[0];
-    if (!msg || !msg.message) return;
+        subSock.ev.on("messages.upsert", async msg => {
+          const m = msg.messages[0];
+          if (!m || !m.message) return;
 
-    const chatId = msg.key.remoteJid;
-    const isGroup = chatId.endsWith("@g.us");
+          const from = m.key.remoteJid;
+          const isGroup = from.endsWith("@g.us");
+          const isFromSelf = m.key.fromMe;
+          const senderJid = m.key.participant || from;
+          const senderNum = senderJid.split("@")[0];
+          const rawID = subSock.user?.id || "";
+          const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-    const rawID = subSock.user?.id || "";
-    const botNumber = rawID.split(":")[0]; // sin @s.whatsapp.net
+          const listaPath = path.join(__dirname, "listasubots.json");
+          const grupoPath = path.join(__dirname, "grupo.json");
+          const prefixPath = path.join(__dirname, "prefixes.json");
 
-    const sender = msg.key.participant
-      ? msg.key.participant.replace(/[^0-9]/g, "")
-      : msg.key.remoteJid.replace(/[^0-9]/g, "");
+          let dataPriv = {}, dataGrupos = {}, dataPrefijos = {};
+          try { if (fs.existsSync(listaPath)) dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8")); } catch (_) {}
+          try { if (fs.existsSync(grupoPath)) dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8")); } catch (_) {}
+          try { if (fs.existsSync(prefixPath)) dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8")); } catch (_) {}
 
-    const fromMe = msg.key.fromMe || sender === botNumber;
+          const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
+          const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
 
-    const subbotID = botNumber + "@s.whatsapp.net";
+          if (!isGroup && !isFromSelf && !listaPermitidos.includes(senderNum)) return;
+          if (isGroup && !isFromSelf && !gruposPermitidos.includes(from)) return;
 
-    const listaPath = path.join(__dirname, "listasubots.json");
-    const grupoPath = path.join(__dirname, "grupo.json");
-    const prefixPath = path.join(__dirname, "prefixes.json");
-
-    let dataPriv = {}, dataGrupos = {}, dataPrefijos = {};
-    try { if (fs.existsSync(listaPath)) dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8")); } catch (_) {}
-    try { if (fs.existsSync(grupoPath)) dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8")); } catch (_) {}
-    try { if (fs.existsSync(prefixPath)) dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8")); } catch (_) {}
-
-    const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
-    const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
-
-    if (!isGroup && !fromMe && !listaPermitidos.includes(sender)) return;
-    if (isGroup && !fromMe && !gruposPermitidos.includes(chatId)) return;
-
-    const messageText =
-      msg.message?.conversation ||
-      msg.message?.extendedTextMessage?.text ||
-      msg.message?.imageMessage?.caption ||
-      msg.message?.videoMessage?.caption ||
-      "";
+          const messageText =
+            m.message?.conversation ||
+            m.message?.extendedTextMessage?.text ||
+            m.message?.imageMessage?.caption ||
+            m.message?.videoMessage?.caption ||
+            "";
 
 // === LÓGICA ANTILINK AUTOMÁTICO SOLO WHATSAPP POR SUBBOT ===
 if (isGroup && !isFromSelf) {
@@ -268,23 +261,18 @@ if (isGroup && !isFromSelf) {
   }
 }
 // === FIN LÓGICA MODOADMINS SUBBOT ===
-    
-    const customPrefix = dataPrefijos[subbotID];
-    const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
-    const usedPrefix = allowedPrefixes.find((p) => messageText.startsWith(p));
-    if (!usedPrefix) return;
-
-    const body = messageText.slice(usedPrefix.length).trim();
-    const command = body.split(" ")[0].toLowerCase();
-    const args = body.split(" ").slice(1);
-
-    await handleSubCommand(subSock, msg, command, args);
-
-  } catch (err) {
-    console.error("❌ Error procesando mensaje del subbot:", err);
-  }
-});
           
+          const customPrefix = dataPrefijos[subbotID];
+          const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
+          const usedPrefix = allowedPrefixes.find(p => messageText.startsWith(p));
+          if (!usedPrefix) return;
+
+          const body = messageText.slice(usedPrefix.length).trim();
+          const command = body.split(" ")[0].toLowerCase();
+          const args = body.split(" ").slice(1);
+
+          await handleSubCommand(subSock, m, command, args);
+        });
 
       } catch (err) {
         console.error(`❌ Error cargando subbot ${dir}:`, err);
