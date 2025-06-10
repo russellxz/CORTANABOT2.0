@@ -160,119 +160,50 @@ subSock.ev.on("group-participants.update", async (update) => {
 });
         
 subSock.ev.on("messages.upsert", async msg => {
-          const m = msg.messages[0];
-          if (!m || !m.message) return;
+  const m = msg.messages[0];
+  if (!m || !m.message) return;
 
-          const from = m.key.remoteJid;
-          const isGroup = from.endsWith("@g.us");
-          const isFromSelf = m.key.fromMe;
-          const senderJid = m.key.participant || from;
-          const senderNum = senderJid.split("@")[0];
-          const rawID = subSock.user?.id || "";
-          const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
+  const from = m.key.remoteJid;
+  const isGroup = from.endsWith("@g.us");
+  const isFromSelf = m.key.fromMe;
+  const senderJid = m.key.participant || from;
+  const senderNum = senderJid.split("@")[0];
+  const rawID = subSock.user?.id || "";
+  const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-          const listaPath = path.join(__dirname, "listasubots.json");
-          const grupoPath = path.join(__dirname, "grupo.json");
-          const prefixPath = path.join(__dirname, "prefixes.json");
+  const listaPath = path.join(__dirname, "listasubots.json");
+  const prefixPath = path.join(__dirname, "prefixes.json");
 
-          let dataPriv = {}, dataGrupos = {}, dataPrefijos = {};
-          try { if (fs.existsSync(listaPath)) dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8")); } catch (_) {}
-          try { if (fs.existsSync(grupoPath)) dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8")); } catch (_) {}
-          try { if (fs.existsSync(prefixPath)) dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8")); } catch (_) {}
+  let dataPriv = {}, dataPrefijos = {};
+  try { if (fs.existsSync(listaPath)) dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8")); } catch (_) {}
+  try { if (fs.existsSync(prefixPath)) dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8")); } catch (_) {}
 
-          const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
-          const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
+  const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
 
-          if (!isGroup && !isFromSelf && !listaPermitidos.includes(senderNum)) return;
-          if (isGroup && !isFromSelf && !gruposPermitidos.includes(from)) return;
-
-          const messageText =
-            m.message?.conversation ||
-            m.message?.extendedTextMessage?.text ||
-            m.message?.imageMessage?.caption ||
-            m.message?.videoMessage?.caption ||
-            "";
-
-// === LÓGICA ANTILINK AUTOMÁTICO SOLO WHATSAPP POR SUBBOT ===
-if (isGroup && !isFromSelf) {
-  const activossubPath = path.resolve("./activossubbots.json");
-  let dataActivados = {};
-
-  if (fs.existsSync(activossubPath)) {
-    dataActivados = JSON.parse(fs.readFileSync(activossubPath, "utf-8"));
+  // ✅ Nueva lógica simplificada:
+  if (!isGroup) {
+    if (!isFromSelf && !listaPermitidos.includes(senderNum)) return;
   }
+  // En grupos no se restringe a nadie
 
-  const subbotID = subSock.user?.id || "";
-  const antilinkActivo = dataActivados.antilink?.[subbotID]?.[from];
-  const contieneLinkWhatsApp = /https:\/\/chat\.whatsapp\.com\//i.test(messageText);
+  const messageText =
+    m.message?.conversation ||
+    m.message?.extendedTextMessage?.text ||
+    m.message?.imageMessage?.caption ||
+    m.message?.videoMessage?.caption ||
+    "";
 
-  if (antilinkActivo && contieneLinkWhatsApp) {
-    try {
-      const metadata = await subSock.groupMetadata(from);
-      const participant = metadata.participants.find(p => p.id === senderJid);
-      const isAdmin = participant?.admin === "admin" || participant?.admin === "superadmin";
-      const isOwner = global.owner.some(o => o[0] === senderNum);
+  const customPrefix = dataPrefijos[subbotID];
+  const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
+  const usedPrefix = allowedPrefixes.find(p => messageText.startsWith(p));
+  if (!usedPrefix) return;
 
-      if (!isAdmin && !isOwner) {
-        await subSock.sendMessage(from, { delete: m.key });
+  const body = messageText.slice(usedPrefix.length).trim();
+  const command = body.split(" ")[0].toLowerCase();
+  const args = body.split(" ").slice(1);
 
-        await subSock.sendMessage(from, {
-          text: `⚠️ @${senderNum} envió un enlace de grupo de WhatsApp y fue eliminado.`,
-          mentions: [senderJid]
-        });
-
-        await subSock.groupParticipantsUpdate(from, [senderJid], "remove");
-      }
-    } catch (err) {
-      console.error("❌ Error procesando antilink:", err);
-    }
-  }
-}
-// === FIN LÓGICA ANTILINK ===
-// === INICIO LÓGICA MODOADMINS SUBBOT ===
-if (isGroup && !isFromSelf) {
-  try {
-    const activossubPath = path.resolve("./activossubbots.json");
-    if (!fs.existsSync(activossubPath)) return;
-
-    const dataActivados = JSON.parse(fs.readFileSync(activossubPath, "utf-8"));
-    
-    // Obtener subbotID en el formato correcto
-    const subbotID = subSock.user?.id || ""; // ejemplo: 15167096032:20@s.whatsapp.net
-    const modoAdminsActivo = dataActivados.modoadmins?.[subbotID]?.[from];
-
-    if (modoAdminsActivo) {
-      const metadata = await subSock.groupMetadata(from);
-      const participante = metadata.participants.find(p => p.id === senderJid);
-      const isAdmin = participante?.admin === "admin" || participante?.admin === "superadmin";
-
-      const botNum = subSock.user?.id.split(":")[0].replace(/[^0-9]/g, "");
-      const isBot = botNum === senderNum;
-
-      const isOwner = global.owner.some(([id]) => id === senderNum);
-
-      if (!isAdmin && !isOwner && !isBot) {
-        return;
-      }
-    }
-  } catch (err) {
-    console.error("❌ Error en verificación de modo admins:", err);
-    return;
-  }
-}
-// === FIN LÓGICA MODOADMINS SUBBOT ===
-          
-          const customPrefix = dataPrefijos[subbotID];
-          const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
-          const usedPrefix = allowedPrefixes.find(p => messageText.startsWith(p));
-          if (!usedPrefix) return;
-
-          const body = messageText.slice(usedPrefix.length).trim();
-          const command = body.split(" ")[0].toLowerCase();
-          const args = body.split(" ").slice(1);
-
-          await handleSubCommand(subSock, m, command, args);
-        });
+  await handleSubCommand(subSock, m, command, args);
+});
 
 
       } catch (err) {
