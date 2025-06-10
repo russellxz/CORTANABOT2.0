@@ -81,7 +81,6 @@ async function perplexityQuery(q, prompt) {
   //lumi
   const axios = require("axios");
 const fetch = require("node-fetch");
-const { cargarSubbots } = require("./indexsubbots");
   
     const { default: makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require("@whiskeysockets/baileys");
     const chalk = require("chalk");
@@ -1441,17 +1440,20 @@ try {
 });
             
             
-            sock.ev.on("connection.update", async (update) => {
+sock.ev.on("connection.update", async (update) => {
   const { connection, lastDisconnect } = update;
 
   if (connection === "connecting") {
     console.log(chalk.blue("🔄 Conectando a WhatsApp..."));
   }
 
-    if (connection === "open") {
-  console.log("✅ Bot conectado.");
-  cargarSubbots(); // ← LLAMADA AL SISTEMA DE SUBBOTS
-}
+  else if (connection === "open") {
+    console.log(chalk.green("✅ ¡Conexión establecida con éxito!"));
+
+    // ✅ Cargar subbots una vez conectado
+    const { cargarSubbots } = require("./indexsubbots");
+    cargarSubbots();
+
     // Verificar si hubo reinicio por comando .rest
     const restarterFile = "./lastRestarter.json";
     if (fs.existsSync(restarterFile)) {
@@ -1478,7 +1480,7 @@ try {
       setTimeout(startBot, 5000); // ⚠️ No afecta subbots
     } else {
       console.log(chalk.red("🛑 Sesión inválida o cerrada desde otro dispositivo. Se requiere nueva autenticación."));
-      // Puedes borrar sesiones aquí si quieres
+      // Si quieres borrar las sesiones corruptas, descomenta la línea siguiente:
       // fs.rmSync("./sessions", { recursive: true, force: true });
     }
   }
