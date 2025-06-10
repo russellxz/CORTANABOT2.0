@@ -43,22 +43,21 @@ const handler = async (msg, { conn, text }) => {
     const channel = video.author.name || 'Desconocido';
 
     const infoMessage = `
-╔═══════════════╗
+
    ✦ 𝗔𝘇𝘂𝗿𝗮 𝗨𝗹𝘁𝗿𝗮 & 𝘾𝙤𝙧𝙩𝙖𝙣𝙖 𝗦𝘂𝗯𝗯𝗼𝘁 ✦
-╚═══════════════╝
 
 📀 *Info del audio:*  
-├ 🎼 *Título:* ${title}
-├ ⏱️ *Duración:* ${fduration}
-├ 👁️ *Vistas:* ${views}
-├ 👤 *Autor:* ${channel}
-└ 🔗 *Enlace:* ${videoUrl}
+❀ 🎼 *Título:* ${title}
+❀ ⏱️ *Duración:* ${fduration}
+❀ 👁️ *Vistas:* ${views}
+❀ 👤 *Autor:* ${channel}
+❀ 🔗 *Enlace:* ${videoUrl}
 
 📥 *Opciones:*  
-┣ 🎵 _${usedPrefix}play1 ${text}_
-┣ 🎥 _${usedPrefix}play2 ${text}_
-┣ 🎥 _${usedPrefix}play6 ${text}_
-┗ ⚠️ *¿No se reproduce?* Usa _${usedPrefix}ff_
+❀ 🎵 _${usedPrefix}play1 ${text}_
+❀ 🎥 _${usedPrefix}play2 ${text}_
+❀ 🎥 _${usedPrefix}play6 ${text}_
+❀ ⚠️ *¿No se reproduce?* Usa _${usedPrefix}ff_
 
 ⏳ Procesando audio...
 ═══════════════════`;
