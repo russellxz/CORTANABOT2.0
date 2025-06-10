@@ -280,15 +280,17 @@ try {
   }
 } catch (_) {}
 
-// Detectar si el comando es subbotson o subbotsoff
-const lowerText = messageText.trim().toLowerCase();
-const isSubbotControlCommand = lowerText.startsWith(".subbotson") || lowerText.startsWith(".subbotsoff");
+// Cargar prefijo personalizado (ya está cargado arriba como `customPrefix`)
+const currentPrefix = customPrefix || ".";
 
-// Si es grupo y no es un comando de control, bloquear si el grupo no está autorizado
-if (isGroup && !isSubbotControlCommand && !gruposActivados.includes(from)) return;
+// Detectar si el comando que se quiere ejecutar es 'subbotson' o 'subbotsoff'
+const lowerText = messageText.trim().toLowerCase();
+const isControlCommand = lowerText.startsWith(`${currentPrefix}subbotson`) || lowerText.startsWith(`${currentPrefix}subbotsoff`);
+
+// Si es grupo, no es el bot mismo, y el grupo no está en la lista y no es comando de control → ignorar
+if (isGroup && !isFromSelf && !gruposActivados.includes(from) && !isControlCommand) return;
 
 // 🔴 FIN DE LA LÓGICA DE VERIFICACIÓN DE GRUPO ACTIVADO
-
 
           
   const customPrefix = dataPrefijos[subbotID];
