@@ -14909,3 +14909,41 @@ case "fb":
 
 module.exports = { handleCommand };
 
+function loadSubPlugins() {
+  const plugins = [];
+  const pluginDir = path.join(__dirname, 'plugins2');
+  if (!fs.existsSync(pluginDir)) return plugins;
+  const files = fs.readdirSync(pluginDir).filter(f => f.endsWith('.js'));
+  for (const file of files) {
+    const plugin = require(path.join(pluginDir, file));
+    if (plugin && plugin.command) plugins.push(plugin);
+  }
+  return plugins;
+}
+
+const subPlugins = loadSubPlugins();
+
+async function handleSubCommand(sock, msg, command, args) {
+  const lowerCommand = command.toLowerCase();
+  const text = args.join(" ");
+  const plugin = subPlugins.find(p => p.command.includes(lowerCommand));
+  if (plugin) {
+    return plugin(msg, {
+      conn: sock,
+      text,
+      args,
+      command: lowerCommand,
+      usedPrefix: "."
+    });
+  }
+}
+
+
+//----------------------------------     
+let file = require.resolve(__filename)
+fs.watchFile(file, () => {
+fs.unwatchFile(file)
+console.log(chalk.redBright(`Update ${__filename}`))
+delete require.cache[file]
+require(file)
+})
