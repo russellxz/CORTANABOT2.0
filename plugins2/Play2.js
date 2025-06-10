@@ -43,21 +43,20 @@ const handler = async (msg, { conn, text }) => {
     const videoLink = `https://www.youtube.com/watch?v=${videoInfo.id}`;
 
     const captionPreview = `
-╔════════════════╗
-║ ✦ 𝗔𝘇𝘂𝗿𝗮 𝗨𝗹𝘁𝗿𝗮 & 𝘾𝙤𝙧𝙩𝙖𝙣𝙖 𝗦𝘂𝗯𝗯𝗼𝘁 ✦
-╚════════════════╝
+
+   ✦ 𝘾𝙤𝙧𝙩𝙖𝙣𝙖 2.0 𝗦𝘂𝗯𝗯𝗼𝘁 ✦
 
 📀 *Info del video:*  
-├ 🎼 *Título:* ${title}
-├ ⏱️ *Duración:* ${duration}
-├ 👁️ *Vistas:* ${views}
-├ 👤 *Autor:* ${author}
-└ 🔗 *Link:* ${videoLink}
+❀ 🎼 *Título:* ${title}
+❀ ⏱️ *Duración:* ${duration}
+❀ 👁️ *Vistas:* ${views}
+❀ 👤 *Autor:* ${author}
+❀ 🔗 *Link:* ${videoLink}
 
 📥 *Opciones:*  
-┣ 🎵 _${usedPrefix}play1 ${text}_
-┣ 🎥 _${usedPrefix}play6 ${text}_
-┗ ⚠️ *¿No se reproduce?* Usa _${usedPrefix}ff_
+❀ 🎵 _${usedPrefix}play1 ${text}_
+❀ 🎥 _${usedPrefix}play6 ${text}_
+❀ ⚠️ *¿No se reproduce?* Usa _${usedPrefix}ff_
 
 ⏳ Procesando video...
 ═════════════════════`;
