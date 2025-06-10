@@ -2,19 +2,21 @@ const fs = require("fs");
 const path = require("path");
 
 const handler = async (msg, { conn, text }) => {
+  // Reacción inicial
   await conn.sendMessage(msg.key.remoteJid, {
-    react: { text: "✅", key: msg.key }
+    react: { text: "➕", key: msg.key }
   });
 
   const fromMe = msg.key.fromMe;
+
   if (!fromMe) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: "⛔ *Solo el dueño del subbot* puede usar este comando."
+      text: "⛔ Solo el *dueño del subbot* puede usar este comando."
     }, { quoted: msg });
   }
 
   let target;
-  if (msg.message?.extendedTextMessage?.contextInfo?.participant) {
+  if (msg.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
     target = msg.message.extendedTextMessage.contextInfo.participant;
   } else if (text && text.trim() !== "") {
     target = text;
@@ -22,30 +24,21 @@ const handler = async (msg, { conn, text }) => {
 
   if (!target) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: "⚠️ Cita un mensaje o escribe el número del usuario a agregar."
+      text: "⚠️ Cita el mensaje del usuario o escribe su número. que quieres agregar a la lista para que el subbots le responda en privado💠"
     }, { quoted: msg });
   }
 
   target = target.replace(/\D/g, "");
-  if (!target || isNaN(target)) {
-    return await conn.sendMessage(msg.key.remoteJid, {
-      text: "❌ Número inválido."
-    }, { quoted: msg });
-  }
 
+  // Obtener el ID limpio del subbot
   const rawID = conn.user?.id || "";
   const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-  // Ruta absoluta a la raíz del proyecto
-  const filePath = path.join(process.cwd(), "listasubots.json");
+  const filePath = path.resolve("listasubots.json");
   let data = {};
 
   if (fs.existsSync(filePath)) {
-    try {
-      data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    } catch (e) {
-      data = {};
-    }
+    data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   }
 
   if (!Array.isArray(data[subbotID])) {
@@ -54,7 +47,7 @@ const handler = async (msg, { conn, text }) => {
 
   if (data[subbotID].includes(target)) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: `ℹ️ El número *${target}* ya estaba en la lista.`
+      text: "ℹ️ Ese número ya está en tu lista."
     }, { quoted: msg });
   }
 
@@ -62,7 +55,7 @@ const handler = async (msg, { conn, text }) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
   await conn.sendMessage(msg.key.remoteJid, {
-    text: `✅ *${target}* fue agregado correctamente a la lista del subbot.`
+    text: `✅ Usuario *${target}* agregado a tu lista a hora el subbots le respondera a los comandos💠.`
   }, { quoted: msg });
 };
 
