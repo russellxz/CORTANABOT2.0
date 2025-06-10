@@ -2,54 +2,54 @@ const fs = require("fs");
 const path = require("path");
 
 const handler = async (msg, { conn, text }) => {
+  // Reacción inicial
   await conn.sendMessage(msg.key.remoteJid, {
-    react: { text: "➕", key: msg.key }
+    react: { text: "✅", key: msg.key }
   });
 
-  const isFromMe = msg.key.fromMe;
-  if (!isFromMe) {
+  // Verificar si el mensaje proviene del dueño (desde su mismo número/subbot)
+  const fromMe = msg.key.fromMe;
+  if (!fromMe) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: "⛔ Solo el *dueño del subbot* puede usar este comando."
+      text: "⛔ *Solo el dueño del subbot* puede usar este comando."
     }, { quoted: msg });
   }
 
-  // Obtener el número citado o ingresado
+  // Determinar el número objetivo
   let target;
-  const contextInfo = msg.message?.extendedTextMessage?.contextInfo;
-
-  if (contextInfo?.participant) {
-    target = contextInfo.participant;
+  if (msg.message?.extendedTextMessage?.contextInfo?.participant) {
+    target = msg.message.extendedTextMessage.contextInfo.participant;
   } else if (text && text.trim() !== "") {
-    target = text.trim();
+    target = text;
   }
 
   if (!target) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: "⚠️ Cita un mensaje o escribe el número que deseas agregar a la lista."
+      text: "⚠️ Cita un mensaje o escribe el número para agregarlo a la lista."
     }, { quoted: msg });
   }
 
-  target = target.replace(/[^0-9]/g, "");
-
-  if (target.length < 5) {
+  target = target.replace(/\D/g, ""); // Limpiar formato
+  if (!target || isNaN(target)) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: "❌ El número no es válido."
+      text: "❌ Número inválido."
     }, { quoted: msg });
   }
 
-  // Obtener ID limpio del subbot
+  // Obtener el ID del subbot
   const rawID = conn.user?.id || "";
   const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-  const filePath = path.join(__dirname, "..", "listasubots.json");
+  // Leer archivo
+  const filePath = path.resolve("listasubots.json");
   let data = {};
 
-  try {
-    if (fs.existsSync(filePath)) {
+  if (fs.existsSync(filePath)) {
+    try {
       data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    } catch {
+      data = {};
     }
-  } catch (e) {
-    console.error("❌ Error leyendo listasubots.json:", e);
   }
 
   if (!Array.isArray(data[subbotID])) {
@@ -58,23 +58,16 @@ const handler = async (msg, { conn, text }) => {
 
   if (data[subbotID].includes(target)) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: "ℹ️ Ese número ya está en tu lista."
+      text: `ℹ️ El número *${target}* ya está en la lista.`
     }, { quoted: msg });
   }
 
+  // Agregar y guardar
   data[subbotID].push(target);
-
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-  } catch (e) {
-    console.error("❌ Error escribiendo listasubots.json:", e);
-    return await conn.sendMessage(msg.key.remoteJid, {
-      text: "❌ No se pudo guardar la lista."
-    }, { quoted: msg });
-  }
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
   await conn.sendMessage(msg.key.remoteJid, {
-    text: `✅ Usuario *${target}* agregado correctamente a tu lista.`
+    text: `✅ *${target}* agregado correctamente a la lista del subbot.`
   }, { quoted: msg });
 };
 
