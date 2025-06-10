@@ -160,39 +160,44 @@ subSock.ev.on("group-participants.update", async (update) => {
 });
         
         subSock.ev.on("messages.upsert", async msg => {
-          const m = msg.messages[0];
-          if (!m || !m.message) return;
+  const m = msg.messages[0];
+  if (!m || !m.message) return;
 
-          const from = m.key.remoteJid;
-          const isGroup = from.endsWith("@g.us");
-          const isFromSelf = m.key.fromMe;
-          const senderJid = m.key.participant || from;
-          const senderNum = senderJid.split("@")[0];
-          const rawID = subSock.user?.id || "";
-          const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
+  const from = m.key.remoteJid;
+  const isGroup = from.endsWith("@g.us");
 
-          const listaPath = path.join(__dirname, "listasubots.json");
-          const grupoPath = path.join(__dirname, "grupo.json");
-          const prefixPath = path.join(__dirname, "prefixes.json");
+  // 👇 Corrección manual del isFromSelf compatible con @lid
+  const botJid = subSock.user?.id?.split(":")[0] + "@s.whatsapp.net";
+  const realSender = m.key.participant || m.key.remoteJid;
+  const isFromSelf = realSender === botJid;
 
-          let dataPriv = {}, dataGrupos = {}, dataPrefijos = {};
-          try { if (fs.existsSync(listaPath)) dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8")); } catch (_) {}
-          try { if (fs.existsSync(grupoPath)) dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8")); } catch (_) {}
-          try { if (fs.existsSync(prefixPath)) dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8")); } catch (_) {}
+  const senderJid = realSender;
+  const senderNum = senderJid.split("@")[0];
+  const rawID = subSock.user?.id || "";
+  const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-          const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
-          const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
+  const listaPath = path.join(__dirname, "listasubots.json");
+  const grupoPath = path.join(__dirname, "grupo.json");
+  const prefixPath = path.join(__dirname, "prefixes.json");
 
-          if (!isGroup && !isFromSelf && !listaPermitidos.includes(senderNum)) return;
-          if (isGroup && !isFromSelf && !gruposPermitidos.includes(from)) return;
+  let dataPriv = {}, dataGrupos = {}, dataPrefijos = {};
+  try { if (fs.existsSync(listaPath)) dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8")); } catch (_) {}
+  try { if (fs.existsSync(grupoPath)) dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8")); } catch (_) {}
+  try { if (fs.existsSync(prefixPath)) dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8")); } catch (_) {}
 
-          const messageText =
-            m.message?.conversation ||
-            m.message?.extendedTextMessage?.text ||
-            m.message?.imageMessage?.caption ||
-            m.message?.videoMessage?.caption ||
-            "";
+  const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
+  const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
 
+  if (!isGroup && !isFromSelf && !listaPermitidos.includes(senderNum)) return;
+  if (isGroup && !isFromSelf && !gruposPermitidos.includes(from)) return;
+
+  const messageText =
+    m.message?.conversation ||
+    m.message?.extendedTextMessage?.text ||
+    m.message?.imageMessage?.caption ||
+    m.message?.videoMessage?.caption ||
+    "";
+          
 // === LÓGICA ANTILINK AUTOMÁTICO SOLO WHATSAPP POR SUBBOT ===
 if (isGroup && !isFromSelf) {
   const activossubPath = path.resolve("./activossubbots.json");
