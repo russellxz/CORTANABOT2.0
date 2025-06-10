@@ -1450,6 +1450,10 @@ try {
   else if (connection === "open") {
     console.log(chalk.green("✅ ¡Conexión establecida con éxito!"));
 
+    if (connection === "open") {
+  console.log("✅ Bot conectado.");
+  cargarSubbots(); // ← LLAMADA AL SISTEMA DE SUBBOTS
+}
     // Verificar si hubo reinicio por comando .rest
     const restarterFile = "./lastRestarter.json";
     if (fs.existsSync(restarterFile)) {
