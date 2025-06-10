@@ -108,7 +108,7 @@ function isAllowedUser(sender) {
 }
     
     //privado y admins
-
+const path = require("path");
 const activosPath = "./activos.json"; // ✅ No interfiere con path original
 
 // 📂 Cargar configuración de modos desde el archivo JSON
