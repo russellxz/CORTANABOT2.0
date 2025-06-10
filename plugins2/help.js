@@ -96,14 +96,14 @@ const handler = async (msg, { conn }) => {
 ═⌬Azura Ultra & cortana Subbot⌬═`;
 
   // Mensaje principal con sendMessage2
-  await conn.sendMessage2(
-    msg.key.remoteJid,
-    {
-      image: { url: `https://cdn.russellxz.click/d06910d4.PNG` },
-      caption: menu
-    },
-    msg
-  );
+await conn.sendMessage(
+  msg.key.remoteJid,
+  {
+    image: { url: `https://cdn.russellxz.click/d06910d4.PNG` },
+    caption: menu
+  },
+  { quoted: msg }
+);
 
   // Reacción final normal (no cambia)
   await conn.sendMessage(msg.key.remoteJid, {
