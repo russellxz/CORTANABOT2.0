@@ -160,48 +160,39 @@ subSock.ev.on("group-participants.update", async (update) => {
 });
         
         subSock.ev.on("messages.upsert", async msg => {
-  const m = msg.messages[0];
-  if (!m || !m.message) return;
+          const m = msg.messages[0];
+          if (!m || !m.message) return;
 
-  const from = m.key.remoteJid;
-  const isGroup = from.endsWith("@g.us");
-  const isFromSelf = m.key.fromMe;
-  const senderJid = m.key.participant || from;
-  const senderNum = senderJid.split("@")[0];
-  const rawID = subSock.user?.id || "";
-  const subbotID = rawID.split(":")[0] + "@s.whatsapp.net"
-  const botNum = rawID.split(":")[0]; // ← número sin @
+          const from = m.key.remoteJid;
+          const isGroup = from.endsWith("@g.us");
+          const isFromSelf = m.key.fromMe;
+          const senderJid = m.key.participant || from;
+          const senderNum = senderJid.split("@")[0];
+          const rawID = subSock.user?.id || "";
+          const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-          
-  const listaPath = path.join(__dirname, "listasubots.json");
-  let customPrefix = "."; // Default if not defined in prefixes.json
-  const grupoPath = path.join(__dirname, "grupo.json");
-  const prefixPath = path.join(__dirname, "prefixes.json");
+          const listaPath = path.join(__dirname, "listasubots.json");
+          const grupoPath = path.join(__dirname, "grupo.json");
+          const prefixPath = path.join(__dirname, "prefixes.json");
 
-  let dataPriv = {}, dataGrupos = {}, dataPrefijos = {};
-  try { if (fs.existsSync(listaPath)) dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8")); } catch (_) {}
-  try { if (fs.existsSync(grupoPath)) dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8")); } catch (_) {}
-  try { if (fs.existsSync(prefixPath)) dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8")); } catch (_) {}
+          let dataPriv = {}, dataGrupos = {}, dataPrefijos = {};
+          try { if (fs.existsSync(listaPath)) dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8")); } catch (_) {}
+          try { if (fs.existsSync(grupoPath)) dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8")); } catch (_) {}
+          try { if (fs.existsSync(prefixPath)) dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8")); } catch (_) {}
 
-  const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
-  const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
+          const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
+          const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
 
-  // 🔁 Nuevo control de acceso
-  if (!isGroup) {
-    const isOwner = senderNum === botNum;
-    if (!isFromSelf && !isOwner && !listaPermitidos.includes(senderNum)) return;
-  }
+          if (!isGroup && !isFromSelf && !listaPermitidos.includes(senderNum)) return;
+          if (isGroup && !isFromSelf && !gruposPermitidos.includes(from)) return;
 
-  // En grupos, responder siempre
-  // (si después quieres filtrar grupos, puedes restaurar esta condición)
-  // if (isGroup && !isFromSelf && !gruposPermitidos.includes(from)) return;
+          const messageText =
+            m.message?.conversation ||
+            m.message?.extendedTextMessage?.text ||
+            m.message?.imageMessage?.caption ||
+            m.message?.videoMessage?.caption ||
+            "";
 
-  const messageText =
-    m.message?.conversation ||
-    m.message?.extendedTextMessage?.text ||
-    m.message?.imageMessage?.caption ||
-    m.message?.videoMessage?.caption ||
-    "";
 // === LÓGICA ANTILINK AUTOMÁTICO SOLO WHATSAPP POR SUBBOT ===
 if (isGroup && !isFromSelf) {
   const activossubPath = path.resolve("./activossubbots.json");
@@ -271,41 +262,18 @@ if (isGroup && !isFromSelf) {
 }
 // === FIN LÓGICA MODOADMINS SUBBOT ===
           
-// 🟢 INICIO DE LA LÓGICA DE VERIFICACIÓN DE GRUPO ACTIVADO
+          const customPrefix = dataPrefijos[subbotID];
+          const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
+          const usedPrefix = allowedPrefixes.find(p => messageText.startsWith(p));
+          if (!usedPrefix) return;
 
-// Cargar lista de grupos activados desde subbotson.json
-const onPath = path.resolve("./subbotson.json");
-let gruposActivados = [];
-try {
-  if (fs.existsSync(onPath)) {
-    gruposActivados = JSON.parse(fs.readFileSync(onPath, "utf-8"));
-  }
-} catch (_) {}
+          const body = messageText.slice(usedPrefix.length).trim();
+          const command = body.split(" ")[0].toLowerCase();
+          const args = body.split(" ").slice(1);
 
-// Cargar prefijo personalizado (ya está cargado arriba como `customPrefix`)
-const currentPrefix = customPrefix || ".";
+          await handleSubCommand(subSock, m, command, args);
+        });
 
-// Detectar si el comando que se quiere ejecutar es 'subbotson' o 'subbotsoff'
-const lowerText = messageText.trim().toLowerCase();
-const isControlCommand = lowerText.startsWith(`${currentPrefix}subbotson`) || lowerText.startsWith(`${currentPrefix}subbotsoff`);
-
-// Si es grupo, no es el bot mismo, y el grupo no está en la lista y no es comando de control → ignorar
-if (isGroup && !isFromSelf && !gruposActivados.includes(from) && !isControlCommand) return;
-
-// 🔴 FIN DE LA LÓGICA DE VERIFICACIÓN DE GRUPO ACTIVADO
-
-          
-  const customPrefix = dataPrefijos[subbotID];
-  const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
-  const usedPrefix = allowedPrefixes.find(p => messageText.startsWith(p));
-  if (!usedPrefix) return;
-
-  const body = messageText.slice(usedPrefix.length).trim();
-  const command = body.split(" ")[0].toLowerCase();
-  const args = body.split(" ").slice(1);
-
-  await handleSubCommand(subSock, m, command, args);
-});
       } catch (err) {
         console.error(`❌ Error cargando subbot ${dir}:`, err);
       }
