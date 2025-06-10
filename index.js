@@ -1448,9 +1448,6 @@ try {
     console.log(chalk.blue("🔄 Conectando a WhatsApp..."));
   }
 
-  else if (connection === "open") {
-    console.log(chalk.green("✅ ¡Conexión establecida con éxito!"));
-
     if (connection === "open") {
   console.log("✅ Bot conectado.");
   cargarSubbots(); // ← LLAMADA AL SISTEMA DE SUBBOTS
