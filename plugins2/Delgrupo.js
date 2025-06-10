@@ -6,11 +6,6 @@ const handler = async (msg, { conn }) => {
     react: { text: "🗑️", key: msg.key }
   });
 
-  const fromMe = msg.key.fromMe;
-  if (!fromMe) return await conn.sendMessage(msg.key.remoteJid, {
-    text: "⛔ Solo el *dueño del subbot* puede usar este comando."
-  }, { quoted: msg });
-
   const groupID = msg.key.remoteJid;
   if (!groupID.endsWith("@g.us")) {
     return await conn.sendMessage(groupID, {
@@ -21,8 +16,8 @@ const handler = async (msg, { conn }) => {
   const rawID = conn.user?.id || "";
   const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
   const filePath = path.resolve("grupo.json");
-  let data = {};
 
+  let data = {};
   if (fs.existsSync(filePath)) {
     data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
   }
@@ -37,7 +32,7 @@ const handler = async (msg, { conn }) => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
   await conn.sendMessage(groupID, {
-    text: `✅ Grupo eliminado de la lista. ya no respondera en este grupo el subbots💠`
+    text: "✅ Grupo eliminado de la lista. El subbot ya no responderá aquí 💠"
   }, { quoted: msg });
 };
 
