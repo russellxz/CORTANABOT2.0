@@ -82,13 +82,13 @@ const handler = async (msg, { conn }) => {
   Contacto del creador
 ▣ ${usedPrefix}get ↷
   Descargar estados
-▣ ${usedPrefix}addgrupo ↷
+▣ ${usedPrefix}subbotson ↷
   Autorizar grupo pa que lo usen.
 ▣ ${usedPrefix}addlista ↷
   Autorizar usuario privado pa lo usen.
 ▣ ${usedPrefix}dellista ↷
   Quitar usuario autorizado pa que o lo usen.
-▣ ${usedPrefix}delgrupo ↷
+▣ ${usedPrefix}subbotsoff ↷
   Eliminar grupo autorizado pa que no lo usen.
 ▣ ${usedPrefix}pong ↷
   Medir latencia del bot
