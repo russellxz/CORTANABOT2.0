@@ -169,16 +169,9 @@ subSock.ev.on("group-participants.update", async (update) => {
   const senderJid = m.key.participant || from;
   const senderNum = senderJid.split("@")[0];
   const rawID = subSock.user?.id || "";
-  const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
+  const subbotID = rawID.split(":")[0] + "@s.whatsapp.net"
   const botNum = rawID.split(":")[0]; // ← número sin @
-try {
-  if (fs.existsSync(prefixPath)) {
-    const dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8"));
-    customPrefix = dataPrefijos[subbotID] || "."; // Use subbot's prefix or default to "."
-  }
-} catch (error) {
-  console.error("Error al leer el archivo de prefijos:", error);
-}
+
           
   const listaPath = path.join(__dirname, "listasubots.json");
   let customPrefix = "."; // Default if not defined in prefixes.json
