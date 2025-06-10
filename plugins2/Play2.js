@@ -106,7 +106,7 @@ const handler = async (msg, { conn, text }) => {
       video: fs.readFileSync(filePath),
       mimetype: 'video/mp4',
       fileName: `${videoData.title}.mp4`,
-      caption: `🎬 Aquí tiene su video en calidad normal.\n\n© Azura Ultra Subbot`
+      caption: `🎬 Aquí tiene su video en calidad normal.\n\n© Cortana 2.0 Subbot`
     }, { quoted: msg });
 
     fs.unlinkSync(filePath);
