@@ -6,43 +6,50 @@ const handler = async (msg, { conn, text }) => {
     react: { text: "➕", key: msg.key }
   });
 
-  const fromMe = msg.key.fromMe;
-  if (!fromMe) {
+  const isFromMe = msg.key.fromMe;
+  if (!isFromMe) {
     return await conn.sendMessage(msg.key.remoteJid, {
       text: "⛔ Solo el *dueño del subbot* puede usar este comando."
     }, { quoted: msg });
   }
 
+  // Obtener el número citado o ingresado
   let target;
   const contextInfo = msg.message?.extendedTextMessage?.contextInfo;
 
   if (contextInfo?.participant) {
     target = contextInfo.participant;
   } else if (text && text.trim() !== "") {
-    target = text;
+    target = text.trim();
   }
 
   if (!target) {
     return await conn.sendMessage(msg.key.remoteJid, {
-      text: "⚠️ Cita un mensaje o escribe el número para agregar a la lista de acceso privado."
+      text: "⚠️ Cita un mensaje o escribe el número que deseas agregar a la lista."
     }, { quoted: msg });
   }
 
-  target = target.replace(/[^0-9]/g, ""); // solo números
+  target = target.replace(/[^0-9]/g, "");
 
-  // Obtener ID del subbot
+  if (target.length < 5) {
+    return await conn.sendMessage(msg.key.remoteJid, {
+      text: "❌ El número no es válido."
+    }, { quoted: msg });
+  }
+
+  // Obtener ID limpio del subbot
   const rawID = conn.user?.id || "";
   const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-  const filePath = path.resolve("listasubots.json");
+  const filePath = path.join(__dirname, "..", "listasubots.json");
   let data = {};
 
-  if (fs.existsSync(filePath)) {
-    try {
+  try {
+    if (fs.existsSync(filePath)) {
       data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    } catch (e) {
-      data = {};
     }
+  } catch (e) {
+    console.error("❌ Error leyendo listasubots.json:", e);
   }
 
   if (!Array.isArray(data[subbotID])) {
@@ -56,10 +63,18 @@ const handler = async (msg, { conn, text }) => {
   }
 
   data[subbotID].push(target);
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  } catch (e) {
+    console.error("❌ Error escribiendo listasubots.json:", e);
+    return await conn.sendMessage(msg.key.remoteJid, {
+      text: "❌ No se pudo guardar la lista."
+    }, { quoted: msg });
+  }
 
   await conn.sendMessage(msg.key.remoteJid, {
-    text: `✅ Usuario *${target}* agregado a tu lista. Ahora el subbot le responderá en privado.`
+    text: `✅ Usuario *${target}* agregado correctamente a tu lista.`
   }, { quoted: msg });
 };
 
