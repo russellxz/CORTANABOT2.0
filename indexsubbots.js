@@ -192,7 +192,44 @@ subSock.ev.on("messages.upsert", async msg => {
     m.message?.imageMessage?.caption ||
     m.message?.videoMessage?.caption ||
     "";
+// === INICIO LÓGICA GRUPO AUTORIZADO ===
+if (isGroup) {
+  try {
+    const grupoPath = path.resolve("./grupo.json");
+    const rawID = subSock.user?.id || "";
+    const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
+    if (fs.existsSync(grupoPath)) {
+      const dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8"));
+      const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
+
+      const messageText =
+        m.message?.conversation ||
+        m.message?.extendedTextMessage?.text ||
+        m.message?.imageMessage?.caption ||
+        m.message?.videoMessage?.caption ||
+        "";
+
+      const allowedCommands = ['addgrupo']; // ⚠️ Aquí defines excepciones
+
+      const isAllowedCommand = allowedCommands.some(cmd =>
+        messageText.toLowerCase().startsWith("." + cmd) || // .addgrupo
+        messageText.toLowerCase().startsWith("#" + cmd)    // #addgrupo si usas prefijos múltiples
+      );
+
+      if (!gruposPermitidos.includes(from) && !isAllowedCommand) {
+        return; // ❌ No está en la lista y no es comando permitido → ignorar mensaje
+      }
+    }
+
+  } catch (err) {
+    console.error("❌ Error en verificación de grupo autorizado:", err);
+    return;
+  }
+}
+// === FIN LÓGICA GRUPO AUTORIZADO ===
+
+  
   const customPrefix = dataPrefijos[subbotID];
   const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
   const usedPrefix = allowedPrefixes.find(p => messageText.startsWith(p));
