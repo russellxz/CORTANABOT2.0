@@ -562,10 +562,15 @@ try {
   const activos = fs.existsSync("./activos.json")
     ? JSON.parse(fs.readFileSync("./activos.json", "utf-8"))
     : {};
+
   const antipornoActivo = activos.antiporno?.[chatId];
+  const senderJid = msg.key.participant || msg.key.remoteJid;
+  const isLID = senderJid?.endsWith("@lid");
 
   if (isGroup && antipornoActivo && !fromMe) {
     const message = msg.message;
+    if (!message || typeof message !== "object") return;
+
     const type = Object.keys(message)[0];
     const media =
       message.imageMessage || message.stickerMessage || message.videoMessage || null;
@@ -575,7 +580,6 @@ try {
       let mimeType = media?.mimetype || "image/png";
 
       if (message.videoMessage) {
-        // Convertir video a una imagen WebP (frame estático)
         const stream = await downloadContentFromMessage(media, "video");
         buffer = Buffer.alloc(0);
         for await (const chunk of stream) buffer = Buffer.concat([buffer, chunk]);
@@ -583,6 +587,7 @@ try {
         const tmpId = msg.key.id.replace(/[^a-zA-Z0-9]/g, "");
         const inputPath = path.join(os.tmpdir(), `${tmpId}.mp4`);
         const outputPath = path.join(os.tmpdir(), `${tmpId}.webp`);
+
         fs.writeFileSync(inputPath, buffer);
 
         await new Promise((resolve, reject) => {
@@ -609,16 +614,15 @@ try {
         for await (const chunk of stream) buffer = Buffer.concat([buffer, chunk]);
       }
 
-      // Analizar con Checker NSFW
       const checker = new Checker();
       const result = await checker.response(buffer, mimeType);
 
       if (result?.status && result.result?.NSFW === true) {
-        const senderClean = sender.replace(/[^0-9]/g, "");
+        const senderClean = senderJid.replace(/[^0-9]/g, "");
         const isOwner = global.owner.some(([id]) => id === senderClean);
 
         const metadata = await sock.groupMetadata(chatId);
-        const participante = metadata.participants.find(p => p.id.includes(sender));
+        const participante = metadata.participants.find(p => p.id === senderJid);
         const isAdmin = participante?.admin === "admin" || participante?.admin === "superadmin";
 
         if (!isOwner && !isAdmin) {
@@ -635,15 +639,15 @@ try {
             delete warns[senderClean];
             fs.writeFileSync(warnPath, JSON.stringify(warns, null, 2));
             await sock.sendMessage(chatId, {
-              text: `🔞 @${sender} fue eliminado por enviar contenido +🔞 4 veces.`,
-              mentions: [msg.key.participant || msg.key.remoteJid]
+              text: `🔞 @${senderClean} fue eliminado por enviar contenido +🔞 4 veces.`,
+              mentions: [senderJid]
             });
-            await sock.groupParticipantsUpdate(chatId, [msg.key.participant || msg.key.remoteJid], "remove");
+            await sock.groupParticipantsUpdate(chatId, [senderJid], "remove");
           } else {
             fs.writeFileSync(warnPath, JSON.stringify(warns, null, 2));
             await sock.sendMessage(chatId, {
-              text: `⚠️ @${sender}, tu contenido fue marcado como +🔞 Advertencia ${warns[senderClean]}/4.`,
-              mentions: [msg.key.participant || msg.key.remoteJid]
+              text: `⚠️ @${senderClean}, tu contenido fue marcado como +🔞 Advertencia ${warns[senderClean]}/4.`,
+              mentions: [senderJid]
             });
           }
         }
@@ -653,7 +657,7 @@ try {
 } catch (e) {
   console.error("❌ Error en lógica antiporno:", e);
 }
-// === FIN LÓGICA ANTIPORNO BOT PRINCIPAL ==   
+// === FIN LÓGICA ANTIPORNO BOT PRINCIPAL ===
 // === INICIO LÓGICA ANTIS STICKERS (15s, 3 strikes, sin notificación de desbloqueo) ===
 const stickerMsg = msg.message?.stickerMessage || msg.message?.ephemeralMessage?.message?.stickerMessage;
 
