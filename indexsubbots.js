@@ -139,7 +139,7 @@ subSock.ev.on("group-participants.update", async (update) => {
         try {
           profilePic = await subSock.profilePictureUrl(participant, "image");
         } catch {
-          profilePic = "https://cdn.dorratz.com/files/1741323171822.jpg";
+          profilePic = "https://cdn.russellxz.click/8d278a49.jpeg";
         }
 
         await subSock.sendMessage(chatId, {
