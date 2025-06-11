@@ -40,7 +40,7 @@ const handler = async (msg, { conn, args }) => {
   const mentionList = participants.map(p => `➥ @${p.id.split("@")[0]}`).join("\n");
   const extraMsg = args.join(" ");
   let finalMsg = "━〔 *📢 INVOCACIÓN 📢* 〕━➫\n";
-  finalMsg += "٩(͡๏̯͡๏)۶ Por Azura Ultra 2.0 SubBot ٩(͡๏̯͡๏)۶\n";
+  finalMsg += "٩(͡๏̯͡๏)۶ Por cortana 2.0 SubBot ٩(͡๏̯͡๏)۶\n";
   if (extraMsg.trim().length > 0) {
     finalMsg += `\n❑ Mensaje: ${extraMsg}\n\n`;
   } else {
