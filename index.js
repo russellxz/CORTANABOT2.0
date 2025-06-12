@@ -82,7 +82,7 @@ async function perplexityQuery(q, prompt) {
   const axios = require("axios");
 const fetch = require("node-fetch");
 const { cargarSubbots } = require("./indexsubbots");
-require("./subbotWatcher"); // ⬅️ Detecta subbots nuevos automáticamente
+
    
     const { default: makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require("@whiskeysockets/baileys");
     const chalk = require("chalk");
