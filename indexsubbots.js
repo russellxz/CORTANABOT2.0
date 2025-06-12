@@ -71,13 +71,23 @@ async function cargarSubbots() {
 
         subSock.ev.on("creds.update", saveCreds);
 
-        subSock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
+subSock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
   if (connection === "open") {
     console.log(`✅ Subbot ${dir} conectado.`);
+
     if (reconnectionTimer) {
       clearTimeout(reconnectionTimer);
       reconnectionTimer = null;
     }
+
+    // ✅ Volver a cargar la lógica completa del subbot
+    console.log(`🔁 Reiniciando lógica del subbot ${dir}...`);
+    try {
+      await iniciarSubbot(); // reinicia el subbot con todos los handlers actualizados
+    } catch (err) {
+      console.error(`❌ Error recargando lógica de subbot ${dir}:`, err);
+    }
+
   } else if (connection === "close") {
     const statusCode = lastDisconnect?.error?.output?.statusCode;
 
@@ -90,10 +100,10 @@ async function cargarSubbots() {
       }
     }, 60_000);
 
+    // ✅ Reintento de conexión después de unos segundos
     setTimeout(() => iniciarSubbot(), 5000);
   }
 });
-
 
 subSock.ev.on("group-participants.update", async (update) => {
   try {
