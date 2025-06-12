@@ -1,14 +1,6 @@
 const handler = async (msg, { conn }) => {
   const chatId = msg.key.remoteJid;
   const senderId = msg.key.participant || msg.key.remoteJid;
-  const senderNum = senderId.replace(/[^0-9]/g, '');
-  const isOwner = global.owner.some(([id]) => id === senderNum);
-
-  if (!isOwner) {
-    return await conn.sendMessage(chatId, {
-      text: '❌ Este comando solo puede usarlo el *owner del bot*.'
-    }, { quoted: msg });
-  }
 
   await conn.sendMessage(chatId, {
     react: { text: '🛰️', key: msg.key }
