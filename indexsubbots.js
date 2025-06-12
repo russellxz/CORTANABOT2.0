@@ -80,10 +80,16 @@ subSock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
       reconnectionTimer = null;
     }
 
-    // ✅ Volver a cargar la lógica completa del subbot
+    // 🛡️ VERIFICAR SI LA CARPETA TODAVÍA EXISTE
+    if (!fs.existsSync(path.join(sessionPath, "creds.json"))) {
+      console.log(`⚠️ Sesión ${dir} ya fue eliminada. No se recarga.`);
+      return;
+    }
+
+    // ✅ Relanzar lógica solo si la sesión existe
     console.log(`🔁 Reiniciando lógica del subbot ${dir}...`);
     try {
-      await iniciarSubbot(); // reinicia el subbot con todos los handlers actualizados
+      await iniciarSubbot(); // ⚙️ Recarga el sistema del subbot activo
     } catch (err) {
       console.error(`❌ Error recargando lógica de subbot ${dir}:`, err);
     }
@@ -98,9 +104,9 @@ subSock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
         fs.rmSync(sessionPath, { recursive: true, force: true });
         console.log(`🗑️ Subbot ${dir} eliminado por desconexión prolongada.`);
       }
-    }, 60_000);
+    }, 30_000);
 
-    // ✅ Reintento de conexión después de unos segundos
+    // ⏱️ Intentar reconexión automática
     setTimeout(() => iniciarSubbot(), 5000);
   }
 });
