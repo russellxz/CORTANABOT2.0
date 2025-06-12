@@ -2,7 +2,7 @@ const handler = async (msg, { conn }) => {
   const start = Date.now();
 
   const respuesta = await conn.sendMessage(msg.key.remoteJid, {
-    text: "🏓 *Ping chucha ya este subbots anda activo pa culiar🍑 con una culona traime a tu mamá o hermana perro🐕!*"
+    text: "🏓 *Pong chucha ya este subbots anda activo pa culiar🍑 con una culona traime a tu mamá o hermana perro🐕!*"
   }, { quoted: msg });
 
   const end = Date.now();
@@ -14,5 +14,5 @@ const handler = async (msg, { conn }) => {
   });
 };
 
-handler.command = ['pong'];
+handler.command = ['ping'];
 module.exports = handler;
