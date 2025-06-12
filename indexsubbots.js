@@ -1,6 +1,8 @@
 const path = require("path");
 const fs = require("fs");
 const pino = require("pino");
+// Lista en memoria de subbots ya conectados
+const subbotsActivos = new Set();
 const {
   default: makeWASocket,
   useMultiFileAuthState,
@@ -71,42 +73,46 @@ async function cargarSubbots() {
 
         subSock.ev.on("creds.update", saveCreds);
 
+
 subSock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
+  const sessionID = dir; // nombre de la carpeta, normalmente es el JID
+
   if (connection === "open") {
-    console.log(`✅ Subbot ${dir} conectado.`);
+    console.log(`✅ Subbot ${sessionID} conectado.`);
 
     if (reconnectionTimer) {
       clearTimeout(reconnectionTimer);
       reconnectionTimer = null;
     }
 
-    // 🛡️ VERIFICAR SI LA CARPETA TODAVÍA EXISTE
-    if (!fs.existsSync(path.join(sessionPath, "creds.json"))) {
-      console.log(`⚠️ Sesión ${dir} ya fue eliminada. No se recarga.`);
-      return;
-    }
+    // ✅ Solo ejecutar lógica si es una sesión nueva no registrada aún
+    if (!subbotsActivos.has(sessionID)) {
+      console.log(`🆕 Nueva sesión detectada (${sessionID}), cargando lógica del subbot...`);
+      subbotsActivos.add(sessionID);
 
-    // ✅ Relanzar lógica solo si la sesión existe
-    console.log(`🔁 Reiniciando lógica del subbot ${dir}...`);
-    try {
-      await iniciarSubbot(); // ⚙️ Recarga el sistema del subbot activo
-    } catch (err) {
-      console.error(`❌ Error recargando lógica de subbot ${dir}:`, err);
+      try {
+        await iniciarSubbot(); // solo se lanza una vez para sesiones nuevas
+      } catch (err) {
+        console.error(`❌ Error cargando nueva sesión ${sessionID}:`, err);
+      }
+    } else {
+      console.log(`ℹ️ Sesión ${sessionID} ya estaba activa. No se recarga.`);
     }
 
   } else if (connection === "close") {
     const statusCode = lastDisconnect?.error?.output?.statusCode;
 
-    console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}). Esperando 1 minuto antes de eliminar sesión...`);
+    console.log(`❌ Subbot ${sessionID} desconectado (status: ${statusCode}). Eliminación en 30s...`);
 
     reconnectionTimer = setTimeout(() => {
       if (fs.existsSync(sessionPath)) {
         fs.rmSync(sessionPath, { recursive: true, force: true });
-        console.log(`🗑️ Subbot ${dir} eliminado por desconexión prolongada.`);
+        console.log(`🗑️ Subbot ${sessionID} eliminado por desconexión prolongada.`);
+        subbotsActivos.delete(sessionID); // 🧼 También quitamos del registro
       }
     }, 30_000);
 
-    // ⏱️ Intentar reconexión automática
+    // ⏱️ Intento de reconexión
     setTimeout(() => iniciarSubbot(), 5000);
   }
 });
