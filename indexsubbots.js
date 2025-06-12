@@ -81,14 +81,14 @@ async function cargarSubbots() {
   } else if (connection === "close") {
     const statusCode = lastDisconnect?.error?.output?.statusCode;
 
-    console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}). Esperando 1 minuto antes de eliminar sesión...`);
+    console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}). Esperando 20 segundos antes de eliminar sesión...`);
 
     reconnectionTimer = setTimeout(() => {
       if (fs.existsSync(sessionPath)) {
         fs.rmSync(sessionPath, { recursive: true, force: true });
         console.log(`🗑️ Subbot ${dir} eliminado por desconexión prolongada.`);
       }
-    }, 60_000);
+    }, 20_000);
 
     setTimeout(() => iniciarSubbot(), 5000);
   }
