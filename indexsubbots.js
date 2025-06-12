@@ -1,8 +1,6 @@
 const path = require("path");
 const fs = require("fs");
 const pino = require("pino");
-// Lista en memoria de subbots ya conectados
-const subbotsActivos = new Set();
 const {
   default: makeWASocket,
   useMultiFileAuthState,
@@ -73,49 +71,29 @@ async function cargarSubbots() {
 
         subSock.ev.on("creds.update", saveCreds);
 
-
-subSock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
-  const sessionID = dir; // nombre de la carpeta, normalmente es el JID
-
+        subSock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
   if (connection === "open") {
-    console.log(`✅ Subbot ${sessionID} conectado.`);
-
+    console.log(`✅ Subbot ${dir} conectado.`);
     if (reconnectionTimer) {
       clearTimeout(reconnectionTimer);
       reconnectionTimer = null;
     }
-
-    // ✅ Solo ejecutar lógica si es una sesión nueva no registrada aún
-    if (!subbotsActivos.has(sessionID)) {
-      console.log(`🆕 Nueva sesión detectada (${sessionID}), cargando lógica del subbot...`);
-      subbotsActivos.add(sessionID);
-
-      try {
-        await iniciarSubbot(); // solo se lanza una vez para sesiones nuevas
-      } catch (err) {
-        console.error(`❌ Error cargando nueva sesión ${sessionID}:`, err);
-      }
-    } else {
-      console.log(`ℹ️ Sesión ${sessionID} ya estaba activa. No se recarga.`);
-    }
-
   } else if (connection === "close") {
     const statusCode = lastDisconnect?.error?.output?.statusCode;
 
-    console.log(`❌ Subbot ${sessionID} desconectado (status: ${statusCode}). Eliminación en 30s...`);
+    console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}). Esperando 1 minuto antes de eliminar sesión...`);
 
     reconnectionTimer = setTimeout(() => {
       if (fs.existsSync(sessionPath)) {
         fs.rmSync(sessionPath, { recursive: true, force: true });
-        console.log(`🗑️ Subbot ${sessionID} eliminado por desconexión prolongada.`);
-        subbotsActivos.delete(sessionID); // 🧼 También quitamos del registro
+        console.log(`🗑️ Subbot ${dir} eliminado por desconexión prolongada.`);
       }
-    }, 30_000);
+    }, 60_000);
 
-    // ⏱️ Intento de reconexión
     setTimeout(() => iniciarSubbot(), 5000);
   }
 });
+
 
 subSock.ev.on("group-participants.update", async (update) => {
   try {
@@ -161,7 +139,7 @@ subSock.ev.on("group-participants.update", async (update) => {
         try {
           profilePic = await subSock.profilePictureUrl(participant, "image");
         } catch {
-          profilePic = "https://cdn.russellxz.click/8d278a49.jpeg";
+          profilePic = "https://cdn.dorratz.com/files/1741323171822.jpg";
         }
 
         await subSock.sendMessage(chatId, {
@@ -283,7 +261,7 @@ if (isGroup && !isFromSelf) {
 }
 // === FIN LÓGICA MODOADMINS SUBBOT ===
   
-  // === INICIO LÓGICA GRUPO AUTORIZADO ===
+// === INICIO LÓGICA GRUPO AUTORIZADO ===
 if (isGroup) {
   try {
     const grupoPath = path.resolve("./grupo.json");
