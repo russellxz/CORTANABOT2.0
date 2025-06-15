@@ -95,6 +95,71 @@ async function cargarSubbots() {
           }
         });
 
+
+        subSock.ev.on("group-participants.update", async (update) => {
+  try {
+    if (!update.id.endsWith("@g.us")) return;
+
+    const chatId = update.id;
+    const subbotID = subSock.user.id;
+    const filePath = path.join(__dirname, "activossubbots.json");
+
+    let activos = {};
+    if (fs.existsSync(filePath)) {
+      activos = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    }
+
+    if (!activos.welcome || !activos.welcome[subbotID] || !activos.welcome[subbotID][chatId]) return;
+
+    const welcomeTexts = [
+      "🎉 ¡Bienvenido(a)! Gracias por unirte al grupo.",
+      "👋 ¡Hola! Qué bueno tenerte con nosotros.",
+      "🌟 ¡Saludos! Esperamos que la pases genial aquí.",
+      "🚀 ¡Bienvenido(a)! Disfruta y participa activamente.",
+      "✨ ¡Qué alegría verte por aquí! Pásala bien."
+    ];
+
+    const farewellTexts = [
+      "👋 ¡Adiós! Esperamos verte pronto de nuevo.",
+      "😢 Se ha ido un miembro del grupo, ¡suerte!",
+      "📤 Gracias por estar con nosotros, hasta luego.",
+      "🔚 Un miembro se ha retirado. ¡Buena suerte!",
+      "💨 ¡Chao! Esperamos que hayas disfrutado del grupo."
+    ];
+
+    const texts = update.action === "add" ? welcomeTexts : farewellTexts;
+    const mensajeAleatorio = () => texts[Math.floor(Math.random() * texts.length)];
+
+    for (const participant of update.participants) {
+      const mention = `@${participant.split("@")[0]}`;
+      const mensaje = mensajeAleatorio();
+      const tipo = Math.random();
+
+      if (tipo < 0.5) {
+        let profilePic;
+        try {
+          profilePic = await subSock.profilePictureUrl(participant, "image");
+        } catch {
+          profilePic = "https://cdn.dorratz.com/files/1741323171822.jpg";
+        }
+
+        await subSock.sendMessage(chatId, {
+          image: { url: profilePic },
+          caption: `👋 ${mention}\n\n${mensaje}`,
+          mentions: [participant]
+        });
+      } else {
+        await subSock.sendMessage(chatId, {
+          text: `👋 ${mention}\n\n${mensaje}`,
+          mentions: [participant]
+        });
+      }
+    }
+  } catch (err) {
+    console.error("❌ Error en bienvenida/despedida del subbot:", err);
+  }
+});
+        
         subSock.ev.on("messages.upsert", async msg => {
           try {
             const m = msg.messages[0];
@@ -243,7 +308,32 @@ if (isGroup) {
   }
 }
 // === FIN LÓGICA GRUPO AUTORIZADO ===
+// === INICIO LÓGICA PRIVADO AUTORIZADO ===
+if (!isGroup) {
+  const isFromSelf = m.key.fromMe;
+  const rawID = subSock.user?.id || "";
+  const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
+  if (!isFromSelf) {
+    const listaPath = path.join(__dirname, "listasubots.json");
+    let dataPriv = {};
+
+    try {
+      if (fs.existsSync(listaPath)) {
+        dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8"));
+      }
+    } catch (e) {
+      console.error("❌ Error leyendo listasubots.json:", e);
+    }
+
+    const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
+
+    if (!listaPermitidos.includes(senderNum)) {
+      return; // 🚫 Usuario no autorizado, ignorar mensaje privado
+    }
+  }
+}
+// === FIN LÓGICA PRIVADO AUTORIZADO ===
             
             const customPrefix = dataPrefijos[subbotID];
             const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
