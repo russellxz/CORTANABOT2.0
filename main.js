@@ -3871,6 +3871,17 @@ case 'menu': {
 📌 Prefijo Actual: 『${global.prefix}』
 📌 Usa el prefijo antes de cada comando.
 
+╭──────────────╮  
+│ ✦ 𝗨𝗡𝗘𝗧𝗘 𝗔 𝗡𝗨𝗘𝗦𝗧𝗥𝗢 𝗦𝗜𝗦𝗧𝗘𝗠𝗔 𝗗𝗘 𝗦𝗨𝗕𝗕𝗢𝗧𝗦(𝗛𝗔𝗭𝗧𝗘 𝗕𝗢𝗧) ✦ │  
+╰──────────────╯  
+
+👾 *Hazte subbot en nuestro sistema, te voy a mostrar la lista de comandos para gestiónar/hacerte subbot: 
+
+🔹 ${global.prefix}serbot / 🔹 ${global.prefix}jadibot
+🔹 ${global.prefix}sercode / 🔹 ${global.prefix}code
+🔹 ${global.prefix}delbots / 🔹 ${global.prefix}qr
+° mas comandos en el menu de subbots...
+
 ╭── ℹ️ INFORMACIÓN ──╮
 🔹 ${global.prefix}speedtest
 🔹 ${global.prefix}ping
