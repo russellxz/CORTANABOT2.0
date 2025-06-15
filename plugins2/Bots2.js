@@ -7,7 +7,7 @@ const handler = async (msg, { conn }) => {
 
   // Leer subbots conectados
   const subDirs = fs.existsSync(subbotsFolder)
-    ? fs.readdirSync(subbotsFolder).filter(d => 
+    ? fs.readdirSync(subbotsFolder).filter(d =>
         fs.existsSync(path.join(subbotsFolder, d, "creds.json"))
       )
     : [];
@@ -43,8 +43,8 @@ const handler = async (msg, { conn }) => {
 
   // Construir mensaje final
   const menu = `╭━〔 *CORTANA 2.0 BOT* 〕━⬣
-│ 🤖 Subbots Conectados: *${total}*
-│ 💼 Disponibles: *${disponibles} de ${maxSubbots}*
+│ 🤖 Total conectados: *${total}/${maxSubbots}*
+│ 🟢 Sesiones libres: *${disponibles}*
 ╰━━━━━━━━━━━━⬣
 
 ${lista}`;
