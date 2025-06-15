@@ -30,6 +30,21 @@ const handler = async (msg, { conn, command, sock }) => {
         fs.mkdirSync(sessionDir, { recursive: true });
       }
 
+      // 🔒 LÍMITE DE SESIONES: 100
+      const sesiones = fs.readdirSync(sessionDir);
+      const maxSesiones = 100;
+
+      if (sesiones.length >= maxSesiones) {
+        return await conn.sendMessage(msg.key.remoteJid, {
+          text: `🚫 *Límite alcanzado:*\nYa hay ${maxSesiones} subbots conectados.\n❌ No se pueden crear más por ahora.`
+        }, { quoted: msg });
+      }
+
+      const disponibles = maxSesiones - sesiones.length;
+      await conn.sendMessage(msg.key.remoteJid, {
+        text: `🆕 Nueva sesión iniciándose...\n💡 *Subbots disponibles:* ${disponibles} restantes.`
+      }, { quoted: msg });
+
       await conn.sendMessage(msg.key.remoteJid, {
         react: { text: '⌛', key: msg.key }
       });
@@ -139,9 +154,7 @@ const handler = async (msg, { conn, command, sock }) => {
               case DisconnectReason.badSession:
               case DisconnectReason.loggedOut:
                 await conn.sendMessage(msg.key.remoteJid, {
-                  text: `⚠️ *Sesión eliminada.*
-${messageError}
-Usa ${global.prefix}serbot para volver a conectar.`
+                  text: `⚠️ *Sesión eliminada.*\n${messageError}\nUsa ${global.prefix}serbot para volver a conectar.`
                 }, { quoted: msg });
                 eliminarSesion();
                 break;
@@ -175,8 +188,6 @@ Usa ${global.prefix}serbot para volver a conectar.`
 │ para eliminar tu sesión y luego vuelve a conectarte usando:
 │ #serbot o para code si no quieres qr usa: #code o #sercode. 
 │ hasta que se conecte correctamente.
-│
-│ Esto ayuda a establecer una conexión *estable y funcional*.
 │
 ╰────✦ *Sky Ultra Plus* ✦────╯`
                 }, { quoted: msg });
