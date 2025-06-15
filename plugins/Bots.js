@@ -28,7 +28,10 @@ const handler = async (msg, { conn }) => {
 
   // Generar lista de subbots
   const total = subDirs.length;
+  const maxSubbots = 100;
+  const disponibles = maxSubbots - total;
   const mentions = [];
+
   const lista = subDirs.map((dir, i) => {
     const jid = dir.split("@")[0];
     const fullJid = `${jid}@s.whatsapp.net`;
@@ -39,7 +42,12 @@ const handler = async (msg, { conn }) => {
   }).join("\n\n");
 
   // Construir mensaje final
-  const menu = `╭━〔 *CORTANA 2.0 BOT* 〕━⬣\n│  🤖 Subbots Conectados\n│  Total: *${total}*\n╰━━━━━━━━━━━━⬣\n\n${lista}`;
+  const menu = `╭━〔 *CORTANA 2.0 BOT* 〕━⬣
+│ 🤖 Subbots Conectados: *${total}*
+│ 💼 Disponibles: *${disponibles} de ${maxSubbots}*
+╰━━━━━━━━━━━━⬣
+
+${lista}`;
 
   // Enviar usando sendMessage2
   await conn.sendMessage2(
