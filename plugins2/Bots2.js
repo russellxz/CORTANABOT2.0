@@ -50,7 +50,7 @@ const handler = async (msg, { conn }) => {
 ${lista}`;
 
   // Enviar usando sendMessage2
-  await conn.sendMessage2(
+  await conn.sendMessage(
     msg.key.remoteJid,
     {
       text: menu,
