@@ -103,7 +103,7 @@ const handler = async (msg, { conn, command, sock }) => {
             await conn.sendMessage(msg.key.remoteJid, {
               text: `╭───〔 *🤖 SUBBOT CONECTADO* 〕───╮
 │
-│ ✅ *Bienvenido a CORTANA 2.0*
+│ ✅ *Bienvenido a CORTANA 2.0 Bot*
 │
 │ Ya eres parte del mejor sistema de juegos RPG
 │
