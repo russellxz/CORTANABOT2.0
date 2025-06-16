@@ -11,6 +11,8 @@ const {
   DisconnectReason
 } = require('@whiskeysockets/baileys');
 
+const MAX_SUBBOTS = 100;                           // ── NUEVO
+
 const handler = async (msg, { conn, command, sock }) => {
   const usarPairingCode = ["sercode", "code"].includes(command);
   let sentCodeMessage = false;
@@ -26,24 +28,30 @@ const handler = async (msg, { conn, command, sock }) => {
       const sessionPath = path.join(sessionDir, number);
       const rid = number.split("@")[0];
 
+      /* ────────────────────────
+         VERIFICACIÓN DE LÍMITE
+      ─────────────────────────*/
       if (!fs.existsSync(sessionDir)) {
         fs.mkdirSync(sessionDir, { recursive: true });
       }
 
-      // 🔒 LÍMITE DE SESIONES: 100
-      const sesiones = fs.readdirSync(sessionDir);
-      const maxSesiones = 100;
+      // Cuenta subcarpetas que tengan un creds.json dentro.
+      const subbotDirs = fs.readdirSync(sessionDir).filter(d =>
+        fs.existsSync(path.join(sessionDir, d, "creds.json"))
+      );
 
-      if (sesiones.length >= maxSesiones) {
-        return await conn.sendMessage(msg.key.remoteJid, {
-          text: `🚫 *Límite alcanzado:*\nYa hay ${maxSesiones} subbots conectados.\n❌ No se pueden crear más por ahora.`
+      if (subbotDirs.length >= MAX_SUBBOTS) {
+        await conn.sendMessage(msg.key.remoteJid, {
+          text: `🚫 *Límite alcanzado:* existen ${subbotDirs.length}/${MAX_SUBBOTS} sesiones de sub-bot activas.\nVuelve a intentarlo más tarde.`
+        }, { quoted: msg });
+        return; // No continúa a generar código/QR
+      } else {
+        const restantes = MAX_SUBBOTS - subbotDirs.length;
+        await conn.sendMessage(msg.key.remoteJid, {
+          text: `ℹ️ Quedan *${restantes}* espacios disponibles para conectar nuevos sub-bots.`
         }, { quoted: msg });
       }
-
-      const disponibles = maxSesiones - sesiones.length;
-      await conn.sendMessage(msg.key.remoteJid, {
-        text: `🆕 Nueva sesión iniciándose...\n💡 *Subbots disponibles:* ${disponibles} restantes.`
-      }, { quoted: msg });
+      /* ────── FIN VERIFICACIÓN ──────*/
 
       await conn.sendMessage(msg.key.remoteJid, {
         react: { text: '⌛', key: msg.key }
@@ -84,7 +92,7 @@ const handler = async (msg, { conn, command, sock }) => {
             const qrImage = await QRCode.toBuffer(qr);
             await conn.sendMessage(msg.key.remoteJid, {
               image: qrImage,
-              caption: `📲 Escanea este código QR desde *WhatsApp > Vincular dispositivo* para conectarte como subbot.`
+              caption: `📲 Escanea este código QR desde *WhatsApp > Vincular dispositivo* para conectarte como sub-bot.`
             }, { quoted: msg });
           }
           sentCodeMessage = true;
@@ -95,7 +103,7 @@ const handler = async (msg, { conn, command, sock }) => {
             await conn.sendMessage(msg.key.remoteJid, {
               text: `╭───〔 *🤖 SUBBOT CONECTADO* 〕───╮
 │
-│ ✅ *Bienvenido a CORTANA 2.0 BOT*
+│ ✅ *Bienvenido a Azura Ultra 2.0*
 │
 │ Ya eres parte del mejor sistema de juegos RPG
 │
@@ -154,7 +162,9 @@ const handler = async (msg, { conn, command, sock }) => {
               case DisconnectReason.badSession:
               case DisconnectReason.loggedOut:
                 await conn.sendMessage(msg.key.remoteJid, {
-                  text: `⚠️ *Sesión eliminada.*\n${messageError}\nUsa ${global.prefix}serbot para volver a conectar.`
+                  text: `⚠️ *Sesión eliminada.*
+${messageError}
+Usa ${global.prefix}serbot para volver a conectar.`
                 }, { quoted: msg });
                 eliminarSesion();
                 break;
@@ -188,6 +198,8 @@ const handler = async (msg, { conn, command, sock }) => {
 │ para eliminar tu sesión y luego vuelve a conectarte usando:
 │ #serbot o para code si no quieres qr usa: #code o #sercode. 
 │ hasta que se conecte correctamente.
+│
+│ Esto ayuda a establecer una conexión *estable y funcional*.
 │
 ╰────✦ *Sky Ultra Plus* ✦────╯`
                 }, { quoted: msg });
