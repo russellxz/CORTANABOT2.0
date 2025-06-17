@@ -1,73 +1,72 @@
 const fs = require("fs");
 const path = require("path");
 
-const handler = async (msg, { conn }) => {
-  const groupId = msg.key.remoteJid;
-  const isGroup = groupId.endsWith("@g.us");
-  const SLAP_PATH = path.resolve("slap_data.json");
+const SLAP_PATH = path.resolve("slap_data.json");
 
+const handler = async (msg, { conn }) => {
+  const isGroup = msg.key.remoteJid.endsWith("@g.us");
+  const chatId = msg.key.remoteJid;
   if (!isGroup) {
-    return conn.sendMessage(groupId, {
-      text: "⚠️ Este comando solo funciona en grupos."
+    return conn.sendMessage(chatId, {
+      text: "⚠️ Este comando solo se puede usar en grupos."
     }, { quoted: msg });
   }
 
-  // Reacción inicial
-  await conn.sendMessage(groupId, {
-    react: { text: "🖐️", key: msg.key }
+  // Reacción inicial 👋
+  await conn.sendMessage(chatId, {
+    react: { text: "📊", key: msg.key }
   });
 
   if (!fs.existsSync(SLAP_PATH)) {
-    return conn.sendMessage(groupId, {
-      text: "📭 No hay datos de bofetadas todavía en este grupo."
+    return conn.sendMessage(chatId, {
+      text: "📉 Aún no hay datos de cachetadas en este grupo."
     }, { quoted: msg });
   }
 
   const data = JSON.parse(fs.readFileSync(SLAP_PATH));
-  const grupo = data[groupId];
-  if (!grupo) {
-    return conn.sendMessage(groupId, {
-      text: "📭 Este grupo aún no tiene bofetadas registradas."
+  const grupo = data[chatId];
+  if (!grupo || (!grupo.slapDados && !grupo.slapRecibidos)) {
+    return conn.sendMessage(chatId, {
+      text: "📉 Aún no hay datos suficientes para mostrar el top."
     }, { quoted: msg });
   }
 
-  const mentions = [];
+  const menciones = new Set();
 
-  const slapsDados = Object.entries(grupo.slapsDados || {}).map(([id, info]) => ({
-    id,
+  // TOP que más cachetean
+  const dados = Object.entries(grupo.slapDados || {}).map(([user, info]) => ({
+    user,
     total: info.total
   })).sort((a, b) => b.total - a.total).slice(0, 5);
 
-  const slapsRecibidos = Object.entries(grupo.slapsRecibidos || {}).map(([id, info]) => ({
-    id,
+  const topDados = dados.length
+    ? dados.map((u, i) => {
+        menciones.add(`${u.user}@s.whatsapp.net`);
+        return `🥇 ${i + 1}. @${u.user} — *${u.total}* cachetadas dadas`;
+      }).join("\n")
+    : "❌ Nadie ha cacheteado a nadie aún.";
+
+  // TOP más cacheteados
+  const recibidos = Object.entries(grupo.slapRecibidos || {}).map(([user, info]) => ({
+    user,
     total: info.total
   })).sort((a, b) => b.total - a.total).slice(0, 5);
 
-  const topSlappers = slapsDados.map((user, i) => {
-    mentions.push(user.id);
-    return `👊 ${i + 1}. @${user.id.split("@")[0]} — ${user.total} 🖐️`;
-  }).join("\n");
+  const topRecibidos = recibidos.length
+    ? recibidos.map((u, i) => {
+        menciones.add(`${u.user}@s.whatsapp.net`);
+        return `🤕 ${i + 1}. @${u.user} — *${u.total}* cachetadas recibidas`;
+      }).join("\n")
+    : "❌ Nadie ha recibido cachetadas todavía.";
 
-  const topSlappeados = slapsRecibidos.map((user, i) => {
-    mentions.push(user.id);
-    return `😵 ${i + 1}. @${user.id.split("@")[0]} — ${user.total} 💥`;
-  }).join("\n");
+  const mensaje = `📊 *TOP DE CACHETAZOS* 👋\n\n` +
+                  `👊 *Más violentos:*\n${topDados}\n\n` +
+                  `──────────────────\n\n` +
+                  `😵 *Más cacheteados:*\n${topRecibidos}`;
 
-  const text = `╭〔 *TOP SLAP DEL GRUPO* 〕╮
-
-🖐️ *Usuarios que MÁS bofetearon:*
-${topSlappers || "— Sin datos —"}
-
-────────────────
-
-💢 *Usuarios MÁS bofeteados:*
-${topSlappeados || "— Sin datos —"}
-
-╰────────────────╯`;
-
-  await conn.sendMessage(groupId, {
-    text,
-    mentions
+  await conn.sendMessage(chatId, {
+    text: mensaje,
+    mentions: [...menciones]
   }, { quoted: msg });
 };
 
