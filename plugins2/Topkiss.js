@@ -32,7 +32,6 @@ const handler = async (msg, { conn }) => {
   }
 
   const mentions = [];
-
   const besosDados = Object.entries(grupo.besosDados || {}).map(([id, info]) => ({
     id,
     total: info.total
@@ -44,13 +43,15 @@ const handler = async (msg, { conn }) => {
   })).sort((a, b) => b.total - a.total).slice(0, 5);
 
   const topBesadores = besosDados.map((user, i) => {
-    mentions.push(user.id);
-    return `🎯 ${i + 1}. @${user.id.split("@")[0]} — ${user.total} 💋`;
+    const tag = `@${user.id}`;
+    mentions.push(`${user.id}@s.whatsapp.net`);
+    return `🎯 ${i + 1}. ${tag} — ${user.total} 💋`;
   }).join("\n");
 
   const topBesados = besosRecibidos.map((user, i) => {
-    mentions.push(user.id);
-    return `❤️ ${i + 1}. @${user.id.split("@")[0]} — ${user.total} 😘`;
+    const tag = `@${user.id}`;
+    mentions.push(`${user.id}@s.whatsapp.net`);
+    return `❤️ ${i + 1}. ${tag} — ${user.total} 😘`;
   }).join("\n");
 
   const text = `╭〔 *TOP KISS DEL GRUPO* 〕╮
@@ -58,12 +59,12 @@ const handler = async (msg, { conn }) => {
 👄 *Usuarios que MÁS besaron:*
 ${topBesadores || "— Sin datos —"}
 
-────────────────
+──────────────────
 
 💗 *Usuarios MÁS besados:*
 ${topBesados || "— Sin datos —"}
 
-╰────────────────╯`;
+╰─────────────────╯`;
 
   await conn.sendMessage(groupId, {
     text,
