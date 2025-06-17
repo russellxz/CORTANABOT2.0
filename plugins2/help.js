@@ -67,6 +67,7 @@ const handler = async (msg, { conn }) => {
 ⚘ ${usedPrefix}tagall / ${usedPrefix}invocar / ${usedPrefix}todos
 ⚘ ${usedPrefix}infogrupo
 ⚘ ${usedPrefix}damelink
+⚘ ${usedPrefix}antidelete on o off
 
 〔 Comandos De Juegos 〕
 ⚘ ${usedPrefix}verdad
@@ -77,6 +78,7 @@ const handler = async (msg, { conn }) => {
 
 〔 Configuración & Dueño 〕
 
+⚘ ${usedPrefix}antideletepri on o off
 ⚘ ${usedPrefix}setprefix ↷
   Cambiar prefijo del subbot
 ⚘ ${usedPrefix}creador ↷
