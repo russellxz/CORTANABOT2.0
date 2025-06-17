@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
 const handler = async (msg, { conn, text, args, usedPrefix, command }) => {
-  if (!args.length) {
+  if (!text.length) {
     return await conn.sendMessage(msg.key.remoteJid, {
       text: `⚠️ *Uso incorrecto.*\n📌 Ejemplo: \`${usedPrefix + command} Hola, ¿cómo estás?\``
     }, { quoted: msg });
