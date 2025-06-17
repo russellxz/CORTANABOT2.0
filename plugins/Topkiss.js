@@ -31,6 +31,18 @@ const handler = async (msg, { conn }) => {
     }, { quoted: msg });
   }
 
+  // Obtener metadata del grupo para mapear nombres
+  const metadata = await conn.groupMetadata(groupId);
+  const participantes = metadata.participants;
+
+  const obtenerEtiqueta = (idNum) => {
+    const jid = `${idNum}@s.whatsapp.net`;
+    const p = participantes.find(p => p.id === jid);
+    if (!p) return "👤 Usuario desconocido";
+    const nombre = p?.name || p?.notify || `@${idNum}`;
+    return `@${jid.split("@")[0]}`;
+  };
+
   const mentions = new Set();
 
   const besosDados = Object.entries(grupo.besosDados || {})
@@ -44,16 +56,14 @@ const handler = async (msg, { conn }) => {
     .slice(0, 5);
 
   const topBesadores = besosDados.map((user, i) => {
-    const jid = user.id + "@s.whatsapp.net";
-    mentions.add(jid);
-    const tag = user.id.length < 15 ? `@${user.id}` : "👤 Usuario oculto";
+    const tag = obtenerEtiqueta(user.id);
+    mentions.add(`${user.id}@s.whatsapp.net`);
     return `🥇 ${i + 1}. ${tag} — *${user.total}* besos dados`;
   }).join("\n");
 
   const topBesados = besosRecibidos.map((user, i) => {
-    const jid = user.id + "@s.whatsapp.net";
-    mentions.add(jid);
-    const tag = user.id.length < 15 ? `@${user.id}` : "👤 Usuario oculto";
+    const tag = obtenerEtiqueta(user.id);
+    mentions.add(`${user.id}@s.whatsapp.net`);
     return `💘 ${i + 1}. ${tag} — *${user.total}* besos recibidos`;
   }).join("\n");
 
