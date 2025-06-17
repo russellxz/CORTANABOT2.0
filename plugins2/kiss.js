@@ -26,92 +26,94 @@ const KISS_COOLDOWN = 10 * 60 * 1000; // 10 minutos
 
 const handler = async (msg, { conn, args }) => {
   const isGroup = msg.key.remoteJid.endsWith("@g.us");
+  const chatId = msg.key.remoteJid;
+
   if (!isGroup) {
-    return await conn.sendMessage(msg.key.remoteJid, {
+    return conn.sendMessage(chatId, {
       text: "⚠️ Este comando solo se puede usar en grupos."
     }, { quoted: msg });
   }
 
-  // ✅ Reacción inicial
-  await conn.sendMessage(msg.key.remoteJid, {
+  // Reacción inicial
+  await conn.sendMessage(chatId, {
     react: { text: "💋", key: msg.key }
   });
 
-  const sender = (msg.key.participant || msg.key.remoteJid).replace(/[^0-9]/g, "");
-  const groupId = msg.key.remoteJid;
+  const senderID = msg.key.participant || msg.key.remoteJid;
+  const senderNum = senderID.split("@")[0];
 
   // Obtener destinatario: citado o mencionado
   const ctx = msg.message?.extendedTextMessage?.contextInfo;
-  let target;
+  let targetID;
+
   if (ctx?.participant) {
-    target = ctx.participant.replace(/[^0-9]/g, "");
+    targetID = ctx.participant;
   } else if (args[0]) {
-    target = args[0].replace(/[^0-9]/g, "");
+    const raw = args[0].replace(/[^0-9]/g, "");
+    if (raw) targetID = `${raw}@s.whatsapp.net`;
   }
 
-  if (!target) {
-    return conn.sendMessage(groupId, {
+  if (!targetID) {
+    return conn.sendMessage(chatId, {
       text: "💡 Responde al mensaje o menciona a alguien para besarlo 💋"
     }, { quoted: msg });
   }
 
-  if (target === sender) {
-    return conn.sendMessage(groupId, {
+  if (targetID === senderID) {
+    return conn.sendMessage(chatId, {
       text: "😅 No puedes besarte a ti mismo..."
     }, { quoted: msg });
   }
 
   let data = fs.existsSync(KISS_PATH) ? JSON.parse(fs.readFileSync(KISS_PATH)) : {};
-  if (!data[groupId]) data[groupId] = { besosDados: {}, besosRecibidos: {} };
+  if (!data[chatId]) data[chatId] = { besosDados: {}, besosRecibidos: {} };
 
   const ahora = Date.now();
-  const dados = data[groupId].besosDados[sender]?.usuarios?.[target];
-  const ultimaVez = dados?.last || 0;
+  const last = data[chatId].besosDados[senderNum]?.usuarios?.[targetID]?.last || 0;
 
-  if (ahora - ultimaVez < KISS_COOLDOWN) {
-    const waitMin = Math.ceil((KISS_COOLDOWN - (ahora - ultimaVez)) / 60000);
-    return conn.sendMessage(groupId, {
-      text: `⏳ Debes esperar *${waitMin} minuto(s)* antes de volver a besar a @${target}.`,
-      mentions: [`${target}@s.whatsapp.net`]
+  if (ahora - last < KISS_COOLDOWN) {
+    const mins = Math.ceil((KISS_COOLDOWN - (ahora - last)) / 60000);
+    return conn.sendMessage(chatId, {
+      text: `⏳ Debes esperar *${mins} minuto(s)* para volver a besar a ese usuario.`,
+      mentions: [targetID]
     }, { quoted: msg });
   }
 
-  // Actualizar besos dados
-  if (!data[groupId].besosDados[sender]) {
-    data[groupId].besosDados[sender] = { total: 0, usuarios: {} };
+  // Guardar besos dados
+  if (!data[chatId].besosDados[senderNum]) {
+    data[chatId].besosDados[senderNum] = { total: 0, usuarios: {} };
   }
-  if (!data[groupId].besosDados[sender].usuarios[target]) {
-    data[groupId].besosDados[sender].usuarios[target] = { count: 0, last: 0 };
+  if (!data[chatId].besosDados[senderNum].usuarios[targetID]) {
+    data[chatId].besosDados[senderNum].usuarios[targetID] = { count: 0, last: 0 };
   }
+  data[chatId].besosDados[senderNum].total += 1;
+  data[chatId].besosDados[senderNum].usuarios[targetID].count += 1;
+  data[chatId].besosDados[senderNum].usuarios[targetID].last = ahora;
 
-  data[groupId].besosDados[sender].total += 1;
-  data[groupId].besosDados[sender].usuarios[target].count += 1;
-  data[groupId].besosDados[sender].usuarios[target].last = ahora;
-
-  // Actualizar besos recibidos
-  if (!data[groupId].besosRecibidos[target]) {
-    data[groupId].besosRecibidos[target] = { total: 0, usuarios: {} };
+  // Guardar besos recibidos
+  const targetNum = targetID.split("@")[0];
+  if (!data[chatId].besosRecibidos[targetNum]) {
+    data[chatId].besosRecibidos[targetNum] = { total: 0, usuarios: {} };
   }
-  if (!data[groupId].besosRecibidos[target].usuarios[sender]) {
-    data[groupId].besosRecibidos[target].usuarios[sender] = 0;
+  if (!data[chatId].besosRecibidos[targetNum].usuarios[senderNum]) {
+    data[chatId].besosRecibidos[targetNum].usuarios[senderNum] = 0;
   }
-
-  data[groupId].besosRecibidos[target].total += 1;
-  data[groupId].besosRecibidos[target].usuarios[sender] += 1;
+  data[chatId].besosRecibidos[targetNum].total += 1;
+  data[chatId].besosRecibidos[targetNum].usuarios[senderNum] += 1;
 
   fs.writeFileSync(KISS_PATH, JSON.stringify(data, null, 2));
 
-  // Elegir gif y texto aleatorio
+  // GIF y mensaje aleatorio
   const gif = gifUrls[Math.floor(Math.random() * gifUrls.length)];
   const texto = textos[Math.floor(Math.random() * textos.length)]
-    .replace("@1", `@${sender}`)
-    .replace("@2", `@${target}`);
+    .replace("@1", `@${senderNum}`)
+    .replace("@2", `@${targetNum}`);
 
-  await conn.sendMessage(groupId, {
+  await conn.sendMessage(chatId, {
     video: { url: gif },
     gifPlayback: true,
     caption: texto,
-    mentions: [`${sender}@s.whatsapp.net`, `${target}@s.whatsapp.net`]
+    mentions: [senderID, targetID]
   }, { quoted: msg });
 };
 
