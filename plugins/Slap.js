@@ -10,14 +10,14 @@ const gifUrls = [
 ];
 
 const textos = [
-  "👋 *@1 le dio una cachetada a @2 con estilo dramático!* 🎭",
-  "😤 *@1 le soltó una bofetada épica a @2* 💥",
-  "💢 *@1 no se aguantó y cacheteó a @2 con fuerza!*",
-  "🙃 *@1 le dio un buen sopapo a @2!*",
-  "🔥 *@1 aplicó la cachetada legendaria a @2* ⚡",
-  "🤚 *@1 le estampó una buena a @2!*",
-  "💨 *@1 reaccionó y *¡PUM!* cacheteó a @2!*",
-  "💥 *@1 y @2 protagonizan una escena de telenovela... ¡cachetada incluida!*"
+  "👋 *@1 le dio una tremenda bofetada a @2* 💥",
+  "😤 *@1 no se aguantó y cacheteó a @2* 🤚",
+  "🥴 *@1 le soltó una cachetada a @2 sin piedad* 😬",
+  "😡 *@1 se enojó y ¡pum! cachetada a @2* ⚡",
+  "🔥 *@1 dejó ardiendo la cara de @2* 🥵",
+  "💢 *@1 reaccionó con una cachetada para @2* 🤕",
+  "🥊 *@1 aplicó tremenda mano limpia a @2* 🤛",
+  "🧨 *@1 explotó y le dio una a @2 que sonó hasta Marte* 🚀"
 ];
 
 const SLAP_PATH = path.resolve("slap_data.json");
@@ -25,92 +25,94 @@ const SLAP_COOLDOWN = 2 * 60 * 1000; // 2 minutos
 
 const handler = async (msg, { conn, args }) => {
   const isGroup = msg.key.remoteJid.endsWith("@g.us");
+  const chatId = msg.key.remoteJid;
+
   if (!isGroup) {
-    return await conn.sendMessage(msg.key.remoteJid, {
+    return conn.sendMessage(chatId, {
       text: "⚠️ Este comando solo se puede usar en grupos."
     }, { quoted: msg });
   }
 
-  // Reacción inicial 👋
-  await conn.sendMessage(msg.key.remoteJid, {
-    react: { text: "👋", key: msg.key }
+  // Reacción inicial
+  await conn.sendMessage(chatId, {
+    react: { text: "🤜", key: msg.key }
   });
 
-  const sender = (msg.key.participant || msg.key.remoteJid).replace(/[^0-9]/g, "");
-  const groupId = msg.key.remoteJid;
+  const senderID = msg.key.participant || msg.key.remoteJid;
+  const senderNum = senderID.split("@")[0];
 
-  // Obtener destinatario: citado o mencionado
+  // Obtener destinatario
   const ctx = msg.message?.extendedTextMessage?.contextInfo;
-  let target;
+  let targetID;
+
   if (ctx?.participant) {
-    target = ctx.participant.replace(/[^0-9]/g, "");
+    targetID = ctx.participant;
   } else if (args[0]) {
-    target = args[0].replace(/[^0-9]/g, "");
+    const raw = args[0].replace(/[^0-9]/g, "");
+    targetID = raw ? `${raw}@s.whatsapp.net` : null;
   }
 
-  if (!target) {
-    return conn.sendMessage(groupId, {
-      text: "💡 Responde al mensaje o menciona a alguien para darle una cachetada 👋"
+  if (!targetID) {
+    return conn.sendMessage(chatId, {
+      text: "💡 Responde al mensaje o menciona a alguien para cachetearlo 🤜"
     }, { quoted: msg });
   }
 
-  if (target === sender) {
-    return conn.sendMessage(groupId, {
+  if (targetID === senderID) {
+    return conn.sendMessage(chatId, {
       text: "😅 No puedes cachetearte a ti mismo..."
     }, { quoted: msg });
   }
 
   let data = fs.existsSync(SLAP_PATH) ? JSON.parse(fs.readFileSync(SLAP_PATH)) : {};
-  if (!data[groupId]) data[groupId] = { slapDados: {}, slapRecibidos: {} };
+  if (!data[chatId]) data[chatId] = { slapDados: {}, slapRecibidos: {} };
 
   const ahora = Date.now();
-  const dados = data[groupId].slapDados[sender]?.usuarios?.[target];
-  const ultimaVez = dados?.last || 0;
+  const last = data[chatId].slapDados[senderNum]?.usuarios?.[targetID]?.last || 0;
 
-  if (ahora - ultimaVez < SLAP_COOLDOWN) {
-    const waitMin = Math.ceil((SLAP_COOLDOWN - (ahora - ultimaVez)) / 60000);
-    return conn.sendMessage(groupId, {
-      text: `⏳ Debes esperar *${waitMin} minuto(s)* antes de volver a cachetear a @${target}.`,
-      mentions: [`${target}@s.whatsapp.net`]
+  if (ahora - last < SLAP_COOLDOWN) {
+    const mins = Math.ceil((SLAP_COOLDOWN - (ahora - last)) / 60000);
+    return conn.sendMessage(chatId, {
+      text: `⏳ Debes esperar *${mins} minuto(s)* para volver a cachetear a ese usuario.`,
+      mentions: [targetID]
     }, { quoted: msg });
   }
 
-  // Actualizar cachetadas dadas
-  if (!data[groupId].slapDados[sender]) {
-    data[groupId].slapDados[sender] = { total: 0, usuarios: {} };
+  // Actualizar slap dados
+  if (!data[chatId].slapDados[senderNum]) {
+    data[chatId].slapDados[senderNum] = { total: 0, usuarios: {} };
   }
-  if (!data[groupId].slapDados[sender].usuarios[target]) {
-    data[groupId].slapDados[sender].usuarios[target] = { count: 0, last: 0 };
+  if (!data[chatId].slapDados[senderNum].usuarios[targetID]) {
+    data[chatId].slapDados[senderNum].usuarios[targetID] = { count: 0, last: 0 };
   }
+  data[chatId].slapDados[senderNum].total += 1;
+  data[chatId].slapDados[senderNum].usuarios[targetID].count += 1;
+  data[chatId].slapDados[senderNum].usuarios[targetID].last = ahora;
 
-  data[groupId].slapDados[sender].total += 1;
-  data[groupId].slapDados[sender].usuarios[target].count += 1;
-  data[groupId].slapDados[sender].usuarios[target].last = ahora;
-
-  // Actualizar cachetadas recibidas
-  if (!data[groupId].slapRecibidos[target]) {
-    data[groupId].slapRecibidos[target] = { total: 0, usuarios: {} };
+  // Actualizar slap recibidos
+  const targetNum = targetID.split("@")[0];
+  if (!data[chatId].slapRecibidos[targetNum]) {
+    data[chatId].slapRecibidos[targetNum] = { total: 0, usuarios: {} };
   }
-  if (!data[groupId].slapRecibidos[target].usuarios[sender]) {
-    data[groupId].slapRecibidos[target].usuarios[sender] = 0;
+  if (!data[chatId].slapRecibidos[targetNum].usuarios[senderNum]) {
+    data[chatId].slapRecibidos[targetNum].usuarios[senderNum] = 0;
   }
-
-  data[groupId].slapRecibidos[target].total += 1;
-  data[groupId].slapRecibidos[target].usuarios[sender] += 1;
+  data[chatId].slapRecibidos[targetNum].total += 1;
+  data[chatId].slapRecibidos[targetNum].usuarios[senderNum] += 1;
 
   fs.writeFileSync(SLAP_PATH, JSON.stringify(data, null, 2));
 
-  // Elegir gif y texto aleatorio de forma más aleatoria
-  const gif = gifUrls.sort(() => 0.5 - Math.random())[0];
+  // Mensaje y gif aleatorio
+  const gif = gifUrls[Math.floor(Math.random() * gifUrls.length)];
   const texto = textos[Math.floor(Math.random() * textos.length)]
-    .replace("@1", `@${sender}`)
-    .replace("@2", `@${target}`);
+    .replace("@1", `@${senderNum}`)
+    .replace("@2", `@${targetNum}`);
 
-  await conn.sendMessage(groupId, {
+  await conn.sendMessage(chatId, {
     video: { url: gif },
     gifPlayback: true,
     caption: texto,
-    mentions: [`${sender}@s.whatsapp.net`, `${target}@s.whatsapp.net`]
+    mentions: [senderID, targetID]
   }, { quoted: msg });
 };
 
