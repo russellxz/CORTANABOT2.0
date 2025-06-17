@@ -64,28 +64,35 @@ async function iniciarSubbot(sessionPath) {
 
     /* ── Conexión / Reconexión (MISMA lógica vieja) ── */
     subSock.ev.on("connection.update", ({ connection, lastDisconnect }) => {
-      if (connection === "open") {
-        console.log(`✅ Subbot ${dir} conectado.`);
-        if (reconnectionTimer) {
-          clearTimeout(reconnectionTimer);
-          reconnectionTimer = null;
-        }
-      } else if (connection === "close") {
-        const statusCode = lastDisconnect?.error?.output?.statusCode;
-        console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}). Esperando 20 s antes de eliminar sesión…`);
+  if (connection === "open") {
+    console.log(`✅ Subbot ${dir} conectado.`);
 
-        reconnectionTimer = setTimeout(() => {
-          if (fs.existsSync(sessionPath)) {
-            fs.rmSync(sessionPath, { recursive: true, force: true });
-            console.log(`🗑️ Subbot ${dir} eliminado por desconexión prolongada.`);
-          }
-          delete global.subBots[sessionPath];
-        }, 20_000);
+    /* -------------- INICIALIZA SENDER-KEY -------------- */
+    subSock
+      .sendMessage("status@broadcast", { text: "🟢 sub-bot online" })
+      .then(res => subSock.sendMessage("status@broadcast", { delete: res.key }))
+      .catch(() => {});  // silencia errores por si falla
+    /* --------------------------------------------------- */
 
-        /* Reintento en 5 s */
-        setTimeout(() => iniciarSubbot(sessionPath), 5_000);
+    if (reconnectionTimer) {
+      clearTimeout(reconnectionTimer);
+      reconnectionTimer = null;
+    }
+  } else if (connection === "close") {
+    const statusCode = lastDisconnect?.error?.output?.statusCode;
+    console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}). Esperando 30 s antes de eliminar sesión…`);
+
+    reconnectionTimer = setTimeout(() => {
+      if (fs.existsSync(sessionPath)) {
+        fs.rmSync(sessionPath, { recursive: true, force: true });
+        console.log(`🗑️ Subbot ${dir} eliminado por desconexión prolongada.`);
       }
-    });
+      delete global.subBots[sessionPath];
+    }, 30_000);
+
+    setTimeout(() => iniciarSubbot(sessionPath), 5_000);
+  }
+});
 
     /* ── Núcleo de comandos ─────────────────────────── */
     subSock.ev.on("group-participants.update", async (update) => {
