@@ -5,7 +5,9 @@ const {
   default: makeWASocket,
   useMultiFileAuthState,
   fetchLatestBaileysVersion,
-  makeCacheableSignalKeyStore
+  makeCacheableSignalKeyStore,
+  DisconnectReason,
+  downloadContentFromMessage          // ← función para descargar multimedia
 } = require("@whiskeysockets/baileys");
 
 /* ─── Registro global para evitar duplicados ─────────────── */
@@ -185,6 +187,121 @@ async function iniciarSubbot(sessionPath) {
               m.message?.imageMessage?.caption ||
               m.message?.videoMessage?.caption ||
               "";
+
+/* ========== GUARDADO ANTIDELETE (SUB-BOT) ========== */
+try {
+  const isGroup = from.endsWith("@g.us");
+  const botID   = subSock.user.id.split(":")[0] + "@s.whatsapp.net";
+
+  const cfgFile = "./activossu.json";
+  const cfg     = fs.existsSync(cfgFile) ? JSON.parse(fs.readFileSync(cfgFile,"utf8")) : {};
+
+  const adGroup = cfg.antidelete?.[botID]?.[from] === true;
+  const adPriv  = cfg.antideletepri?.[botID] === true;
+  if ((isGroup && !adGroup) || (!isGroup && !adPriv)) {/* off */} else {
+
+    const store   = isGroup ? "./gruposu.json" : "./prisu.json";
+    if (!fs.existsSync(store)) fs.writeFileSync(store,"{}");
+
+    const type    = Object.keys(m.message || {})[0];
+    const content = m.message[type];
+    const msgId   = m.key.id;
+
+    /* quién envió */
+    const senderId  = m.key.participant || (m.key.fromMe ? botID : m.key.remoteJid);
+
+    /* límite 8 MB */
+    const bigMedia = ["imageMessage","videoMessage","audioMessage","documentMessage","stickerMessage"];
+    const sizeOk   = !(bigMedia.includes(type)) || (content.fileLength ?? 0) <= 8*1024*1024;
+    if (!sizeOk) { /* demasiado grande; no se guarda */ } else {
+
+      const reg = { chatId: from, sender: senderId, type, timestamp: Date.now() };
+
+      const save64 = async (medType, data) => {
+        const stream = await downloadContentFromMessage(data, medType);
+        let buff = Buffer.alloc(0);
+        for await (const ch of stream) buff = Buffer.concat([buff, ch]);
+        reg.media    = buff.toString("base64");
+        reg.mimetype = data.mimetype;
+      };
+
+      if (m.message?.viewOnceMessageV2) {
+        const inner   = m.message.viewOnceMessageV2.message;
+        const iType   = Object.keys(inner)[0];
+        await save64(iType.replace("Message",""), inner[iType]);
+        reg.type = iType;
+      } else if (bigMedia.includes(type)) {
+        await save64(type.replace("Message",""), content);
+      } else {
+        reg.text = m.message.conversation || m.message.extendedTextMessage?.text || "";
+      }
+
+      const db = JSON.parse(fs.readFileSync(store,"utf8"));
+      db[msgId] = reg;
+      fs.writeFileSync(store, JSON.stringify(db,null,2));
+    }
+  }
+} catch(e){ console.error("❌ Antidelete-save:", e); }
+/* ========== FIN GUARDADO ========== */
+
+
+
+/* ========== DETECCIÓN Y REPOSICIÓN ========== */
+if (m.message?.protocolMessage?.type === 0) {
+  try {
+    const delId   = m.message.protocolMessage.key.id;
+    const whoDel  = m.message.protocolMessage.key.participant || senderJid;
+    const isGroup = from.endsWith("@g.us");
+    const botID   = subSock.user.id.split(":")[0] + "@s.whatsapp.net";
+
+    const cfgFile = "./activossu.json";
+    const cfg     = fs.existsSync(cfgFile) ? JSON.parse(fs.readFileSync(cfgFile,"utf8")) : {};
+    const adGroup = cfg.antidelete?.[botID]?.[from] === true;
+    const adPriv  = cfg.antideletepri?.[botID] === true;
+    if ((isGroup && !adGroup) || (!isGroup && !adPriv)) return;
+
+    const store = isGroup ? "./gruposu.json" : "./prisu.json";
+    if (!fs.existsSync(store)) return;
+
+    const db   = JSON.parse(fs.readFileSync(store,"utf8"));
+    const dat  = db[delId];   if (!dat) return;
+
+    /* sólo si autor = quien borró */
+    if ((dat.sender||"").split("@")[0] !== whoDel.split("@")[0]) return;
+
+    /* omite si era admin borrando en grupo */
+    if (isGroup) {
+      const grp = await subSock.groupMetadata(from);
+      const adm = grp.participants.find(p=>p.id===whoDel)?.admin;
+      if (adm) return;
+    }
+
+    const mention = [`${whoDel.split("@")[0]}@s.whatsapp.net`];
+
+    if (dat.media) {
+      const buf = Buffer.from(dat.media,"base64");
+      const tp  = dat.type.replace("Message","");
+      const opts = { [tp]: buf, mimetype: dat.mimetype, quoted: m };
+
+      const sent = await subSock.sendMessage(from, opts);
+      const caption = tp === "sticker" ? "📌 El sticker fue eliminado por @" :
+                      tp === "audio"   ? "🎧 El audio fue eliminado por @" :
+                                         "📦 Mensaje eliminado por @";
+      await subSock.sendMessage(from, {
+        text: `${caption}${whoDel.split("@")[0]}`,
+        mentions: mention,
+        quoted: sent
+      });
+    } else if (dat.text) {
+      await subSock.sendMessage(from, {
+        text: `📝 *Mensaje eliminado:* ${dat.text}\n👤 *Usuario:* @${whoDel.split("@")[0]}`,
+        mentions: mention
+      }, { quoted: m });
+    }
+  } catch(e){ console.error("❌ Antidelete-restore:", e); }
+}
+/* ========== FIN DETECCIÓN/REPOSICIÓN ========== */
+            
             // === LÓGICA ANTILINK AUTOMÁTICO SOLO WHATSAPP POR SUBBOT ===
 if (isGroup && !isFromSelf) {
   const activossubPath = path.resolve("./activossubbots.json");
