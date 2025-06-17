@@ -31,57 +31,45 @@ const handler = async (msg, { conn }) => {
     }, { quoted: msg });
   }
 
-  // Obtener metadata del grupo para mapear nombres
-  const metadata = await conn.groupMetadata(groupId);
-  const participantes = metadata.participants;
+  const mentions = [];
 
-  const obtenerEtiqueta = (idNum) => {
-    const jid = `${idNum}@s.whatsapp.net`;
-    const p = participantes.find(p => p.id === jid);
-    if (!p) return "👤 Usuario desconocido";
-    const nombre = p?.name || p?.notify || `@${idNum}`;
-    return `@${jid.split("@")[0]}`;
-  };
+  const besosDados = Object.entries(grupo.besosDados || {}).map(([id, info]) => ({
+    id,
+    total: info.total
+  })).sort((a, b) => b.total - a.total).slice(0, 5);
 
-  const mentions = new Set();
-
-  const besosDados = Object.entries(grupo.besosDados || {})
-    .map(([id, info]) => ({ id, total: info.total }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 5);
-
-  const besosRecibidos = Object.entries(grupo.besosRecibidos || {})
-    .map(([id, info]) => ({ id, total: info.total }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 5);
+  const besosRecibidos = Object.entries(grupo.besosRecibidos || {}).map(([id, info]) => ({
+    id,
+    total: info.total
+  })).sort((a, b) => b.total - a.total).slice(0, 5);
 
   const topBesadores = besosDados.map((user, i) => {
-    const tag = obtenerEtiqueta(user.id);
-    mentions.add(`${user.id}@s.whatsapp.net`);
-    return `🥇 ${i + 1}. ${tag} — *${user.total}* besos dados`;
+    const tag = `@${user.id.replace(/@.+/, "")}`;
+    mentions.push(user.id);
+    return `🎯 ${i + 1}. ${tag} — ${user.total} 💋`;
   }).join("\n");
 
   const topBesados = besosRecibidos.map((user, i) => {
-    const tag = obtenerEtiqueta(user.id);
-    mentions.add(`${user.id}@s.whatsapp.net`);
-    return `💘 ${i + 1}. ${tag} — *${user.total}* besos recibidos`;
+    const tag = `@${user.id.replace(/@.+/, "")}`;
+    mentions.push(user.id);
+    return `❤️ ${i + 1}. ${tag} — ${user.total} 😘`;
   }).join("\n");
 
-  const texto = `╭─〔 *TOP BESOS DEL GRUPO* 〕─╮
+  const text = `╭〔 *TOP KISS DEL GRUPO* 〕╮
 
 👄 *Usuarios que MÁS besaron:*
 ${topBesadores || "— Sin datos —"}
 
-─────────────────────
+────────────────
 
 💗 *Usuarios MÁS besados:*
 ${topBesados || "— Sin datos —"}
 
-╰────────────────────╯`;
+╰────────────────╯`;
 
   await conn.sendMessage(groupId, {
-    text: texto,
-    mentions: [...mentions]
+    text,
+    mentions
   }, { quoted: msg });
 };
 
