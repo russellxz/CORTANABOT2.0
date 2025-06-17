@@ -31,44 +31,47 @@ const handler = async (msg, { conn }) => {
     }, { quoted: msg });
   }
 
-  const mentions = [];
-  const besosDados = Object.entries(grupo.besosDados || {}).map(([id, info]) => ({
-    id,
-    total: info.total
-  })).sort((a, b) => b.total - a.total).slice(0, 5);
+  const mentions = new Set();
 
-  const besosRecibidos = Object.entries(grupo.besosRecibidos || {}).map(([id, info]) => ({
-    id,
-    total: info.total
-  })).sort((a, b) => b.total - a.total).slice(0, 5);
+  const besosDados = Object.entries(grupo.besosDados || {})
+    .map(([id, info]) => ({ id, total: info.total }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 5);
+
+  const besosRecibidos = Object.entries(grupo.besosRecibidos || {})
+    .map(([id, info]) => ({ id, total: info.total }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 5);
 
   const topBesadores = besosDados.map((user, i) => {
-    const tag = `@${user.id}`;
-    mentions.push(`${user.id}@s.whatsapp.net`);
-    return `🎯 ${i + 1}. ${tag} — ${user.total} 💋`;
+    const jid = user.id + "@s.whatsapp.net";
+    mentions.add(jid);
+    const tag = user.id.length < 15 ? `@${user.id}` : "👤 Usuario oculto";
+    return `🥇 ${i + 1}. ${tag} — *${user.total}* besos dados`;
   }).join("\n");
 
   const topBesados = besosRecibidos.map((user, i) => {
-    const tag = `@${user.id}`;
-    mentions.push(`${user.id}@s.whatsapp.net`);
-    return `❤️ ${i + 1}. ${tag} — ${user.total} 😘`;
+    const jid = user.id + "@s.whatsapp.net";
+    mentions.add(jid);
+    const tag = user.id.length < 15 ? `@${user.id}` : "👤 Usuario oculto";
+    return `💘 ${i + 1}. ${tag} — *${user.total}* besos recibidos`;
   }).join("\n");
 
-  const text = `╭───〔 *TOP KISS DEL GRUPO* 〕───╮
+  const texto = `╭─〔 *TOP BESOS DEL GRUPO* 〕─╮
 
 👄 *Usuarios que MÁS besaron:*
 ${topBesadores || "— Sin datos —"}
 
-────────────────────────
+─────────────────────
 
 💗 *Usuarios MÁS besados:*
 ${topBesados || "— Sin datos —"}
 
-╰────────────────────────╯`;
+╰────────────────────╯`;
 
   await conn.sendMessage(groupId, {
-    text,
-    mentions
+    text: texto,
+    mentions: [...mentions]
   }, { quoted: msg });
 };
 
