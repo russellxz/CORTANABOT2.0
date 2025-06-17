@@ -10957,7 +10957,7 @@ case 'hd': {
 case 'imagen': {
     const fetch = require('node-fetch');
 
-    if (!args.length) {
+    if (!text.length) {
         await sock.sendMessage(msg.key.remoteJid, { 
             text: `⚠️ *Uso incorrecto.*\n📌 Ejemplo: \`${global.prefix}imagen gatos\`` 
         }, { quoted: msg });
@@ -11012,7 +11012,7 @@ case 'imagen': {
 case 'apk': {
     const fetch = require('node-fetch');
 
-    if (!args.length) {
+    if (!text.length) {
         await sock.sendMessage(msg.key.remoteJid, { 
             text: `⚠️ *Uso incorrecto.*\n📌 Ejemplo: \`${global.prefix}apk whatsapp\`` 
         }, { quoted: msg });
@@ -11092,7 +11092,7 @@ case 'chatgpt':
 case 'ia': {
     const fetch = require('node-fetch');
 
-    if (!args.length) {
+    if (!text.length) {
         await sock.sendMessage(msg.key.remoteJid, { 
             text: `⚠️ *Uso incorrecto.*\n📌 Ejemplo: \`${global.prefix}chatgpt Hola, ¿cómo estás?\`` 
         }, { quoted: msg });
