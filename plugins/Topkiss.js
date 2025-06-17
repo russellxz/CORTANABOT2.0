@@ -54,17 +54,17 @@ const handler = async (msg, { conn }) => {
     return `❤️ ${i + 1}. ${tag} — ${user.total} 😘`;
   }).join("\n");
 
-  const text = `╭───〔 *TOP KISS DEL GRUPO* 〕───╮
+  const text = `╭〔 *TOP KISS DEL GRUPO* 〕╮
 
 👄 *Usuarios que MÁS besaron:*
 ${topBesadores || "— Sin datos —"}
 
-────────────────────────
+────────────────
 
 💗 *Usuarios MÁS besados:*
 ${topBesados || "— Sin datos —"}
 
-╰────────────────────────╯`;
+╰────────────────╯`;
 
   await conn.sendMessage(groupId, {
     text,
