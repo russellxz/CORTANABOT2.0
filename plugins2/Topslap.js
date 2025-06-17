@@ -31,56 +31,43 @@ const handler = async (msg, { conn }) => {
     }, { quoted: msg });
   }
 
-  // Obtener metadata del grupo para menciones correctas
-  const metadata = await conn.groupMetadata(groupId);
-  const participantes = metadata.participants;
+  const mentions = [];
 
-  const obtenerEtiqueta = (idNum) => {
-    const jid = `${idNum}@s.whatsapp.net`;
-    const p = participantes.find(p => p.id === jid);
-    if (!p) return "👤 Usuario desconocido";
-    return `@${jid.split("@")[0]}`;
-  };
+  const slapsDados = Object.entries(grupo.slapsDados || {}).map(([id, info]) => ({
+    id,
+    total: info.total
+  })).sort((a, b) => b.total - a.total).slice(0, 5);
 
-  const mentions = new Set();
+  const slapsRecibidos = Object.entries(grupo.slapsRecibidos || {}).map(([id, info]) => ({
+    id,
+    total: info.total
+  })).sort((a, b) => b.total - a.total).slice(0, 5);
 
-  const dados = Object.entries(grupo.slapDados || {})
-    .map(([id, info]) => ({ id, total: info.total }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 5);
-
-  const recibidos = Object.entries(grupo.slapRecibidos || {})
-    .map(([id, info]) => ({ id, total: info.total }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 5);
-
-  const topSlappers = dados.map((user, i) => {
-    const tag = obtenerEtiqueta(user.id);
-    mentions.add(`${user.id}@s.whatsapp.net`);
-    return `🥊 ${i + 1}. ${tag} — *${user.total}* cachetadas dadas`;
+  const topSlappers = slapsDados.map((user, i) => {
+    mentions.push(user.id);
+    return `👊 ${i + 1}. @${user.id.split("@")[0]} — ${user.total} 🖐️`;
   }).join("\n");
 
-  const topSlappees = recibidos.map((user, i) => {
-    const tag = obtenerEtiqueta(user.id);
-    mentions.add(`${user.id}@s.whatsapp.net`);
-    return `💥 ${i + 1}. ${tag} — *${user.total}* cachetadas recibidas`;
+  const topSlappeados = slapsRecibidos.map((user, i) => {
+    mentions.push(user.id);
+    return `😵 ${i + 1}. @${user.id.split("@")[0]} — ${user.total} 💥`;
   }).join("\n");
 
-  const texto = `╭─〔 *TOP SLAP DEL GRUPO* 〕─╮
+  const text = `╭〔 *TOP SLAP DEL GRUPO* 〕╮
 
-🖐️ *Usuarios que MÁS cachetearon:*
+🖐️ *Usuarios que MÁS bofetearon:*
 ${topSlappers || "— Sin datos —"}
 
-─────────────────────
+────────────────
 
-😵 *Usuarios MÁS cacheteados:*
-${topSlappees || "— Sin datos —"}
+💢 *Usuarios MÁS bofeteados:*
+${topSlappeados || "— Sin datos —"}
 
-╰────────────────────╯`;
+╰────────────────╯`;
 
   await conn.sendMessage(groupId, {
-    text: texto,
-    mentions: [...mentions]
+    text,
+    mentions
   }, { quoted: msg });
 };
 
