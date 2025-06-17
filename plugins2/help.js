@@ -72,6 +72,8 @@ const handler = async (msg, { conn }) => {
 ⚘ ${usedPrefix}verdad
 ⚘ ${usedPrefix}reto
 ⚘ ${usedPrefix}memes o meme
+⚘ ${usedPrefix}kiss
+⚘ ${usedPrefix}topkiss
 
 〔 Configuración & Dueño 〕
 
