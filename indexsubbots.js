@@ -1,57 +1,48 @@
-const path  = require("path");
-const fs    = require("fs");
-const pino  = require("pino");
+const path = require("path");
+const fs   = require("fs");
+const pino = require("pino");
 const {
   default: makeWASocket,
   useMultiFileAuthState,
   fetchLatestBaileysVersion,
-  makeCacheableSignalKeyStore,
-  DisconnectReason        // ← NUEVO
+  makeCacheableSignalKeyStore
 } = require("@whiskeysockets/baileys");
-const { Boom } = require("@hapi/boom");         // ← NUEVO
 
-/* ─── Manejo global de errores ─────────────────────────────── */
-process.on("uncaughtException",  err => console.error("❌ Excepción no atrapada:", err));
-process.on("unhandledRejection", err => console.error("❌ Promesa rechazada sin manejar:", err));
-
-/* ─── Registro de sockets activos ──────────────────────────── */
+/* ─── Registro global para evitar duplicados ─────────────── */
 global.subBots = global.subBots || {};
 
-/* ─── Helpers de plugins ──────────────────────────────────── */
+/* ─── Carga dinámica de plugins (sin hot-reload agresivo) ── */
 function loadSubPlugins() {
-  const plugins   = [];
-  const pluginDir = path.join(__dirname, "plugins2");
-  if (!fs.existsSync(pluginDir)) return plugins;
+  const out  = [];
+  const dir  = path.join(__dirname, "plugins2");
+  if (!fs.existsSync(dir)) return out;
 
-  const files = fs.readdirSync(pluginDir).filter(f => f.endsWith(".js"));
-  for (const file of files) {
-    delete require.cache[path.join(pluginDir, file)];     // hot-reload
-    const plugin = require(path.join(pluginDir, file));
-    if (plugin && plugin.command) plugins.push(plugin);
+  for (const file of fs.readdirSync(dir).filter(f => f.endsWith(".js"))) {
+    const plugin = require(path.join(dir, file));
+    if (plugin && plugin.command) out.push(plugin);
   }
-  return plugins;
+  return out;
 }
 
 async function handleSubCommand(sock, msg, command, args) {
-  const subPlugins = loadSubPlugins();
-  const plugin     = subPlugins.find(p => p.command.includes(command.toLowerCase()));
+  const plugin = loadSubPlugins().find(p => p.command.includes(command.toLowerCase()));
   if (plugin) {
     return plugin(msg, {
       conn: sock,
       text: args.join(" "),
       args,
       command,
-      usedPrefix: ".",
+      usedPrefix: "."
     });
   }
 }
 
-/* ─── Arranque de UN sub-bot ───────────────────────────────── */
+/* ─── Iniciar un sub-bot (exportado) ─────────────────────── */
 async function iniciarSubbot(sessionPath) {
-  if (global.subBots[sessionPath]) return;       // ya activo
+  if (global.subBots[sessionPath]) return;               // ya activo
 
   const dir = path.basename(sessionPath);
-  let reconTimer = null;
+  let reconnectionTimer = null;
 
   try {
     const { state, saveCreds } = await useMultiFileAuthState(sessionPath);
@@ -62,77 +53,42 @@ async function iniciarSubbot(sessionPath) {
       logger: pino({ level: "silent" }),
       auth: {
         creds: state.creds,
-        keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" })),
+        keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" }))
       },
-      browser: ["Cortana Subbot", "Firefox", "2.0"],
+      browser: ["Cortana Subbot", "Firefox", "2.0"]
     });
 
-    global.subBots[sessionPath] = subSock;
+    global.subBots[sessionPath] = subSock;             // registra
+
     subSock.ev.on("creds.update", saveCreds);
 
-    /* ── Conexión / Reconexión – Lógica ajustada ─────────── */
-/* ── variables de temporizador ─────────────────────────── */
-/* Temporizadores por sub-bot */
-let reconTimer  = null;   // reintento a 5 s
-let deleteTimer = null;   // borrado diferido
-
-subSock.ev.on("connection.update", ({ connection, lastDisconnect }) => {
-  /* ── Conexión abierta ───────────────────────────── */
-  if (connection === "open") {
-    console.log(`✅ Subbot ${dir} conectado.`);
-    if (reconTimer)  { clearTimeout(reconTimer);  reconTimer  = null; }
-    if (deleteTimer) { clearTimeout(deleteTimer); deleteTimer = null; }
-    return;
-  }
-
-  /* ── Conexión cerrada ───────────────────────────── */
-  if (connection === "close") {
-    const code = new Boom(lastDisconnect?.error)?.output.statusCode ||
-                 lastDisconnect?.error?.output?.statusCode;
-    const texto = DisconnectReason[code] || `Desconocido (${code})`;
-    console.log(`⚠️  ${dir} desconectado ⇒ ${texto}`);
-
-    /* Cierres definitivos: loggedOut / badSession / 401 */
-    const cierreDef = [
-      DisconnectReason.loggedOut,
-      DisconnectReason.badSession,
-      401
-    ].includes(code);
-
-    /* 🔴 BORRA tras 15 s si es cierre definitivo */
-    if (cierreDef) {
-      if (deleteTimer) clearTimeout(deleteTimer);
-      deleteTimer = setTimeout(() => {
-        if (fs.existsSync(sessionPath)) fs.rmSync(sessionPath, { recursive: true, force: true });
-        delete global.subBots[sessionPath];
-        console.log(`🗑️  ${dir} eliminado (cierre definitivo).`);
-      }, 15_000);
-      return;
-    }
-
-    /* 🟡 Desconexión temporal: programa reintento y borrado */
-    if (!reconTimer) {
-      console.log(`🔄  Reintentando ${dir} en 5 s (se borrará si no vuelve en 30 s)…`);
-
-      reconTimer = setTimeout(() => {
-        iniciarSubbot(sessionPath);      // nuevo intento
-      }, 5_000);
-    }
-
-    if (!deleteTimer) {
-      deleteTimer = setTimeout(() => {
-        if (fs.existsSync(sessionPath)) {
-          fs.rmSync(sessionPath, { recursive: true, force: true });
-          console.log(`🗑️  ${dir} eliminado tras 30 s sin reconectar.`);
+    /* ── Conexión / Reconexión (MISMA lógica vieja) ── */
+    subSock.ev.on("connection.update", ({ connection, lastDisconnect }) => {
+      if (connection === "open") {
+        console.log(`✅ Subbot ${dir} conectado.`);
+        if (reconnectionTimer) {
+          clearTimeout(reconnectionTimer);
+          reconnectionTimer = null;
         }
-        delete global.subBots[sessionPath];
-      }, 30_000);
-    }
-  }
-});
+      } else if (connection === "close") {
+        const statusCode = lastDisconnect?.error?.output?.statusCode;
+        console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}). Esperando 20 s antes de eliminar sesión…`);
 
-    
-      subSock.ev.on("group-participants.update", async (update) => {
+        reconnectionTimer = setTimeout(() => {
+          if (fs.existsSync(sessionPath)) {
+            fs.rmSync(sessionPath, { recursive: true, force: true });
+            console.log(`🗑️ Subbot ${dir} eliminado por desconexión prolongada.`);
+          }
+          delete global.subBots[sessionPath];
+        }, 20_000);
+
+        /* Reintento en 5 s */
+        setTimeout(() => iniciarSubbot(sessionPath), 5_000);
+      }
+    });
+
+    /* ── Núcleo de comandos ─────────────────────────── */
+    subSock.ev.on("group-participants.update", async (update) => {
   try {
     if (!update.id.endsWith("@g.us")) return;
 
@@ -388,25 +344,29 @@ if (!isGroup) {
             console.error("❌ Error interno en mensajes.upsert:", err);
           }
         });
-
+    
   } catch (err) {
-    console.error(`❌ Error iniciando ${dir}:`, err);
+    console.error(`❌ Error cargando subbot ${dir}:`, err);
   }
 }
 
-/* ─── Carga inicial ───────────────────────────────────────── */
+/* ─── Carga inicial al arrancar ─────────────────────────── */
 async function cargarSubbots() {
   const base = path.resolve(__dirname, "subbots");
-  if (!fs.existsSync(base)) fs.mkdirSync(base, { recursive: true });
+  if (!fs.existsSync(base)) {
+    fs.mkdirSync(base, { recursive: true });
+    console.log("📁 Carpeta ./subbots creada automáticamente.");
+  }
 
-  const dirs = fs.readdirSync(base).filter(d =>
-    fs.existsSync(path.join(base, d, "creds.json"))
-  );
-  console.log(`🤖 Inicializando ${dirs.length} sub-bot(s)…`);
+  const dirs = fs.readdirSync(base)
+    .filter(d => fs.existsSync(path.join(base, d, "creds.json")));
+
+  console.log(`🤖 Cargando ${dirs.length} subbot(s) conectados…`);
   for (const d of dirs) await iniciarSubbot(path.join(base, d));
 }
 
+/* ─── Ejecución inmediata ──────────────────────────────── */
 cargarSubbots();
 
-/* ─── Exportaciones ───────────────────────────────────────── */
+/* ─── Exportaciones ─────────────────────────────────────── */
 module.exports = { cargarSubbots, iniciarSubbot };
