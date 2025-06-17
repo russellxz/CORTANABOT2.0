@@ -43,6 +43,11 @@ async function handleSubCommand(sock, msg, command, args) {
 async function iniciarSubbot(sessionPath) {
   if (global.subBots[sessionPath]) return;               // ya activo
 
+ /* ⭐ si la carpeta no existe, créala */
+  if (!fs.existsSync(sessionPath)) {
+    fs.mkdirSync(sessionPath, { recursive: true });
+  }
+  
   const dir = path.basename(sessionPath);
   let reconnectionTimer = null;
 
