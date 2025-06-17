@@ -44,15 +44,13 @@ const handler = async (msg, { conn }) => {
   })).sort((a, b) => b.total - a.total).slice(0, 5);
 
   const topBesadores = besosDados.map((user, i) => {
-    const tag = `@${user.id.replace(/@.+/, "")}`;
     mentions.push(user.id);
-    return `🎯 ${i + 1}. ${tag} — ${user.total} 💋`;
+    return `🎯 ${i + 1}. @${user.id.split("@")[0]} — ${user.total} 💋`;
   }).join("\n");
 
   const topBesados = besosRecibidos.map((user, i) => {
-    const tag = `@${user.id.replace(/@.+/, "")}`;
     mentions.push(user.id);
-    return `❤️ ${i + 1}. ${tag} — ${user.total} 😘`;
+    return `❤️ ${i + 1}. @${user.id.split("@")[0]} — ${user.total} 😘`;
   }).join("\n");
 
   const text = `╭〔 *TOP KISS DEL GRUPO* 〕╮
