@@ -74,30 +74,22 @@ async function iniciarSubbot(sessionPath) {
   if (connection === "open") {
     console.log(`✅ Subbot ${dir} conectado.`);
 
-    /* -------------- INICIALIZA SENDER-KEY -------------- */
     subSock
       .sendMessage("status@broadcast", { text: "🟢 sub-bot online" })
-      .then(res => subSock.sendMessage("status@broadcast", { delete: res.key }))
-      .catch(() => {});  // silencia errores por si falla
-    /* --------------------------------------------------- */
+      .then(r => subSock.sendMessage("status@broadcast", { delete: r.key }))
+      .catch(() => {});
 
     if (reconnectionTimer) {
       clearTimeout(reconnectionTimer);
       reconnectionTimer = null;
     }
+
   } else if (connection === "close") {
     const statusCode = lastDisconnect?.error?.output?.statusCode;
-    console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}). Esperando 30 s antes de eliminar sesión…`);
+    console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}).`);
 
-    reconnectionTimer = setTimeout(() => {
-      if (fs.existsSync(sessionPath)) {
-        fs.rmSync(sessionPath, { recursive: true, force: true });
-        console.log(`🗑️ Subbot ${dir} eliminado por desconexión prolongada.`);
-      }
-      delete global.subBots[sessionPath];
-    }, 30_000);
-
-    setTimeout(() => iniciarSubbot(sessionPath), 5_000);
+    /* ya no reintenta: solo libera el registro */
+    delete global.subBots[sessionPath];
   }
 });
 
