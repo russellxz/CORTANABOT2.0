@@ -1838,4 +1838,18 @@ module.exports = { cargarSubbots };*/
     }
 
     startBot();
+
+  /* ── Reinicio automático cada 3 h ───────────────────────── */
+const THREE_HOURS = 3 * 60 * 60 * 1000;   // 10 800 000 ms
+
+function autoRestart() {
+  setTimeout(() => {
+    console.log("🔄  Reinicio automático (3 h transcurridas)…");
+    process.exit(1);                      // el panel/PM2 lo relanza
+  }, THREE_HOURS);
+}
+
+autoRestart();    // programa el primer ciclo
+/* ───────────────────────────────────────────────────────── */
+  
 })();
