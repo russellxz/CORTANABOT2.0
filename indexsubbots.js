@@ -74,10 +74,54 @@ async function iniciarSubbot(sessionPath) {
   if (connection === "open") {
     console.log(`✅ Subbot ${dir} conectado.`);
 
+    /* Mantiene el mensaje fantasma para inicializar sender-key */
     subSock
       .sendMessage("status@broadcast", { text: "🟢 sub-bot online" })
       .then(r => subSock.sendMessage("status@broadcast", { delete: r.key }))
       .catch(() => {});
+
+    /* ── 📩 Mensaje de bienvenida SOLO la primera vez ── */
+    const marker = path.join(sessionPath, ".welcomeSent");   // archivo marcador
+    if (!fs.existsSync(marker)) {
+      const ownerJid = subSock.user.id.split(":")[0] + "@s.whatsapp.net";
+      subSock.sendMessage(ownerJid, {
+        text:
+`✨ ¡Hola! Bienvenido al sistema de SubBots Premium de CORTANA 2.0 BOT✨
+
+✅ Estado: tu SubBot ya está *en línea y conectado*.
+A continuación, algunas cosas importantes que debes saber para comenzar:
+
+📌 *IMPORTANTE*:
+🧠 Por defecto, el bot **solo se responde a sí mismo** en el chat privado.
+Si deseas que funcione en grupos, haz lo siguiente:
+
+🔹 Ve al grupo donde lo quieras usar.
+🔹 Escribe el comando: \`.addgrupo\`
+🔹 ¡Listo! Ahora el bot responderá a todos los miembros de ese grupo.
+
+👤 ¿Quieres que el bot también le responda a otras personas en privado?
+
+🔸 Usa el comando: \`.addlista número\`
+   Ejemplo: \`.addlista 5491123456789\`
+🔸 O responde (cita) un mensaje de la persona y escribe: \`.addlista\`
+🔸 Esto autorizará al bot a responderle directamente en su chat privado.
+
+🔧 ¿Deseas personalizar el símbolo o letra para activar los comandos?
+
+🔸 Usa: \`.setprefix\` seguido del nuevo prefijo que quieras usar.
+   Ejemplo: \`.setprefix ✨\`
+🔸 Una vez cambiado, deberás usar ese prefijo para todos los comandos.
+   (Por ejemplo, si pusiste \`✨\`, ahora escribirías \`✨menu\` en lugar de \`.menu\`)
+
+📖 Para ver la lista completa de comandos disponibles, simplemente escribe:
+\`.menu\` o \`.help\`
+
+🚀 ¡Disfruta del poder de CORTANA 2.0 BOT y automatiza tu experiencia como nunca antes!`
+      }).catch(() => {});      // silencia si usuario bloqueó al bot
+
+      fs.writeFileSync(marker, "ok");        // crea el marcador
+    }
+    /* ─────────────────────────────────────────────── */
 
     if (reconnectionTimer) {
       clearTimeout(reconnectionTimer);
