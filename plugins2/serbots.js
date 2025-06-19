@@ -94,45 +94,34 @@ const handler = async (msg, { conn, command, sock }) => {
         switch (connection) {
           case "open":
             await conn.sendMessage(msg.key.remoteJid, {
-              text: `╭───〔 *🤖 SUBBOT CONECTADO* 〕───╮
-│
-│ ✅ *Bienvenido a CORTANA 2.0 BOT*
-│
-│ Ya eres parte del mejor sistema de juegos RPG
-│
-│ 🛠️ Usa los siguientes comandos para comenzar:
-│
-│ ${global.prefix}help
-│ ${global.prefix}menu
-│
-│ ⚔️ Disfruta de las funciones del subbot
-│ y conquista el mundo digital
-│
-│ ℹ️ Por defecto, el subbot está en *modo privado*,
-│ lo que significa que *solo tú puedes usarlo*.
-│
-│ Usa el comando:
-│ #menu
-│ (para ver configuraciones y cómo hacer
-│ que otras personas puedan usarlo.)
-│
-│ ➕ Los prefijos por defecto son: *. y #*
-│ Si quieres cambiarlos, usa:
-│ #setprefix
-│
-│ 🔄 Si notas que el subbot *no responde al instante*
-│ o tarda mucho *aunque esté conectado*, no te preocupes.
-│ Puede ser un fallo temporal.
-│
-│ En ese caso, simplemente ejecuta:
-│ #delbots
-│ para eliminar tu sesión y luego vuelve a conectarte usando:
-│ #serbot o para code si no quieres qr usa: #code o #sercode. 
-│ hasta que se conecte correctamente.
-│
-│ Esto ayuda a establecer una conexión *estable y funcional*.
-│
-╰────✦ *Sky Ultra Plus* ✦────╯`
+              text: `🤖 𝙎𝙐𝘽𝘽𝙊𝙏 𝘾𝙊𝙉𝙀𝘾𝙏𝘼𝘿𝙊 - 𝘾𝙊𝙍𝙏𝘼𝙉𝘼 2.0 
+
+✅ 𝘽𝙞𝙚𝙣𝙫𝙚𝙣𝙞𝙙𝙤 𝙖𝙡 𝙨𝙞𝙨𝙩𝙚𝙢𝙖 𝙥𝙧𝙚𝙢𝙞𝙪𝙢 𝙙𝙚 𝘾𝙊𝙍𝙏𝘼𝙉𝘼 2.0 𝘽𝙊𝙏  
+🛰️ 𝙏𝙪 𝙨𝙪𝙗𝙗𝙤𝙩 𝙮𝙖 𝙚𝙨𝙩á 𝙚𝙣 𝙡í𝙣𝙚𝙖 𝙮 𝙤𝙥𝙚𝙧𝙖𝙩𝙞𝙫𝙤.
+
+📩 *𝙄𝙈𝙋𝙊𝙍𝙏𝘼𝙉𝙏𝙀*  
+𝙍𝙚𝙫𝙞𝙨𝙖 𝙩𝙪 𝙢𝙚𝙣𝙨𝙖𝙟𝙚 𝙥𝙧𝙞𝙫𝙖𝙙𝙤.  
+𝘼𝙝í 𝙚𝙣𝙘𝙤𝙣𝙩𝙧𝙖𝙧á𝙨 𝙞𝙣𝙨𝙩𝙧𝙪𝙘𝙘𝙞𝙤𝙣𝙚𝙨 𝙘𝙡𝙖𝙧𝙖𝙨 𝙙𝙚 𝙪𝙨𝙤.  
+*Si no entiendes es porque la inteligencia te intenta alcanzar, pero tú eres más rápido que ella.*  
+_𝙊 𝙨𝙚𝙖... 𝙚𝙧𝙚𝙨 𝙪𝙣 𝙗𝙤𝙗𝙤 UN TREMENDO ESTUPIDO _ 🤖💀
+
+🛠️ 𝘾𝙤𝙢𝙖𝙣𝙙𝙤𝙨 𝙗á𝙨𝙞𝙘𝙤𝙨:
+• `#help` → 𝘼𝙮𝙪𝙙𝙖 𝙜𝙚𝙣𝙚𝙧𝙖𝙡  
+• `#menu` → 𝙇𝙞𝙨𝙩𝙖 𝙙𝙚 𝙘𝙤𝙢𝙖𝙣𝙙𝙤𝙨
+
+ℹ️ 𝙈𝙤𝙙𝙤 𝙖𝙘𝙩𝙪𝙖𝙡: 𝙋𝙍𝙄𝙑𝘼𝘿𝙊  
+☑️ 𝙎ó𝙡𝙤 𝙩ú 𝙥𝙪𝙚𝙙𝙚𝙨 𝙪𝙨𝙖𝙧𝙡𝙤 𝙥𝙤𝙧 𝙖𝙝𝙤𝙧𝙖.
+
+✨ *𝘾𝙖𝙢𝙗𝙞𝙖𝙧 𝙥𝙧𝙚𝙛𝙞𝙟𝙤:*  
+Usa: `.setprefix ✨`  
+Después deberás usar ese nuevo prefijo para activar comandos.  
+(𝙀𝙟: `✨menu`)
+
+🧹 *𝘽𝙤𝙧𝙧𝙖𝙧 𝙩𝙪 𝙨𝙚𝙨𝙞ó𝙣:*  
+• `.delbots`  
+• Solicita un nuevo código con: `.code` o `.sercode`
+
+💎 *BY 𝙎𝙠𝙮 𝙐𝙡𝙩𝙧𝙖 𝙋𝙡𝙪𝙨* 💎`
             }, { quoted: msg });
 
             await conn.sendMessage(msg.key.remoteJid, { react: { text: "🔁", key: msg.key } });
