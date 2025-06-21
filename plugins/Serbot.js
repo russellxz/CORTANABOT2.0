@@ -14,7 +14,7 @@ const {
 /* ⬇️  Importa la función que inicia UN sub-bot */
 const { iniciarSubbot } = require('../indexsubbots');   // ← CAMBIADO
 
-const MAX_SUBBOTS = 100;
+const MAX_SUBBOTS = 50;
 
 const handler = async (msg, { conn, command, sock }) => {
   const usarPairingCode = ["sercode", "code"].includes(command);
