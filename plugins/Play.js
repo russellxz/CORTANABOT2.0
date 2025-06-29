@@ -213,7 +213,7 @@ async function downloadVideo(conn, job, asDocument, quoted) {
     [asDocument ? "document" : "video"]: fs.readFileSync(file),
     mimetype: "video/mp4",
     fileName: `${title}.mp4`,
-    caption: asDocument ? undefined : `🎬 Aquí tiene su video.\n© Azura Ultra`
+    caption: asDocument ? undefined : `🎬 Aquí tiene su video.\n© CORTANA 2.0 BOT`
   }, { quoted });
   fs.unlinkSync(file);
 }
