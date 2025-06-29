@@ -24,7 +24,7 @@ module.exports = async (msg, { conn, text }) => {
   if (!text) {
     return conn.sendMessage(
       msg.key.remoteJid,
-      { text: `✳️ Usa:\n${pref}play2 <término>\nEj: *${pref}play2* bad bunny diles` },
+      { text: `✳️ Usa:\n${pref}play <término>\nEj: *${pref}play* bad bunny diles` },
       { quoted: msg }
     );
   }
@@ -213,9 +213,9 @@ async function downloadVideo(conn, job, asDocument, quoted) {
     [asDocument ? "document" : "video"]: fs.readFileSync(file),
     mimetype: "video/mp4",
     fileName: `${title}.mp4`,
-    caption: asDocument ? undefined : `🎬 Aquí tiene su video.\n© Azura Ultra`
+    caption: asDocument ? undefined : `🎬 Aquí tiene su video.\n© CORTANA 2.0 BOT`
   }, { quoted });
   fs.unlinkSync(file);
 }
 
-module.exports.command = ["play2"];
+module.exports.command = ["play"];
