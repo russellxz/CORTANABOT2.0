@@ -24,7 +24,7 @@ module.exports = async (msg, { conn, text }) => {
   if (!text) {
     return conn.sendMessage(
       msg.key.remoteJid,
-      { text: `✳️ Usa:\n${pref}playpro <término>\nEj: *${pref}playpro* bad bunny diles` },
+      { text: `✳️ Usa:\n${pref}play <término>\nEj: *${pref}play* bad bunny diles` },
       { quoted: msg }
     );
   }
