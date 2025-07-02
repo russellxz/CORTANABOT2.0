@@ -28,7 +28,7 @@ const handler = async (msg, { conn }) => {
 
   // Generar lista de subbots
   const total = subDirs.length;
-  const maxSubbots = 50;
+  const maxSubbots = 75;
   const disponibles = maxSubbots - total;
   const mentions = [];
 
