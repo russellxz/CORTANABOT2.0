@@ -556,10 +556,10 @@ try {
   const chatId = msg.key.remoteJid;
   const senderId = msg.key.participant || msg.key.remoteJid;
   const isGroup = chatId.endsWith("@g.us");
+  const isFromMe = msg.key.fromMe;
 
   const senderClean = senderId.replace(/[^0-9]/g, "");
-  const chatClean = chatId.replace(/[^0-9]/g, "");
-  const botNumber = sock.user.id.split(":")[0]; // número puro del bot
+  const botNumber = sock.user.id.split(":")[0];
   const isOwner = global.owner.some(([id]) => id === senderClean);
 
   const activosPath = "./activos.json";
@@ -567,15 +567,13 @@ try {
     ? JSON.parse(fs.readFileSync(activosPath, "utf-8"))
     : {};
 
-  // SOLO bloquear si:
-  // 1. Es chat privado
-  // 2. El que envió NO es el bot
-  // 3. El que envió NO es owner
-  // 4. El bot NO está respondiendo (chatId !== número del bot)
-  if (!isGroup && activos.antiprivado && !isOwner && senderClean !== botNumber && chatClean !== botNumber) {
+  // ✅ Solo bloquear si:
+  // - no es grupo
+  // - no es owner
+  // - no es el propio bot (fromMe = false)
+  if (!isGroup && activos.antiprivado && !isOwner && !isFromMe) {
     await sock.updateBlockStatus(senderId, "block");
 
-    // Avisar al owner
     await sock.sendMessage("15167096032@s.whatsapp.net", {
       text: `🚫 Se bloqueó automáticamente a: wa.me/${senderClean} por escribir en privado al bot.`
     });
