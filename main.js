@@ -13744,83 +13744,116 @@ case "get": {
     
 case "ver": {
     try {
-        if (!msg.message.extendedTextMessage || 
-            !msg.message.extendedTextMessage.contextInfo || 
-            !msg.message.extendedTextMessage.contextInfo.quotedMessage) {
+        
+        const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+        if (!quoted) {
             return sock.sendMessage(
                 msg.key.remoteJid,
-                { text: "❌ *Error:* Debes responder a un mensaje de *ver una sola vez* (imagen, video o audio) para poder verlo nuevamente." },
+                { text: "❌ *Error:* Debes responder a una imagen, video o nota de voz para reenviarla." },
                 { quoted: msg }
             );
         }
 
-        const quotedMsg = msg.message.extendedTextMessage.contextInfo.quotedMessage;
-        let mediaType, mediaMessage;
+       
+        const unwrap = m => {
+            let node = m;
+            while (
+                node?.viewOnceMessage?.message          ||
+                node?.viewOnceMessageV2?.message        ||
+                node?.viewOnceMessageV2Extension?.message ||
+                node?.ephemeralMessage?.message
+            ) {
+                node =
+                    node.viewOnceMessage?.message            ||
+                    node.viewOnceMessageV2?.message          ||
+                    node.viewOnceMessageV2Extension?.message ||
+                    node.ephemeralMessage?.message           ||
+                    node;
+            }
+            return node;
+        };
+        const inner = unwrap(quoted);
 
-        if (quotedMsg.imageMessage?.viewOnce) {
-            mediaType = "image";
-            mediaMessage = quotedMsg.imageMessage;
-        } else if (quotedMsg.videoMessage?.viewOnce) {
-            mediaType = "video";
-            mediaMessage = quotedMsg.videoMessage;
-        } else if (quotedMsg.audioMessage?.viewOnce) {
+        
+        let mediaType, mediaMsg;
+        if (inner.imageMessage) {
+            mediaType = "image"; mediaMsg = inner.imageMessage;
+        } else if (inner.videoMessage) {
+            mediaType = "video"; mediaMsg = inner.videoMessage;
+        } else if (inner.audioMessage || inner.voiceMessage || inner.pttMessage) {
+            
             mediaType = "audio";
-            mediaMessage = quotedMsg.audioMessage;
+            mediaMsg  = inner.audioMessage || inner.voiceMessage || inner.pttMessage;
         } else {
             return sock.sendMessage(
                 msg.key.remoteJid,
-                { text: "❌ *Error:* Solo puedes usar este comando en mensajes de *ver una sola vez*." },
+                { text: "❌ *Error:* El mensaje citado no contiene un archivo compatible." },
                 { quoted: msg }
             );
         }
 
-        // Enviar reacción mientras procesa
+        
         await sock.sendMessage(msg.key.remoteJid, {
-            react: { text: "⏳", key: msg.key } 
+            react: { text: "⏳", key: msg.key }
         });
 
-        // Descargar el multimedia de forma segura
-        const mediaStream = await new Promise(async (resolve, reject) => {
+        
+        const mediaBuffer = await (async () => {
             try {
-                const stream = await downloadContentFromMessage(mediaMessage, mediaType);
-                let buffer = Buffer.alloc(0);
-                for await (const chunk of stream) {
-                    buffer = Buffer.concat([buffer, chunk]);
-                }
-                resolve(buffer);
-            } catch (err) {
-                reject(null);
-            }
-        });
+                const stream = await downloadContentFromMessage(mediaMsg, mediaType);
+                let buf = Buffer.alloc(0);
+                for await (const chunk of stream) buf = Buffer.concat([buf, chunk]);
+                return buf;
+            } catch { return null; }
+        })();
 
-        if (!mediaStream || mediaStream.length === 0) {
-            await sock.sendMessage(msg.key.remoteJid, { text: "❌ *Error:* No se pudo descargar el archivo. Intenta de nuevo." }, { quoted: msg });
-            return;
+        if (!mediaBuffer?.length) {
+            return sock.sendMessage(
+                msg.key.remoteJid,
+                { text: "❌ *Error:* No se pudo descargar el archivo. Intenta de nuevo." },
+                { quoted: msg }
+            );
         }
 
-        // Enviar el archivo descargado al grupo o chat
-        let messageOptions = {
-            mimetype: mediaMessage.mimetype,
-        };
+        
+        const credit  = "> 🔓 Recuperado por:\n\`Azura Ultra`";
+        const opts    = { mimetype: mediaMsg.mimetype };
 
         if (mediaType === "image") {
-            messageOptions.image = mediaStream;
+            opts.image   = mediaBuffer;
+            opts.caption = credit;                
         } else if (mediaType === "video") {
-            messageOptions.video = mediaStream;
-        } else if (mediaType === "audio") {
-            messageOptions.audio = mediaStream;
+            opts.video   = mediaBuffer;
+            opts.caption = credit;               
+        } else { 
+            opts.audio   = mediaBuffer;
+            opts.ptt     = mediaMsg.ptt ?? true;  
+            if (mediaMsg.seconds) opts.seconds = mediaMsg.seconds; 
         }
 
-        await sock.sendMessage(msg.key.remoteJid, messageOptions, { quoted: msg });
+        await sock.sendMessage(msg.key.remoteJid, opts, { quoted: msg });
 
-        // Confirmar que el archivo ha sido enviado con éxito
+        
+        if (mediaType === "audio") {
+            await sock.sendMessage(
+                msg.key.remoteJid,
+                { text: credit },
+                { quoted: msg }
+            );
+        }
+
+        
         await sock.sendMessage(msg.key.remoteJid, {
-            react: { text: "✅", key: msg.key } 
+            react: { text: "✅", key: msg.key }
         });
 
-    } catch (error) {
-        console.error("❌ Error en el comando ver:", error);
-        await sock.sendMessage(msg.key.remoteJid, { text: "❌ *Error:* No se pudo recuperar el mensaje de *ver una sola vez*. Inténtalo de nuevo." }, { quoted: msg });
+    } catch (err) {
+        console.error("❌ Error en comando ver:", err);
+        await sock.sendMessage(
+            msg.key.remoteJid,
+            { text: "❌ *Error:* Hubo un problema al procesar el archivo." },
+            { quoted: msg }
+        );
     }
     break;
 }
