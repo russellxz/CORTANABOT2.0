@@ -64,7 +64,8 @@ const handler = async (msg, { conn, command, sock }) => {
           keys: makeCacheableSignalKeyStore(state.keys, logger)
         },
         printQRInTerminal: !usarPairingCode,
-        browser: ['Windows', 'Chrome']
+        browser: ['Windows', 'Chrome'],
+        syncFullHistory: false,
       });
 
       let reconnectionAttempts = 0;
@@ -94,10 +95,10 @@ const handler = async (msg, { conn, command, sock }) => {
         switch (connection) {
           case "open":
             await conn.sendMessage(msg.key.remoteJid, {
-  text: 
-`🤖 𝙎𝙐𝘽𝘽𝙊𝙏 𝘾𝙊𝙉𝙀𝘾𝙏𝘼𝘿𝙊 - 𝘾𝙊𝙍𝙏𝘼𝙉𝘼 2.0
+  text:
+`🤖 𝙎𝙐𝘽𝘽𝙊𝙏 𝘾𝙊𝙉𝙀𝘾𝙏𝘼𝘿𝙊 - Cortana 2.0
 
-✅ 𝘽𝙞𝙚𝙣𝙫𝙚𝙣𝙞𝙙𝙤 𝙖𝙡 𝙨𝙞𝙨𝙩𝙚𝙢𝙖 𝙥𝙧𝙚𝙢𝙞𝙪𝙢 𝙙𝙚 𝘾𝙊𝙍𝙏𝘼𝙉𝘼 2.0 𝘽𝙊𝙏  
+✅ 𝘽𝙞𝙚𝙣𝙫𝙚𝙣𝙞𝙙𝙤 𝙖𝙡 𝙨𝙞𝙨𝙩𝙚𝙢𝙖 𝙥𝙧𝙚𝙢𝙞𝙪𝙢 𝙙𝙚 CORTANA 2.0 𝘽𝙊𝙏  
 🛰️ 𝙏𝙪 𝙨𝙪𝙗𝙗𝙤𝙩 𝙮𝙖 𝙚𝙨𝙩á 𝙚𝙣 𝙡í𝙣𝙚𝙖 𝙮 𝙤𝙥𝙚𝙧𝙖𝙩𝙞𝙫𝙤.
 
 📩 *𝙄𝙈𝙋𝙊𝙍𝙏𝘼𝙉𝙏𝙀*  
@@ -151,7 +152,7 @@ Después deberás usar ese nuevo prefijo para activar comandos.
               case DisconnectReason.badSession:
               case DisconnectReason.loggedOut:
                 await conn.sendMessage(msg.key.remoteJid, {
-                  text: `⚠️ *Sesión eliminada.*\n${messageError}\nUsa ${global.prefix}serbot para volver a conectar.`
+                  text: `⚠️ *Sesión eliminada.*\n${messageError}\nUsa ${global.prefix}sercode para volver a conectar.`
                 }, { quoted: msg });
                 eliminarSesion();
                 break;
@@ -181,7 +182,7 @@ Después deberás usar ese nuevo prefijo para activar comandos.
 │ 🔄 Si sigues en problemas, ejecuta:
 │ #delbots
 │ para eliminar tu sesión y conéctate de nuevo con:
-│ #serbot  /  #code
+│ #sercode /  #code
 │
 ╰────✦ *Sky Ultra Plus* ✦────╯`
                 }, { quoted: msg });
