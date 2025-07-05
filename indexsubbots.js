@@ -116,7 +116,7 @@ async function iniciarSubbot(sessionPath, retryCount = 0) {
           const ownerJid = subSock.user.id.split(":")[0] + "@s.whatsapp.net";
           subSock
             .sendMessage(ownerJid, {
-              text: `✨ ¡Hola! Bienvenido al sistema de SubBots Premium de Azura Ultra 2.0 ✨
+              text: `✨ ¡Hola! Bienvenido al sistema de SubBots Premium de cortana 2.0 ✨
 
 ✅ Estado: tu SubBot ya está *en línea y conectado*.
 A continuación, algunas cosas importantes que debes saber para comenzar:
@@ -146,7 +146,7 @@ Si deseas que funcione en grupos, haz lo siguiente:
 📖 Para ver la lista completa de comandos disponibles, simplemente escribe:
 \`.menu\` o \`.help\`
 
-🚀 ¡Disfruta del poder de Azura Ultra 2.0 y automatiza tu experiencia como nunca antes!`,
+🚀 ¡Disfruta del poder de cortana 2.0 y automatiza tu experiencia como nunca antes!`,
             })
             .catch(() => {}); // silencia si usuario bloqueó al bot
 
