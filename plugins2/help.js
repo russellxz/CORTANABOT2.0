@@ -33,8 +33,8 @@ const handler = async (msg, { conn }) => {
     let footer = "";
 
     if (personal) {
-      // MENÚ PERSONALIZADO DISEÑO BONITO
-      const caption = `
+  // MENÚ PERSONALIZADO DISEÑO BONITO
+  caption = `
 ╭─❍ 𓂃 ꜱᴜʙʙᴏᴛ ᴇꜱᴛɪʟɪᴢᴀᴅᴏ ❍─╮
 │   𝙈𝙚𝙣𝙪́: *${nombreMenu}*
 ╰────────────────────╯
