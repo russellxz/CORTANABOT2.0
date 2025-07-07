@@ -31,6 +31,14 @@ const handler = async (msg, { conn }) => {
     const imageBuffer = personal?.imagen ? Buffer.from(personal.imagen, "base64") : null;
     const nombreMenu = personal?.nombre || "CORTANA 2.0 SUBBOT";
 
+    let footer = "";
+    if (personal) {
+      footer = `
+━━━━━━━━━━━━━━━━━━━━━━
+📍 TikTok: https://www.tiktok.com/@azuritabot?_t=ZT-8xpG3PgDQeT&_r=1
+🖼️ Subbot personalizado por el usuario.`;
+    }
+
     const caption = `
 ╔⌬${nombreMenu}⌬╗
 ║   Menú por categorías  
@@ -101,11 +109,7 @@ const handler = async (msg, { conn }) => {
 ⚘ ${usedPrefix}dellista ↷ Quitar usuario autorizado pa que no lo usen.
 ⚘ ${usedPrefix}delgrupo ↷ Eliminar grupo autorizado pa que no lo usen.
 ⚘ ${usedPrefix}ping ↷ Medir latencia del bot
-
-━━━━━━━━━━━━━━━━━━━━━━
-📍 TikTok: https://www.tiktok.com/@azuritabot?_t=ZT-8xpG3PgDQeT&_r=1
-🖼️ Subbot personalizado por el usuario.
-`;
+${footer}`;
 
     await conn.sendMessage(
       msg.key.remoteJid,
