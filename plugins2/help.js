@@ -80,7 +80,7 @@ const handler = async (msg, { conn }) => {
 ┃ ✦ ${usedPrefix}𝘢𝘥𝘥𝘭𝘪𝘴𝘵𝘢 / ${usedPrefix}𝘥𝘦𝘭𝘭𝘪𝘴𝘵𝘢
 ┃ ✦ ${usedPrefix}𝘢𝘥𝘥𝘨𝘳𝘶𝘱𝘰 / ${usedPrefix}𝘥𝘦𝘭𝘨𝘳𝘶𝘱𝘰
 ┃✦ ${usedPrefix}setmenu
-┃✦ ${usedPrefix}delmemu
+┃✦ ${usedPrefix}delmenu
 ┗━━━━━━━━━━━━━
 
 ━━━━━━━━━━━━━━━━━━━━━━
