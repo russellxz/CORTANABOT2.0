@@ -4,13 +4,17 @@ const { downloadContentFromMessage } = require("@whiskeysockets/baileys");
 
 const handler = async (msg, { conn, text }) => {
   try {
-    const subbotID = (conn.user.id || "").split(":")[0] + "@s.whatsapp.net";
-    const senderID = msg.key.participant || msg.key.remoteJid;
+    const rawID = conn.user?.id || "";
+    const subbotJid = rawID.split(":")[0] + "@s.whatsapp.net";
 
-    // Verificar que solo el subbot pueda usarlo
-    if (!senderID.includes(subbotID)) {
+    const senderJid = msg.key.participant || msg.key.remoteJid;
+    const fromGroup = msg.key.remoteJid.endsWith("@g.us");
+    const isOwnMsg = senderJid === subbotJid && !fromGroup;
+
+    // ❌ Solo el subbot dueño puede usarlo desde su propio número en privado
+    if (!isOwnMsg) {
       return await conn.sendMessage(msg.key.remoteJid, {
-        text: "❌ Este comando solo puede ser usado por el *propietario del subbot*.",
+        text: "❌ Este comando solo puede ser usado por el *subbot en su propio chat privado*.",
       }, { quoted: msg });
     }
 
@@ -37,7 +41,7 @@ const handler = async (msg, { conn, text }) => {
       ? JSON.parse(fs.readFileSync(setMenuPath, "utf8"))
       : {};
 
-    data[subbotID] = {
+    data[subbotJid] = {
       nombre: text,
       imagen: base64
     };
