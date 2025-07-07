@@ -8,12 +8,12 @@ const handler = async (msg, { conn, text }) => {
     const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
     const chatJid = msg.key.remoteJid;
-    const isGroup = chatJid.endsWith("@g.us");
-    const isFromSubbot = msg.key.fromMe === true && !isGroup;
+    const senderJid = (msg.key.participant || chatJid);
+    const isSenderSubbot = senderJid === subbotID;
 
-    if (!isFromSubbot) {
+    if (!isSenderSubbot) {
       return await conn.sendMessage(chatJid, {
-        text: "❌ Este comando solo puede ser usado por el *subbot desde su propio chat privado*.",
+        text: "❌ Este comando solo puede ser usado por el *subbot mismo*, ya sea en grupo o privado.",
       }, { quoted: msg });
     }
 
