@@ -151,14 +151,26 @@ const handler = async (msg, { conn }) => {
 
 〔 Configuración & Dueño 〕
 ⚘ ${usedPrefix}antideletepri on o off
-⚘ ${usedPrefix}setprefix ↷ Cambiar prefijo del subbot
-⚘ ${usedPrefix}creador ↷ Contacto del creador
-⚘ ${usedPrefix}get ↷ Descargar estados
-⚘ ${usedPrefix}addgrupo ↷ Autorizar grupo pa que lo usen.
-⚘ ${usedPrefix}addlista ↷ Autorizar usuario privado pa lo usen.
-⚘ ${usedPrefix}dellista ↷ Quitar usuario autorizado pa que no lo usen.
-⚘ ${usedPrefix}delgrupo ↷ Eliminar grupo autorizado pa que no lo usen.
-⚘ ${usedPrefix}ping ↷ Medir latencia del bot
+⚘ ${usedPrefix}setprefix ↷ 
+   Cambiar prefijo del subbot
+⚘ ${usedPrefix}creador ↷ 
+    Contacto del creador
+⚘ ${usedPrefix}get ↷ 
+    Descargar estados
+⚘ ${usedPrefix}addgrupo ↷ 
+    Autorizar grupo pa que lo usen.
+⚘ ${usedPrefix}addlista ↷
+   Autorizar usuario privado pa lo usen.
+⚘ ${usedPrefix}dellista ↷
+   Quitar usuario autorizado pa que no lo usen.
+⚘ ${usedPrefix}delgrupo ↷ 
+   Eliminar grupo autorizado pa que no lo usen.
+⚘ ${usedPrefix}ping ↷ 
+   Medir latencia del bot
+⚘ ${usedPrefix}setmenu↷
+  personaliza tu subbot
+⚘ ${usedPrefix}delmenu↷
+   quita lo personalizado
 
 ═⌬ CORTANA 2.0 Subbot ⌬═`.trim();
     }
