@@ -27,7 +27,7 @@ const handler = async (msg, { conn }) => {
 
     const personal = customData[subbotID];
     const imageBuffer = personal?.imagen ? Buffer.from(personal.imagen, "base64") : null;
-    const nombreMenu = personal?.nombre || "Azura Ultra 2.0 Subbot";
+    const nombreMenu = personal?.nombre || "CORTANA 2.0 Subbot";
 
     let caption = "";
     let footer = "";
