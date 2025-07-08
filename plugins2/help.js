@@ -35,7 +35,7 @@ const handler = async (msg, { conn }) => {
     if (personal) {
   // MENÚ PERSONALIZADO DISEÑO BONITO
   caption = `
-╭─❍ 𓂃 ꜱᴜʙʙᴏᴛ ᴇꜱᴛɪʟɪᴢᴀᴅᴏ ❍─╮
+╭─❍ 𓂃 𝑺𝒖𝒃𝒃𝒐𝒕 𝑷𝒆𝒓𝒔𝒐𝒏𝒂𝒍𝒊𝒛𝒂𝒅𝒐 ❍─╮
 │   𝙈𝙚𝙣𝙪́: *${nombreMenu}*
 ╰────────────────────╯
 
