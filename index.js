@@ -816,11 +816,34 @@ if (msg.message?.protocolMessage?.type === 0) {
     
 // === LÓGICA DE RESPUESTA AUTOMÁTICA CON PALABRA CLAVE ===
 try {
+  /* 1️⃣  Filtro “modoAdmins” — se permite a owner, al bot y a los ADMINs del grupo */
+  if (isGroup) {
+    const actPath = path.resolve('./activos.json');
+    const modoAdminsOn =
+      fs.existsSync(actPath) &&
+      (JSON.parse(fs.readFileSync(actPath, 'utf-8')).modoAdmins?.[chatId] === true);
+
+    if (modoAdminsOn) {
+      /* ¿es owner o el propio bot? → pasa */
+      if (!isOwner(sender) && !fromMe) {
+        /* sino, comprobar si es admin del grupo */
+        let isAdmin = false;
+        try {
+          const meta = await sock.groupMetadata(chatId);
+          const p    = meta.participants.find(u => u.id.includes(sender));
+          isAdmin    = p?.admin === 'admin' || p?.admin === 'superadmin';
+        } catch (e) {
+          console.error("❌ Error leyendo metadata:", e);
+        }
+        if (!isAdmin) return;     // modoAdmins activo y no-admin => ignora
+      }
+    }
+  }
+
+  /* 2️⃣  Procesar guar.json (igual que antes) */
   const guarPath = path.resolve('./guar.json');
   if (fs.existsSync(guarPath)) {
-    const guarData = JSON.parse(fs.readFileSync(guarPath, 'utf-8'));
-
-    // Normalizar mensaje: sin espacios, tildes, mayúsculas ni símbolos
+    const guarData  = JSON.parse(fs.readFileSync(guarPath, 'utf-8'));
     const cleanText = messageText
       .toLowerCase()
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -833,44 +856,34 @@ try {
         .replace(/[^\w]/g, '');
 
       if (cleanText === cleanKey) {
-        const item = guarData[key];
+        const item   = guarData[key];
         const buffer = Buffer.from(item.buffer, 'base64');
-
-        let payload = {};
+        const payload = {};
 
         switch (item.extension) {
           case 'jpg':
           case 'jpeg':
-          case 'png':
-            payload.image = buffer;
-            break;
-          case 'mp4':
-            payload.video = buffer;
-            break;
+          case 'png':  payload.image  = buffer; break;
+          case 'mp4':  payload.video  = buffer; break;
           case 'mp3':
           case 'ogg':
-          case 'opus':
-            payload.audio = buffer;
-            payload.mimetype = item.mimetype || 'audio/mpeg';
-            payload.ptt = false; // ← Cambia a true si quieres que lo envíe como nota de voz
-            break;
-          case 'webp':
-            payload.sticker = buffer;
-            break;
-          default:
-            payload.document = buffer;
-            payload.mimetype = item.mimetype || "application/octet-stream";
-            payload.fileName = `archivo.${item.extension}`;
-            break;
+          case 'opus': payload.audio    = buffer;
+                       payload.mimetype = item.mimetype || 'audio/mpeg';
+                       payload.ptt      = false;                break;
+          case 'webp': payload.sticker = buffer; break;
+          default:     payload.document = buffer;
+                       payload.mimetype = item.mimetype || 'application/octet-stream';
+                       payload.fileName = `archivo.${item.extension}`;
+                       break;
         }
 
         await sock.sendMessage(chatId, payload, { quoted: msg });
-        return; // ← evitar que siga procesando si ya se encontró una coincidencia
+        return;   // coincidencia encontrada
       }
     }
   }
 } catch (e) {
-  console.error("❌ Error al revisar guar.json:", e);
+  console.error("❌ Error en lógica de palabra clave:", e);
 }
 // === FIN LÓGICA DE RESPUESTA AUTOMÁTICA CON PALABRA CLAVE ===
 // === INICIO LÓGICA CHATGPT POR GRUPO ===
