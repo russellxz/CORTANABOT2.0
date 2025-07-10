@@ -434,31 +434,35 @@ async function socketEvents(subSock) {
           return;
         }
       }
-      // === INICIO LÓGICA PRIVADO AUTORIZADO ===
-      if (!isGroup) {
-        const isFromSelf = m.key.fromMe;
-        const rawID = subSock.user?.id || "";
-        const subbotID = `${rawID.split(":")[0]}@s.whatsapp.net`;
+// === INICIO LÓGICA PRIVADO AUTORIZADO ===
+if (!isGroup) {
+  const isFromSelf = m.key.fromMe;
+  const rawID = subSock.user?.id || "";
+  const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-        if (!isFromSelf) {
-          const listaPath = path.join(__dirname, "listasubots.json");
-          let dataPriv = {};
+  if (!isFromSelf) {
+    const listaPath = path.join(__dirname, "listasubots.json");
+    let dataPriv = {};
 
-          try {
-            if (fs.existsSync(listaPath)) {
-              dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8"));
-            }
-          } catch (e) {
-            console.error("❌ Error leyendo listasubots.json:", e);
-          }
-
-          const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
-
-          if (!listaPermitidos.includes(senderNum)) {
-            return;
-          }
-        }
+    try {
+      if (fs.existsSync(listaPath)) {
+        dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8"));
       }
+    } catch (e) {
+      console.error("❌ Error leyendo listasubots.json:", e);
+    }
+
+    const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
+
+    if (
+      !listaPermitidos.includes(senderNum) &&
+      !global.owner.some(([id]) => id === senderNum)
+    ) {
+      return; // 🚫 Usuario no autorizado, ignorar mensaje privado
+    }
+  }
+}
+// === FIN LÓGICA PRIVADO AUTORIZADO ===
       const customPrefix = dataPrefijos[subbotID];
       const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
       const usedPrefix = allowedPrefixes.find((p) => messageText.startsWith(p));
