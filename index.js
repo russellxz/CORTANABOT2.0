@@ -49,7 +49,6 @@ async function getPrompt() {
   }
 }
 
-  
 function cleanResponse(text) {
   if (!text) return '';
   return text
@@ -79,11 +78,10 @@ async function perplexityQuery(q, prompt) {
   return data.response;
 }
   //lumi
-  const axios = require("axios");
-const fetch = require("node-fetch");
-const { cargarSubbots } = require("./indexsubbots");
-
-   
+    const axios = require("axios");
+    const fetch = require("node-fetch");
+    const { cargarSubBots } = require("./indexsubbots");
+    await cargarSubBots()
     const { default: makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion, makeCacheableSignalKeyStore } = require("@whiskeysockets/baileys");
     const chalk = require("chalk");
     const yargs = require('yargs/yargs')
@@ -129,7 +127,7 @@ function guardarModos(data) {
 let modos = cargarModos();
     
     // Configuración de consola
-    console.log(chalk.cyan(figlet.textSync("Cortana 2.0 Bot", { font: "Standard" })));    
+    console.log(chalk.cyan(figlet.textSync("CORTANA 2.0 BOT", { font: "Standard" })));    
     console.log(chalk.green("\n✅ Iniciando conexión...\n"));
     
     // ✅ Mostrar opciones de conexión bien presentadas
@@ -225,7 +223,12 @@ setInterval(async () => {
             }
 
 // Ruta de los archivos a limpiar
-const archivosAntidelete = ['./antidelete.json', './antideletepri.json'];
+const archivosAntidelete = [
+  './antidelete.json',
+  './antideletepri.json',
+  './gruposu.json',
+  './prisu.json'
+];
 
 function limpiarAntidelete() {
   for (const archivo of archivosAntidelete) {
@@ -243,7 +246,8 @@ setInterval(limpiarAntidelete, 30 * 60 * 1000); // 30 min
 limpiarAntidelete();
 //cada 30 minutos antidelete          
           
-// Función para revisar y actualizar grupos cada 5 segundos
+
+          // Función para revisar y actualizar grupos cada 5 segundos
 setInterval(async () => {
   try {
     const ahora = Date.now();
@@ -375,28 +379,28 @@ if (fs.existsSync(welcomePath)) {
 }
     // Textos integrados para bienvenida y despedida
     const welcomeTexts = [
-      "¡Bienvenido(a)! 🪼 CORTANA 2.0 BOT 🪼 te recibe con los brazos abiertos 🤗✨. ¡Disfruta y comparte!",
-      "¡Hola! 🪼 CORTANA 2.0 BOT 🪼 te abraza con alegría 🎉🤖. ¡Prepárate para grandes aventuras!",
-      "¡Saludos! 🪼 CORTANA 2.0 BOT 🪼 Bot te da la bienvenida para que descubras ideas brillantes 🚀🌟.",
-      "¡Bienvenido(a) al grupo! 🪼 CORTANA 2.0 BOT 🪼te invita a explorar un mundo de posibilidades 🤩💡.",
-      "¡Qué alegría verte! 🪼 CORTANA 2.0 BOT 🪼 te recibe y te hace sentir en casa 🏠💖.",
+      "¡Bienvenido(a)! Azura Ultra 2.0 Bot te recibe con los brazos abiertos 🤗✨. ¡Disfruta y comparte!",
+      "¡Hola! Azura Ultra 2.0 Bot te abraza con alegría 🎉🤖. ¡Prepárate para grandes aventuras!",
+      "¡Saludos! Azura Ultra 2.0 Bot te da la bienvenida para que descubras ideas brillantes 🚀🌟.",
+      "¡Bienvenido(a) al grupo! Azura Ultra 2.0 Bot te invita a explorar un mundo de posibilidades 🤩💡.",
+      "¡Qué alegría verte! Azura Ultra 2.0 Bot te recibe y te hace sentir en casa 🏠💖.",
       "¡Hola! Gracias por unirte; Azura Ultra 2.0 Bot te saluda con entusiasmo 🎊😊.",
-      "¡Bienvenido(a)! Cada nuevo miembro es una chispa de inspiración en 🪼 CORTANA 2.0 BOT 🪼 🔥✨.",
-      "¡Saludos cordiales! 🪼 CORTANA 2.0 BOT 🪼 te envía un abrazo virtual 🤗💙.",
-      "¡Bienvenido(a)! Únete a la experiencia 🪼 CORTANA 2.0 BOT 🪼y comparte grandes ideas 🎉🌈.",
-      "¡Hola! 🪼 CORTANA 2.0 BOT 🪼te da la bienvenida para vivir experiencias inolvidables 🚀✨!"
+      "¡Bienvenido(a)! Cada nuevo miembro es una chispa de inspiración en Azura Ultra 2.0 Bot 🔥✨.",
+      "¡Saludos cordiales! Azura Ultra 2.0 Bot te envía un abrazo virtual 🤗💙.",
+      "¡Bienvenido(a)! Únete a la experiencia Azura Ultra 2.0 Bot y comparte grandes ideas 🎉🌈.",
+      "¡Hola! Azura Ultra 2.0 Bot te da la bienvenida para vivir experiencias inolvidables 🚀✨!"
     ];
     const farewellTexts = [
-      "¡Adiós! 🪼 CORTANA 2.0 BOT 🪼 Bot te despide con gratitud y te desea éxitos en tus nuevos caminos 👋💫.",
-      "Hasta pronto, desde 🪼 CORTANA 2.0 BOT 🪼 te deseamos lo mejor y esperamos verte de nuevo 🌟🙏.",
-      "¡Chao! 🪼 CORTANA 2.0 BOT 🪼 se despide, pero siempre tendrás un lugar si decides regresar 🤗💔.",
-      "Nos despedimos con cariño; gracias por compartir momentos en 🪼 CORTANA 2.0 BOT 🪼 🏠❤️.",
-      "¡Adiós, amigo(a)! 🪼 CORTANA 2.0 BOT 🪼te manda un abrazo y te desea mucha suerte 🤝🌟.",
+      "¡Adiós! Azura Ultra 2.0 Bot te despide con gratitud y te desea éxitos en tus nuevos caminos 👋💫.",
+      "Hasta pronto, desde Azura Ultra 2.0 Bot te deseamos lo mejor y esperamos verte de nuevo 🌟🙏.",
+      "¡Chao! Azura Ultra 2.0 Bot se despide, pero siempre tendrás un lugar si decides regresar 🤗💔.",
+      "Nos despedimos con cariño; gracias por compartir momentos en Azura Ultra 2.0 Bot 🏠❤️.",
+      "¡Adiós, amigo(a)! Azura Ultra 2.0 Bot te manda un abrazo y te desea mucha suerte 🤝🌟.",
       "Hasta luego, y gracias por haber sido parte de nuestra comunidad 🚀💙.",
-      "Chao, que tus futuros proyectos sean tan brillantes como tú 🌟✨. 🪼 CORTANA 2.0 BOT 🪼 te recuerda siempre.",
-      "¡Nos vemos! 🪼 CORTANA 2.0 BOT 🪼 te dice adiós con un corazón lleno de gratitud 🤗❤️.",
-      "¡Adiós! Que tu camino esté lleno de éxitos, te lo desea 🪼 CORTANA 2.0 BOT 🪼 🚀🌟.",
-      "Hasta pronto, y gracias por haber compartido momentos inolvidables con 🪼 CORTANA 2.0 BOT 🪼 👋💖."
+      "Chao, que tus futuros proyectos sean tan brillantes como tú 🌟✨. Azura Ultra 2.0 Bot te recuerda siempre.",
+      "¡Nos vemos! Azura Ultra 2.0 Bot te dice adiós con un corazón lleno de gratitud 🤗❤️.",
+      "¡Adiós! Que tu camino esté lleno de éxitos, te lo desea Azura Ultra 2.0 Bot 🚀🌟.",
+      "Hasta pronto, y gracias por haber compartido momentos inolvidables con Azura Ultra 2.0 Bot 👋💖."
     ];
 
 // Procesar según la acción: "add" (entrada) o "remove" (salida)
@@ -415,7 +419,7 @@ if (update.action === "add" && welcomeActivo) {
       try {
         profilePicUrl = await sock.profilePictureUrl(update.id, "image");
       } catch {
-        profilePicUrl = "https://cdn.russellxz.click/2486b9cc.jpeg";
+        profilePicUrl = "https://cdn.dorratz.com/files/1741323171822.jpg";
       }
     }
 
@@ -469,7 +473,7 @@ if (update.action === "add" && welcomeActivo) {
     try {
       profilePicUrl = await sock.profilePictureUrl(participant, "image");
     } catch (err) {
-      profilePicUrl = "https://cdn.russellxz.click/2486b9cc.jpeg";
+      profilePicUrl = "https://cdn.dorratz.com/files/1741323171822.jpg";
     }
 
     if (option < 0.5) {
@@ -510,7 +514,7 @@ sock.ev.on("messages.upsert", async (messageUpsert) => {
     const fromMe = msg.key.fromMe || sender === botNumber;
     let messageText = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
     let messageType = Object.keys(msg.message || {})[0];
-
+    
     const activos = fs.existsSync("./activos.json") ? JSON.parse(fs.readFileSync("./activos.json")) : {};
     const lista = fs.existsSync("./lista.json") ? JSON.parse(fs.readFileSync("./lista.json")) : [];
     const isAllowedUser = (num) => lista.includes(num);
@@ -584,7 +588,6 @@ try {
   console.error("❌ Error en lógica antiprivado:", e);
 }
 // === FIN LÓGICA ANTIPRIVADO ===
-    
 // === INICIO LÓGICA ANTIS STICKERS (15s, 3 strikes, sin notificación de desbloqueo) ===
 const stickerMsg = msg.message?.stickerMessage || msg.message?.ephemeralMessage?.message?.stickerMessage;
 
@@ -665,6 +668,7 @@ if (isGroup && activos.antis?.[chatId] && !fromMe && stickerMsg) {
   }
 }
 // === FIN LÓGICA ANTIS STICKERS ===
+    
 // === INICIO GUARDADO ANTIDELETE ===
 try {
   const activos = fs.existsSync('./activos.json')
@@ -814,78 +818,7 @@ if (msg.message?.protocolMessage?.type === 0) {
 }
 // === FIN DETECCIÓN DE MENSAJE ELIMINADO ===    
     
-// === LÓGICA DE RESPUESTA AUTOMÁTICA CON PALABRA CLAVE ===
-try {
-  /* 1️⃣  Filtro “modoAdmins” — se permite a owner, al bot y a los ADMINs del grupo */
-  if (isGroup) {
-    const actPath = path.resolve('./activos.json');
-    const modoAdminsOn =
-      fs.existsSync(actPath) &&
-      (JSON.parse(fs.readFileSync(actPath, 'utf-8')).modoAdmins?.[chatId] === true);
 
-    if (modoAdminsOn) {
-      /* ¿es owner o el propio bot? → pasa */
-      if (!isOwner(sender) && !fromMe) {
-        /* sino, comprobar si es admin del grupo */
-        let isAdmin = false;
-        try {
-          const meta = await sock.groupMetadata(chatId);
-          const p    = meta.participants.find(u => u.id.includes(sender));
-          isAdmin    = p?.admin === 'admin' || p?.admin === 'superadmin';
-        } catch (e) {
-          console.error("❌ Error leyendo metadata:", e);
-        }
-        if (!isAdmin) return;     // modoAdmins activo y no-admin => ignora
-      }
-    }
-  }
-
-  /* 2️⃣  Procesar guar.json (igual que antes) */
-  const guarPath = path.resolve('./guar.json');
-  if (fs.existsSync(guarPath)) {
-    const guarData  = JSON.parse(fs.readFileSync(guarPath, 'utf-8'));
-    const cleanText = messageText
-      .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^\w]/g, '');
-
-    for (const key of Object.keys(guarData)) {
-      const cleanKey = key
-        .toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^\w]/g, '');
-
-      if (cleanText === cleanKey) {
-        const item   = guarData[key];
-        const buffer = Buffer.from(item.buffer, 'base64');
-        const payload = {};
-
-        switch (item.extension) {
-          case 'jpg':
-          case 'jpeg':
-          case 'png':  payload.image  = buffer; break;
-          case 'mp4':  payload.video  = buffer; break;
-          case 'mp3':
-          case 'ogg':
-          case 'opus': payload.audio    = buffer;
-                       payload.mimetype = item.mimetype || 'audio/mpeg';
-                       payload.ptt      = false;                break;
-          case 'webp': payload.sticker = buffer; break;
-          default:     payload.document = buffer;
-                       payload.mimetype = item.mimetype || 'application/octet-stream';
-                       payload.fileName = `archivo.${item.extension}`;
-                       break;
-        }
-
-        await sock.sendMessage(chatId, payload, { quoted: msg });
-        return;   // coincidencia encontrada
-      }
-    }
-  }
-} catch (e) {
-  console.error("❌ Error en lógica de palabra clave:", e);
-}
-// === FIN LÓGICA DE RESPUESTA AUTOMÁTICA CON PALABRA CLAVE ===
 // === INICIO LÓGICA CHATGPT POR GRUPO ===
 try {
   const activos = fs.existsSync("./activos.json") ? JSON.parse(fs.readFileSync("./activos.json", "utf-8")) : {};
@@ -1078,6 +1011,78 @@ try {
   console.error("❌ Error al ejecutar comando desde sticker:", err);
 }
 // === FIN LÓGICA COMANDOS DESDE STICKER ===       
+// === LÓGICA DE RESPUESTA AUTOMÁTICA CON PALABRA CLAVE ===
+try {
+  /* 1️⃣  Filtro “modoAdmins” — se permite a owner, al bot y a los ADMINs del grupo */
+  if (isGroup) {
+    const actPath = path.resolve('./activos.json');
+    const modoAdminsOn =
+      fs.existsSync(actPath) &&
+      (JSON.parse(fs.readFileSync(actPath, 'utf-8')).modoAdmins?.[chatId] === true);
+
+    if (modoAdminsOn) {
+      /* ¿es owner o el propio bot? → pasa */
+      if (!isOwner(sender) && !fromMe) {
+        /* sino, comprobar si es admin del grupo */
+        let isAdmin = false;
+        try {
+          const meta = await sock.groupMetadata(chatId);
+          const p    = meta.participants.find(u => u.id.includes(sender));
+          isAdmin    = p?.admin === 'admin' || p?.admin === 'superadmin';
+        } catch (e) {
+          console.error("❌ Error leyendo metadata:", e);
+        }
+        if (!isAdmin) return;     // modoAdmins activo y no-admin => ignora
+      }
+    }
+  }
+
+  /* 2️⃣  Procesar guar.json (igual que antes) */
+  const guarPath = path.resolve('./guar.json');
+  if (fs.existsSync(guarPath)) {
+    const guarData  = JSON.parse(fs.readFileSync(guarPath, 'utf-8'));
+    const cleanText = messageText
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\w]/g, '');
+
+    for (const key of Object.keys(guarData)) {
+      const cleanKey = key
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\w]/g, '');
+
+      if (cleanText === cleanKey) {
+        const item   = guarData[key];
+        const buffer = Buffer.from(item.buffer, 'base64');
+        const payload = {};
+
+        switch (item.extension) {
+          case 'jpg':
+          case 'jpeg':
+          case 'png':  payload.image  = buffer; break;
+          case 'mp4':  payload.video  = buffer; break;
+          case 'mp3':
+          case 'ogg':
+          case 'opus': payload.audio    = buffer;
+                       payload.mimetype = item.mimetype || 'audio/mpeg';
+                       payload.ptt      = false;                break;
+          case 'webp': payload.sticker = buffer; break;
+          default:     payload.document = buffer;
+                       payload.mimetype = item.mimetype || 'application/octet-stream';
+                       payload.fileName = `archivo.${item.extension}`;
+                       break;
+        }
+
+        await sock.sendMessage(chatId, payload, { quoted: msg });
+        return;   // coincidencia encontrada
+      }
+    }
+  }
+} catch (e) {
+  console.error("❌ Error en lógica de palabra clave:", e);
+}
+// === FIN LÓGICA DE RESPUESTA AUTOMÁTICA CON PALABRA CLAVE ===
     
 // === INICIO BLOQUEO DE MENSAJES DE USUARIOS MUTEADOS ===
 try {
@@ -1190,7 +1195,7 @@ try {
   console.error("❌ Error procesando bloqueo de usuarios baneados:", e);
 }
 // === FIN BLOQUEO DE COMANDOS A USUARIOS BANEADOS ===    
-    
+
 // 🔐 Modo Privado activado
     if (activos.modoPrivado) {
       if (isGroup) {
@@ -1217,6 +1222,7 @@ try {
       // 🔒 En privado si no es de la lista, no responde
       if (!isGroup && !fromMe && !isOwner(sender) && !isAllowedUser(sender)) return;
     }
+
 // === INICIO BLOQUEO DE COMANDOS SI EL BOT ESTÁ APAGADO EN EL GRUPO ===
 try {
   const activosPath = "./activos.json";
@@ -1266,10 +1272,10 @@ try {
 
   if (comandosRpg.includes(commandOnly) && !rpgActivo) {
     const mensajesBloqueo = [
-      "🚫 Este comando RPG está desactivado en este grupo. Usa .rpgcortana on o off.",
-      "🛑 El mundo RPG está apagado. Usa .rpgcortana on o off.",
-      "❌ Comandos RPG no disponibles. Usa .rpgcortana on o off.",
-      "🚷 Sistema RPG desactivado. Usa .rpgcortana on o off."
+      "🚫 Este comando RPG está desactivado en este grupo. Usa .rpgazura on o off.",
+      "🛑 El mundo RPG está apagado. Usa .rpgazura on o off.",
+      "❌ Comandos RPG no disponibles. Usa .rpgazura on o off.",
+      "🚷 Sistema RPG desactivado. Usa .rpgazura on o off."
     ];
     const textoBloqueo = mensajesBloqueo[Math.floor(Math.random() * mensajesBloqueo.length)];
 
@@ -1416,8 +1422,6 @@ try {
 
 const path = require("path");
             
- 
-    
             
             sock.ev.on("creds.update", saveCreds);
 
@@ -1438,5 +1442,5 @@ const path = require("path");
     }
 
     startBot();
-  
+
 })();
