@@ -93,7 +93,7 @@ const handler = async (msg, { conn, command, sock }) => {
       }
 
       let reconnectionAttempts = 0;
-      const maxReconnectionAttempts = 3;
+      let readyBot = false;
 
       async function setupSocketEvents() {
         const { socky, saveCreds } = await createSocket();
@@ -134,12 +134,13 @@ const handler = async (msg, { conn, command, sock }) => {
           }
 
           if (connection === "open") {
+            readyBot = true;
             await conn.sendMessage(
               msg.key.remoteJid,
               {
-                text: `🤖 𝙎𝙐𝘽𝘽𝙊𝙏 𝘾𝙊𝙉𝙀𝘾𝙏𝘼𝘿𝙊 - CORTANA BOT 2.0
+                text: `🤖 𝙎𝙐𝘽𝘽𝙊𝙏 𝘾𝙊𝙉𝙀𝘾𝙏𝘼𝘿𝙊 - CORTANA 2.0
 
-✅ 𝘽𝙞𝙚𝙣𝙫𝙚𝙣𝙞𝙙𝙤 𝙖𝙡 𝙨𝙞𝙨𝙩𝙚𝙢𝙖 𝙥𝙧𝙚𝙢𝙞𝙪𝙢 𝙙𝙚 Cortana Bot 2.0 𝘽𝙊𝙏  
+✅ 𝘽𝙞𝙚𝙣𝙫𝙚𝙣𝙞𝙙𝙤 𝙖𝙡 𝙨𝙞𝙨𝙩𝙚𝙢𝙖 𝙥𝙧𝙚𝙢𝙞𝙪𝙢 𝙙𝙚 CORTANA 2.0 𝘽𝙊𝙏  
 🛰️ 𝙏𝙪 𝙨𝙪𝙗𝙗𝙤𝙩 𝙮𝙖 𝙚𝙨𝙩á 𝙚𝙣 𝙡í𝙣𝙚𝙖 𝙮 𝙤𝙥𝙚𝙧𝙖𝙩𝙞𝙫𝙤.
 
 📩 *𝙄𝙈𝙋𝙊𝙍𝙏𝘼𝙉𝙏𝙀*  
@@ -174,7 +175,7 @@ Después deberás usar ese nuevo prefijo para activar comandos.
             const ownerJid = `${socky.user.id.split(":")[0]}@s.whatsapp.net`;
             socky
               .sendMessage(ownerJid, {
-                text: `✨ ¡Hola! Bienvenido al sistema de SubBots Premium de CORTANA BOT 2.0 ✨
+                text: `✨ ¡Hola! Bienvenido al sistema de SubBots Premium de CORTANA 2.0 ✨
                     
                     ✅ Estado: tu SubBot ya está *en línea y conectado*.
                     A continuación, algunas cosas importantes que debes saber para comenzar:
@@ -204,7 +205,7 @@ Después deberás usar ese nuevo prefijo para activar comandos.
                     📖 Para ver la lista completa de comandos disponibles, simplemente escribe:
                     \`.menu\` o \`.help\`
                     
-                    🚀 ¡Disfruta del poder de CORTANA BOT 2.0 y automatiza tu experiencia como nunca antes!`,
+                    🚀 ¡Disfruta del poder de CORTANA 2.0 y automatiza tu experiencia como nunca antes!`,
               })
               .catch(() => {
                 return;
@@ -221,28 +222,12 @@ Después deberás usar ese nuevo prefijo para activar comandos.
             const isFatalError = [
               DisconnectReason.badSession,
               DisconnectReason.loggedOut,
-              DisconnectReason.connectionClosed,
-              DisconnectReason.connectionReplaced,
               DisconnectReason.multideviceMismatch,
               DisconnectReason.forbidden,
             ].includes(statusCode);
             if (!isFatalError) {
-              if (reconnectionAttempts >= maxReconnectionAttempts) {
-                const index = subBots.indexOf(sessionPath);
-                if (index !== -1) {
-                  subBots.splice(index, 1);
-                }
-                fs.rmSync(sessionPath, { recursive: true, force: true });
-                return await conn.sendMessage(
-                  msg.key.remoteJid,
-                  {
-                    text: `⚠️ *Sesión eliminada.*\nIntentos máximos de reconexión alcanzados.\nUsa ${global.prefix}sercode para volver a conectar.`,
-                  },
-                  { quoted: msg },
-                );
-              }
-
-              if (reconnectionAttempts > 0) {
+              if (reconnectionAttempts > 0 && !readyBot) {
+                reconnectionAttempts++;
                 await conn.sendMessage(
                   msg.key.remoteJid,
                   {
@@ -253,17 +238,15 @@ Después deberás usar ese nuevo prefijo para activar comandos.
 │ Intentando reconectar...
 │
 │ 🔄 Si sigues en problemas, ejecuta:
-│ .delbots
+│ #delbots
 │ para eliminar tu sesión y conéctate de nuevo con:
-│ .sercode /  .code
+│ #sercode /  #code
 │
 ╰────✦ *Sky Ultra Plus* ✦────╯`,
                   },
                   { quoted: msg },
                 );
               }
-
-              reconnectionAttempts++;
               const index = subBots.indexOf(sessionPath);
               if (index !== -1) {
                 subBots.splice(index, 1);
