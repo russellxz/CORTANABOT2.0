@@ -1013,31 +1013,15 @@ try {
 // === FIN LÓGICA COMANDOS DESDE STICKER ===       
 // === LÓGICA DE RESPUESTA AUTOMÁTICA CON PALABRA CLAVE ===
 try {
-  /* 1️⃣  Filtro “modoAdmins” — se permite a owner, al bot y a los ADMINs del grupo */
-  if (isGroup) {
-    const actPath = path.resolve('./activos.json');
-    const modoAdminsOn =
-      fs.existsSync(actPath) &&
-      (JSON.parse(fs.readFileSync(actPath, 'utf-8')).modoAdmins?.[chatId] === true);
+  /* 1️⃣  “modoAdmins” YA NO bloquea la respuesta:
+         solo lo consultamos por si más adelante quieres usarlo.        */
+  const actPath = path.resolve('./activos.json');
+  const modoAdminsOn =
+    isGroup &&
+    fs.existsSync(actPath) &&
+    (JSON.parse(fs.readFileSync(actPath, 'utf-8')).modoAdmins?.[chatId] === true);
 
-    if (modoAdminsOn) {
-      /* ¿es owner o el propio bot? → pasa */
-      if (!isOwner(sender) && !fromMe) {
-        /* sino, comprobar si es admin del grupo */
-        let isAdmin = false;
-        try {
-          const meta = await sock.groupMetadata(chatId);
-          const p    = meta.participants.find(u => u.id.includes(sender));
-          isAdmin    = p?.admin === 'admin' || p?.admin === 'superadmin';
-        } catch (e) {
-          console.error("❌ Error leyendo metadata:", e);
-        }
-        if (!isAdmin) return;     // modoAdmins activo y no-admin => ignora
-      }
-    }
-  }
-
-  /* 2️⃣  Procesar guar.json (igual que antes) */
+  /* 2️⃣  Procesar guar.json */
   const guarPath = path.resolve('./guar.json');
   if (fs.existsSync(guarPath)) {
     const guarData  = JSON.parse(fs.readFileSync(guarPath, 'utf-8'));
