@@ -33,7 +33,7 @@ const handler = async (msg, { conn, command, sock }) => {
         return await conn.sendMessage(
           msg.key.remoteJid,
           {
-            text: "ℹ️ Ese subbot ya existe.",
+            text: "ℹ️ Ese subbot ya existe. usa: *.delbots* para borrar tu sesión actual y vuelve a pedir codigo con:(.code o .sercode)",
           },
           { quoted: msg },
         );
@@ -205,7 +205,7 @@ Después deberás usar ese nuevo prefijo para activar comandos.
                     📖 Para ver la lista completa de comandos disponibles, simplemente escribe:
                     \`.menu\` o \`.help\`
                     
-                    🚀 ¡Disfruta del poder de CORTANA 2.0 y automatiza tu experiencia como nunca antes!`,
+                    🚀 ¡Disfruta del poder de Cortana 2.0 y automatiza tu experiencia como nunca antes!`,
               })
               .catch(() => {
                 return;
@@ -262,13 +262,15 @@ Después deberás usar ese nuevo prefijo para activar comandos.
               }, 3000);
             } else {
               console.log(`❌ No se pudo reconectar con el bot ${sessionPath}.`);
-              await conn.sendMessage(
-                msg.key.remoteJid,
-                {
-                  text: `⚠️ *Sesión eliminada.*\n${statusCode}\nUsa ${global.prefix}sercode para volver a conectar.`,
-                },
-                { quoted: msg },
-              );
+              if (!readyBot) {
+                await conn.sendMessage(
+                  msg.key.remoteJid,
+                  {
+                    text: `⚠️ *Sesión eliminada.*\n${statusCode}\nUsa ${global.prefix}sercode para volver a conectar.`,
+                  },
+                  { quoted: msg },
+                );
+              }
               const index = subBots.indexOf(sessionPath);
               if (index !== -1) {
                 subBots.splice(index, 1);
