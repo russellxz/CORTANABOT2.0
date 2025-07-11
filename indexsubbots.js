@@ -107,9 +107,10 @@ async function iniciarSubBot(sessionPath) {
 async function socketEvents(subSock) {
   subSock.ev.on("group-participants.update", async (update) => {
     try {
-      if (!update.id.endsWith("@g.us")) {
-        return;
-      }
+      if (!update.id.endsWith("@g.us")) return;
+
+      if (!["add", "remove"].includes(update.action)) return;
+
       const chatId = update.id;
       const subbotID = subSock.user.id;
       const filePath = path.join(__dirname, "activossubbots.json");
@@ -434,7 +435,7 @@ async function socketEvents(subSock) {
           return;
         }
       }
-// === INICIO LÓGICA PRIVADO AUTORIZADO ===
+      // === INICIO LÓGICA PRIVADO AUTORIZADO ===
 if (!isGroup) {
   const isFromSelf = m.key.fromMe;
   const rawID = subSock.user?.id || "";
