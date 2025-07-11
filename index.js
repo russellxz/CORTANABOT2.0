@@ -1256,10 +1256,10 @@ try {
 
   if (comandosRpg.includes(commandOnly) && !rpgActivo) {
     const mensajesBloqueo = [
-      "🚫 Este comando RPG está desactivado en este grupo. Usa .rpgazura on o off.",
-      "🛑 El mundo RPG está apagado. Usa .rpgazura on o off.",
-      "❌ Comandos RPG no disponibles. Usa .rpgazura on o off.",
-      "🚷 Sistema RPG desactivado. Usa .rpgazura on o off."
+      "🚫 Este comando RPG está desactivado en este grupo. Usa .rpgcortana on o off.",
+      "🛑 El mundo RPG está apagado. Usa .rpgcortana on o off.",
+      "❌ Comandos RPG no disponibles. Usa .rpgcortana on o off.",
+      "🚷 Sistema RPG desactivado. Usa .rpgcortana on o off."
     ];
     const textoBloqueo = mensajesBloqueo[Math.floor(Math.random() * mensajesBloqueo.length)];
 
