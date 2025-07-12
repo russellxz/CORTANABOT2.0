@@ -12,6 +12,7 @@ const {
 const { Boom } = require("@hapi/boom");
 
 const subBots = [];
+const reconnectionAttempts = new Map();
 
 function loadSubPlugins() {
   const out = [];
@@ -70,40 +71,70 @@ async function iniciarSubBot(sessionPath) {
   subSock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
     if (connection === "open") {
       console.log(`✔️ Subbot ${dir} online.`);
+      reconnectionAttempts.set(sessionPath, 0);
     }
     if (connection === "close") {
-      const statusCode =
-        lastDisconnect?.error instanceof Boom
-          ? lastDisconnect.error.output.statusCode
-          : lastDisconnect?.error;
+      const statusCode = new Boom(lastDisconnect?.error)?.output?.statusCode;
       console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}).`);
-      console.log("💱 Tratando de reconectar!");
-      const isFatalError = [
-        DisconnectReason.badSession,
-        DisconnectReason.loggedOut,
-        DisconnectReason.multideviceMismatch,
-        DisconnectReason.forbidden,
-      ].includes(statusCode);
-      if (!isFatalError) {
-        const index = subBots.indexOf(sessionPath);
-        if (index !== -1) {
-          subBots.splice(index, 1);
+
+      const shouldReconnect =
+        statusCode !== DisconnectReason.loggedOut &&
+        statusCode !== DisconnectReason.badSession &&
+        statusCode !== DisconnectReason.forbidden &&
+        statusCode !== 403;
+
+      if (shouldReconnect) {
+        if (!fs.existsSync(sessionPath)) {
+          console.log(`ℹ️ La sesión para ${dir} fue eliminada. Cancelando reconexión.`);
+          reconnectionAttempts.delete(sessionPath);
+          const index = subBots.indexOf(sessionPath);
+          if (index !== -1) subBots.splice(index, 1);
+          return;
         }
-        await iniciarSubBot(sessionPath);
+
+        const attempts = (reconnectionAttempts.get(sessionPath) || 0) + 1;
+        reconnectionAttempts.set(sessionPath, attempts);
+
+        if (attempts <= 3) {
+          console.log(`💱 Intentando reconectar a ${dir}... (Intento ${attempts}/3)`);
+          const index = subBots.indexOf(sessionPath);
+          if (index !== -1) {
+            subBots.splice(index, 1);
+          }
+          setTimeout(() => {
+            iniciarSubBot(sessionPath).catch((e) =>
+              console.error(`Error al reiniciar subbot ${dir}:`, e),
+            );
+          }, 5000);
+        } else {
+          console.log(
+            `❌ Límite de reconexión alcanzado para ${dir}. Eliminando sesión permanentemente.`,
+          );
+          const index = subBots.indexOf(sessionPath);
+          if (index !== -1) {
+            subBots.splice(index, 1);
+          }
+          if (fs.existsSync(sessionPath)) {
+            fs.rmSync(sessionPath, { recursive: true, force: true });
+          }
+          reconnectionAttempts.delete(sessionPath);
+        }
       } else {
-        console.log(`❌ No se pudo reconectar con el bot ${dir}.`);
+        console.log(`❌ No se pudo reconectar con el bot ${dir}. Eliminando sesión.`);
         const index = subBots.indexOf(sessionPath);
         if (index !== -1) {
           subBots.splice(index, 1);
         }
-        fs.rmSync(sessionPath, { recursive: true, force: true });
+        if (fs.existsSync(sessionPath)) {
+          fs.rmSync(sessionPath, { recursive: true, force: true });
+        }
+        reconnectionAttempts.delete(sessionPath);
       }
     }
   });
 
   await socketEvents(subSock);
 }
-
 async function socketEvents(subSock) {
   subSock.ev.on("group-participants.update", async (update) => {
     try {
@@ -436,34 +467,34 @@ async function socketEvents(subSock) {
         }
       }
       // === INICIO LÓGICA PRIVADO AUTORIZADO ===
-if (!isGroup) {
-  const isFromSelf = m.key.fromMe;
-  const rawID = subSock.user?.id || "";
-  const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
+      if (!isGroup) {
+        const isFromSelf = m.key.fromMe;
+        const rawID = subSock.user?.id || "";
+        const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
 
-  if (!isFromSelf) {
-    const listaPath = path.join(__dirname, "listasubots.json");
-    let dataPriv = {};
+        if (!isFromSelf) {
+          const listaPath = path.join(__dirname, "listasubots.json");
+          let dataPriv = {};
 
-    try {
-      if (fs.existsSync(listaPath)) {
-        dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8"));
+          try {
+            if (fs.existsSync(listaPath)) {
+              dataPriv = JSON.parse(fs.readFileSync(listaPath, "utf-8"));
+            }
+          } catch (e) {
+            console.error("❌ Error leyendo listasubots.json:", e);
+          }
+
+          const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
+
+          if (
+            !listaPermitidos.includes(senderNum) &&
+            !global.owner.some(([id]) => id === senderNum)
+          ) {
+            return; // 🚫 Usuario no autorizado, ignorar mensaje privado
+          }
+        }
       }
-    } catch (e) {
-      console.error("❌ Error leyendo listasubots.json:", e);
-    }
-
-    const listaPermitidos = Array.isArray(dataPriv[subbotID]) ? dataPriv[subbotID] : [];
-
-    if (
-      !listaPermitidos.includes(senderNum) &&
-      !global.owner.some(([id]) => id === senderNum)
-    ) {
-      return; // 🚫 Usuario no autorizado, ignorar mensaje privado
-    }
-  }
-}
-// === FIN LÓGICA PRIVADO AUTORIZADO ===
+      // === FIN LÓGICA PRIVADO AUTORIZADO ===
       const customPrefix = dataPrefijos[subbotID];
       const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
       const usedPrefix = allowedPrefixes.find((p) => messageText.startsWith(p));
@@ -497,4 +528,4 @@ async function cargarSubBots() {
   await Promise.all(dirs.map((d) => iniciarSubBot(path.join(base, d))));
 }
 
-module.exports = { subBots, cargarSubBots, socketEvents, iniciarSubBot };
+module.exports = { subBots, cargarSubBots, socketEvents, iniciarSubBot, reconnectionAttempts };
