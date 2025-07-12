@@ -13555,7 +13555,7 @@ case 'info':
   }
   break;
         
-case "ping":
+case "pong":
     try {
         const start = Date.now(); // Marca de inicio para calcular el ping
         const now = new Date();
@@ -13601,7 +13601,7 @@ case "ping":
 
         await sock.sendMessage(msg.key.remoteJid, {
             image: { url: "https://cdn.russellxz.click/97dd9288.jpeg" }, 
-            caption: `🏓 *Pong! El bot está activo.*\n\n` +
+            caption: `🏓 *Ping! El bot está activo.*\n\n` +
                      `📶 *Ping Real:* ${ping} ms\n` +
                      `📅 *Fecha y hora actual:* ${formattedDate}\n\n` +
                      `🕒 *Tiempo Activo:* ${uptimeFormatted}\n\n` +
