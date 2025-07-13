@@ -117,7 +117,7 @@ const handler = async (msg, { conn, command, sock }) => {
               fs.rmSync(sessionPath, { recursive: true, force: true });
             }
           }
-        }, 60000);
+        }, 120_000);
 
         socky.ev.on("connection.update", async ({ qr, connection, lastDisconnect }) => {
           if (qr && !sentCodeMessage) {
