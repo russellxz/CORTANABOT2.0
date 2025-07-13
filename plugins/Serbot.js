@@ -136,7 +136,7 @@ const handler = async (msg, { conn, command, sock }) => {
               await sleep(1000);
               await conn.sendMessage(
                 msg.key.remoteJid,
-                { text: `\`\`\`${code}\`\`\`` },
+                { text: `${code}` },
                 { quoted: msg },
               );
             } else {
