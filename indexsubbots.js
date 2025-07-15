@@ -11,6 +11,15 @@ const {
 } = require("@whiskeysockets/baileys");
 const { Boom } = require("@hapi/boom");
 
+// Manejo de errores global para evitar que el subbot se detenga
+process.on("uncaughtException", (err) => {
+  console.error("\x1b[31m%s\x1b[0m", "⚠️ Error no manejado:", err);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("\x1b[31m%s\x1b[0m", "🚨 Promesa rechazada sin manejar:", promise, "razón:", reason);
+});
+
 const subBots = [];
 const reconnectionAttempts = new Map();
 
@@ -218,6 +227,62 @@ async function socketEvents(subSock) {
       const rawID = subSock.user?.id || "";
       const subbotID = `${rawID.split(":")[0]}@s.whatsapp.net`;
 
+      // === LÓGICA COMANDOS DESDE STICKER (SUBBOT) ===
+try {
+  const rawID = subSock.user?.id || "";
+  const subbotID = `${rawID.split(":")[0]}@s.whatsapp.net`;
+  const jsonPath = path.resolve("./comandossubbots.json");
+
+  if (m.message?.stickerMessage && fs.existsSync(jsonPath)) {
+    const fileSha = m.message.stickerMessage.fileSha256?.toString("base64");
+    const comandosData = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+
+    if (comandosData?.[subbotID]?.[fileSha]) {
+      const commandText = comandosData[subbotID][fileSha].trim();
+      const parts = commandText.split(" ");
+      const mainCommand = parts[0].toLowerCase(); // sin prefijo
+      const args = parts.slice(1);
+
+      const chatId = m.key.remoteJid;
+      const sender = m.key.participant || m.key.remoteJid;
+
+      const contextInfo = m.message?.stickerMessage?.contextInfo || {};
+      const quotedMsg = contextInfo.quotedMessage || null;
+      const quotedParticipant = contextInfo.participant || null;
+
+      const fakeMessage = {
+        ...m,
+        message: {
+          extendedTextMessage: {
+            text: commandText,
+            contextInfo: {
+              quotedMessage: quotedMsg,
+              participant: quotedParticipant,
+              stanzaId: contextInfo.stanzaId || "",
+              remoteJid: contextInfo.remoteJid || chatId
+            }
+          }
+        },
+        body: commandText,
+        text: commandText,
+        command: mainCommand,
+        key: {
+          ...m.key,
+          fromMe: false,
+          participant: sender
+        }
+      };
+
+      await handleSubCommand(subSock, fakeMessage, mainCommand, args);
+      return; // ⛔️ MUY IMPORTANTE: que no ejecute el comando 2 veces
+    }
+  }
+} catch (err) {
+  console.error("❌ Error ejecutando comando desde sticker:", err);
+}
+// === FIN LÓGICA STICKER ===
+      
+      
       const prefixPath = path.join(__dirname, "prefixes.json");
       let dataPrefijos = {};
       if (fs.existsSync(prefixPath)) {
@@ -231,7 +296,7 @@ async function socketEvents(subSock) {
         m.message?.videoMessage?.caption ||
         "";
 
-      // === BLOQUEO AUTOMÁTICO A NÚMEROS ÁRABES EN PRIVADO ===
+// === BLOQUEO AUTOMÁTICO A NÚMEROS ÁRABES EN PRIVADO ===
 if (!isGroup && !isFromSelf) {
   const arabicPrefixes = [
   "20",   // Egipto 🇪🇬
@@ -289,6 +354,8 @@ if (!isGroup && !isFromSelf) {
   }
 }
       //fin de la logica de bloqueo de arabe
+
+
       
       /* ========== GUARDADO ANTIDELETE (SUB-BOT) ========== */
       try {
@@ -447,7 +514,141 @@ if (!isGroup && !isFromSelf) {
           }
         }
       }
-      // === INICIO LÓGICA MODOADMINS SUBBOT ===
+      
+// === INICIO LÓGICA GRUPO AUTORIZADO ===
+if (isGroup) {
+  try {
+    const grupoPath = path.resolve("./grupo.json");
+    const activosPath = path.resolve("./activossubbots.json");
+    const prefixPath = path.resolve("./prefixes.json");
+
+    const rawID = subSock.user?.id || "";
+    const subbotID = `${rawID.split(":")[0]}@s.whatsapp.net`;
+    const botNum = rawID.split(":")[0].replace(/[^0-9]/g, "");
+
+    const messageText =
+      m.message?.conversation ||
+      m.message?.extendedTextMessage?.text ||
+      m.message?.imageMessage?.caption ||
+      m.message?.videoMessage?.caption ||
+      "";
+
+    let dataPrefijos = {};
+    try {
+      if (fs.existsSync(prefixPath)) {
+        dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8"));
+      }
+    } catch {}
+
+    const customPrefix = dataPrefijos[subbotID];
+    const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
+    const usedPrefix = allowedPrefixes.find((p) => messageText.startsWith(p));
+    if (!usedPrefix) return;
+
+    const body = messageText.slice(usedPrefix.length).trim();
+    const command = body.split(" ")[0].toLowerCase();
+    const allowedCommands = ["addgrupo"];
+
+    let dataGrupos = {};
+    if (fs.existsSync(grupoPath)) {
+      dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8"));
+    }
+
+    let modoActivo = false;
+    if (fs.existsSync(activosPath)) {
+      const activos = JSON.parse(fs.readFileSync(activosPath, "utf-8"));
+      modoActivo = activos[from] === true;
+    }
+
+    const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
+
+    const isOwner = global.owner?.some(([id]) => id === senderNum);
+
+    if (
+      senderNum !== botNum &&
+      !gruposPermitidos.includes(from) &&
+      !allowedCommands.includes(command) &&
+      !(modoActivo && isOwner)
+    ) {
+      return;
+    }
+
+  } catch (err) {
+    console.error("❌ Error en verificación de grupo autorizado:", err);
+    return;
+  }
+}
+// === FIN LÓGICA GRUPO AUTORIZADO ===
+// === INICIO BLOQUEO DE MENSAJES DE USUARIOS MUTEADOS (SUBBOTS) ===
+try {
+  const chatId = m.key.remoteJid;
+  const isGroup = chatId.endsWith("@g.us");
+
+  if (isGroup) {
+    const senderId = m.key.participant || m.key.remoteJid;
+    const mutePath = "./mutesubbots.json";
+    const muteData = fs.existsSync(mutePath) ? JSON.parse(fs.readFileSync(mutePath)) : {};
+    const muteList = muteData[chatId] || [];
+
+    if (muteList.includes(senderId)) {
+      global._muteCounter = global._muteCounter || {};
+      const key = `${chatId}:${senderId}`;
+      global._muteCounter[key] = (global._muteCounter[key] || 0) + 1;
+
+      const count = global._muteCounter[key];
+
+      if (count === 8) {
+        await subSock.sendMessage(chatId, {
+          text: `⚠️ @${senderId.split("@")[0]} estás *muteado*.\nSigue enviando mensajes y podrías ser eliminado.`,
+          mentions: [senderId]
+        });
+      }
+
+      if (count === 13) {
+        await subSock.sendMessage(chatId, {
+          text: `⛔ @${senderId.split("@")[0]} estás al *límite*.\nSi envías *otro mensaje*, serás eliminado del grupo.`,
+          mentions: [senderId]
+        });
+      }
+
+      if (count >= 15) {
+        const metadata = await subSock.groupMetadata(chatId);
+        const user = metadata.participants.find(p => p.id === senderId);
+        const isAdmin = user?.admin === 'admin' || user?.admin === 'superadmin';
+
+        if (!isAdmin) {
+          await subSock.groupParticipantsUpdate(chatId, [senderId], "remove");
+          await subSock.sendMessage(chatId, {
+            text: `❌ @${senderId.split("@")[0]} fue eliminado por ignorar el mute.`,
+            mentions: [senderId]
+          });
+          delete global._muteCounter[key];
+        } else {
+          await subSock.sendMessage(chatId, {
+            text: `🔇 @${senderId.split("@")[0]} es administrador y no se puede eliminar.`,
+            mentions: [senderId]
+          });
+        }
+      }
+
+      // eliminar mensaje del usuario muteado
+      await subSock.sendMessage(chatId, {
+        delete: {
+          remoteJid: chatId,
+          fromMe: false,
+          id: m.key.id,
+          participant: senderId
+        }
+      });
+
+      return; // ⛔ Detener aquí si está muteado
+    }
+  }
+} catch (err) {
+  console.error("❌ Error en lógica de muteo subbots:", err);
+}
+// === FIN BLOQUEO DE MENSAJES DE USUARIOS MUTEADOS (SUBBOTS) ===
+// === INICIO LÓGICA MODOADMINS SUBBOT ===
       if (isGroup && !isFromSelf) {
         try {
           const activossubPath = path.resolve("./activossubbots.json");
@@ -474,54 +675,6 @@ if (!isGroup && !isFromSelf) {
           }
         } catch (err) {
           console.error("❌ Error en verificación de modo admins:", err);
-          return;
-        }
-      }
-      // === INICIO LÓGICA GRUPO AUTORIZADO ===
-      if (isGroup) {
-        try {
-          const grupoPath = path.resolve("./grupo.json");
-          const prefixPath = path.resolve("./prefixes.json");
-          const rawID = subSock.user?.id || "";
-          const subbotID = `${rawID.split(":")[0]}@s.whatsapp.net`;
-          const botNum = rawID.split(":")[0].replace(/[^0-9]/g, "");
-          const messageText =
-            m.message?.conversation ||
-            m.message?.extendedTextMessage?.text ||
-            m.message?.imageMessage?.caption ||
-            m.message?.videoMessage?.caption ||
-            "";
-          let dataPrefijos = {};
-          try {
-            if (fs.existsSync(prefixPath)) {
-              dataPrefijos = JSON.parse(fs.readFileSync(prefixPath, "utf-8"));
-            }
-          } catch (_) {
-            //
-          }
-          const customPrefix = dataPrefijos[subbotID];
-          const allowedPrefixes = customPrefix ? [customPrefix] : [".", "#"];
-          const usedPrefix = allowedPrefixes.find((p) => messageText.startsWith(p));
-          if (!usedPrefix) {
-            return;
-          }
-          const body = messageText.slice(usedPrefix.length).trim();
-          const command = body.split(" ")[0].toLowerCase();
-          const allowedCommands = ["addgrupo"];
-          let dataGrupos = {};
-          if (fs.existsSync(grupoPath)) {
-            dataGrupos = JSON.parse(fs.readFileSync(grupoPath, "utf-8"));
-          }
-          const gruposPermitidos = Array.isArray(dataGrupos[subbotID]) ? dataGrupos[subbotID] : [];
-          if (
-            senderNum !== botNum &&
-            !gruposPermitidos.includes(from) &&
-            !allowedCommands.includes(command)
-          ) {
-            return;
-          }
-        } catch (err) {
-          console.error("❌ Error en verificación de grupo autorizado:", err);
           return;
         }
       }
