@@ -231,6 +231,65 @@ async function socketEvents(subSock) {
         m.message?.videoMessage?.caption ||
         "";
 
+      // === BLOQUEO AUTOMÁTICO A NÚMEROS ÁRABES EN PRIVADO ===
+if (!isGroup && !isFromSelf) {
+  const arabicPrefixes = [
+  "20",   // Egipto 🇪🇬
+  "212",  // Marruecos 🇲🇦
+  "213",  // Argelia 🇩🇿
+  "216",  // Túnez 🇹🇳
+  "218",  // Libia 🇱🇾
+  "220",  // Gambia (aunque no árabe, algunos números se confunden)
+  "222",  // Mauritania 🇲🇷
+  "224",  // Guinea (usado también por usuarios árabes)
+  "230",  // Mauricio
+  "249",  // Sudán 🇸🇩
+  "963",  // Siria 🇸🇾
+  "964",  // Irak 🇮🇶
+  "965",  // Kuwait 🇰🇼
+  "966",  // Arabia Saudita 🇸🇦
+  "967",  // Yemen 🇾🇪
+  "968",  // Omán 🇴🇲
+  "970",  // Palestina 🇵🇸
+  "971",  // Emiratos Árabes Unidos 🇦🇪
+  "972",  // Israel (muchos árabes usan sim ahí) 🇮🇱
+  "973",  // Baréin 🇧🇭
+  "974",  // Catar 🇶🇦
+  "975",  // Bután (no árabe, pero se cuelan algunos)
+  "976",  // Mongolia (a veces mal identificado)
+  "980",  // Número temporal en WhatsApp usado por cuentas árabes
+  "961",  // Líbano 🇱🇧
+  "962",  // Jordania 🇯🇴
+  "960",  // Maldivas (islámico, algunos bots árabes)
+  "992",  // Tayikistán (minoría musulmana árabe)
+  "998",  // Uzbekistán (ídem anterior)
+];
+
+  const senderID = m.key.participant || m.key.remoteJid;
+  const senderNum = senderID.split("@")[0];
+
+  const isArabic = arabicPrefixes.some(prefix => senderNum.startsWith(prefix));
+
+  if (isArabic) {
+    try {
+      await subSock.updateBlockStatus(`${senderNum}@s.whatsapp.net`, "block");
+
+      const myNumber = `${subSock.user?.id.split(":")[0]}@s.whatsapp.net`;
+
+      await subSock.sendMessage(myNumber, {
+        text: `🚫 *Se bloqueó automáticamente al número árabe:* +${senderNum}\n\n📵 Razón: sistema de protección de subbots (anti árabes).\n\nSi fue un error, desbloquéalo manualmente.`
+      });
+
+      console.log(`☪️ Subbot bloqueó al árabe +${senderNum}`);
+    } catch (err) {
+      console.error("❌ Error al bloquear número árabe:", err.message);
+    }
+
+    return; // No procesar más ese mensaje
+  }
+}
+      //fin de la logica de bloqueo de arabe
+      
       /* ========== GUARDADO ANTIDELETE (SUB-BOT) ========== */
       try {
         const isGroup = from.endsWith("@g.us");
