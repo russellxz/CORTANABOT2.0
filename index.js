@@ -326,7 +326,37 @@ sock.ev.on("group-participants.update", async (update) => {
     // Si la función antiarabe está activada en este grupo...
     if (activos.antiarabe && activos.antiarabe[update.id]) {
       // Lista de prefijos prohibidos (sin el signo +)
-      const disallowedPrefixes = ["20", "212", "213", "216", "218", "222", "249", "252", "253", "269", "962", "963", "964", "965", "966", "967", "968", "970", "971", "973", "974"];
+      const disallowedPrefixes = [
+  "20",   // Egipto 🇪🇬
+  "212",  // Marruecos 🇲🇦
+  "213",  // Argelia 🇩🇿
+  "216",  // Túnez 🇹🇳
+  "218",  // Libia 🇱🇾
+  "222",  // Mauritania 🇲🇷
+  "224",  // Guinea (algunos bots árabes)
+  "249",  // Sudán 🇸🇩
+  "252",  // Somalia 🇸🇴
+  "253",  // Yibuti 🇩🇯
+  "269",  // Comoras 🇰🇲
+  "961",  // Líbano 🇱🇧
+  "962",  // Jordania 🇯🇴
+  "963",  // Siria 🇸🇾
+  "964",  // Irak 🇮🇶
+  "965",  // Kuwait 🇰🇼
+  "966",  // Arabia Saudita 🇸🇦
+  "967",  // Yemen 🇾🇪
+  "968",  // Omán 🇴🇲
+  "970",  // Palestina 🇵🇸
+  "971",  // Emiratos Árabes Unidos 🇦🇪
+  "972",  // Israel (árabes usan sims aquí) 🇮🇱
+  "973",  // Baréin 🇧🇭
+  "974",  // Catar 🇶🇦
+  "975",  // Bután (no árabe, pero spamean desde ahí)
+  "976",  // Mongolia (se infiltran bots desde aquí)
+  "980",  // Temporal / bots árabes
+  "992",  // Tayikistán (usuarios árabes islámicos)
+  "998"   // Uzbekistán (también islámico)
+];
       if (update.action === "add") {
         // Obtener metadata del grupo para verificar administradores
         let groupMetadata = {};
