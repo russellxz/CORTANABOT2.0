@@ -1209,7 +1209,49 @@ try {
   console.error("❌ Error procesando bloqueo de usuarios baneados:", e);
 }
 // === FIN BLOQUEO DE COMANDOS A USUARIOS BANEADOS ===    
+// === INICIO BLOQUEO AUTOMÁTICO DE NÚMEROS ÁRABES EN PRIVADO ===
+try {
+  const chatId = msg.key.remoteJid;
+  const isGroup = chatId.endsWith("@g.us");
 
+  if (!isGroup) {
+    const sender = msg.key.participant || msg.key.remoteJid;
+    const senderNum = sender.replace(/[^0-9]/g, "");
+
+    // Lista de prefijos telefónicos árabes
+    const disallowedPrefixes = [
+      "20", "212", "213", "216", "218", "222", "249", "252",
+      "253", "269", "962", "963", "964", "965", "966", "967",
+      "968", "970", "971", "972", "973", "974", "975", "976",
+      "977", "980", "981", "982", "983", "984", "985", "986", "987", "988", "989"
+    ];
+
+    const esArabe = disallowedPrefixes.some(pref => senderNum.startsWith(pref));
+
+    if (esArabe) {
+      // Bloquear al árabe
+      await sock.updateBlockStatus(sender, "block");
+
+      // Obtener el número del propio bot
+      const myJid = sock.user.id.split(":")[0] + "@s.whatsapp.net";
+
+      // Notificar al bot mismo
+      await sock.sendMessage(myJid, {
+        text: `📛 *Número árabe bloqueado automáticamente:*\n\n🧿 Número: wa.me/${senderNum}\n📩 Intentó escribir al bot en privado.\n\n✅ El número fue bloqueado.`
+      });
+
+      // Mensaje al árabe bloqueado (opcional)
+      await sock.sendMessage(sender, {
+        text: "🚫 Este bot no acepta mensajes privados de números árabes. Has sido bloqueado automáticamente."
+      });
+
+      return;
+    }
+  }
+} catch (e) {
+  console.error("❌ Error en bloqueo automático de árabes:", e);
+}
+// === FIN BLOQUEO AUTOMÁTICO DE NÚMEROS ÁRABES EN PRIVADO ===
 // 🔐 Modo Privado activado
     if (activos.modoPrivado) {
       if (isGroup) {
