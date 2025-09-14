@@ -25,7 +25,7 @@ const handler = async (msg, { conn }) => {
   }
 
   const total = subDirs.length;
-  const maxSubbots = 200;
+  const maxSubbots = 30;
   const disponibles = maxSubbots - total;
 
   const lista = subDirs.map((dir, i) => {
