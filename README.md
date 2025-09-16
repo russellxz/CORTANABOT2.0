@@ -10,13 +10,13 @@
 </p>
 
 <p align="center">
-  <a href="https://paymenter.skyultraplus.com">
+  <a href="https://dash.skyultraplus.com">
     <img src="https://cdn.dorratz.com/files/1742239358886.jpg" height="80" alt="Sky Ultra Plus Hosting">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://paymenter.skyultraplus.com">
+  <a href="https://dash.skyultraplus.com">
     <img src="https://img.shields.io/badge/💻 Hosting%20en%20SkyUltraPlus-blue?style=for-the-badge" />
   </a>
   <a href="https://youtu.be/xH_gQrqw4HI?si=9TUc5o6nJmT8JpVo">
