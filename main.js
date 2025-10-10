@@ -14403,8 +14403,7 @@ case "kick": {
   break;
 }
         
-        
-case "instagram":
+  case "instagram":
 case "ig":
     if (!text) return sock.sendMessage(msg.key.remoteJid, { 
         text: `Ejemplo de uso:\n${global.prefix + command} https://www.instagram.com/p/CCoI4DQBGVQ/` 
@@ -14420,14 +14419,62 @@ case "ig":
         const fs = require('fs');
         const path = require('path');
 
-        const apiUrl = `https://api.dorratz.com/igdl?url=${text}`;
-        const response = await axios.get(apiUrl);
-        const { data } = response.data;
+        // ==== CONFIG DE TU API SKY ====
+        const API_BASE = process.env.API_BASE || "https://api-sky.ultraplus.click";
+        const API_KEY  = process.env.API_KEY  || "Russellxz";
 
-        if (!data || data.length === 0) {
-            return sock.sendMessage(msg.key.remoteJid, { 
-                text: "❌ No se pudo obtener el video de Instagram." 
-            });
+        // Llamar a tu API de Instagram
+        const response = await axios.get(`${API_BASE}/api/download/instagram`, {
+            params: { url: text },
+            headers: { 
+                Authorization: `Bearer ${API_KEY}`,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
+            },
+            timeout: 30000
+        });
+
+        if (!response.data || response.data.status !== "true" || !response.data.data) {
+            throw new Error("La API no devolvió datos válidos.");
+        }
+
+        const mediaData = response.data.data;
+        const mediaItems = mediaData.media || [];
+        const captionText = mediaData.caption || "";
+        const authorName = mediaData.author || "Desconocido";
+        const soliRemaining = response.data.soli_remaining || 0;
+
+        // Buscar el primer video
+        const videoItem = mediaItems.find(item => item.type === 'video');
+        
+        if (!videoItem) {
+            throw new Error("No se encontró un video en la publicación.");
+        }
+
+        // Asegurar carpeta tmp
+        const tmpDir = path.resolve('./tmp');
+        if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
+
+        const filePath = path.join(tmpDir, `ig-${Date.now()}.mp4`);
+
+        // Descargar el video
+        const videoRes = await axios.get(videoItem.url, { responseType: 'stream' });
+        const writer = fs.createWriteStream(filePath);
+
+        await new Promise((resolve, reject) => {
+            videoRes.data.pipe(writer);
+            writer.on("finish", resolve);
+            writer.on("error", reject);
+        });
+
+        const stats = fs.statSync(filePath);
+        const sizeMB = stats.size / (1024 * 1024);
+
+        if (sizeMB > 99) {
+            fs.unlinkSync(filePath);
+            await sock.sendMessage(msg.key.remoteJid, {
+                text: `❌ El video pesa ${sizeMB.toFixed(2)}MB y excede el límite de 99MB.\n\n🔒 No se puede enviar para no saturar los servidores.`
+            }, { quoted: msg });
+            return;
         }
 
         // 📜 Construcción del mensaje con marca de agua
@@ -14438,45 +14485,16 @@ case "ig":
 🔊 Listo para compartir con tu grupo o guardar
 
 ━━━━━━━━━━━━━━  
-🚀 *API:* api.dorratz.com  
+🚀 *API:* api-sky.ultraplus.click  
 🤖 *Cortana 2.0 Bot*`;
 
-        // Asegurar carpeta tmp
-        const tmpDir = path.resolve('./tmp');
-        if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
+        await sock.sendMessage(msg.key.remoteJid, { 
+            video: fs.readFileSync(filePath), 
+            mimetype: 'video/mp4',
+            caption: caption 
+        }, { quoted: msg });
 
-        // 📩 Descargar y enviar cada video
-        for (let item of data) {
-            const filePath = path.join(tmpDir, `ig-${Date.now()}-${Math.floor(Math.random() * 1000)}.mp4`);
-
-            const videoRes = await axios.get(item.url, { responseType: 'stream' });
-            const writer = fs.createWriteStream(filePath);
-
-            await new Promise((resolve, reject) => {
-                videoRes.data.pipe(writer);
-                writer.on("finish", resolve);
-                writer.on("error", reject);
-            });
-
-            const stats = fs.statSync(filePath);
-            const sizeMB = stats.size / (1024 * 1024);
-
-            if (sizeMB > 99) {
-                fs.unlinkSync(filePath);
-                await sock.sendMessage(msg.key.remoteJid, {
-                    text: `❌ Un video pesa ${sizeMB.toFixed(2)}MB y excede el límite de 99MB.\n\n🔒 No se puede enviar para no saturar los servidores.`
-                }, { quoted: msg });
-                continue;
-            }
-
-            await sock.sendMessage(msg.key.remoteJid, { 
-                video: fs.readFileSync(filePath), 
-                mimetype: 'video/mp4',
-                caption: caption 
-            }, { quoted: msg });
-
-            fs.unlinkSync(filePath);
-        }
+        fs.unlinkSync(filePath);
 
         // ✅ Confirmación con reacción de éxito
         await sock.sendMessage(msg.key.remoteJid, { 
@@ -14514,19 +14532,37 @@ case "tt":
         const axios = require('axios');
         const fs = require('fs');
         const path = require('path');
-        const response = await axios.get(`https://api.dorratz.com/v2/tiktok-dl?url=${args[0]}`);
 
-        if (!response.data || !response.data.data || !response.data.data.media) {
+        // ==== CONFIG DE TU API SKY ====
+        const API_BASE = process.env.API_BASE || "https://api-sky.ultraplus.click";
+        const API_KEY  = process.env.API_KEY  || "Russellxz";
+
+        // Llamar a tu API de TikTok
+        const response = await axios.get(`${API_BASE}/api/download/tiktok`, {
+            params: { url: args[0] },
+            headers: { 
+                Authorization: `Bearer ${API_KEY}`,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
+            },
+            timeout: 30000
+        });
+
+        if (!response.data || response.data.status !== "true" || !response.data.data) {
             throw new Error("La API no devolvió un video válido.");
         }
 
         const videoData = response.data.data;
-        const videoUrl = videoData.media.org;
+        const videoUrl = videoData.video;
         const videoTitle = videoData.title || "Sin título";
-        const videoAuthor = videoData.author.nickname || "Desconocido";
+        const videoAuthor = videoData.author?.name || "Desconocido";
         const videoDuration = videoData.duration ? `${videoData.duration} segundos` : "No especificado";
-        const videoLikes = videoData.like || "0";
-        const videoComments = videoData.comment || "0";
+        const videoLikes = videoData.likes?.toLocaleString() || "0";
+        const videoComments = videoData.comments?.toLocaleString() || "0";
+        const soliRemaining = response.data.soli_remaining || 0;
+
+        if (!videoUrl) {
+            throw new Error("No se pudo obtener el video de TikTok.");
+        }
 
         // Asegurar carpeta ./tmp
         const tmpDir = path.resolve('./tmp');
@@ -14564,7 +14600,7 @@ case "tt":
 ╰─────────────╯
 
 📥 *Video descargado con éxito*
-🌐 *API:* https://api.dorratz.com
+🌐 *API:* api-sky.ultraplus.click
 🤖 *Cortana 2.0 Bot*`;
 
         // 📩 Enviar video
@@ -14615,10 +14651,35 @@ case "fb":
         const axios = require('axios');
         const fs = require('fs');
         const path = require('path');
-        const response = await axios.get(`https://api.dorratz.com/fbvideo?url=${encodeURIComponent(text)}`);
-        const results = response.data;
 
-        if (!results || results.length === 0 || !results[0].url) {
+        // ==== CONFIG DE TU API SKY ====
+        const API_BASE = process.env.API_BASE || "https://api-sky.ultraplus.click";
+        const API_KEY  = process.env.API_KEY  || "Russellxz";
+
+        // Llamar a tu API de Facebook
+        const response = await axios.get(`${API_BASE}/api/download/facebook`, {
+            params: { url: text },
+            headers: { 
+                Authorization: `Bearer ${API_KEY}`,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
+            },
+            timeout: 30000
+        });
+
+        if (!response.data || response.data.status !== "true" || !response.data.data) {
+            return sock.sendMessage(msg.key.remoteJid, { text: "❌ No se pudo obtener el video." });
+        }
+
+        const videoData = response.data.data;
+        const videoUrlHD = videoData.video_hd;
+        const videoUrlSD = videoData.video_sd;
+        const videoTitle = videoData.title || "Video de Facebook";
+        const soliRemaining = response.data.soli_remaining || 0;
+
+        // Preferir HD, si no existe usar SD
+        const videoUrl = videoUrlHD || videoUrlSD;
+
+        if (!videoUrl) {
             return sock.sendMessage(msg.key.remoteJid, { text: "❌ No se pudo obtener el video." });
         }
 
@@ -14626,7 +14687,6 @@ case "fb":
         const tmpDir = path.resolve('./tmp');
         if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir);
 
-        const videoUrl = results[0].url;
         const filePath = path.join(tmpDir, `fb-${Date.now()}.mp4`);
 
         // Descargar y guardar
@@ -14650,7 +14710,7 @@ case "fb":
         }
 
         // 📜 Mensaje final sin resoluciones ni 720
-        const message = `🎥 𝗩𝗶𝗱𝗲𝗼 𝗱𝗲 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 𝗹𝗶𝘀𝘁𝗼 🎯\n\n> ⚙️ DESCARGADO con api.dorratz.com\n───────\n🤖 *Cortana 2.0 Bot*`;
+        const message = `🎥 𝗩𝗶𝗱𝗲𝗼 𝗱𝗲 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 𝗹𝗶𝘀𝘁𝗼 🎯\n\n> ⚙️ DESCARGADO con api-sky.ultraplus.click\n───────\n🤖 *Cortana 2.0 Bot*`;
 
         await sock.sendMessage(msg.key.remoteJid, {
             video: fs.readFileSync(filePath),
@@ -14670,7 +14730,8 @@ case "fb":
             text: "❌ Ocurrió un error al procesar el enlace de Facebook."
         });
     }
-    break;
+    break;      
+
     }
 }
 
