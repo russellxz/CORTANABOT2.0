@@ -31,7 +31,7 @@ const handler = async (msg, { conn, text, command }) => {
     const API_KEY  = process.env.API_KEY  || "Russellxz";
 
     // Llamar a tu API de Instagram
-    const response = await axios.get(`${API_BASE}/api/download/instagram`, {
+    const response = await axios.get(`${API_BASE}/api/download/instagram.js`, {
       params: { url: text },
       headers: { 
         Authorization: `Bearer ${API_KEY}`,
