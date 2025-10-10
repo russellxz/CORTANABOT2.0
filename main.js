@@ -1555,7 +1555,7 @@ case 'ytmp3': {
     const API_KEY  = process.env.API_KEY  || "Russellxz";
 
     // Llamar a tu API de YouTube para audio
-    const response = await axios.get(`${API_BASE}/api/download/yt`, {
+    const response = await axios.get(`${API_BASE}/api/download/yt.js`, {
       params: { 
         url: text,
         format: 'audio'
@@ -1694,7 +1694,7 @@ case 'ytmp4': {
     const API_KEY  = process.env.API_KEY  || "Russellxz";
 
     // Llamar a tu API de YouTube para video
-    const response = await axios.get(`${API_BASE}/api/download/yt`, {
+    const response = await axios.get(`${API_BASE}/api/download/yt.js`, {
       params: { 
         url: text,
         format: 'video'
