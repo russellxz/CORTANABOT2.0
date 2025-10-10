@@ -14424,7 +14424,7 @@ case "ig":
         const API_KEY  = process.env.API_KEY  || "Russellxz";
 
         // Llamar a tu API de Instagram
-        const response = await axios.get(`${API_BASE}/api/download/instagram`, {
+        const response = await axios.get(`${API_BASE}/api/download/instagram.js`, {
             params: { url: text },
             headers: { 
                 Authorization: `Bearer ${API_KEY}`,
@@ -14538,7 +14538,7 @@ case "tt":
         const API_KEY  = process.env.API_KEY  || "Russellxz";
 
         // Llamar a tu API de TikTok
-        const response = await axios.get(`${API_BASE}/api/download/tiktok`, {
+        const response = await axios.get(`${API_BASE}/api/download/tiktok.js`, {
             params: { url: args[0] },
             headers: { 
                 Authorization: `Bearer ${API_KEY}`,
@@ -14657,7 +14657,7 @@ case "fb":
         const API_KEY  = process.env.API_KEY  || "Russellxz";
 
         // Llamar a tu API de Facebook
-        const response = await axios.get(`${API_BASE}/api/download/facebook`, {
+        const response = await axios.get(`${API_BASE}/api/download/facebook.js`, {
             params: { url: text },
             headers: { 
                 Authorization: `Bearer ${API_KEY}`,
