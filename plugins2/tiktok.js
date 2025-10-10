@@ -70,7 +70,7 @@ const handler = async (msg, { conn, text, args, command }) => {
       `❤️ *Likes:* ${videoLikes} | 💬 *Comentarios:* ${videoComments}\n` +
       `🔄 *Compartidos:* ${videoShares} | 👀 *Vistas:* ${videoViews}\n` +
       `🎫 *Soli restantes:* ${soliRemaining}\n\n` +
-      `───────\n🍧 *API utilizada:* ${API_BASE}\n© La Suki Bot & Cortana SubBot`;
+      `───────\n🍧 *API utilizada:* ${API_BASE}\n© Cortana SubBot`;
 
     await conn.sendMessage(msg.key.remoteJid, {
       video: { url: videoUrl },
