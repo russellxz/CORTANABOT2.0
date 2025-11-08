@@ -80,9 +80,6 @@ async function perplexityQuery(q, prompt) {
   //lumi
     const axios = require("axios");
 const fetch = require("node-fetch");
-const { cargarSubBots } = require("./indexsubbots");
-await cargarSubBots();
-
 const baileys = require("@whiskeysockets/baileys");
 const {
   makeWASocket,
