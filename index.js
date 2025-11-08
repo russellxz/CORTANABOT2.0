@@ -156,8 +156,8 @@ let modos = cargarModos();
                 printQRInTerminal: method === "1",
                 logger: pino({ level: "silent" }),
                 auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" })) },
-                browser: method === "1" ? ["macOS", "Safari", "2.3000.1029030078"] : ["Windows Edge", "Chrome", "2.3000.1029030078"],
-            
+                browser: method === "1" ? ["AzuraBot", "Safari", "1.0.0"] : ["Ubuntu", "Chrome", "20.0.04"],
+            };
 
             const sock = makeWASocket(socketSettings);
 setupConnection(sock)
