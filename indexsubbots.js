@@ -1,21 +1,33 @@
 const path = require("path");
 const fs = require("fs");
 const pino = require("pino");
-const {
-  default: makeWASocket,
+const { Boom } = require("@hapi/boom");
+
+// --- Cargar Baileys (ESM) desde CommonJS usando import() dinámico ---
+let makeWASocket,
   useMultiFileAuthState,
   fetchLatestBaileysVersion,
   makeCacheableSignalKeyStore,
   DisconnectReason,
   downloadContentFromMessage,
-} = require("@whiskeysockets/baileys");
-const { Boom } = require("@hapi/boom");
+  Browsers;
+
+async function loadBaileys() {
+  const m = await import("@whiskeysockets/baileys");
+  // Compatibilidad: algunas versiones exportan default y otras named
+  makeWASocket = m.default ?? m.makeWASocket;
+  useMultiFileAuthState = m.useMultiFileAuthState;
+  fetchLatestBaileysVersion = m.fetchLatestBaileysVersion;
+  makeCacheableSignalKeyStore = m.makeCacheableSignalKeyStore;
+  DisconnectReason = m.DisconnectReason;
+  downloadContentFromMessage = m.downloadContentFromMessage;
+  Browsers = m.Browsers;
+}
 
 // Manejo de errores global para evitar que el subbot se detenga
 process.on("uncaughtException", (err) => {
   console.error("\x1b[31m%s\x1b[0m", "⚠️ Error no manejado:", err);
 });
-
 process.on("unhandledRejection", (reason, promise) => {
   console.error("\x1b[31m%s\x1b[0m", "🚨 Promesa rechazada sin manejar:", promise, "razón:", reason);
 });
@@ -26,15 +38,11 @@ const reconnectionAttempts = new Map();
 function loadSubPlugins() {
   const out = [];
   const dir = path.join(__dirname, "plugins2");
-  if (!fs.existsSync(dir)) {
-    return out;
-  }
+  if (!fs.existsSync(dir)) return out;
 
   for (const file of fs.readdirSync(dir).filter((f) => f.endsWith(".js"))) {
     const plugin = require(path.join(dir, file));
-    if (plugin?.command) {
-      out.push(plugin);
-    }
+    if (plugin?.command) out.push(plugin);
   }
   return out;
 }
@@ -53,16 +61,19 @@ async function handleSubCommand(sock, msg, command, args) {
 }
 
 async function iniciarSubBot(sessionPath) {
-  if (subBots.includes(sessionPath)) {
-    return;
-  }
+  // Asegura que Baileys esté cargado (ESM -> CJS)
+  if (!makeWASocket) await loadBaileys();
+
+  if (subBots.includes(sessionPath)) return;
   subBots.push(sessionPath);
-  if (!fs.existsSync(sessionPath)) {
-    return;
-  }
+  if (!fs.existsSync(sessionPath)) return;
+
   const dir = path.basename(sessionPath);
   const { state, saveCreds } = await useMultiFileAuthState(sessionPath);
   const { version } = await fetchLatestBaileysVersion();
+
+  const browser =
+    Browsers?.windows?.("Chrome") ?? ["Windows", "Chrome", "121.0.0"];
 
   const subSock = makeWASocket({
     version,
@@ -71,7 +82,7 @@ async function iniciarSubBot(sessionPath) {
       creds: state.creds,
       keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" })),
     },
-    browser: ["Azura Subbot", "Firefox", "2.0"],
+    browser, // ["Azura Subbot", "Firefox", "2.0"] si prefieres fijo
     syncFullHistory: false,
   });
 
@@ -87,17 +98,17 @@ async function iniciarSubBot(sessionPath) {
       console.log(`❌ Subbot ${dir} desconectado (status: ${statusCode}).`);
 
       const shouldReconnect =
-        statusCode !== DisconnectReason.loggedOut &&
-        statusCode !== DisconnectReason.badSession &&
-        statusCode !== DisconnectReason.forbidden &&
+        statusCode !== DisconnectReason?.loggedOut &&
+        statusCode !== DisconnectReason?.badSession &&
+        statusCode !== DisconnectReason?.forbidden &&
         statusCode !== 403;
 
       if (shouldReconnect) {
         if (!fs.existsSync(sessionPath)) {
           console.log(`ℹ️ La sesión para ${dir} fue eliminada. Cancelando reconexión.`);
           reconnectionAttempts.delete(sessionPath);
-          const index = subBots.indexOf(sessionPath);
-          if (index !== -1) subBots.splice(index, 1);
+          const idx = subBots.indexOf(sessionPath);
+          if (idx !== -1) subBots.splice(idx, 1);
           return;
         }
 
@@ -106,37 +117,25 @@ async function iniciarSubBot(sessionPath) {
 
         if (attempts <= 3) {
           console.log(`💱 Intentando reconectar a ${dir}... (Intento ${attempts}/3)`);
-          const index = subBots.indexOf(sessionPath);
-          if (index !== -1) {
-            subBots.splice(index, 1);
-          }
+          const idx = subBots.indexOf(sessionPath);
+          if (idx !== -1) subBots.splice(idx, 1);
           setTimeout(() => {
             iniciarSubBot(sessionPath).catch((e) =>
               console.error(`Error al reiniciar subbot ${dir}:`, e),
             );
           }, 5000);
         } else {
-          console.log(
-            `❌ Límite de reconexión alcanzado para ${dir}. Eliminando sesión permanentemente.`,
-          );
-          const index = subBots.indexOf(sessionPath);
-          if (index !== -1) {
-            subBots.splice(index, 1);
-          }
-          if (fs.existsSync(sessionPath)) {
-            fs.rmSync(sessionPath, { recursive: true, force: true });
-          }
+          console.log(`❌ Límite de reconexión alcanzado para ${dir}. Eliminando sesión permanentemente.`);
+          const idx = subBots.indexOf(sessionPath);
+          if (idx !== -1) subBots.splice(idx, 1);
+          if (fs.existsSync(sessionPath)) fs.rmSync(sessionPath, { recursive: true, force: true });
           reconnectionAttempts.delete(sessionPath);
         }
       } else {
         console.log(`❌ No se pudo reconectar con el bot ${dir}. Eliminando sesión.`);
-        const index = subBots.indexOf(sessionPath);
-        if (index !== -1) {
-          subBots.splice(index, 1);
-        }
-        if (fs.existsSync(sessionPath)) {
-          fs.rmSync(sessionPath, { recursive: true, force: true });
-        }
+        const idx = subBots.indexOf(sessionPath);
+        if (idx !== -1) subBots.splice(idx, 1);
+        if (fs.existsSync(sessionPath)) fs.rmSync(sessionPath, { recursive: true, force: true });
         reconnectionAttempts.delete(sessionPath);
       }
     }
@@ -144,6 +143,7 @@ async function iniciarSubBot(sessionPath) {
 
   await socketEvents(subSock);
 }
+
 async function socketEvents(subSock) {
   subSock.ev.on("group-participants.update", async (update) => {
     try {
