@@ -1,6 +1,6 @@
 (async () => {
 let canalId = ["120363266665814365@newsletter"];  
-let canalNombre = ["🪼 CORTANA 2.0 BOT 🪼"]
+let canalNombre = ["👾 AZURA ULTRA 2.0 BOT 👾"]
   function setupConnection(conn) {
   conn.sendMessage2 = async (chat, content, m, options = {}) => {
     const firstChannel = { 
@@ -127,7 +127,7 @@ function guardarModos(data) {
 let modos = cargarModos();
     
     // Configuración de consola
-    console.log(chalk.cyan(figlet.textSync("Cortana Bot", { font: "Standard" })));    
+    console.log(chalk.cyan(figlet.textSync("Azura Ultra Bot", { font: "Standard" })));    
     console.log(chalk.green("\n✅ Iniciando conexión...\n"));
     
     // ✅ Mostrar opciones de conexión bien presentadas
@@ -152,14 +152,13 @@ let modos = cargarModos();
     async function startBot() {
         try {
             let { version } = await fetchLatestBaileysVersion();
-const socketSettings = {
-  printQRInTerminal: method === "1",
-  logger: pino({ level: "silent" }),
-  auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" })) },
-  browser: method === "1"
-    ? ["macOS", "Safari", "2.3000.1029030078"]
-    : ["Windows", "Chrome", "121.0.0"],
-};
+            const socketSettings = {
+                printQRInTerminal: method === "1",
+                logger: pino({ level: "silent" }),
+                auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "silent" })) },
+                browser: method === "1" ? ["AzuraBot", "Safari", "1.0.0"] : ["Ubuntu", "Chrome", "20.0.04"],
+            };
+
             const sock = makeWASocket(socketSettings);
 setupConnection(sock)
             // Si la sesión no existe y se usa el código de 8 dígitos
@@ -1082,4 +1081,424 @@ try {
           case 'opus': payload.audio    = buffer;
                        payload.mimetype = item.mimetype || 'audio/mpeg';
                        payload.ptt      = false;                break;
-          case 'webp': payload.sticker 
+          case 'webp': payload.sticker = buffer; break;
+          default:     payload.document = buffer;
+                       payload.mimetype = item.mimetype || 'application/octet-stream';
+                       payload.fileName = `archivo.${item.extension}`;
+                       break;
+        }
+
+        await sock.sendMessage(chatId, payload, { quoted: msg });
+        return;   // coincidencia encontrada
+      }
+    }
+  }
+} catch (e) {
+  console.error("❌ Error en lógica de palabra clave:", e);
+}
+// === FIN LÓGICA DE RESPUESTA AUTOMÁTICA CON PALABRA CLAVE ===
+    
+// === INICIO BLOQUEO DE MENSAJES DE USUARIOS MUTEADOS ===
+try {
+  const chatId = msg.key.remoteJid;
+  const isGroup = chatId.endsWith("@g.us");
+
+  if (isGroup) {
+    const senderId = msg.key.participant || msg.key.remoteJid;
+    const mutePath = "./mute.json";
+    const muteData = fs.existsSync(mutePath) ? JSON.parse(fs.readFileSync(mutePath)) : {};
+    const muteList = muteData[chatId] || [];
+
+    if (muteList.includes(senderId)) {
+      global._muteCounter = global._muteCounter || {};
+      const key = `${chatId}:${senderId}`;
+      global._muteCounter[key] = (global._muteCounter[key] || 0) + 1;
+
+      const count = global._muteCounter[key];
+
+      if (count === 8) {
+        await sock.sendMessage(chatId, {
+          text: `⚠️ @${senderId.split("@")[0]} estás muteado.\nSigue enviando mensajes y podrías ser eliminado.`,
+          mentions: [senderId]
+        });
+      }
+
+      if (count === 13) {
+        await sock.sendMessage(chatId, {
+          text: `⛔ @${senderId.split("@")[0]} estás al límite.\nSi envías *otro mensaje*, serás eliminado del grupo.`,
+          mentions: [senderId]
+        });
+      }
+
+      if (count >= 15) {
+        const metadata = await sock.groupMetadata(chatId);
+        const user = metadata.participants.find(p => p.id === senderId);
+        const isAdmin = user?.admin === 'admin' || user?.admin === 'superadmin';
+
+        if (!isAdmin) {
+          await sock.groupParticipantsUpdate(chatId, [senderId], "remove");
+          await sock.sendMessage(chatId, {
+            text: `❌ @${senderId.split("@")[0]} fue eliminado por ignorar el mute.`,
+            mentions: [senderId]
+          });
+          delete global._muteCounter[key];
+        } else {
+          await sock.sendMessage(chatId, {
+            text: `🔇 @${senderId.split("@")[0]} es administrador y no se puede eliminar.`,
+            mentions: [senderId]
+          });
+        }
+      }
+
+      // eliminar mensaje
+      await sock.sendMessage(chatId, {
+        delete: {
+          remoteJid: chatId,
+          fromMe: false,
+          id: msg.key.id,
+          participant: senderId
+        }
+      });
+
+      return; // este return es interno, no afecta el resto
+    }
+  }
+} catch (err) {
+  console.error("❌ Error en lógica de muteo:", err);
+}
+// === FIN BLOQUEO DE MENSAJES DE USUARIOS MUTEADOS ===
+// === INICIO BLOQUEO DE COMANDOS A USUARIOS BANEADOS ===
+try {
+  const banPath = path.resolve("./ban.json");
+  const banData = fs.existsSync(banPath) ? JSON.parse(fs.readFileSync(banPath)) : {};
+
+  const messageText = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
+  if (!messageText.startsWith(global.prefix)) return;
+
+  const commandOnly = messageText.slice(global.prefix.length).trim().split(" ")[0].toLowerCase();
+
+  const senderId = msg.key.participant || msg.key.remoteJid;
+  const senderClean = senderId.replace(/[^0-9]/g, "");
+  const senderLID = senderId; // ejemplo: 123456789012345@lid
+  const senderClassic = `${senderClean}@s.whatsapp.net`; // ejemplo: 521234567890@...
+
+  const isFromMe = msg.key.fromMe;
+  const isOwner = global.owner.some(([id]) => id === senderClean);
+
+  const groupBanList = banData[chatId] || [];
+
+  if ((groupBanList.includes(senderClassic) || groupBanList.includes(senderLID)) && !isOwner && !isFromMe) {
+    const frases = [
+      "🚫 @usuario estás baneado por pendejo. ¡Abusaste demasiado del bot!",
+      "❌ Lo siento @usuario, pero tú ya no puedes usarme. Aprende a comportarte.",
+      "🔒 No tienes permiso @usuario. Fuiste baneado por molestar mucho.",
+      "👎 ¡Bloqueado! @usuario abusaste del sistema y ahora no puedes usarme.",
+      "😤 Quisiste usarme pero estás baneado, @usuario. Vuelve en otra vida."
+    ];
+
+    const texto = frases[Math.floor(Math.random() * frases.length)].replace("@usuario", `@${senderClean}`);
+
+    await sock.sendMessage(chatId, {
+      text: texto,
+      mentions: [senderId]
+    }, { quoted: msg });
+
+    return;
+  }
+} catch (e) {
+  console.error("❌ Error procesando bloqueo de usuarios baneados:", e);
+}
+// === FIN BLOQUEO DE COMANDOS A USUARIOS BANEADOS ===    
+// === INICIO BLOQUEO AUTOMÁTICO DE NÚMEROS ÁRABES EN PRIVADO ===
+try {
+  const chatId = msg.key.remoteJid;
+  const isGroup = chatId.endsWith("@g.us");
+
+  if (!isGroup) {
+    const sender = msg.key.participant || msg.key.remoteJid;
+    const senderNum = sender.replace(/[^0-9]/g, "");
+
+    // Lista de prefijos telefónicos árabes
+    const disallowedPrefixes = [
+      "20", "212", "213", "216", "218", "222", "249", "252",
+      "253", "269", "962", "963", "964", "965", "966", "967",
+      "968", "970", "971", "972", "973", "974", "975", "976",
+      "977", "980", "981", "982", "983", "984", "985", "986", "987", "988", "989"
+    ];
+
+    const esArabe = disallowedPrefixes.some(pref => senderNum.startsWith(pref));
+
+    if (esArabe) {
+      // Bloquear al árabe
+      await sock.updateBlockStatus(sender, "block");
+
+      // Obtener el número del propio bot
+      const myJid = sock.user.id.split(":")[0] + "@s.whatsapp.net";
+
+      // Notificar al bot mismo
+      await sock.sendMessage(myJid, {
+        text: `📛 *Número árabe bloqueado automáticamente:*\n\n🧿 Número: wa.me/${senderNum}\n📩 Intentó escribir al bot en privado.\n\n✅ El número fue bloqueado.`
+      });
+
+      // Mensaje al árabe bloqueado (opcional)
+      await sock.sendMessage(sender, {
+        text: "🚫 Este bot no acepta mensajes privados de números árabes. Has sido bloqueado automáticamente."
+      });
+
+      return;
+    }
+  }
+} catch (e) {
+  console.error("❌ Error en bloqueo automático de árabes:", e);
+}
+// === FIN BLOQUEO AUTOMÁTICO DE NÚMEROS ÁRABES EN PRIVADO ===
+
+    
+// 🔐 Modo Privado activado
+    if (activos.modoPrivado) {
+      if (isGroup) {
+        if (!fromMe && !isOwner(sender)) return;
+      } else {
+        if (!fromMe && !isOwner(sender) && !isAllowedUser(sender)) return;
+      }
+    } else {
+      // 🎯 Modo Admins por grupo
+      if (isGroup && activos.modoAdmins?.[chatId]) {
+        try {
+          const metadata = await sock.groupMetadata(chatId);
+          const participant = metadata.participants.find(p => p.id.includes(sender));
+          const isAdmin = participant?.admin === "admin" || participant?.admin === "superadmin";
+          if (!isAdmin && !isOwner(sender) && !fromMe) return;
+        } catch (e) {
+          console.error("Error leyendo metadata:", e);
+          return;
+        }
+      }
+
+      
+
+      // 🔒 En privado si no es de la lista, no responde
+      if (!isGroup && !fromMe && !isOwner(sender) && !isAllowedUser(sender)) return;
+    }
+
+// === INICIO BLOQUEO DE COMANDOS SI EL BOT ESTÁ APAGADO EN EL GRUPO ===
+try {
+  const activosPath = "./activos.json";
+  const activos = fs.existsSync(activosPath)
+    ? JSON.parse(fs.readFileSync(activosPath, "utf-8"))
+    : {};
+
+  const isApagado = activos.apagado?.[chatId] === true;
+  const senderClean = sender.replace(/[^0-9]/g, "");
+  const isOwner = global.owner.some(([id]) => id === senderClean);
+
+  if (isGroup && isApagado && !isOwner) {
+    return; // Ignora comandos de usuarios comunes si el bot está apagado
+  }
+} catch (e) {
+  console.error("❌ Error en lógica de bloqueo por apagado:", e);
+}
+// === FIN BLOQUEO DE COMANDOS SI EL BOT ESTÁ APAGADO EN EL GRUPO ===
+    
+// === INICIO BLOQUEO AUTOMÁTICO COMANDOS RPG AZURA ===
+try {
+  const comandosRpg = [
+    "rpg", "nivel", "picar", "minar", "minar2", "work", "crime", "robar", "cofre",
+    "claim", "batallauser", "hospital", "hosp", "luchar", "poder", "volar",
+    "otromundo", "otrouniverso", "mododios", "mododiablo", "podermaximo",
+    "enemigos", "nivelper", "per", "bolasdeldragon", "vender", "quitarventa",
+    "batallaanime", "comprar", "tiendaper", "alaventa", "verper", "daragua",
+    "darcariño", "darcomida", "presumir", "cazar", "entrenar", "pasear",
+    "supermascota", "mascota", "curar", "nivelmascota", "batallamascota",
+    "compra", "tiendamascotas", "vermascotas", "addmascota", "addper",
+    "deleteuser", "deleteper", "deletemascota", "totalper", "tran", "transferir",
+    "dame", "dep", "bal", "saldo", "retirar", "depositar", "delrpg", "topuser",
+    "topmascotas", "topper"
+  ];
+
+  const activosPath = path.resolve("./activos.json");
+  const activos = fs.existsSync(activosPath) ? JSON.parse(fs.readFileSync(activosPath)) : {};
+
+  const messageText = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
+
+  // NUEVO: Validar prefijo actual
+  if (!messageText.startsWith(global.prefix)) return;
+
+  const commandOnly = messageText.slice(global.prefix.length).trim().split(" ")[0].toLowerCase();
+
+  const rpgActivo = activos.rpgazura?.[chatId];
+
+  if (comandosRpg.includes(commandOnly) && !rpgActivo) {
+    const mensajesBloqueo = [
+      "🚫 Este comando RPG está desactivado en este grupo. Usa .rpgazura on o off.",
+      "🛑 El mundo RPG está apagado. Usa .rpgazura on o off.",
+      "❌ Comandos RPG no disponibles. Usa .rpgazura on o off.",
+      "🚷 Sistema RPG desactivado. Usa .rpgazura on o off."
+    ];
+    const textoBloqueo = mensajesBloqueo[Math.floor(Math.random() * mensajesBloqueo.length)];
+
+    await sock.sendMessage(chatId, { text: textoBloqueo }, { quoted: msg });
+    return;
+  }
+
+} catch (e) {
+  console.error("❌ Error procesando bloqueo de comandos RPG:", e);
+}
+// === FIN BLOQUEO AUTOMÁTICO COMANDOS RPG AZURA ===
+// === INICIO BLOQUEO AUTOMÁTICO COMANDOS +18 (MODO CALIENTE) ===
+try {
+  const comandosHot = ["videoxxx", "pornololi", "nsfwneko", "nsfwwaifu", "waifu", "neko"];
+
+  const activosPath = path.resolve("./activos.json");
+  const activos = fs.existsSync(activosPath) ? JSON.parse(fs.readFileSync(activosPath)) : {};
+
+  const messageText = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
+
+  // NUEVO: Validar prefijo actual
+  if (!messageText.startsWith(global.prefix)) return;
+
+  const commandOnly = messageText.slice(global.prefix.length).trim().split(" ")[0].toLowerCase();
+
+  const senderClean = sender.replace(/[^0-9]/g, "");
+  const isOwner = global.owner.some(([id]) => id === senderClean);
+  const isFromMe = msg.key.fromMe;
+
+  const calienteActivo = activos.modocaliente?.[chatId];
+
+  if (comandosHot.includes(commandOnly) && !calienteActivo && !isOwner && !isFromMe) {
+    const mensajesBloqueo = [
+      "🚫 Velo pajiso, este comando +18 está desactivado. Pídele a un admin que lo active con .modocaliente on o off.",
+      "❌ Qué desesperación, aguántese. El modo caliente no está activado con .modocaliente on o off.",
+      "🛑 Este comando +18 está apagado. Primero active el modo caliente con .modocaliente on o off.",
+      "🚷 Caliente frustrado detectado. El modo +18 está desactivado en este grupo."
+    ];
+    const textoBloqueo = mensajesBloqueo[Math.floor(Math.random() * mensajesBloqueo.length)];
+
+    await sock.sendMessage(chatId, { text: textoBloqueo }, { quoted: msg });
+    return;
+  }
+
+} catch (e) {
+  console.error("❌ Error procesando bloqueo de modo caliente:", e);
+}
+// === FIN BLOQUEO AUTOMÁTICO COMANDOS +18 ===    
+    //restringir comandos
+    try {
+  const rePath = path.resolve("./re.json");
+  const cachePath = path.resolve("./restriccion_cache.json");
+
+  if (!fs.existsSync(cachePath)) fs.writeFileSync(cachePath, JSON.stringify({}, null, 2));
+
+  const reData = fs.existsSync(rePath) ? JSON.parse(fs.readFileSync(rePath)) : {};
+  const cacheData = JSON.parse(fs.readFileSync(cachePath));
+
+  const commandOnly = messageText.slice(global.prefix.length).trim().split(" ")[0].toLowerCase();
+  const comandosRestringidos = reData[chatId] || [];
+
+  const senderClean = sender.replace(/[^0-9]/g, "");
+  const isOwner = global.owner.some(([id]) => id === senderClean);
+  const isFromMe = msg.key.fromMe;
+
+  const key = `${chatId}:${senderClean}:${commandOnly}`;
+
+  // Si el comando ya no está restringido, eliminarlo del contador
+  if (!comandosRestringidos.includes(commandOnly) && cacheData[key]) {
+    delete cacheData[key];
+    fs.writeFileSync(cachePath, JSON.stringify(cacheData, null, 2));
+    return;
+  }
+
+  if (comandosRestringidos.includes(commandOnly) && !isOwner && !isFromMe) {
+    cacheData[key] = (cacheData[key] || 0) + 1;
+
+    const replyOptions = {
+      quoted: msg,
+      mentions: [sender + "@s.whatsapp.net"]
+    };
+
+    if (cacheData[key] < 5) {
+      await sock.sendMessage(chatId, {
+        text: `🚫 *Este comando está restringido en este grupo.*\n⚠️ Solo el owner o el bot pueden usarlo.`,
+      }, replyOptions);
+    } else if (cacheData[key] === 5) {
+      await sock.sendMessage(chatId, {
+        text: `❌ *Has intentado usar este comando demasiadas veces.*\n🤖 Ahora el bot te ignorará respecto a *${commandOnly}*.`,
+      }, replyOptions);
+    }
+
+    fs.writeFileSync(cachePath, JSON.stringify(cacheData, null, 2));
+    return;
+  }
+
+} catch (e) {
+  console.error("❌ Error procesando comando restringido:", e);
+}
+// === FIN LÓGICA DE COMANDOS RESTRINGIDOS ===    
+
+
+    // ✅ Procesar comando
+    if (messageText.startsWith(global.prefix)) {
+      const command = messageText.slice(global.prefix.length).trim().split(" ")[0];
+      const args = messageText.slice(global.prefix.length + command.length).trim().split(" ");
+      handleCommand(sock, msg, command, args, sender);
+    }
+
+  } catch (error) {
+    console.error("❌ Error en messages.upsert:", error);
+  }
+});
+            
+            
+            sock.ev.on("connection.update", async (update) => {
+    const { connection } = update;
+
+    if (connection === "connecting") {
+        console.log(chalk.blue("🔄 Conectando a WhatsApp..."));
+    } else if (connection === "open") {
+        console.log(chalk.green("✅ ¡Conexión establecida con éxito!"));
+//await joinChannels(sock)
+
+        // 📌 Verificar si el bot se reinició con .rest y enviar mensaje
+        const restarterFile = "./lastRestarter.json";
+        if (fs.existsSync(restarterFile)) {
+            try {
+                const data = JSON.parse(fs.readFileSync(restarterFile, "utf-8"));
+                if (data.chatId) {
+                    await sock.sendMessage(data.chatId, { text: "✅ *El bot está en línea nuevamente tras el reinicio.* 🚀" });
+                    console.log(chalk.green("📢 Notificación enviada al chat del reinicio."));
+                    fs.unlinkSync(restarterFile); // 🔄 Eliminar el archivo después de enviar el mensaje
+                }
+            } catch (error) {
+                console.error("❌ Error al procesar lastRestarter.json:", error);
+            }
+        }
+    } else if (connection === "close") {
+        console.log(chalk.red("❌ Conexión cerrada. Intentando reconectar en 5 segundos..."));
+        setTimeout(startBot, 5000);
+    }
+});
+
+const path = require("path");
+            
+            
+            sock.ev.on("creds.update", saveCreds);
+
+            // Manejo de errores global para evitar que el bot se detenga
+            process.on("uncaughtException", (err) => {
+                console.error(chalk.red("⚠️ Error no manejado:"), err);
+            });
+
+            process.on("unhandledRejection", (reason, promise) => {
+                console.error(chalk.red("🚨 Promesa rechazada sin manejar:"), promise, "razón:", reason);
+            });
+
+        } catch (error) {
+            console.error(chalk.red("❌ Error en la conexión:"), error);
+            console.log(chalk.blue("🔄 Reiniciando en 5 segundos..."));
+            setTimeout(startBot, 5000); // Intentar reconectar después de 5 segundos en caso de error
+        }
+    }
+
+    startBot();
+
+})();
