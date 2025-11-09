@@ -4,45 +4,32 @@ const { isOwner, setPrefix, allowedPrefixes } = require("./config");
 const axios = require("axios");
 const fetch = require("node-fetch");
 const FormData = require("form-data");
-// ⛔️ QUITADO: const { downloadContentFromMessage } = require("@whiskeysockets/baileys");
+const { downloadContentFromMessage } = require("@whiskeysockets/baileys");
 const os = require("os");
 const { execSync } = require("child_process");
 const path = require("path");
-const { imageToWebp, videoToWebp, writeExifImg, writeExifVid, writeExif, toAudio } = require("./libs/fuctions");
-
+const { imageToWebp, videoToWebp, writeExifImg, writeExifVid, writeExif, toAudio } = require('./libs/fuctions');
 const activeSessions = new Set();
 const stickersDir = "./stickers";
 const stickersFile = "./stickers.json";
-
-// ✅ Cargador perezoso para Baileys (ESM en proyecto CommonJS)
-let __baileys = null;
-async function getBaileys() {
-  if (!__baileys) __baileys = await import("@whiskeysockets/baileys");
-  return __baileys;
-}
-
-// Helper por si faltaba
-async function getBuffer(url) {
-  const res = await axios.get(url, { responseType: "arraybuffer" });
-  return res.data;
-}
-
 function isUrl(string) {
   const regex = /^(https?:\/\/[^\s]+)/g;
   return regex.test(string);
 }
 
-const filePath = path.resolve("./activossubbots.json");
+const filePath = path.resolve('./activossubbots.json');
 global.cachePlay10 = {}; // Guardará los datos de play10 por ID de mensaje
-
 // Crear archivo con estructura inicial si no existe
 if (!fs.existsSync(filePath)) {
-  const estructuraInicial = { antilink: {} };
+  const estructuraInicial = {
+    antilink: {}
+    // futuro: modoAdmins: {}, antiarabe: {}
+  };
+
   fs.writeFileSync(filePath, JSON.stringify(estructuraInicial, null, 2));
   console.log("✅ Archivo activossubbots.json creado correctamente.");
 }
-
-// restringir 👇
+//retrimgir👇
 const rePath = path.resolve("./re.json");
 let comandosRestringidos = {};
 if (fs.existsSync(rePath)) {
@@ -53,243 +40,214 @@ if (fs.existsSync(rePath)) {
     comandosRestringidos = {};
   }
 }
-// restringir 👆
-
+//retringir 👆
 global.zrapi = `ex-9bf9dc0318`;
 global.generatingCode = false;
 
 if (!fs.existsSync(stickersDir)) fs.mkdirSync(stickersDir, { recursive: true });
 if (!fs.existsSync(stickersFile)) fs.writeFileSync(stickersFile, JSON.stringify({}, null, 2));
-
-// para los subbot
+//para los subot
 const rutaLista = path.join(__dirname, "listasubots.json");
+
+// Verificar y crear el archivo si no existe
 if (!fs.existsSync(rutaLista)) {
   fs.writeFileSync(rutaLista, JSON.stringify([], null, 2));
   console.log("✅ Archivo listasubots.json creado.");
 } else {
   console.log("📂 Archivo listasubots.json ya existe.");
 }
-
-// prefix por chat
+//para los subot
 const prefixPath = path.resolve("prefixes.json");
+
+// Crear archivo si no existe
 if (!fs.existsSync(prefixPath)) {
   fs.writeFileSync(prefixPath, JSON.stringify({}, null, 2));
   console.log("✅ prefixes.json creado correctamente.");
 } else {
   console.log("✅ prefixes.json ya existe.");
 }
-
-// grupo subbot
+//grupo subot
 const grupoPath = path.resolve("grupo.json");
+
+// Verifica si el archivo existe, si no lo crea vacío con estructura básica
 if (!fs.existsSync(grupoPath)) {
   fs.writeFileSync(grupoPath, JSON.stringify({}, null, 2));
   console.log("✅ grupo.json creado correctamente.");
 } else {
   console.log("✅ grupo.json ya existe.");
 }
+//bienvemidad personalizada
+const welcomePath = path.join(__dirname, 'welcome.json');
 
-// welcome personalizado
-const welcomePath = path.join(__dirname, "welcome.json");
 if (!fs.existsSync(welcomePath)) {
   fs.writeFileSync(welcomePath, JSON.stringify({}, null, 2));
   console.log("✅ Archivo welcome.json creado exitosamente.");
 }
 
-// RPG base
+//grupo subot
 const rpgFile = "./rpg.json";
 if (!fs.existsSync(rpgFile)) {
-  const rpgDataInicial = { usuarios: {}, tiendaMascotas: [], tiendaPersonajes: [], mercadoPersonajes: [] };
-  fs.writeFileSync(rpgFile, JSON.stringify(rpgDataInicial, null, 2));
+    const rpgDataInicial = { usuarios: {}, tiendaMascotas: [], tiendaPersonajes: [], mercadoPersonajes: [] };
+    fs.writeFileSync(rpgFile, JSON.stringify(rpgDataInicial, null, 2));
 }
 let rpgData = JSON.parse(fs.readFileSync(rpgFile, "utf-8"));
 function saveRpgData() {
-  fs.writeFileSync(rpgFile, JSON.stringify(rpgData, null, 2));
+    fs.writeFileSync(rpgFile, JSON.stringify(rpgData, null, 2));
 }
 
-// prefix global
 const configFilePath = "./config.json";
 function loadPrefix() {
-  if (fs.existsSync(configFilePath)) {
-    let configData = JSON.parse(fs.readFileSync(configFilePath, "utf-8"));
-    global.prefix = configData.prefix || ".";
-  } else {
-    global.prefix = ".";
-  }
+    if (fs.existsSync(configFilePath)) {
+        let configData = JSON.parse(fs.readFileSync(configFilePath, "utf-8"));
+        global.prefix = configData.prefix || ".";
+    } else {
+        global.prefix = ".";
+    }
 }
 loadPrefix();
 console.log(`📌 Prefijo actual: ${global.prefix}`);
 
-// guar multimedia
 const guarFilePath = "./guar.json";
 if (!fs.existsSync(guarFilePath)) fs.writeFileSync(guarFilePath, JSON.stringify({}, null, 2));
 
 function saveMultimedia(key, data) {
-  let guarData = JSON.parse(fs.readFileSync(guarFilePath, "utf-8"));
-  guarData[key] = data;
-  fs.writeFileSync(guarFilePath, JSON.stringify(guarData, null, 2));
+    let guarData = JSON.parse(fs.readFileSync(guarFilePath, "utf-8"));
+    guarData[key] = data;
+    fs.writeFileSync(guarFilePath, JSON.stringify(guarData, null, 2));
 }
 function getMultimediaList() {
-  return JSON.parse(fs.readFileSync(guarFilePath, "utf-8"));
+    return JSON.parse(fs.readFileSync(guarFilePath, "utf-8"));
 }
-
 function isValidPrefix(prefix) {
-  return typeof prefix === "string" && (prefix.length === 1 || (prefix.length > 1 && [...prefix].length === 1));
+    return typeof prefix === "string" && (prefix.length === 1 || (prefix.length > 1 && [...prefix].length === 1));
 }
 function pickRandom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+    return arr[Math.floor(Math.random() * arr.length)];
 }
 async function fetchJson(url, options = {}) {
-  const res = await fetch(url, options);
-  return res.json();
+    const res = await fetch(url, options);
+    return res.json();
 }
-
-// IA remini
 async function remini(imageData, operation) {
-  return new Promise(async (resolve, reject) => {
-    const availableOperations = ["enhance", "recolor", "dehaze"];
-    if (!availableOperations.includes(operation)) operation = availableOperations[0];
-    const baseUrl = `https://inferenceengine.vyro.ai/${operation}.vyro`;
-    const formData = new FormData();
-    formData.append("image", Buffer.from(imageData), { filename: "enhance_image_body.jpg", contentType: "image/jpeg" });
-    formData.append("model_version", 1, {
-      "Content-Transfer-Encoding": "binary",
-      contentType: "multipart/form-data; charset=utf-8",
+    return new Promise(async (resolve, reject) => {
+        const availableOperations = ["enhance", "recolor", "dehaze"];
+        if (!availableOperations.includes(operation)) operation = availableOperations[0];
+        const baseUrl = `https://inferenceengine.vyro.ai/${operation}.vyro`;
+        const formData = new FormData();
+        formData.append("image", Buffer.from(imageData), { filename: "enhance_image_body.jpg", contentType: "image/jpeg" });
+        formData.append("model_version", 1, {
+            "Content-Transfer-Encoding": "binary",
+            contentType: "multipart/form-data; charset=utf-8"
+        });
+        formData.submit({
+            url: baseUrl,
+            host: "inferenceengine.vyro.ai",
+            path: `/${operation}`,
+            protocol: "https:",
+            headers: {
+                "User-Agent": "okhttp/4.9.3",
+                "Connection": "Keep-Alive",
+                "Accept-Encoding": "gzip"
+            }
+        }, function (err, res) {
+            if (err) return reject(err);
+            const chunks = [];
+            res.on("data", chunk => chunks.push(chunk));
+            res.on("end", () => resolve(Buffer.concat(chunks)));
+            res.on("error", reject);
+        });
     });
-    formData.submit(
-      {
-        url: baseUrl,
-        host: "inferenceengine.vyro.ai",
-        path: `/${operation}`,
-        protocol: "https:",
-        headers: {
-          "User-Agent": "okhttp/4.9.3",
-          Connection: "Keep-Alive",
-          "Accept-Encoding": "gzip",
-        },
-      },
-      function (err, res) {
-        if (err) return reject(err);
-        const chunks = [];
-        res.on("data", (chunk) => chunks.push(chunk));
-        res.on("end", () => resolve(Buffer.concat(chunks)));
-        res.on("error", reject);
-      }
-    );
-  });
 }
-
 async function isAdmin(sock, chatId, sender) {
-  try {
-    const groupMetadata = await sock.groupMetadata(chatId);
-    const admins = groupMetadata.participants.filter((p) => p.admin).map((p) => p.id);
-    return admins.includes(sender.replace(/[^0-9]/g, "") + "@s.whatsapp.net");
-  } catch (error) {
-    console.error("⚠️ Error verificando administrador:", error);
-    return false;
-  }
+    try {
+        const groupMetadata = await sock.groupMetadata(chatId);
+        const admins = groupMetadata.participants.filter(p => p.admin).map(p => p.id);
+        return admins.includes(sender.replace(/[^0-9]/g, '') + "@s.whatsapp.net");
+    } catch (error) {
+        console.error("⚠️ Error verificando administrador:", error);
+        return false;
+    }
 }
-
 function savePrefix(newPrefix) {
-  global.prefix = newPrefix;
-  fs.writeFileSync("./config.json", JSON.stringify({ prefix: newPrefix }, null, 2));
-  console.log(chalk.green(`✅ Prefijo cambiado a: ${chalk.yellow.bold(newPrefix)}`));
+    global.prefix = newPrefix;
+    fs.writeFileSync("./config.json", JSON.stringify({ prefix: newPrefix }, null, 2));
+    console.log(chalk.green(`✅ Prefijo cambiado a: ${chalk.yellow.bold(newPrefix)}`));
 }
-
-// ⚠️ Aquí usamos Baileys vía import dinámico
 async function handleDeletedMessage(sock, msg) {
-  if (!global.viewonce) return;
-  const chatId = msg.key.remoteJid;
-  const deletedMessage = msg.message;
-  if (!deletedMessage) return;
+    if (!global.viewonce) return;
+    const chatId = msg.key.remoteJid;
+    const deletedMessage = msg.message;
+    if (deletedMessage) {
+        await sock.sendMessage(chatId, {
+            text: `⚠️ *Mensaje eliminado reenviado:*
 
-  await sock.sendMessage(chatId, {
-    text: `⚠️ *Mensaje eliminado reenviado:*\n\n${
-      deletedMessage.conversation || deletedMessage.extendedTextMessage?.text || ""
-    }`,
-  });
-
-  const { downloadContentFromMessage } = await getBaileys();
-
-  if (deletedMessage.imageMessage) {
-    const stream = await downloadContentFromMessage(deletedMessage.imageMessage, "image");
-    let buffer = Buffer.alloc(0);
-    for await (const chunk of stream) buffer = Buffer.concat([buffer, chunk]);
-    await sock.sendMessage(chatId, { image: buffer }, { quoted: msg });
-  } else if (deletedMessage.audioMessage) {
-    const stream = await downloadContentFromMessage(deletedMessage.audioMessage, "audio");
-    let buffer = Buffer.alloc(0);
-    for await (const chunk of stream) buffer = Buffer.concat([buffer, chunk]);
-    await sock.sendMessage(chatId, { audio: buffer }, { quoted: msg });
-  } else if (deletedMessage.videoMessage) {
-    const stream = await downloadContentFromMessage(deletedMessage.videoMessage, "video");
-    let buffer = Buffer.alloc(0);
-    for await (const chunk of stream) buffer = Buffer.concat([buffer, chunk]);
-    await sock.sendMessage(chatId, { video: buffer }, { quoted: msg });
-  }
+${deletedMessage.conversation || deletedMessage.extendedTextMessage?.text || ''}`
+        });
+        if (deletedMessage.imageMessage) {
+            const imageBuffer = await downloadContentFromMessage(deletedMessage.imageMessage, 'image');
+            await sock.sendMessage(chatId, { image: imageBuffer }, { quoted: msg });
+        } else if (deletedMessage.audioMessage) {
+            const audioBuffer = await downloadContentFromMessage(deletedMessage.audioMessage, 'audio');
+            await sock.sendMessage(chatId, { audio: audioBuffer }, { quoted: msg });
+        } else if (deletedMessage.videoMessage) {
+            const videoBuffer = await downloadContentFromMessage(deletedMessage.videoMessage, 'video');
+            await sock.sendMessage(chatId, { video: videoBuffer }, { quoted: msg });
+        }
+    }
 }
-
 function loadPlugins() {
-  const plugins = [];
-  const pluginDir = path.join(__dirname, "plugins");
-  if (!fs.existsSync(pluginDir)) return plugins;
-  const files = fs.readdirSync(pluginDir).filter((f) => f.endsWith(".js"));
-  for (const file of files) {
-    const plugin = require(path.join(pluginDir, file));
-    if (plugin && plugin.command) plugins.push(plugin);
-  }
-  return plugins;
+    const plugins = [];
+    const pluginDir = path.join(__dirname, 'plugins');
+    if (!fs.existsSync(pluginDir)) return plugins;
+    const files = fs.readdirSync(pluginDir).filter(f => f.endsWith('.js'));
+    for (const file of files) {
+        const plugin = require(path.join(pluginDir, file));
+        if (plugin && plugin.command) plugins.push(plugin);
+    }
+    return plugins;
 }
 
 const plugins = loadPlugins();
 
 async function handleCommand(sock, msg, command, args, sender) {
-  const lowerCommand = command.toLowerCase();
-  const text = args.join(" ");
-  global.viewonce = true;
+    const lowerCommand = command.toLowerCase();
+    const text = args.join(" ");
+    global.viewonce = true;
 
-  // Enviar sticker con metadata
-  sock.sendImageAsSticker = async (jid, pathIn, quoted, options = {}) => {
-    let buff = Buffer.isBuffer(pathIn)
-      ? pathIn
-      : /^data:.*?\/.*?;base64,/i.test(pathIn)
-      ? Buffer.from(pathIn.split(",")[1], "base64")
-      : /^https?:\/\//.test(pathIn)
-      ? await getBuffer(pathIn)
-      : fs.existsSync(pathIn)
-      ? fs.readFileSync(pathIn)
-      : Buffer.alloc(0);
+    sock.sendImageAsSticker = async (jid, path, quoted, options = {}) => {
+        let buff = Buffer.isBuffer(path)
+            ? path
+            : /^data:.*?\/.*?;base64,/i.test(path)
+                ? Buffer.from(path.split`,`[1], 'base64')
+                : /^https?:\/\//.test(path)
+                    ? await (await getBuffer(path))
+                    : fs.existsSync(path)
+                        ? fs.readFileSync(path)
+                        : Buffer.alloc(0);
+        let buffer;
+        if (options && (options.packname || options.author)) {
+            buffer = await writeExifImg(buff, options);
+        } else {
+            buffer = await imageToWebp(buff);
+        }
+        await sock.sendMessage(jid, { sticker: { url: buffer }, ...options }, {
+            quoted: quoted ? quoted : msg,
+            ephemeralExpiration: 24 * 60 * 100,
+            disappearingMessagesInChat: 24 * 60 * 100
+        });
+        return buffer;
+    };
 
-    let buffer;
-    if (options && (options.packname || options.author)) {
-      buffer = await writeExifImg(buff, options);
-    } else {
-      buffer = await imageToWebp(buff);
+    const plugin = plugins.find(p => p.command.includes(lowerCommand));
+    if (plugin) {
+        return plugin(msg, {
+            conn: sock,
+            text,
+            args,
+            command: lowerCommand,
+            usedPrefix: global.prefix
+        });
     }
-
-    await sock.sendMessage(
-      jid,
-      { sticker: buffer, ...options },
-      {
-        quoted: quoted ? quoted : msg,
-        ephemeralExpiration: 24 * 60 * 1000,
-        disappearingMessagesInChat: 24 * 60 * 1000,
-      }
-    );
-    return buffer;
-  };
-
-  // Plugins
-  const plugin = plugins.find((p) => p.command.includes(lowerCommand));
-  if (plugin) {
-    return plugin(msg, {
-      conn: sock,
-      text,
-      args,
-      command: lowerCommand,
-      usedPrefix: global.prefix,
-    });
-  }
-
 
     switch (lowerCommand) {
 
