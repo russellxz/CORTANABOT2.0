@@ -4,7 +4,7 @@ const { isOwner, setPrefix, allowedPrefixes } = require("./config");
 const axios = require("axios");
 const fetch = require("node-fetch");
 const FormData = require("form-data");
-const { downloadContentFromMessage } = require("@whiskeysockets/baileys");
+// const { downloadContentFromMessage } = require("@whiskeysockets/baileys"); // ← ESM: reemplazado por helper dinámico
 const os = require("os");
 const { execSync } = require("child_process");
 const path = require("path");
@@ -12,6 +12,16 @@ const { imageToWebp, videoToWebp, writeExifImg, writeExifVid, writeExif, toAudio
 const activeSessions = new Set();
 const stickersDir = "./stickers";
 const stickersFile = "./stickers.json";
+
+// Parche ESM Baileys: helper para descargar media y obtener Buffer
+async function downloadMedia(node, type) {
+  const m = await import('@whiskeysockets/baileys');
+  const stream = await m.downloadContentFromMessage(node, type);
+  let buf = Buffer.alloc(0);
+  for await (const chunk of stream) buf = Buffer.concat([buf, chunk]);
+  return buf;
+}
+
 function isUrl(string) {
   const regex = /^(https?:\/\/[^\s]+)/g;
   return regex.test(string);
@@ -184,13 +194,13 @@ async function handleDeletedMessage(sock, msg) {
 ${deletedMessage.conversation || deletedMessage.extendedTextMessage?.text || ''}`
         });
         if (deletedMessage.imageMessage) {
-            const imageBuffer = await downloadContentFromMessage(deletedMessage.imageMessage, 'image');
+            const imageBuffer = await downloadMedia(deletedMessage.imageMessage, 'image');
             await sock.sendMessage(chatId, { image: imageBuffer }, { quoted: msg });
         } else if (deletedMessage.audioMessage) {
-            const audioBuffer = await downloadContentFromMessage(deletedMessage.audioMessage, 'audio');
+            const audioBuffer = await downloadMedia(deletedMessage.audioMessage, 'audio');
             await sock.sendMessage(chatId, { audio: audioBuffer }, { quoted: msg });
         } else if (deletedMessage.videoMessage) {
-            const videoBuffer = await downloadContentFromMessage(deletedMessage.videoMessage, 'video');
+            const videoBuffer = await downloadMedia(deletedMessage.videoMessage, 'video');
             await sock.sendMessage(chatId, { video: videoBuffer }, { quoted: msg });
         }
     }
@@ -250,6 +260,7 @@ async function handleCommand(sock, msg, command, args, sender) {
     }
 
     switch (lowerCommand) {
+
 
         
 case "menuaudio": {
