@@ -1,11 +1,11 @@
-const { proto } = require("@whiskeysockets/baileys");
-
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const handler = async (msg, { conn }) => {
   try {
+    const { proto } = await import("@whiskeysockets/baileys");
+
     const chatId = msg.key.remoteJid;
     const isGroup = chatId.endsWith("@g.us");
     const start = Date.now();
