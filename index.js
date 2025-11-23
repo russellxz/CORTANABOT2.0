@@ -336,28 +336,28 @@ function loadPlugins() {
           if (fs.existsSync(welcomePath)) customWelcomes = JSON.parse(fs.readFileSync(welcomePath, "utf-8"));
 
           const welcomeTexts = [
-            "¡Bienvenido(a)! Azura Ultra 2.0 Bot te recibe con los brazos abiertos 🤗✨. ¡Disfruta y comparte!",
-            "¡Hola! Azura Ultra 2.0 Bot te abraza con alegría 🎉🤖. ¡Prepárate para grandes aventuras!",
-            "¡Saludos! Azura Ultra 2.0 Bot te da la bienvenida para que descubras ideas brillantes 🚀🌟.",
-            "¡Bienvenido(a) al grupo! Azura Ultra 2.0 Bot te invita a explorar un mundo de posibilidades 🤩💡.",
-            "¡Qué alegría verte! Azura Ultra 2.0 Bot te recibe y te hace sentir en casa 🏠💖.",
-            "¡Hola! Gracias por unirte; Azura Ultra 2.0 Bot te saluda con entusiasmo 🎊😊.",
+            "¡Bienvenido(a)! Cortana Ultra 2.0 Bot te recibe con los brazos abiertos 🤗✨. ¡Disfruta y comparte!",
+            "¡Hola! cortana Ultra 2.0 Bot te abraza con alegría 🎉🤖. ¡Prepárate para grandes aventuras!",
+            "¡Saludos! cortana Ultra 2.0 Bot te da la bienvenida para que descubras ideas brillantes 🚀🌟.",
+            "¡Bienvenido(a) al grupo! cortana Ultra 2.0 Bot te invita a explorar un mundo de posibilidades 🤩💡.",
+            "¡Qué alegría verte! cortana Ultra 2.0 Bot te recibe y te hace sentir en casa 🏠💖.",
+            "¡Hola! Gracias por unirte; cortana Ultra 2.0 Bot te saluda con entusiasmo 🎊😊.",
             "¡Bienvenido(a)! Cada nuevo miembro es una chispa de inspiración en Azura Ultra 2.0 Bot 🔥✨.",
-            "¡Saludos cordiales! Azura Ultra 2.0 Bot te envía un abrazo virtual 🤗💙.",
-            "¡Bienvenido(a)! Únete a la experiencia Azura Ultra 2.0 Bot y comparte grandes ideas 🎉🌈.",
-            "¡Hola! Azura Ultra 2.0 Bot te da la bienvenida para vivir experiencias inolvidables 🚀✨!",
+            "¡Saludos cordiales! cortana Ultra 2.0 Bot te envía un abrazo virtual 🤗💙.",
+            "¡Bienvenido(a)! Únete a la experiencia cortana Ultra 2.0 Bot y comparte grandes ideas 🎉🌈.",
+            "¡Hola! cortana Ultra 2.0 Bot te da la bienvenida para vivir experiencias inolvidables 🚀✨!",
           ];
           const farewellTexts = [
-            "¡Adiós! Azura Ultra 2.0 Bot te despide con gratitud y te desea éxitos en tus nuevos caminos 👋💫.",
-            "Hasta pronto, desde Azura Ultra 2.0 Bot te deseamos lo mejor y esperamos verte de nuevo 🌟🙏.",
-            "¡Chao! Azura Ultra 2.0 Bot se despide, pero siempre tendrás un lugar si decides regresar 🤗💔.",
-            "Nos despedimos con cariño; gracias por compartir momentos en Azura Ultra 2.0 Bot 🏠❤️.",
-            "¡Adiós, amigo(a)! Azura Ultra 2.0 Bot te manda un abrazo y te desea mucha suerte 🤝🌟.",
+            "¡Adiós! cortana Ultra 2.0 Bot te despide con gratitud y te desea éxitos en tus nuevos caminos 👋💫.",
+            "Hasta pronto, desde cortana Ultra 2.0 Bot te deseamos lo mejor y esperamos verte de nuevo 🌟🙏.",
+            "¡Chao! cortana Ultra 2.0 Bot se despide, pero siempre tendrás un lugar si decides regresar 🤗💔.",
+            "Nos despedimos con cariño; gracias por compartir momentos en cortana Ultra 2.0 Bot 🏠❤️.",
+            "¡Adiós, amigo(a)! cortana Ultra 2.0 Bot te manda un abrazo y te desea mucha suerte 🤝🌟.",
             "Hasta luego, y gracias por haber sido parte de nuestra comunidad 🚀💙.",
             "Chao, que tus futuros proyectos sean tan brillantes como tú 🌟✨. Azura Ultra 2.0 Bot te recuerda siempre.",
-            "¡Nos vemos! Azura Ultra 2.0 Bot te dice adiós con un corazón lleno de gratitud 🤗❤️.",
-            "¡Adiós! Que tu camino esté lleno de éxitos, te lo desea Azura Ultra 2.0 Bot 🚀🌟.",
-            "Hasta pronto, y gracias por haber compartido momentos inolvidables con Azura Ultra 2.0 Bot 👋💖.",
+            "¡Nos vemos! cortana Ultra 2.0 Bot te dice adiós con un corazón lleno de gratitud 🤗❤️.",
+            "¡Adiós! Que tu camino esté lleno de éxitos, te lo desea cortana Ultra 2.0 Bot 🚀🌟.",
+            "Hasta pronto, y gracias por haber compartido momentos inolvidables con cortana Ultra 2.0 Bot 👋💖.",
           ];
 
           if (update.action === "add" && welcomeActivo) {
