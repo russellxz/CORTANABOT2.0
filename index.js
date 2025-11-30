@@ -183,6 +183,9 @@ function loadPlugins() {
     downloadContentFromMessage,
   } = await import("@whiskeysockets/baileys");
 
+// ⬇️ INYECCIÓN GLOBAL PARA PLUGINS
+  global.wa = { downloadContentFromMessage };
+
   const { state, saveCreds } = await useMultiFileAuthState("./sessions");
 
   // consola
