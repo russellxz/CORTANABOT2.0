@@ -189,7 +189,7 @@ function loadPlugins() {
   const { state, saveCreds } = await useMultiFileAuthState("./sessions");
 
   // consola
-  console.log(chalk.cyan(figlet.textSync("Azura Ultra Bot", { font: "Standard" })));
+  console.log(chalk.cyan(figlet.textSync("Cortana ultra 2.0", { font: "Standard" })));
   console.log(chalk.green("\n✅ Iniciando conexión...\n"));
   console.log(chalk.yellow("📡 ¿Cómo deseas conectarte?\n"));
   console.log(chalk.green("  [1] ") + chalk.white("📷 Escanear código QR"));
