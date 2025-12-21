@@ -204,12 +204,7 @@ C̶o̶r̶t̶a̶n̶a̶ 2̶.̶0̶ B̶o̶t̶
 - "video 720" o "2 720" (cambia calidad)
 - "audio" (siempre mp3)
 
-
-█▀▀ █▀█ █▀█ ▀█▀ ▄▀█ █▄░█ ▄▀█   ▀█ ░ █▀█
-█▄▄ █▄█ █▀▄ ░█░ █▀█ █░▀█ █▀█   █▄ ▄ █▄█
-
-█▄▄ █▀█ ▀█▀
-█▄█ █▄█ ░█░
+C̶o̶r̶t̶a̶n̶a̶ 2̶.̶0̶ B̶o̶t̶
 `.trim();
 
   const preview = await conn.sendMessage(
